@@ -28,11 +28,14 @@ export function RaceView() {
             />
           </div>
 
-          <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 72, fontWeight: 900, color: T.card, lineHeight: 0.95, marginBottom: 16, letterSpacing: -2 }}>
-            RACE<br /><span style={{ color: T.lime }}>#{String(stream.raceNumber).padStart(2, '0')}</span>
+          <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 64, fontWeight: 900, color: T.card, lineHeight: 1, marginBottom: 16, letterSpacing: -2 }}>
+            WHO WILL BE<br /><span style={{ color: T.lime }}>THE HAMSTAR?</span>
           </h1>
+          <div style={{ fontSize: 13, color: T.textMuted, fontWeight: 800, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 12 }}>
+            Race #{String(stream.raceNumber).padStart(2, '0')}
+          </div>
           <p style={{ fontSize: 16, color: '#8892BB', marginBottom: 32, maxWidth: 480, lineHeight: 1.6 }}>
-            Three hamsters. One wheel. The community picks the champion. Watch live on pump.fun.
+            Three enter. One earns the wheel. The fastest hamster the internet has ever seen — watch live on pump.fun.
           </p>
 
           {/* Racers row */}
@@ -82,7 +85,7 @@ export function RaceView() {
                     </div>
                   ))}
                 </div>
-                <div style={{ fontSize: 15, color: '#8892BB', marginBottom: 20 }}>Race is live on pump.fun</div>
+                <div style={{ fontSize: 15, color: '#8892BB', marginBottom: 20 }}>The wheel doesn't lie. Race is live now.</div>
                 <a href={stream.url} target="_blank" rel="noopener noreferrer"
                   style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '14px 36px', background: T.lime, borderRadius: 10, color: T.limeText, fontWeight: 900, fontSize: 15, textDecoration: 'none', letterSpacing: 0.3 }}>
                   ▶ Watch Live on pump.fun
@@ -97,8 +100,8 @@ export function RaceView() {
                     </div>
                   ))}
                 </div>
-                <div style={{ fontSize: 20, color: T.card, fontWeight: 900, marginBottom: 8 }}>Race #{stream.raceNumber} — Upcoming</div>
-                <div style={{ fontSize: 13, color: '#8892BB', marginBottom: 24 }}>Follow on pump.fun to get notified when the next race goes live.</div>
+                <div style={{ fontSize: 20, color: T.card, fontWeight: 900, marginBottom: 8 }}>Race #{stream.raceNumber} — The Wheel Awaits</div>
+                <div style={{ fontSize: 13, color: '#8892BB', marginBottom: 24 }}>Three enter. One earns the title. Follow on pump.fun to get notified when it goes live.</div>
                 <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
                   <a href={stream.url} target="_blank" rel="noopener noreferrer"
                     style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '12px 28px', background: T.lime, borderRadius: 10, color: T.limeText, fontWeight: 900, fontSize: 13, textDecoration: 'none' }}>

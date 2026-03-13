@@ -31,9 +31,9 @@ export function CommunityView() {
         <div>
           <Tag label="🎬 Content" color={T.blue} bg={T.blueSoft} />
           <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 36, color: T.text, marginTop: 10, marginBottom: 6, letterSpacing: -0.5, fontWeight: 900 }}>
-            HamstarHub TV
+            Hamstar TV
           </h2>
-          <p style={{ color: T.textMuted, fontSize: 14 }}>Race highlights, behind the scenes, and pet content.</p>
+          <p style={{ color: T.textMuted, fontSize: 14 }}>Race highlights, real hamsters, and behind-the-scenes content.</p>
         </div>
         <div style={{ display: 'flex', gap: 0, border: `2px solid ${T.border}`, borderRadius: 10, overflow: 'hidden' }}>
           {(['ALL', 'VIDEO', 'PHOTO'] as const).map((f, i) => (
@@ -60,7 +60,7 @@ export function CommunityView() {
       {socialLinks.length > 0 && (
         <div style={{ marginTop: 32, background: T.text, borderRadius: 16, padding: '24px 28px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
           <div>
-            <div style={{ fontSize: 16, fontWeight: 900, color: T.lime, marginBottom: 4 }}>Follow @HamstarHub</div>
+            <div style={{ fontSize: 16, fontWeight: 900, color: T.lime, marginBottom: 4 }}>Follow @Hamstar</div>
             <div style={{ fontSize: 13, color: '#8892BB' }}>Race drops, pet moments, arena announcements.</div>
           </div>
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>

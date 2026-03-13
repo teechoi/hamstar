@@ -17,7 +17,7 @@ export function PetsView() {
           Meet the Racers
         </h2>
         <p style={{ color: T.textMid, fontSize: 15, maxWidth: 520 }}>
-          Three hamsters. Each with their own style, stats, and story.
+          Three racers. Three different roads to glory. Only one earns the wheel.
         </p>
       </div>
 

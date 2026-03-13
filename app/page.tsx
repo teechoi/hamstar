@@ -41,8 +41,8 @@ export default function Home() {
         <footer style={{ background: T.text, borderTop: `4px solid ${T.lime}` }}>
           <CheckerBar />
           <div style={{ padding: '20px 28px', maxWidth: 1280, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
-            <span style={{ color: T.lime, fontSize: 13, fontWeight: 800 }}>🐹 HamstarHub</span>
-            <span style={{ color: '#8892BB', fontSize: 12 }}>Hamster racing · Real pets · Real races</span>
+            <span style={{ color: T.lime, fontSize: 13, fontWeight: 800 }}>🐹 Hamstar</span>
+            <span style={{ color: '#8892BB', fontSize: 12 }}>Real hamsters · Real races · One champion</span>
             {footerLinks.length > 0 && (
               <div style={{ display: 'flex', gap: 16 }}>
                 {footerLinks.map(({ label, href }) => (

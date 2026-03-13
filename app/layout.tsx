@@ -3,19 +3,19 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://hamstarhub.xyz'),
-  title: 'HamstarHub — Hamster Racing',
-  description: 'Three hamsters. One wheel. The internet picks the champion.',
+  title: 'Hamstar — Who Will Be the Hamstar?',
+  description: 'Three hamsters. One champion. The wheel decides.',
   openGraph: {
-    title: 'HamstarHub',
-    description: 'Hamster racing. F1-style sponsorships. Real pets. Real races.',
+    title: 'Hamstar',
+    description: 'Three racers. One champion. Who will be the Hamstar?',
     images: ['/og-image.png'],
     url: 'https://hamstarhub.xyz',
   },
   twitter: {
     card: 'summary_large_image',
-    site: '@hamstarhub',
-    title: 'HamstarHub',
-    description: 'Hamster racing — real pets, real races',
+    site: '@hamstar',
+    title: 'Hamstar',
+    description: 'Who will be the Hamstar? Real hamsters. Real races.',
     images: ['/og-image.png'],
   },
 }

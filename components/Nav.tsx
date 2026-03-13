@@ -21,7 +21,7 @@ export function Nav({ tab, setTab, isLive }: NavProps) {
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <div style={{ width: 38, height: 38, borderRadius: 8, background: T.lime, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20 }}>🐹</div>
           <span style={{ fontSize: 20, fontWeight: 900, color: T.text, letterSpacing: -1 }}>
-            Hamstar<span style={{ color: T.blue }}>Hub</span>
+            Ham<span style={{ color: T.blue }}>star</span>
           </span>
         </div>
 

@@ -6,8 +6,8 @@
 
 // ─── SITE & STREAM ────────────────────────────────────────────────────────────
 export const SITE = {
-  name: 'HamstarHub',
-  tagline: 'Three hamsters. One wheel. The internet picks the champion.',
+  name: 'Hamstar',
+  tagline: 'Who will be the Hamstar?',
 
   stream: {
     // Set isLive: true when a race is actively streaming
@@ -23,14 +23,14 @@ export const SITE = {
   // ─── SOCIAL LINKS ──────────────────────────────────────────────────────────
   // Leave as empty string '' to hide the button
   socials: {
-    twitter: 'https://twitter.com/hamstarhub',
-    tiktok: '',
-    instagram: '',
-    youtube: '',
+    twitter: 'https://twitter.com/hamstar',
+    tiktok: 'https://tiktok.com/@hamstar',
+    instagram: 'https://instagram.com/hamstar',
+    youtube: 'https://youtube.com/@hamstar',
   },
 
   // Contact email for sponsorship inquiries
-  sponsorEmail: 'sponsors@hamstarhub.xyz',
+  sponsorEmail: 'sponsors@hamstar.gg',
 }
 
 // ─── PETS ─────────────────────────────────────────────────────────────────────
@@ -65,8 +65,8 @@ export const PETS: Pet[] = [
     number: 1,
     emoji: '🐹',
     team: 'Team Hammy',
-    tagline: "The people's champ",
-    bio: 'The undisputed crowd favorite. Hammy runs on pure heart, community energy, and sunflower seeds. Three-time podium finisher and a rising legend of the wheel.',
+    tagline: "Hammy doesn't lose. Until he does.",
+    bio: "The people's champion. Hammy runs on pure heart, crowd energy, and sunflower seeds. Three podiums deep and still hungry. The wheel belongs to him — at least, that's what he thinks.",
     color: '#FF6B35',
     speed: 78,
     chaos: 45,
@@ -82,8 +82,8 @@ export const PETS: Pet[] = [
     number: 2,
     emoji: '🐭',
     team: 'Team Whiskers',
-    tagline: 'Calculated. Precise. Dangerous.',
-    bio: "Don't be fooled by the calm exterior. Whiskers studies the track, memorizes every corner, and executes with surgical precision. The dark horse of every race.",
+    tagline: 'Whiskers is studying your favorite.',
+    bio: "Don't let the calm fool you. Whiskers clocks every corner, memorizes every split, and executes with surgical precision. Quiet. Cold. Dangerous. The dark horse who always shows up when it counts.",
     color: '#005DFF',
     speed: 71,
     chaos: 62,
@@ -99,8 +99,8 @@ export const PETS: Pet[] = [
     number: 3,
     emoji: '🐿️',
     team: 'Team Nugget',
-    tagline: 'Chaos incarnate',
-    bio: "Nobody knows what Nugget will do next — not even Nugget. That unpredictability is exactly what makes race day electric. Could be last. Could be first. Always a must-watch.",
+    tagline: 'Nugget is unpredictable. That is the point.',
+    bio: "Nobody knows what Nugget will do next — not even Nugget. Last place one lap, podium the next. Built different. Wired wrong. The most entertaining racer on the wheel and the most dangerous bet you'll ever make.",
     color: '#FFD000',
     speed: 83,
     chaos: 91,

@@ -43,7 +43,7 @@ export function SponsorsView() {
         Sponsor a Racer
       </h2>
       <p style={{ color: T.textMid, fontSize: 15, maxWidth: 520, marginBottom: 36 }}>
-        F1-style brand placement on the fastest hamsters on the internet. Pick a tier, pick a racer, get in the game.
+        Back a racer. Put your name on the fastest hamsters the internet has ever seen. Pick a tier, pick a side.
       </p>
 
       {/* Tier cards */}

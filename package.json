@@ -1,5 +1,5 @@
 {
-  "name": "hamstarhub",
+  "name": "hamstar",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -7,9 +7,18 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "db:push": "prisma db push",
+    "db:migrate": "prisma migrate dev",
+    "db:studio": "prisma studio",
+    "db:generate": "prisma generate",
+    "seed": "npx tsx scripts/seed.ts",
+    "finish-race": "npx tsx scripts/finish-race.ts",
+    "setup-helius": "npx tsx scripts/setup-helius.ts"
   },
   "dependencies": {
+    "@prisma/client": "^5.10.0",
+    "@supabase/supabase-js": "^2.39.0",
     "next": "14.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
@@ -20,6 +29,8 @@
     "@types/react-dom": "^18.2.0",
     "eslint": "^8.56.0",
     "eslint-config-next": "14.1.0",
+    "prisma": "^5.10.0",
+    "tsx": "^4.7.0",
     "typescript": "^5.3.3"
   }
 }

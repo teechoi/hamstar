@@ -1,6 +1,9 @@
-# HamstarHub
+# Hamstar
 
 Hamster racing platform. Three racers, live stream on pump.fun, community-driven.
+
+> **This is v1** — a fully deployable static site driven by `config/site.ts`. No database or blockchain required.
+> For the full live platform (real-time donations, Solana wallet integration, automated race tracking), see **[INTEGRATION.md](./INTEGRATION.md)**.
 
 ---
 
@@ -149,7 +152,7 @@ If you don't want to put images in the repo, you can use any public URL:
 ## Project structure
 
 ```
-hamstarhub/
+hamstar/
 ├── config/
 │   └── site.ts          ← Edit this to update all site content
 ├── app/

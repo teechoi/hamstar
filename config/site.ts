@@ -1,0 +1,226 @@
+// config/site.ts
+// ─────────────────────────────────────────────────────────────────────────────
+// HAMSTARHUB — SITE CONFIGURATION
+// This is the only file you need to edit to update the site content.
+// ─────────────────────────────────────────────────────────────────────────────
+
+// ─── SITE & STREAM ────────────────────────────────────────────────────────────
+export const SITE = {
+  name: 'HamstarHub',
+  tagline: 'Three hamsters. One wheel. The internet picks the champion.',
+
+  stream: {
+    // Set isLive: true when a race is actively streaming
+    isLive: false,
+    // Your pump.fun stream URL (opens in new tab when clicked)
+    url: 'https://pump.fun',
+    // Optional: link to last race replay (YouTube, etc.)
+    replayUrl: '',
+    // Current race number
+    raceNumber: 1,
+  },
+
+  // ─── SOCIAL LINKS ──────────────────────────────────────────────────────────
+  // Leave as empty string '' to hide the button
+  socials: {
+    twitter: 'https://twitter.com/hamstarhub',
+    tiktok: '',
+    instagram: '',
+    youtube: '',
+  },
+
+  // Contact email for sponsorship inquiries
+  sponsorEmail: 'sponsors@hamstarhub.xyz',
+}
+
+// ─── PETS ─────────────────────────────────────────────────────────────────────
+// Edit these to update racer profiles.
+//
+// For 'image': put a photo file in /public/pets/ and reference as '/pets/hammy.jpg'
+// Or use any external image URL (Cloudinary, etc.)
+// Leave image as '' to show the emoji instead.
+// ─────────────────────────────────────────────────────────────────────────────
+export interface Pet {
+  id: string
+  name: string
+  number: number
+  emoji: string
+  team: string
+  tagline: string
+  bio: string
+  color: string
+  speed: number      // 1–100 display stat
+  chaos: number      // 1–100 display stat
+  wins: number
+  snackLevel: number // 0–100 lifestyle display
+  cageLevel: number  // 0–100 lifestyle display
+  image?: string     // Optional pet photo URL
+  sponsors: { name: string; emoji: string; url?: string }[]
+}
+
+export const PETS: Pet[] = [
+  {
+    id: 'hammy',
+    name: 'Hammy',
+    number: 1,
+    emoji: '🐹',
+    team: 'Team Hammy',
+    tagline: "The people's champ",
+    bio: 'The undisputed crowd favorite. Hammy runs on pure heart, community energy, and sunflower seeds. Three-time podium finisher and a rising legend of the wheel.',
+    color: '#FF6B35',
+    speed: 78,
+    chaos: 45,
+    wins: 3,
+    snackLevel: 65,
+    cageLevel: 70,
+    image: '',
+    sponsors: [],
+  },
+  {
+    id: 'whiskers',
+    name: 'Whiskers',
+    number: 2,
+    emoji: '🐭',
+    team: 'Team Whiskers',
+    tagline: 'Calculated. Precise. Dangerous.',
+    bio: "Don't be fooled by the calm exterior. Whiskers studies the track, memorizes every corner, and executes with surgical precision. The dark horse of every race.",
+    color: '#005DFF',
+    speed: 71,
+    chaos: 62,
+    wins: 1,
+    snackLevel: 80,
+    cageLevel: 55,
+    image: '',
+    sponsors: [],
+  },
+  {
+    id: 'nugget',
+    name: 'Nugget',
+    number: 3,
+    emoji: '🐿️',
+    team: 'Team Nugget',
+    tagline: 'Chaos incarnate',
+    bio: "Nobody knows what Nugget will do next — not even Nugget. That unpredictability is exactly what makes race day electric. Could be last. Could be first. Always a must-watch.",
+    color: '#FFD000',
+    speed: 83,
+    chaos: 91,
+    wins: 2,
+    snackLevel: 45,
+    cageLevel: 90,
+    image: '',
+    sponsors: [],
+  },
+]
+
+// ─── RACE HISTORY ─────────────────────────────────────────────────────────────
+// Add completed races here after each event.
+// positions: pet IDs in finishing order [1st, 2nd, 3rd]
+export interface RaceResult {
+  number: number
+  date: string       // e.g. '2025-03-01'
+  positions: string[] // e.g. ['hammy', 'nugget', 'whiskers']
+}
+
+export const RACE_HISTORY: RaceResult[] = [
+  // Uncomment and edit after each race:
+  // { number: 1, date: '2025-03-01', positions: ['hammy', 'nugget', 'whiskers'] },
+]
+
+// ─── MEDIA ────────────────────────────────────────────────────────────────────
+// Add videos and photos to the Community gallery here.
+//
+// HOW TO HOST YOUR MEDIA:
+// ─────────────────────────────────────────────────────────────────────────────
+// IMAGES:
+//   Option A (simple) — Put image files in /public/media/ folder
+//     then reference as: url: '/media/my-photo.jpg'
+//
+//   Option B (recommended) — Cloudinary (free tier, great CDN)
+//     Sign up at cloudinary.com → upload → copy URL
+//
+// VIDEOS:
+//   YouTube — upload → copy watch URL for 'url', get thumbnail:
+//     https://img.youtube.com/vi/VIDEO_ID/maxresdefault.jpg
+//   TikTok — copy the post URL for 'url'
+//   pump.fun replay — copy the replay URL for 'url'
+//
+// For VIDEO cards, clicking opens the url in a new tab.
+// For PHOTO cards, clicking opens the image url in a new tab.
+// ─────────────────────────────────────────────────────────────────────────────
+export interface MediaItem {
+  id: string
+  type: 'VIDEO' | 'PHOTO'
+  title: string
+  description?: string
+  url: string         // Link to video or full-size image
+  thumbnail?: string  // Preview image URL (especially important for videos)
+  duration?: string   // e.g. '2:34' — show on video cards
+  featured: boolean   // Featured items appear first
+  publishedAt: string // e.g. '2025-03-01'
+}
+
+export const MEDIA: MediaItem[] = [
+  // Video example:
+  // {
+  //   id: 'race1-highlight',
+  //   type: 'VIDEO',
+  //   title: 'Race #1 Highlights',
+  //   description: 'The moment Hammy took the lead in the final stretch.',
+  //   url: 'https://youtube.com/watch?v=YOUR_VIDEO_ID',
+  //   thumbnail: 'https://img.youtube.com/vi/YOUR_VIDEO_ID/maxresdefault.jpg',
+  //   duration: '2:14',
+  //   featured: true,
+  //   publishedAt: '2025-03-01',
+  // },
+  // Photo example:
+  // {
+  //   id: 'nugget-cage',
+  //   type: 'PHOTO',
+  //   title: "Nugget in the new deluxe cage",
+  //   url: '/media/nugget-cage.jpg', // put file at /public/media/nugget-cage.jpg
+  //   featured: false,
+  //   publishedAt: '2025-03-01',
+  // },
+]
+
+// ─── SPONSORS ─────────────────────────────────────────────────────────────────
+export interface Sponsor {
+  id: string
+  name: string
+  emoji: string
+  tier: 'TITLE' | 'GOLD' | 'SILVER'
+  petId?: string  // Which pet they sponsor ('hammy' | 'whiskers' | 'nugget')
+  url?: string    // Sponsor's website — makes their card clickable
+}
+
+export const SPONSORS: Sponsor[] = [
+  // { id: 's1', name: 'AcmeCorp', emoji: '🚀', tier: 'GOLD', url: 'https://acme.com' },
+]
+
+// ─── ARENAS ROADMAP ───────────────────────────────────────────────────────────
+export const ROADMAP = [
+  {
+    icon: '🏁',
+    title: 'Arena 1 — The Basic Track',
+    desc: 'Where it all starts. Clean, no-frills setup. The foundation of every legend.',
+    status: 'CURRENT' as const,
+  },
+  {
+    icon: '🌿',
+    title: 'Arena 2 — Crumble Cove',
+    desc: 'Nature-themed maze. Grass terrain, pebbles, tiny water feature, hidden shortcuts.',
+    status: 'PLANNED' as const,
+  },
+  {
+    icon: '⚡',
+    title: 'Arena 3 — Neon Drift Circuit',
+    desc: 'Night track. Neon walls, fog machines, electric atmosphere, boss-level vibes.',
+    status: 'VISION' as const,
+  },
+  {
+    icon: '❓',
+    title: 'Arena 4 — Community Choice',
+    desc: 'You submit blueprints. You vote. The winner gets built. Your name on it forever.',
+    status: 'MYSTERY' as const,
+  },
+]

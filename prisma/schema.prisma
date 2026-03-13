@@ -1,0 +1,198 @@
+// HamstarHub — Prisma Schema
+// DB: PostgreSQL via Supabase
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ─── PETS ─────────────────────────────────────────────────────────────────────
+model Pet {
+  id            String  @id @default(cuid())
+  slug          String  @unique         // "hammy" | "whiskers" | "nugget"
+  name          String
+  number        String                  // "07" | "03" | "99"
+  emoji         String
+  team          String
+  tagline       String
+  color         String                  // hex e.g. "#FF3B5C"
+  walletAddress String  @unique         // Solana address for donations
+  active        Boolean @default(true)
+
+  // Base stats (0-100)
+  speedBase     Int     @default(50)
+  chaosBase     Int     @default(50)
+
+  // Lifestyle (computed from upgrades)
+  snackLevel    Int     @default(20)
+  cageLevel     Int     @default(20)
+
+  sponsors    Sponsor[]
+  donations   Donation[]
+  raceEntries RaceEntry[]
+  upgrades    PetUpgrade[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("pets")
+}
+
+// ─── RACES ────────────────────────────────────────────────────────────────────
+model Race {
+  id       String     @id @default(cuid())
+  number   Int        @unique
+  status   RaceStatus @default(UPCOMING)
+  startsAt DateTime
+  endsAt   DateTime
+
+  entries  RaceEntry[]
+  donations Donation[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("races")
+}
+
+model RaceEntry {
+  id       String   @id @default(cuid())
+  raceId   String
+  petId    String
+  position Int?                               // 1/2/3 — null until finished
+  totalSol Decimal  @default(0) @db.Decimal(18, 9)
+
+  race Race @relation(fields: [raceId], references: [id])
+  pet  Pet  @relation(fields: [petId], references: [id])
+
+  @@unique([raceId, petId])
+  @@map("race_entries")
+}
+
+enum RaceStatus {
+  UPCOMING
+  LIVE
+  FINISHED
+}
+
+// ─── DONATIONS ────────────────────────────────────────────────────────────────
+model Donation {
+  id            String       @id @default(cuid())
+  txSignature   String       @unique       // Solana tx signature (dedup key)
+  petId         String
+  raceId        String?
+  walletAddress String                     // sender's wallet
+  alias         String?                    // from tx memo
+  amountSol     Decimal      @db.Decimal(18, 9)
+  type          DonationType @default(RACE_SUPPORT)
+  confirmedAt   DateTime
+
+  pet  Pet   @relation(fields: [petId], references: [id])
+  race Race? @relation(fields: [raceId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@index([petId])
+  @@index([raceId])
+  @@map("donations")
+}
+
+enum DonationType {
+  RACE_SUPPORT
+  SNACK
+  CAGE
+  ARENA_FUND
+  SPONSOR
+}
+
+// ─── SPONSORS ─────────────────────────────────────────────────────────────────
+model Sponsor {
+  id            String      @id @default(cuid())
+  name          String
+  emoji         String      @default("🏆")
+  petId         String?
+  tier          SponsorTier
+  solPerRace    Decimal     @db.Decimal(18, 9)
+  walletAddress String?
+  websiteUrl    String?
+  active        Boolean     @default(true)
+
+  pet Pet? @relation(fields: [petId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("sponsors")
+}
+
+enum SponsorTier {
+  SILVER
+  GOLD
+  TITLE
+}
+
+// ─── UPGRADES ─────────────────────────────────────────────────────────────────
+model UpgradeItem {
+  id          String          @id @default(cuid())
+  category    UpgradeCategory
+  tier        UpgradeTier
+  name        String
+  emoji       String
+  description String
+  costSol     Decimal         @db.Decimal(18, 9)
+  sortOrder   Int             @default(0)
+
+  petUpgrades PetUpgrade[]
+
+  @@map("upgrade_items")
+}
+
+model PetUpgrade {
+  id          String   @id @default(cuid())
+  petId       String
+  upgradeId   String
+  unlockedAt  DateTime @default(now())
+
+  pet     Pet         @relation(fields: [petId], references: [id])
+  upgrade UpgradeItem @relation(fields: [upgradeId], references: [id])
+
+  @@unique([petId, upgradeId])
+  @@map("pet_upgrades")
+}
+
+enum UpgradeCategory {
+  SNACK
+  CAGE
+}
+
+enum UpgradeTier {
+  BASIC
+  UPGRADE
+  ELITE
+  LEGENDARY
+}
+
+// ─── MEDIA ────────────────────────────────────────────────────────────────────
+model Media {
+  id          String    @id @default(cuid())
+  type        MediaType
+  title       String
+  description String?
+  url         String
+  thumbnail   String?
+  duration    String?
+  featured    Boolean   @default(false)
+  publishedAt DateTime  @default(now())
+
+  @@map("media")
+}
+
+enum MediaType {
+  VIDEO
+  PHOTO
+}

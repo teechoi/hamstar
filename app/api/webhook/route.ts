@@ -1,4 +1,6 @@
 // app/api/webhook/route.ts
+export const dynamic = 'force-dynamic'
+
 // Receives Helius enhanced transaction webhooks.
 // Register this URL in the Helius dashboard: https://your-domain.com/api/webhook
 import { NextRequest, NextResponse } from 'next/server'

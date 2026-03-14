@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getCurrentRaceWindow } from '@/lib/race-scheduler'
 
-export const revalidate = 30
+export const dynamic = 'force-dynamic'
 
 export async function GET() {
   try {

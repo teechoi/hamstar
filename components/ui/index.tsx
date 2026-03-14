@@ -1,6 +1,17 @@
 // components/ui/index.tsx
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+
+export function useIsMobile(breakpoint = 768) {
+  const [isMobile, setIsMobile] = useState(false)
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < breakpoint)
+    check()
+    window.addEventListener('resize', check)
+    return () => window.removeEventListener('resize', check)
+  }, [breakpoint])
+  return isMobile
+}
 
 // ─── THEME ────────────────────────────────────────────────────────────────────
 export const T = {
@@ -109,4 +120,7 @@ export const globalStyles = `
   ::-webkit-scrollbar-track { background: #F1F6FF; }
   ::-webkit-scrollbar-thumb { background: #C8D4ED; border-radius: 3px; }
   ::selection { background: #A6FF0066; }
+  @media (max-width: 767px) {
+    input[type="text"], input[type="email"] { width: 100% !important; }
+  }
 `

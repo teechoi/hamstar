@@ -1,6 +1,11 @@
 // app/layout.tsx
 import type { Metadata } from 'next'
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+}
+
 export const metadata: Metadata = {
   metadataBase: new URL('https://hamstarhub.xyz'),
   title: 'Hamstar — Who Will Be the Hamstar?',

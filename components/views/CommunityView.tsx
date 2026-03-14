@@ -1,7 +1,7 @@
 // components/views/CommunityView.tsx
 'use client'
 import { useState } from 'react'
-import { T, Tag } from '../ui'
+import { T, Tag, useIsMobile } from '../ui'
 import { SITE, MEDIA } from '@/config/site'
 import type { MediaItem } from '@/config/site'
 
@@ -9,6 +9,7 @@ type Filter = 'ALL' | 'VIDEO' | 'PHOTO'
 
 export function CommunityView() {
   const [filter, setFilter] = useState<Filter>('ALL')
+  const isMobile = useIsMobile()
 
   const filtered = filter === 'ALL' ? MEDIA : MEDIA.filter((m) => m.type === filter)
   const sorted = [...filtered].sort((a, b) => {
@@ -25,20 +26,22 @@ export function CommunityView() {
     { label: 'YouTube', icon: '▶', color: '#FF0000', url: socials.youtube },
   ].filter((s) => s.url)
 
+  const columns = isMobile ? 1 : 3
+
   return (
-    <div style={{ maxWidth: 1080, margin: '0 auto', padding: '40px 28px' }}>
-      <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 32, flexWrap: 'wrap', gap: 16 }}>
+    <div style={{ maxWidth: 1080, margin: '0 auto', padding: isMobile ? '24px 16px' : '40px 28px' }}>
+      <div style={{ display: 'flex', alignItems: isMobile ? 'flex-start' : 'flex-end', flexDirection: isMobile ? 'column' : 'row', justifyContent: 'space-between', marginBottom: 28, gap: 16 }}>
         <div>
           <Tag label="🎬 Content" color={T.blue} bg={T.blueSoft} />
-          <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 36, color: T.text, marginTop: 10, marginBottom: 6, letterSpacing: -0.5, fontWeight: 900 }}>
+          <h2 style={{ fontFamily: 'Georgia, serif', fontSize: isMobile ? 26 : 36, color: T.text, marginTop: 10, marginBottom: 6, letterSpacing: -0.5, fontWeight: 900 }}>
             Hamstar TV
           </h2>
           <p style={{ color: T.textMuted, fontSize: 14 }}>Race highlights, real hamsters, and behind-the-scenes content.</p>
         </div>
-        <div style={{ display: 'flex', gap: 0, border: `2px solid ${T.border}`, borderRadius: 10, overflow: 'hidden' }}>
+        <div style={{ display: 'flex', gap: 0, border: `2px solid ${T.border}`, borderRadius: 10, overflow: 'hidden', flexShrink: 0 }}>
           {(['ALL', 'VIDEO', 'PHOTO'] as const).map((f, i) => (
             <button key={f} onClick={() => setFilter(f)} style={{
-              padding: '8px 18px', background: filter === f ? T.text : 'transparent',
+              padding: isMobile ? '8px 14px' : '8px 18px', background: filter === f ? T.text : 'transparent',
               color: filter === f ? T.lime : T.textMid, border: 'none',
               borderLeft: i > 0 ? `1px solid ${T.border}` : 'none',
               fontSize: 12, fontWeight: 800, cursor: 'pointer',
@@ -51,14 +54,14 @@ export function CommunityView() {
       {sorted.length === 0 ? (
         <EmptyMedia filter={filter} />
       ) : (
-        <div style={{ columns: 3, columnGap: 16 }}>
+        <div style={{ columns, columnGap: 16 }}>
           {sorted.map((item) => <MediaCard key={item.id} item={item} />)}
         </div>
       )}
 
       {/* Social follow bar */}
       {socialLinks.length > 0 && (
-        <div style={{ marginTop: 32, background: T.text, borderRadius: 16, padding: '24px 28px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
+        <div style={{ marginTop: 28, background: T.text, borderRadius: 16, padding: isMobile ? '20px 20px' : '24px 28px', display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'flex-start' : 'center', justifyContent: 'space-between', gap: 16 }}>
           <div>
             <div style={{ fontSize: 16, fontWeight: 900, color: T.lime, marginBottom: 4 }}>Follow @Hamstar</div>
             <div style={{ fontSize: 13, color: '#8892BB' }}>Race drops, pet moments, arena announcements.</div>
@@ -66,7 +69,7 @@ export function CommunityView() {
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
             {socialLinks.map(({ label, icon, color, url }) => (
               <a key={label} href={url} target="_blank" rel="noopener noreferrer"
-                style={{ padding: '9px 16px', background: 'transparent', border: `2px solid ${color}`, borderRadius: 8, color, fontWeight: 800, fontSize: 12, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                style={{ padding: '9px 14px', background: 'transparent', border: `2px solid ${color}`, borderRadius: 8, color, fontWeight: 800, fontSize: 12, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
                 {icon} {label}
               </a>
             ))}

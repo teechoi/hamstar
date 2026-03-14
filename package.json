@@ -14,16 +14,20 @@
     "db:generate": "prisma generate",
     "seed": "npx tsx scripts/seed.ts",
     "finish-race": "npx tsx scripts/finish-race.ts",
-    "setup-helius": "npx tsx scripts/setup-helius.ts"
+    "setup-helius": "npx tsx scripts/setup-helius.ts",
+    "seed-settings": "npx tsx scripts/seed-settings.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.10.0",
     "@supabase/supabase-js": "^2.39.0",
+    "bcryptjs": "^3.0.3",
+    "jose": "^6.2.1",
     "next": "14.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20.11.0",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",

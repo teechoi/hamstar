@@ -23,6 +23,9 @@ model Pet {
   color         String                  // hex e.g. "#FF3B5C"
   walletAddress String  @unique         // Solana address for donations
   active        Boolean @default(true)
+  bio           String  @default("")
+  image         String  @default("")
+  wins          Int     @default(0)
 
   // Base stats (0-100)
   speedBase     Int     @default(50)
@@ -50,6 +53,8 @@ model Race {
   status   RaceStatus @default(UPCOMING)
   startsAt DateTime
   endsAt   DateTime
+  title    String?
+  recap    String?
 
   entries  RaceEntry[]
   donations Donation[]
@@ -195,4 +200,26 @@ model Media {
 enum MediaType {
   VIDEO
   PHOTO
+}
+
+// ─── SITE SETTINGS ────────────────────────────────────────────────────────────
+model SiteSettings {
+  id           String   @id @default("singleton")
+  raceNumber   Int      @default(1)
+  isLive       Boolean  @default(false)
+  streamUrl    String   @default("")
+  replayUrl    String?
+  genesisTs    BigInt   @default(0)
+  twitterUrl   String?
+  tiktokUrl    String?
+  instagramUrl String?
+  youtubeUrl   String?
+  sponsorEmail String   @default("")
+  siteName     String   @default("Hamstar")
+  tagline      String   @default("Who will be the Hamstar?")
+  ogImageUrl   String?
+  buttonLabels Json     @default("{}")
+  updatedAt    DateTime @updatedAt
+
+  @@map("site_settings")
 }

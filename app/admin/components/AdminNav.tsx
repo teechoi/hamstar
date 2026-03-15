@@ -16,14 +16,12 @@ const NAV_ITEMS = [
 export function AdminNav() {
   const pathname = usePathname()
   const router = useRouter()
-  const isMobile = useIsMobile()
+  const isMobile = useIsMobile() ?? false
 
   const handleLogout = async () => {
     await fetch('/api/admin/logout', { method: 'POST' })
     router.push('/admin/login')
   }
-
-  if (isMobile === null) return null
 
   if (isMobile) {
     return (

@@ -44,7 +44,7 @@ export default function PetsPage() {
   const fileRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
-    fetch('/api/pets').then((r) => r.json()).then((data: Pet[]) => {
+    fetch('/api/admin/pets').then((r) => r.json()).then((data: Pet[]) => {
       setPets(data)
       if (data[0]) { setSelected(data[0]); setDraft(data[0]) }
     })

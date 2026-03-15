@@ -216,15 +216,14 @@ export function HamsterRaceAnimation() {
               <span style={{ color: DIM, flexShrink: 0 }}>{'║ '}</span>
               <span style={{ color: r.color, fontWeight: 900, flexShrink: 0, display: 'inline-block', minWidth: '8ch' }}>{r.label}</span>
               <span style={{ color: DIM, flexShrink: 0 }}>{'  '}</span>
-              <span style={{ flex: 1, display: 'flex', overflow: 'hidden', minWidth: 0 }}>
+              <span style={{ flex: 1, overflow: 'hidden', whiteSpace: 'nowrap' }}>
                 {cells.map((cell, j) => (
-                  <span key={j} style={{ flexShrink: 0, color: cell.type === 'ham' ? r.color : CELL_ALPHA[cell.type] }}>
+                  <span key={j} style={{ color: cell.type === 'ham' ? r.color : CELL_ALPHA[cell.type] }}>
                     {cell.ch}
                   </span>
                 ))}
               </span>
               <span style={{ color: DIM, flexShrink: 0 }}>{'║'}</span>
-              <span style={{ position: 'absolute', right: '1ch', color: CELL_ALPHA['finish'], pointerEvents: 'none' }}>{'|'}</span>
               <span style={{
                 position: 'absolute',
                 left: 'calc(100% + 10px)',

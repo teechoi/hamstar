@@ -11,8 +11,12 @@ export const globalStyles = `
   ::-webkit-scrollbar-track { background: #F1F6FF; }
   ::-webkit-scrollbar-thumb { background: #C8D4ED; border-radius: 3px; }
   ::selection { background: #A6FF0066; }
+  .admin-page { padding: 32px 28px; }
+  .admin-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
   @media (max-width: 767px) {
     input[type="text"], input[type="email"] { width: 100% !important; }
+    .admin-page { padding: 20px 16px; }
+    .admin-2col { grid-template-columns: 1fr !important; gap: 14px !important; }
   }
 `
 export const T = {

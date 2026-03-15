@@ -102,7 +102,7 @@ export default function RacePage() {
   if (loading) return <div style={{ padding: 32, color: T.textMuted }}>Loading...</div>
 
   return (
-    <div style={{ padding: '32px 28px', maxWidth: 900 }}>
+    <div className="admin-page" style={{ maxWidth: 900 }}>
       <div style={{ fontSize: 22, fontWeight: 900, color: T.text, marginBottom: 4 }}>Race Control</div>
       <div style={{ fontSize: 13, color: T.textMuted, marginBottom: 28 }}>Manage the current race and update stream settings</div>
 

@@ -100,7 +100,7 @@ export default function PetsPage() {
   if (!draft) return <div style={{ padding: 32, color: T.textMuted }}>Loading...</div>
 
   return (
-    <div style={{ padding: '32px 28px', maxWidth: 900 }}>
+    <div className="admin-page" style={{ maxWidth: 900 }}>
       <div style={{ fontSize: 22, fontWeight: 900, color: T.text, marginBottom: 4 }}>Pet Manager</div>
       <div style={{ fontSize: 13, color: T.textMuted, marginBottom: 24 }}>Edit racer profiles, stats, and photos</div>
 
@@ -125,7 +125,7 @@ export default function PetsPage() {
         ))}
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+      <div className="admin-2col">
         {/* Left col */}
         <div>
           <div style={{ background: T.card, border: `2px solid ${T.border}`, borderRadius: 16, padding: 24, marginBottom: 16 }}>

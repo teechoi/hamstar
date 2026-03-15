@@ -48,7 +48,7 @@ export default async function DashboardPage() {
     : `⚠️ Last event ${Math.floor(systemHealthMs / 86_400_000)}d ago`
 
   return (
-    <div style={{ padding: '32px 28px', maxWidth: 1000 }}>
+    <div className="admin-page" style={{ maxWidth: 1000 }}>
       <div style={{ marginBottom: 28 }}>
         <div style={{ fontSize: 22, fontWeight: 900, color: T.text, letterSpacing: -0.5 }}>Dashboard</div>
         <div style={{ fontSize: 13, color: T.textMuted, marginTop: 4 }}>Live overview of your races and donations</div>
@@ -62,7 +62,7 @@ export default async function DashboardPage() {
         <StatCard label="Races Finished" value={allRaces.length} />
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+      <div className="admin-2col">
         {/* Current race standings */}
         <div style={{ background: T.card, border: `2px solid ${T.border}`, borderRadius: 14, padding: 24 }}>
           <div style={{ fontSize: 11, fontWeight: 800, color: T.textMuted, textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 16 }}>

@@ -79,7 +79,7 @@ export function SettingsForm({ initialSettings }: { initialSettings: Settings })
   }
 
   return (
-    <div style={{ padding: '32px 28px', maxWidth: 700 }}>
+    <div className="admin-page" style={{ maxWidth: 700 }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 28, flexWrap: 'wrap', gap: 12 }}>
         <div>
           <div style={{ fontSize: 22, fontWeight: 900, color: T.text }}>Site Settings</div>

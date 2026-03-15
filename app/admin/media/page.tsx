@@ -103,7 +103,7 @@ export default function MediaPage() {
   }
 
   return (
-    <div style={{ padding: '32px 28px', maxWidth: 1000 }}>
+    <div className="admin-page" style={{ maxWidth: 1000 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 28, flexWrap: 'wrap', gap: 12 }}>
         <div>
           <div style={{ fontSize: 22, fontWeight: 900, color: T.text }}>Media Library</div>
@@ -136,7 +136,7 @@ export default function MediaPage() {
         <div style={{ background: T.card, border: `2px solid ${T.blue}`, borderRadius: 16, padding: 24, marginBottom: 24 }}>
           <div style={{ fontSize: 14, fontWeight: 800, color: T.text, marginBottom: 16 }}>{editId ? 'Edit Media' : 'New Media Item'}</div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+          <div className="admin-2col" style={{ gap: 14 }}>
             <div>
               <label style={{ display: 'block', fontSize: 11, fontWeight: 800, color: T.textMuted, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 6 }}>Type</label>
               <div style={{ display: 'flex', gap: 8, marginBottom: 14 }}>
@@ -178,7 +178,7 @@ export default function MediaPage() {
       )}
 
       {/* Media grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 16 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 16 }}>
         {items.map((item) => (
           <div key={item.id} style={{ background: T.card, border: `2px solid ${T.border}`, borderRadius: 14, overflow: 'hidden' }}>
             <div style={{ height: 130, background: T.bg, position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

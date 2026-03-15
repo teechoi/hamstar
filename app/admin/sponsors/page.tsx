@@ -50,7 +50,7 @@ export default function SponsorsPage() {
   const inactive = sponsors.filter((s) => !s.active)
 
   return (
-    <div style={{ padding: '32px 28px', maxWidth: 800 }}>
+    <div className="admin-page" style={{ maxWidth: 800 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 28, flexWrap: 'wrap', gap: 12 }}>
         <div>
           <div style={{ fontSize: 22, fontWeight: 900, color: T.text }}>Sponsors</div>
@@ -63,7 +63,7 @@ export default function SponsorsPage() {
       {showForm && (
         <div style={{ background: T.card, border: `2px solid ${T.blue}`, borderRadius: 16, padding: 24, marginBottom: 24 }}>
           <div style={{ fontSize: 14, fontWeight: 800, color: T.text, marginBottom: 20 }}>{editId ? 'Edit Sponsor' : 'New Sponsor'}</div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+          <div className="admin-2col" style={{ gap: 14 }}>
             {[['Name', 'name'], ['Emoji', 'emoji'], ['Website URL', 'websiteUrl']].map(([label, key]) => (
               <div key={key}>
                 <label style={{ display: 'block', fontSize: 11, fontWeight: 800, color: T.textMuted, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 6 }}>{label}</label>

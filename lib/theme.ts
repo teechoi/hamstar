@@ -1,0 +1,23 @@
+// lib/theme.ts — server-safe theme constants (no 'use client')
+export const T = {
+  bg: '#F1F6FF',
+  card: '#FFFFFF',
+  cardAlt: '#F7FAFF',
+  text: '#0A0F1F',
+  textMid: '#3A4260',
+  textMuted: '#8892AA',
+  border: '#E2E8F5',
+  borderDark: '#C8D4ED',
+  lime: '#A6FF00',
+  limeDark: '#85CC00',
+  limeText: '#2A4A00',
+  blue: '#005DFF',
+  blueSoft: '#EBF0FF',
+  coral: '#FF3B5C',
+  coralSoft: '#FFF0F3',
+  violet: '#7A00FF',
+  violetSoft: '#F3EBFF',
+  yellow: '#FFD000',
+  green: '#00C566',
+  greenSoft: '#E6FFF3',
+}

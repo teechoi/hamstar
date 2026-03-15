@@ -1,6 +1,6 @@
 // app/admin/dashboard/page.tsx — server component, reads DB directly
 import { prisma } from '@/lib/prisma'
-import { T } from '@/components/ui'
+import { T } from '@/lib/theme'
 
 function StatCard({ label, value, sub, color }: { label: string; value: string | number; sub?: string; color?: string }) {
   return (

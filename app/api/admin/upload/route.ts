@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'
 // app/api/admin/upload/route.ts
 // Returns a Cloudinary pre-signed upload URL — client uploads directly (no Vercel bandwidth)
 import { NextResponse } from 'next/server'

@@ -16,7 +16,7 @@ interface TrackConfig {
 const DESKTOP: TrackConfig = {
   fontSize:     13,
   trackLen:     77,
-  boxInner:     88,
+  boxInner:     89,
   footerDashes: 62,
   sideW:        28,
   obs: [
@@ -32,7 +32,7 @@ const DESKTOP: TrackConfig = {
 const TABLET: TrackConfig = {
   fontSize:     11,
   trackLen:     52,
-  boxInner:     63,
+  boxInner:     64,
   footerDashes: 37,
   sideW:        18,
   obs: [
@@ -47,7 +47,7 @@ const TABLET: TrackConfig = {
 const MOBILE: TrackConfig = {
   fontSize:     9,
   trackLen:     32,
-  boxInner:     43,
+  boxInner:     44,
   footerDashes: 17,
   sideW:        8,
   obs: [
@@ -68,9 +68,9 @@ function getConfig(width: number): TrackConfig {
 const H_W = 5
 
 const RACERS = [
-  { label: ' #1 DASH ', speed: 0.90, color: '#FF3B3B' },
-  { label: ' #2 TURBO', speed: 0.72, color: '#00D4FF' },
-  { label: ' #3 FLASH', speed: 0.81, color: '#FF00CC' },
+  { label: '#1 DASH', speed: 0.90, color: '#FF3B3B' },
+  { label: '#2 TURBO', speed: 0.72, color: '#00D4FF' },
+  { label: '#3 FLASH', speed: 0.81, color: '#FF00CC' },
 ]
 
 // ── Cell types ────────────────────────────────────────────────────────────────
@@ -96,9 +96,9 @@ function buildCells(pos: number, tick: number, cfg: TrackConfig): Cell[] {
   else if (nearObs)  hamStr = '(^O^)'
   else               hamStr = Math.floor(tick / 5) % 2 === 0 ? '(>o<)' : '(^o^)'
 
-  const cells: Cell[] = Array.from({ length: cfg.trackLen }, () => ({
-    ch:   '.',
-    type: 'ahead' as CellType,
+  const cells: Cell[] = Array.from({ length: cfg.trackLen }, (_, i) => ({
+    ch:   i === finish ? '|' : '.',
+    type: (i === finish ? 'finish' : 'ahead') as CellType,
   }))
 
   const hPos = Math.min(pos, finish - H_W)
@@ -214,7 +214,7 @@ export function HamsterRaceAnimation() {
           return (
             <div key={r.label} style={{ ...rowStyle, position: 'relative' }}>
               <span style={{ color: DIM, flexShrink: 0 }}>{'║ '}</span>
-              <span style={{ color: r.color, fontWeight: 900, flexShrink: 0, display: 'inline-block', minWidth: '8ch' }}>{r.label}</span>
+              <span style={{ color: r.color, fontWeight: 900, flexShrink: 0, display: 'inline-block', width: '8ch' }}>{r.label}</span>
               <span style={{ color: DIM, flexShrink: 0 }}>{'  '}</span>
               <span style={{ flex: 1, overflow: 'hidden', whiteSpace: 'nowrap' }}>
                 {cells.map((cell, j) => (
@@ -248,7 +248,7 @@ export function HamsterRaceAnimation() {
         {/* Footer row */}
         <div style={rowStyle}>
           <span style={{ color: DIM, flexShrink: 0 }}>{'║  START >>>  '}</span>
-          <span style={{ color: DIM, flex: 1, overflow: 'hidden', minWidth: 0, whiteSpace: 'nowrap' }}>{footerDashLine + '---------------'}</span>
+          <span style={{ color: DIM, flex: 1, overflow: 'hidden', minWidth: 0, whiteSpace: 'nowrap' }}>{footerDashLine}</span>
           <span style={{ color: DIM, flexShrink: 0 }}>{'  >>> FINISH ║'}</span>
         </div>
 

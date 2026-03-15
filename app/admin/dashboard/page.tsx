@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'
 // app/admin/dashboard/page.tsx — server component, reads DB directly
 import { prisma } from '@/lib/prisma'
 import { T } from '@/lib/theme'

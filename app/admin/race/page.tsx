@@ -49,10 +49,9 @@ export default function RacePage() {
   const [titleText, setTitleText] = useState('')
 
   const load = useCallback(async () => {
-    const [raceRes, settingsRes, allRes] = await Promise.all([
+    const [raceRes, settingsRes] = await Promise.all([
       fetch('/api/admin/race/current'),
       fetch('/api/admin/settings'),
-      fetch('/api/races').catch(() => null),
     ])
     if (raceRes.ok) setRace(await raceRes.json())
     if (settingsRes.ok) setSettings(await settingsRes.json())

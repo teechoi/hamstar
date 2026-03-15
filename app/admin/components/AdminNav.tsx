@@ -23,6 +23,8 @@ export function AdminNav() {
     router.push('/admin/login')
   }
 
+  if (isMobile === null) return null
+
   if (isMobile) {
     return (
       <nav style={{

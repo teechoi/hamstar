@@ -96,9 +96,9 @@ function buildCells(pos: number, tick: number, cfg: TrackConfig): Cell[] {
   else if (nearObs)  hamStr = '(^O^)'
   else               hamStr = Math.floor(tick / 5) % 2 === 0 ? '(>o<)' : '(^o^)'
 
-  const cells: Cell[] = Array.from({ length: cfg.trackLen }, (_, i) => ({
-    ch:   i === finish ? '|' : '.',
-    type: (i === finish ? 'finish' : 'ahead') as CellType,
+  const cells: Cell[] = Array.from({ length: cfg.trackLen }, () => ({
+    ch:   '.',
+    type: 'ahead' as CellType,
   }))
 
   const hPos = Math.min(pos, finish - H_W)
@@ -216,15 +216,13 @@ export function HamsterRaceAnimation() {
               <span style={{ color: DIM, flexShrink: 0 }}>{'║ '}</span>
               <span style={{ color: r.color, fontWeight: 900, flexShrink: 0, display: 'inline-block', minWidth: '8ch' }}>{r.label}</span>
               <span style={{ color: DIM, flexShrink: 0 }}>{'  '}</span>
-              <span style={{ flex: 1, display: 'flex', overflow: 'hidden', minWidth: 0 }}>
+              <span style={{ flex: 1, display: 'flex', overflow: 'hidden', minWidth: 0, position: 'relative' }}>
                 {cells.map((cell, j) => (
                   <span key={j} style={{ flexShrink: 0, color: cell.type === 'ham' ? r.color : CELL_ALPHA[cell.type] }}>
                     {cell.ch}
                   </span>
                 ))}
-                {Array.from({ length: 15 }, (_, j) => (
-                  <span key={`f${j}`} style={{ flexShrink: 0, color: CELL_ALPHA['ahead'] }}>{'.'}</span>
-                ))}
+                <span style={{ position: 'absolute', right: 0, color: CELL_ALPHA['finish'] }}>{'|'}</span>
               </span>
               <span style={{ color: DIM, flexShrink: 0 }}>{'║'}</span>
               <span style={{

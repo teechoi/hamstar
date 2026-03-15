@@ -216,7 +216,7 @@ export function HamsterRaceAnimation() {
               <span style={{ color: DIM, flexShrink: 0 }}>{'║ '}</span>
               <span style={{ color: r.color, fontWeight: 900, flexShrink: 0, display: 'inline-block', width: '8ch' }}>{r.label}</span>
               <span style={{ color: DIM, flexShrink: 0 }}>{'  '}</span>
-              <span style={{ flex: 1, overflow: 'hidden', whiteSpace: 'nowrap' }}>
+              <span style={{ flex: 1, overflow: 'hidden', whiteSpace: 'nowrap', maxWidth: `${cfg.trackLen}ch` }}>
                 {cells.map((cell, j) => (
                   <span key={j} style={{ color: cell.type === 'ham' ? r.color : CELL_ALPHA[cell.type] }}>
                     {cell.ch}
@@ -249,7 +249,7 @@ export function HamsterRaceAnimation() {
         {/* Footer row */}
         <div style={rowStyle}>
           <span style={{ color: DIM, flexShrink: 0 }}>{'║  START >>>  '}</span>
-          <span style={{ color: DIM, flex: 1, overflow: 'hidden', minWidth: 0, whiteSpace: 'nowrap' }}>{footerDashLine}</span>
+          <span style={{ color: DIM, flex: 1, overflow: 'hidden', minWidth: 0, whiteSpace: 'nowrap', maxWidth: `${cfg.footerDashes}ch` }}>{footerDashLine}</span>
           <span style={{ color: DIM, flexShrink: 0 }}>{'  >>> FINISH ║'}</span>
         </div>
 

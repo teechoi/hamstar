@@ -1,4 +1,3 @@
-export const dynamic = 'force-dynamic'
 'use client'
 import { useState, useEffect, useCallback } from 'react'
 import { T, LimeButton, OutlineButton, RaceBar } from '@/components/ui'

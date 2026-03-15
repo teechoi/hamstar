@@ -7,7 +7,7 @@ import type { Pet, RaceResult } from '@/config/site'
 export function RaceView() {
   const { stream } = SITE
   const isLive = stream.isLive
-  const isMobile = useIsMobile()
+  const isMobile = useIsMobile() ?? false
 
   return (
     <div>

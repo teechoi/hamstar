@@ -1,4 +1,5 @@
 'use client'
+import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useIsMobile } from '@/components/ui'
 import { T } from '@/components/ui'
@@ -32,9 +33,9 @@ export function AdminNav() {
         {NAV_ITEMS.map((item) => {
           const active = pathname === item.href
           return (
-            <button key={item.href} onClick={() => router.push(item.href)} style={{
+            <Link key={item.href} href={item.href} style={{
               flex: 1, minWidth: 56, padding: '10px 4px',
-              background: 'transparent', border: 'none', cursor: 'pointer',
+              background: 'transparent', textDecoration: 'none', cursor: 'pointer',
               display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3,
               borderTop: active ? `2px solid ${T.lime}` : '2px solid transparent',
             }}>
@@ -42,7 +43,7 @@ export function AdminNav() {
               <span style={{ fontSize: 9, fontWeight: 800, color: active ? T.lime : T.textMuted, letterSpacing: 0.5, textTransform: 'uppercase' }}>
                 {item.label.split(' ')[0]}
               </span>
-            </button>
+            </Link>
           )
         })}
       </nav>
@@ -69,20 +70,20 @@ export function AdminNav() {
         {NAV_ITEMS.map((item) => {
           const active = pathname === item.href
           return (
-            <button key={item.href} onClick={() => router.push(item.href)} style={{
+            <Link key={item.href} href={item.href} style={{
               width: '100%', display: 'flex', alignItems: 'center', gap: 10,
               padding: '10px 12px', marginBottom: 2,
               background: active ? T.lime + '18' : 'transparent',
               border: 'none',
               borderLeft: active ? `3px solid ${T.lime}` : '3px solid transparent',
               borderRadius: 8, cursor: 'pointer', textAlign: 'left',
-              transition: 'all 0.1s',
+              textDecoration: 'none', transition: 'all 0.1s',
             }}>
               <span style={{ fontSize: 16 }}>{item.icon}</span>
               <span style={{ fontSize: 13, fontWeight: 700, color: active ? T.lime : T.textMuted }}>
                 {item.label}
               </span>
-            </button>
+            </Link>
           )
         })}
       </nav>

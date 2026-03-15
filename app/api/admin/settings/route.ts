@@ -23,11 +23,10 @@ const DEFAULTS = {
 }
 
 export async function GET() {
-  const settings = await prisma.siteSettings.upsert({
-    where: { id: 'singleton' },
-    update: {},
-    create: DEFAULTS,
-  })
+  let settings = await prisma.siteSettings.findFirst({ where: { id: 'singleton' } })
+  if (!settings) {
+    settings = await prisma.siteSettings.create({ data: DEFAULTS })
+  }
   return NextResponse.json({ ...settings, genesisTs: Number(settings.genesisTs) })
 }
 

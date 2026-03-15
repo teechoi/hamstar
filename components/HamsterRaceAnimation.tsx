@@ -17,7 +17,7 @@ const DESKTOP: TrackConfig = {
   fontSize:     13,
   trackLen:     77,
   boxInner:     89,
-  footerDashes: 62,
+  footerDashes: 63,
   sideW:        28,
   obs: [
     { col: 8,  s: '/\\' },
@@ -33,7 +33,7 @@ const TABLET: TrackConfig = {
   fontSize:     11,
   trackLen:     52,
   boxInner:     64,
-  footerDashes: 37,
+  footerDashes: 38,
   sideW:        18,
   obs: [
     { col: 6,  s: '/\\' },
@@ -48,7 +48,7 @@ const MOBILE: TrackConfig = {
   fontSize:     9,
   trackLen:     32,
   boxInner:     44,
-  footerDashes: 17,
+  footerDashes: 18,
   sideW:        8,
   obs: [
     { col: 5,  s: '/\\' },
@@ -96,9 +96,9 @@ function buildCells(pos: number, tick: number, cfg: TrackConfig): Cell[] {
   else if (nearObs)  hamStr = '(^O^)'
   else               hamStr = Math.floor(tick / 5) % 2 === 0 ? '(>o<)' : '(^o^)'
 
-  const cells: Cell[] = Array.from({ length: cfg.trackLen }, (_, i) => ({
-    ch:   i === finish ? '|' : '.',
-    type: (i === finish ? 'finish' : 'ahead') as CellType,
+  const cells: Cell[] = Array.from({ length: cfg.trackLen }, () => ({
+    ch:   '.',
+    type: 'ahead' as CellType,
   }))
 
   const hPos = Math.min(pos, finish - H_W)
@@ -223,6 +223,7 @@ export function HamsterRaceAnimation() {
                   </span>
                 ))}
               </span>
+              <span style={{ color: CELL_ALPHA['finish'], flexShrink: 0 }}>{'|'}</span>
               <span style={{ color: DIM, flexShrink: 0 }}>{'║'}</span>
               <span style={{
                 position: 'absolute',

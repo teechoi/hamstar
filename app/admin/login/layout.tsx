@@ -1,5 +1,5 @@
 // Bare layout for login — no sidebar
-import { globalStyles, T } from '@/components/ui'
+import { globalStyles, T } from '@/lib/theme'
 
 export default function LoginLayout({ children }: { children: React.ReactNode }) {
   return (

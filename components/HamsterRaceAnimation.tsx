@@ -221,8 +221,7 @@ export function HamsterRaceAnimation() {
                   {cell.ch}
                 </span>
               ))}
-              <span style={{ flex: 1 }} />
-              <span style={{ color: DIM, flexShrink: 0 }}>{'║'}</span>
+              <span style={{ color: DIM, marginLeft: 'auto' }}>{'║'}</span>
               <span style={{
                 position: 'absolute',
                 left: 'calc(100% + 10px)',

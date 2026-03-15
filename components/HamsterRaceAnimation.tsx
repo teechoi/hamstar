@@ -222,6 +222,9 @@ export function HamsterRaceAnimation() {
                     {cell.ch}
                   </span>
                 ))}
+                {Array.from({ length: 15 }, (_, j) => (
+                  <span key={`f${j}`} style={{ flexShrink: 0, color: CELL_ALPHA['ahead'] }}>{'.'}</span>
+                ))}
               </span>
               <span style={{ color: DIM, flexShrink: 0 }}>{'║'}</span>
               <span style={{
@@ -248,7 +251,7 @@ export function HamsterRaceAnimation() {
         {/* Footer row */}
         <div style={rowStyle}>
           <span style={{ color: DIM, flexShrink: 0 }}>{'║  START >>>  '}</span>
-          <span style={{ color: DIM, flex: 1, overflow: 'hidden', minWidth: 0, whiteSpace: 'nowrap' }}>{footerDashLine}</span>
+          <span style={{ color: DIM, flex: 1, overflow: 'hidden', minWidth: 0, whiteSpace: 'nowrap' }}>{footerDashLine + '---------------'}</span>
           <span style={{ color: DIM, flexShrink: 0 }}>{'  >>> FINISH ║'}</span>
         </div>
 

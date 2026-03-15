@@ -55,7 +55,8 @@ export function AdminNav() {
       width: 220, flexShrink: 0, background: T.text,
       borderRight: `2px solid #FFFFFF12`,
       display: 'flex', flexDirection: 'column',
-      minHeight: '100vh', position: 'sticky', top: 0,
+      height: '100vh', overflowY: 'auto',
+      position: 'sticky', top: 0, alignSelf: 'flex-start',
     }}>
       {/* Logo */}
       <div style={{ padding: '24px 20px 16px', borderBottom: `1px solid #FFFFFF12` }}>

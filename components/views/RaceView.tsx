@@ -3,6 +3,7 @@
 import { T, RaceBar, Tag, LivePulse, LimeButton, OutlineButton, CheckerBar, useIsMobile } from '../ui'
 import { SITE, PETS, RACE_HISTORY } from '@/config/site'
 import type { Pet, RaceResult } from '@/config/site'
+import { HamsterRaceAnimation } from '@/components/HamsterRaceAnimation'
 
 export function RaceView() {
   const { stream } = SITE
@@ -119,6 +120,14 @@ export function RaceView() {
             )}
           </div>
           <div style={{ background: T.lime, height: 5 }} />
+        </div>
+
+        {/* ── ASCII OBSTACLE COURSE ── */}
+        <div style={{ marginBottom: 24, background: T.text, border: `2px solid ${T.lime}33`, borderRadius: 16, padding: isMobile ? '16px 12px' : '24px 28px', overflowX: 'auto' }}>
+          <div style={{ fontSize: 10, fontWeight: 800, color: T.lime, opacity: 0.5, textTransform: 'uppercase', letterSpacing: 2, marginBottom: 12 }}>
+            Live Simulation
+          </div>
+          <HamsterRaceAnimation />
         </div>
 
         {/* ── PET RACE CARDS ── */}

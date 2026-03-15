@@ -60,14 +60,14 @@ export interface Pet {
 
 export const PETS: Pet[] = [
   {
-    id: 'hammy',
-    name: 'Hammy',
+    id: 'dash',
+    name: 'Dash',
     number: 1,
     emoji: '🐹',
-    team: 'Team Hammy',
-    tagline: "Hammy doesn't lose. Until he does.",
-    bio: "The people's champion. Hammy runs on pure heart, crowd energy, and sunflower seeds. Three podiums deep and still hungry. The wheel belongs to him — at least, that's what he thinks.",
-    color: '#FF6B35',
+    team: 'Team Dash',
+    tagline: "Dash doesn't lose. Until he does.",
+    bio: "The people's champion. Dash runs on pure heart, crowd energy, and sunflower seeds. Three podiums deep and still hungry. The wheel belongs to him — at least, that's what he thinks.",
+    color: '#FF3B3B',
     speed: 78,
     chaos: 45,
     wins: 3,
@@ -77,14 +77,14 @@ export const PETS: Pet[] = [
     sponsors: [],
   },
   {
-    id: 'whiskers',
-    name: 'Whiskers',
+    id: 'turbo',
+    name: 'Turbo',
     number: 2,
     emoji: '🐭',
-    team: 'Team Whiskers',
-    tagline: 'Whiskers is studying your favorite.',
-    bio: "Don't let the calm fool you. Whiskers clocks every corner, memorizes every split, and executes with surgical precision. Quiet. Cold. Dangerous. The dark horse who always shows up when it counts.",
-    color: '#005DFF',
+    team: 'Team Turbo',
+    tagline: 'Turbo is studying your favorite.',
+    bio: "Don't let the calm fool you. Turbo clocks every corner, memorizes every split, and executes with surgical precision. Quiet. Cold. Dangerous. The dark horse who always shows up when it counts.",
+    color: '#00D4FF',
     speed: 71,
     chaos: 62,
     wins: 1,
@@ -94,14 +94,14 @@ export const PETS: Pet[] = [
     sponsors: [],
   },
   {
-    id: 'nugget',
-    name: 'Nugget',
+    id: 'flash',
+    name: 'Flash',
     number: 3,
     emoji: '🐿️',
-    team: 'Team Nugget',
-    tagline: 'Nugget is unpredictable. That is the point.',
-    bio: "Nobody knows what Nugget will do next — not even Nugget. Last place one lap, podium the next. Built different. Wired wrong. The most entertaining racer on the wheel and the most dangerous bet you'll ever make.",
-    color: '#FFD000',
+    team: 'Team Flash',
+    tagline: 'Flash is unpredictable. That is the point.',
+    bio: "Nobody knows what Flash will do next — not even Flash. Last place one lap, podium the next. Built different. Wired wrong. The most entertaining racer on the wheel and the most dangerous bet you'll ever make.",
+    color: '#FF00CC',
     speed: 83,
     chaos: 91,
     wins: 2,
@@ -118,12 +118,12 @@ export const PETS: Pet[] = [
 export interface RaceResult {
   number: number
   date: string       // e.g. '2025-03-01'
-  positions: string[] // e.g. ['hammy', 'nugget', 'whiskers']
+  positions: string[] // e.g. ['dash', 'flash', 'turbo']
 }
 
 export const RACE_HISTORY: RaceResult[] = [
   // Uncomment and edit after each race:
-  // { number: 1, date: '2025-03-01', positions: ['hammy', 'nugget', 'whiskers'] },
+  // { number: 1, date: '2025-03-01', positions: ['dash', 'flash', 'turbo'] },
 ]
 
 // ─── MEDIA ────────────────────────────────────────────────────────────────────
@@ -189,7 +189,7 @@ export interface Sponsor {
   name: string
   emoji: string
   tier: 'TITLE' | 'GOLD' | 'SILVER'
-  petId?: string  // Which pet they sponsor ('hammy' | 'whiskers' | 'nugget')
+  petId?: string  // Which pet they sponsor ('dash' | 'turbo' | 'flash')
   url?: string    // Sponsor's website — makes their card clickable
 }
 

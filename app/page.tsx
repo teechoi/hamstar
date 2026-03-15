@@ -7,7 +7,7 @@ import { PetsView } from '@/components/views/PetsView'
 import { CommunityView } from '@/components/views/CommunityView'
 import { ArenasView } from '@/components/views/ArenasView'
 import { SponsorsView } from '@/components/views/SponsorsView'
-import { T, CheckerBar, globalStyles } from '@/components/ui'
+import { T, CheckerBar, globalStyles, useIsMobile } from '@/components/ui'
 import { SITE } from '@/config/site'
 
 type Tab = 'Race' | 'Pets' | 'Community' | 'Arenas' | 'Sponsors'
@@ -15,6 +15,7 @@ type Tab = 'Race' | 'Pets' | 'Community' | 'Arenas' | 'Sponsors'
 export default function Home() {
   const [tab, setTab] = useState<Tab>('Race')
   const isLive = SITE.stream.isLive
+  const isMobile = useIsMobile() ?? false
 
   const views: Record<Tab, React.ReactNode> = {
     Race: <RaceView />,
@@ -37,7 +38,7 @@ export default function Home() {
       <style dangerouslySetInnerHTML={{ __html: globalStyles }} />
       <div style={{ minHeight: '100vh', background: T.bg }}>
         <Nav tab={tab} setTab={setTab} isLive={isLive} />
-        <main>{views[tab]}</main>
+        <main style={{ paddingTop: isMobile ? 92 : 69 }}>{views[tab]}</main>
         <footer style={{ background: T.text, borderTop: `4px solid ${T.lime}` }}>
           <CheckerBar />
           <div style={{ padding: '20px 28px', maxWidth: 1280, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>

@@ -1,6 +1,7 @@
 // components/ui/index.tsx
 'use client'
 import { useState, useEffect } from 'react'
+import { T } from '@/lib/theme'
 export { T } from '@/lib/theme'
 
 export function useIsMobile(breakpoint = 768) {

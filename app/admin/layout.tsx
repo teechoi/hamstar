@@ -1,5 +1,5 @@
 // app/admin/layout.tsx
-import { globalStyles, T } from '@/components/ui'
+import { globalStyles, T } from '@/lib/theme'
 import { AdminNav } from './components/AdminNav'
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

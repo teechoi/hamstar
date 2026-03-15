@@ -2,7 +2,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { T } from '@/lib/theme'
-export { T } from '@/lib/theme'
+export { T, globalStyles } from '@/lib/theme'
 
 export function useIsMobile(breakpoint = 768) {
   const [isMobile, setIsMobile] = useState(false)
@@ -86,19 +86,3 @@ export function SolAddress({ address }: { address: string }) {
   )
 }
 
-export const globalStyles = `
-  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.8)} }
-  @keyframes petIdle { 0%,100%{transform:translateY(0) rotate(-2deg)} 50%{transform:translateY(-6px) rotate(2deg)} }
-  @keyframes raceBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Inter', 'Helvetica Neue', sans-serif; background: #F1F6FF; color: #0A0F1F; }
-  button { font-family: inherit; }
-  input { font-family: inherit; }
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: #F1F6FF; }
-  ::-webkit-scrollbar-thumb { background: #C8D4ED; border-radius: 3px; }
-  ::selection { background: #A6FF0066; }
-  @media (max-width: 767px) {
-    input[type="text"], input[type="email"] { width: 100% !important; }
-  }
-`

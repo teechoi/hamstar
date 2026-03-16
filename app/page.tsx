@@ -36,9 +36,9 @@ export default function Home() {
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: globalStyles }} />
-      <div style={{ minHeight: '100vh', background: T.bg }}>
-        <Nav tab={tab} setTab={setTab} isLive={isLive} />
-        <main style={{ paddingTop: isMobile ? 88 : 70 }}>{views[tab]}</main>
+      <Nav tab={tab} setTab={setTab} isLive={isLive} />
+      <div style={{ minHeight: '100vh', background: T.bg, paddingTop: isMobile ? 88 : 70 }}>
+        <main>{views[tab]}</main>
         <footer style={{ background: T.text, borderTop: `4px solid ${T.lime}` }}>
           <CheckerBar />
           <div style={{ padding: '20px 28px', maxWidth: 1280, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>

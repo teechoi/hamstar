@@ -5,6 +5,7 @@ export const globalStyles = `
   @keyframes raceBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Inter', 'Helvetica Neue', sans-serif; background: #F1F6FF; color: #0A0F1F; }
+  .site-nav { position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; z-index: 9999 !important; }
   button { font-family: inherit; }
   input { font-family: inherit; }
   ::-webkit-scrollbar { width: 6px; }

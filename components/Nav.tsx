@@ -16,7 +16,7 @@ export function Nav({ tab, setTab, isLive }: NavProps) {
   const isMobile = useIsMobile()
 
   return (
-    <nav style={{ position: 'sticky', top: 0, zIndex: 100, background: T.card, borderBottom: `2px solid ${T.text}` }}>
+    <nav style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, background: T.card, borderBottom: `2px solid ${T.text}` }}>
       <CheckerBar />
       {isMobile ? (
         /* Mobile: two-row nav */

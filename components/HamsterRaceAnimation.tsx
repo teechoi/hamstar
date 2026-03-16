@@ -78,12 +78,12 @@ type CellType = 'behind' | 'dust' | 'ham' | 'obs' | 'ahead' | 'finish'
 type Cell = { ch: string; type: CellType }
 
 const CELL_ALPHA: Record<CellType, string> = {
-  behind: '#FFFFFF12',
-  dust:   '#FFFFFF30',
+  behind: '#FFFFFF30',
+  dust:   '#FFFFFF55',
   ham:    'inherit',
-  obs:    '#FFFFFF70',
-  ahead:  '#FFFFFF28',
-  finish: '#FFFFFF90',
+  obs:    '#FFFFFF90',
+  ahead:  '#FFFFFF50',
+  finish: '#FFFFFFBB',
 }
 
 function buildCells(pos: number, tick: number, cfg: TrackConfig): Cell[] {
@@ -132,7 +132,7 @@ function getRanks(positions: number[]): number[] {
   return ranks
 }
 
-const DIM = '#FFFFFF25'
+const DIM = '#FFFFFF60'
 
 // ── Component ─────────────────────────────────────────────────────────────────
 export function HamsterRaceAnimation() {

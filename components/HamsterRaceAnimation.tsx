@@ -190,6 +190,7 @@ export function HamsterRaceAnimation() {
         lineHeight:     1.75,
         userSelect:     'none',
         letterSpacing:  0,
+        width:          `${cfg.boxInner + 2}ch`,
       }}>
 
         {/* Top border */}
@@ -207,24 +208,23 @@ export function HamsterRaceAnimation() {
         {/* Separator */}
         <div style={{ color: DIM }}>{SEP}</div>
 
-        {/* Racer rows */}
+        {/* Racer rows — non-flex, whiteSpace:pre so char count sets width exactly */}
         {RACERS.map((r, i) => {
           const cells = buildCells(positions[i], tick, cfg)
           const rank  = ranks[i]
+          const labelPad = r.label.padEnd(8, ' ').slice(0, 8)
           return (
-            <div key={r.label} style={{ ...rowStyle, position: 'relative' }}>
-              <span style={{ color: DIM, flexShrink: 0 }}>{'║ '}</span>
-              <span style={{ color: r.color, fontWeight: 900, flexShrink: 0, display: 'inline-block', width: '8ch' }}>{r.label}</span>
-              <span style={{ color: DIM, flexShrink: 0 }}>{'  '}</span>
-              <span style={{ flex: 1, overflow: 'hidden', whiteSpace: 'nowrap', maxWidth: `${cfg.trackLen}ch` }}>
-                {cells.map((cell, j) => (
-                  <span key={j} style={{ color: cell.type === 'ham' ? r.color : CELL_ALPHA[cell.type] }}>
-                    {cell.ch}
-                  </span>
-                ))}
-              </span>
-              <span style={{ color: CELL_ALPHA['finish'], flexShrink: 0 }}>{'|'}</span>
-              <span style={{ color: DIM, flexShrink: 0 }}>{'║'}</span>
+            <div key={r.label} style={{ whiteSpace: 'pre', position: 'relative' }}>
+              <span style={{ color: DIM }}>{'║ '}</span>
+              <span style={{ color: r.color, fontWeight: 900 }}>{labelPad}</span>
+              <span style={{ color: DIM }}>{'  '}</span>
+              {cells.map((cell, j) => (
+                <span key={j} style={{ color: cell.type === 'ham' ? r.color : CELL_ALPHA[cell.type] }}>
+                  {cell.ch}
+                </span>
+              ))}
+              <span style={{ color: CELL_ALPHA['finish'] }}>{'|'}</span>
+              <span style={{ color: DIM }}>{'║'}</span>
               <span style={{
                 position: 'absolute',
                 left: 'calc(100% + 10px)',
@@ -246,11 +246,9 @@ export function HamsterRaceAnimation() {
         {/* Separator */}
         <div style={{ color: DIM }}>{SEP}</div>
 
-        {/* Footer row */}
-        <div style={rowStyle}>
-          <span style={{ color: DIM, flexShrink: 0 }}>{'║  START >>>  '}</span>
-          <span style={{ color: DIM, flex: 1, overflow: 'hidden', minWidth: 0, whiteSpace: 'nowrap', maxWidth: `${cfg.footerDashes}ch` }}>{footerDashLine}</span>
-          <span style={{ color: DIM, flexShrink: 0 }}>{'  >>> FINISH ║'}</span>
+        {/* Footer row — non-flex, single pre-formatted string */}
+        <div style={{ whiteSpace: 'pre', color: DIM }}>
+          {'║  START >>>  '}{footerDashLine}{'  >>> FINISH ║'}
         </div>
 
         {/* Bottom border */}

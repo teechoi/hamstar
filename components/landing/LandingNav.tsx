@@ -41,8 +41,8 @@ export function LandingNav() {
       }}>
         {[
           { label: 'HOME',     id: 'hero'   },
-          { label: 'ARENA',    id: 'arena'  },
           { label: 'PET',      id: 'racers' },
+          { label: 'ARENA',    id: 'arena'  },
           { label: 'SPONSORS', id: 'footer' },
         ].map(({ label, id }) => (
           <button key={label} onClick={() => scrollTo(id)} style={{

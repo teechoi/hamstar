@@ -1,10 +1,12 @@
+'use client'
+import { DecoImage } from '@/components/editor/DecoImage'
+
 export function AboutSection() {
   return (
     <section id="about" style={{
       background: '#F0F0F0',
       padding: '80px 24px 80px',
       position: 'relative',
-      overflow: 'hidden',
       minHeight: 300,
     }}>
       <div style={{ maxWidth: 900, margin: '0 auto', position: 'relative' }}>
@@ -34,20 +36,8 @@ export function AboutSection() {
         </div>
       </div>
 
-      {/* Left — hamster on wheel, partially off-screen */}
-      <img src="/images/hamster-wheel.png" alt="" style={{
-        position: 'absolute', left: -30, top: '50%',
-        transform: 'translateY(-50%)',
-        width: 'clamp(140px, 18vw, 260px)',
-        pointerEvents: 'none',
-      }} />
-
-      {/* Right — sunflower, anchored bottom-right */}
-      <img src="/images/sunflower.png" alt="" style={{
-        position: 'absolute', right: 0, bottom: 0,
-        width: 'clamp(100px, 13vw, 190px)',
-        pointerEvents: 'none',
-      }} />
+      <DecoImage id="about-wheel" className="section-deco" />
+      <DecoImage id="about-sunflower" className="section-deco" />
     </section>
   )
 }

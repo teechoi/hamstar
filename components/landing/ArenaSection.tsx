@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { useCountdown } from '@/lib/hooks/useCountdown'
+import { DecoImage } from '@/components/editor/DecoImage'
 import { SITE } from '@/config/site'
 
 const GOLD = '#F5D050'
@@ -65,30 +66,12 @@ export function ArenaSection({ targetMs, isLive }: { targetMs: number; isLive: b
   return (
     <section id="arena" style={{
       background: '#F0F0F0',
-      padding: '80px 24px 0',
+      padding: '200px 24px 0',
       position: 'relative',
-      overflow: 'hidden',
     }}>
-      {/* Top-right — oats pile */}
-      <img src="/images/oats-pile.png" alt="" style={{
-        position: 'absolute', right: -10, top: 10,
-        width: 'clamp(130px, 18vw, 260px)',
-        pointerEvents: 'none',
-      }} />
-
-      {/* Lower-left — trophy hamster */}
-      <img src="/images/hamster-trophy.png" alt="" style={{
-        position: 'absolute', left: 0, bottom: 90,
-        width: 'clamp(130px, 15vw, 220px)',
-        pointerEvents: 'none',
-      }} />
-
-      {/* Lower-right — wood bridge, partially off-screen */}
-      <img src="/images/wood-bridge.png" alt="" style={{
-        position: 'absolute', right: -20, bottom: 80,
-        width: 'clamp(160px, 21vw, 310px)',
-        pointerEvents: 'none',
-      }} />
+      <DecoImage id="arena-oats" className="section-deco" />
+      <DecoImage id="arena-trophy" className="section-deco" />
+      <DecoImage id="arena-bridge" className="section-deco" />
 
       <div style={{ maxWidth: 900, margin: '0 auto', position: 'relative' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, marginBottom: 20 }}>
@@ -116,7 +99,7 @@ export function ArenaSection({ targetMs, isLive }: { targetMs: number; isLive: b
       }}>
         {Array.from({ length: 14 }).map((_, i) => (
           <img key={i} src="/images/sunflower-seed.png" alt=""
-            style={{ width: 28, height: 'auto', opacity: 0.55, flexShrink: 0 }} />
+            style={{ width: 52, height: 'auto', opacity: 0.6, flexShrink: 0 }} />
         ))}
       </div>
     </section>

@@ -5,6 +5,8 @@ import { AboutSection }   from '@/components/landing/AboutSection'
 import { RacersSection }  from '@/components/landing/RacersSection'
 import { ArenaSection }   from '@/components/landing/ArenaSection'
 import { LandingFooter }  from '@/components/landing/LandingFooter'
+import { EditBar }        from '@/components/editor/EditBar'
+import { CustomDecoLayer } from '@/components/editor/CustomDecoLayer'
 
 export default function LandingPage() {
   const race = getCurrentRaceWindow()
@@ -18,15 +20,20 @@ export default function LandingPage() {
         html { scroll-behavior: smooth; }
         body { font-family: 'Inter', 'Helvetica Neue', sans-serif; }
         @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.8)} }
+        @media (max-width: 640px) { .section-deco { display: none !important; } }
       `}</style>
-      <LandingNav />
-      <main>
-        <HeroSection />
-        <AboutSection />
-        <RacersSection />
-        <ArenaSection targetMs={targetMs} isLive={isLive} />
-      </main>
-      <LandingFooter />
+      <div style={{ position: 'relative' }}>
+        <LandingNav />
+        <main>
+          <HeroSection />
+          <AboutSection />
+          <RacersSection />
+          <ArenaSection targetMs={targetMs} isLive={isLive} />
+        </main>
+        <LandingFooter />
+        <CustomDecoLayer />
+      </div>
+      <EditBar />
     </>
   )
 }

@@ -19,12 +19,12 @@ export function LandingFooter() {
   const { socials } = SITE
 
   return (
-    <footer id="footer" style={{ background: GOLD }}>
+    <footer id="footer" style={{ background: GOLD, position: 'relative', zIndex: 1 }}>
 
       {/* Main footer body */}
       <div style={{
         maxWidth: 1100, margin: '0 auto',
-        padding: '48px 32px 32px',
+        padding: '160px 32px 32px',
         display: 'flex',
         justifyContent: 'space-between',
         flexWrap: 'wrap',

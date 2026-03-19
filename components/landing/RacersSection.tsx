@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react'
+import { DecoImage } from '@/components/editor/DecoImage'
 
 interface Racer {
   name: string
@@ -43,30 +44,12 @@ export function RacersSection() {
   return (
     <section id="racers" style={{
       background: '#F0F0F0',
-      padding: '80px 24px 200px',
+      padding: '80px 24px 160px',
       position: 'relative',
-      overflow: 'hidden',
     }}>
-      {/* Upper-left — sunflower, partially off-screen */}
-      <img src="/images/sunflower.png" alt="" style={{
-        position: 'absolute', left: -10, top: 30,
-        width: 'clamp(80px, 10vw, 150px)',
-        pointerEvents: 'none',
-      }} />
-
-      {/* Lower-left — oats pile */}
-      <img src="/images/oats-pile.png" alt="" style={{
-        position: 'absolute', left: -20, bottom: -10,
-        width: 'clamp(180px, 19vw, 280px)',
-        pointerEvents: 'none',
-      }} />
-
-      {/* Lower-right — Turbo pushup */}
-      <img src="/images/hamster-turbo-pushup.png" alt="" style={{
-        position: 'absolute', right: -10, bottom: 0,
-        width: 'clamp(130px, 15vw, 220px)',
-        pointerEvents: 'none',
-      }} />
+      <DecoImage id="racers-sunflower" className="section-deco" />
+      <DecoImage id="racers-oats" className="section-deco" />
+      <DecoImage id="racers-turbo" className="section-deco" />
 
       <div style={{ maxWidth: 900, margin: '0 auto', position: 'relative' }}>
 

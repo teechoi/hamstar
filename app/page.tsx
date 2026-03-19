@@ -1,62 +1,32 @@
-// app/page.tsx
-'use client'
-import { useState } from 'react'
-import { Nav } from '@/components/Nav'
-import { RaceView } from '@/components/views/RaceView'
-import { PetsView } from '@/components/views/PetsView'
-import { CommunityView } from '@/components/views/CommunityView'
-import { ArenasView } from '@/components/views/ArenasView'
-import { SponsorsView } from '@/components/views/SponsorsView'
-import { T, CheckerBar, globalStyles, useIsMobile } from '@/components/ui'
-import { SITE } from '@/config/site'
+import { getCurrentRaceWindow } from '@/lib/race-scheduler'
+import { LandingNav }     from '@/components/landing/LandingNav'
+import { HeroSection }    from '@/components/landing/HeroSection'
+import { AboutSection }   from '@/components/landing/AboutSection'
+import { RacersSection }  from '@/components/landing/RacersSection'
+import { ArenaSection }   from '@/components/landing/ArenaSection'
+import { LandingFooter }  from '@/components/landing/LandingFooter'
 
-type Tab = 'Race' | 'Pets' | 'Community' | 'Arenas' | 'Sponsors'
-
-export default function Home() {
-  const [tab, setTab] = useState<Tab>('Race')
-  const isLive = SITE.stream.isLive
-  const isMobile = useIsMobile() ?? false
-
-  const views: Record<Tab, React.ReactNode> = {
-    Race: <RaceView />,
-    Pets: <PetsView />,
-    Community: <CommunityView />,
-    Arenas: <ArenasView />,
-    Sponsors: <SponsorsView />,
-  }
-
-  const { socials } = SITE
-  const footerLinks = [
-    socials.twitter && { label: 'Twitter', href: socials.twitter },
-    socials.youtube && { label: 'YouTube', href: socials.youtube },
-    socials.tiktok && { label: 'TikTok', href: socials.tiktok },
-    socials.instagram && { label: 'Instagram', href: socials.instagram },
-  ].filter(Boolean) as { label: string; href: string }[]
+export default function LandingPage() {
+  const race = getCurrentRaceWindow()
+  const isLive = race.status === 'LIVE'
+  const targetMs = isLive ? race.endsAt.getTime() : race.startsAt.getTime()
 
   return (
     <>
-      <style dangerouslySetInnerHTML={{ __html: globalStyles }} />
-      <Nav tab={tab} setTab={setTab} isLive={isLive} />
-      <div style={{ minHeight: '100vh', background: T.bg, paddingTop: isMobile ? 88 : 70 }}>
-        <main>{views[tab]}</main>
-        <footer style={{ background: T.text, borderTop: `4px solid ${T.lime}` }}>
-          <CheckerBar />
-          <div style={{ padding: '20px 28px', maxWidth: 1280, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
-            <span style={{ color: T.lime, fontSize: 13, fontWeight: 800 }}>🐹 Hamstar</span>
-            <span style={{ color: '#8892BB', fontSize: 12 }}>Real hamsters · Real races · One champion</span>
-            {footerLinks.length > 0 && (
-              <div style={{ display: 'flex', gap: 16 }}>
-                {footerLinks.map(({ label, href }) => (
-                  <a key={label} href={href} target="_blank" rel="noopener noreferrer"
-                    style={{ color: '#8892BB', fontSize: 12, fontWeight: 600, textDecoration: 'none' }}>
-                    {label}
-                  </a>
-                ))}
-              </div>
-            )}
-          </div>
-        </footer>
-      </div>
+      <style>{`
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', 'Helvetica Neue', sans-serif; }
+        @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.8)} }
+      `}</style>
+      <LandingNav />
+      <main>
+        <HeroSection />
+        <AboutSection />
+        <RacersSection />
+        <ArenaSection targetMs={targetMs} isLive={isLive} />
+      </main>
+      <LandingFooter />
     </>
   )
 }

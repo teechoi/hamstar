@@ -17,7 +17,7 @@ const RACERS: Racer[] = [
 
 const KANIT = "var(--font-kanit), sans-serif"
 
-function RacerCard({ name, tagline, image, featured }: Racer) {
+function RacerCard({ name, tagline, image }: Racer) {
   const [hov, setHov] = useState(false)
   return (
     <div
@@ -40,7 +40,7 @@ function RacerCard({ name, tagline, image, featured }: Racer) {
         cursor: 'default',
       }}
     >
-      {featured && (
+      {hov && (
         <div style={{
           position: 'absolute',
           top: -14,

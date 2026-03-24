@@ -21,10 +21,20 @@ export function AboutSection() {
           width: 'clamp(180px, 28vw, 360px)',
           alignSelf: 'stretch',
         }}>
+          {/* Tilted card behind image */}
+          <div style={{
+            position: 'absolute',
+            inset: '-8%',
+            background: '#fff',
+            border: '1.5px solid #e0e0e0',
+            borderRadius: 24,
+            transform: 'rotate(-11.5deg)',
+            zIndex: 0,
+          }} />
           <img
             src="/images/hamster-wheel.png"
             alt=""
-            style={{ width: '100%', display: 'block' }}
+            style={{ width: '100%', display: 'block', position: 'relative', zIndex: 1 }}
           />
           <img
             src="/images/sunflower.png"
@@ -35,6 +45,7 @@ export function AboutSection() {
               right: -24,
               width: '55%',
               pointerEvents: 'none',
+              zIndex: 2,
             }}
           />
         </div>

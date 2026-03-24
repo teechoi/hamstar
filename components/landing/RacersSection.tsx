@@ -25,7 +25,7 @@ function RacerCard({ name, tagline, image }: Racer) {
       onMouseLeave={() => setHov(false)}
       style={{
         background: '#fff',
-        border: hov ? '3px solid #4F46E5' : '1.5px solid #D8D8D8',
+        border: hov ? '3px solid #735dff' : '1.5px solid #D8D8D8',
         borderRadius: 20,
         overflow: 'visible',
         display: 'flex',
@@ -35,7 +35,7 @@ function RacerCard({ name, tagline, image }: Racer) {
         maxWidth: 340,
         position: 'relative',
         transform: hov ? 'translateY(-6px)' : 'translateY(0)',
-        boxShadow: hov ? '0 16px 48px rgba(79,70,229,0.3)' : '0 2px 8px rgba(0,0,0,0.06)',
+        boxShadow: hov ? '0 16px 48px rgba(115,93,255,0.3)' : '0 2px 8px rgba(0,0,0,0.06)',
         transition: 'transform 0.2s ease-out, box-shadow 0.2s ease-out, border 0.2s ease-out',
         cursor: 'default',
       }}
@@ -46,7 +46,7 @@ function RacerCard({ name, tagline, image }: Racer) {
           top: -14,
           left: '50%',
           transform: 'translateX(-50%)',
-          background: '#4F46E5',
+          background: '#735dff',
           color: '#fff',
           fontFamily: KANIT,
           fontWeight: 600,

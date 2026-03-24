@@ -31,14 +31,22 @@ function CountdownCard({ streamUrl, targetMs, isLive }: { streamUrl: string; tar
         {/* Top row: badge + CTA */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
           <div style={{
-            background: '#5B3FD4',
+            background: '#735dff',
             color: '#fff',
             fontFamily: KANIT, fontWeight: 600, fontSize: 13,
             padding: '5px 14px',
             borderRadius: 9999,
             letterSpacing: 0.5,
+            display: 'inline-flex', alignItems: 'center', gap: 7,
           }}>
-            {isLive ? '🔴 LIVE NOW' : 'LIVE COUNTDOWN'}
+            <span style={{
+              width: 9, height: 9, borderRadius: '50%',
+              background: isLive ? '#ff4444' : '#fff',
+              display: 'inline-block',
+              animation: 'pulse 1.5s ease-in-out infinite',
+              flexShrink: 0,
+            }} />
+            {isLive ? 'LIVE NOW' : 'LIVE COUNTDOWN'}
           </div>
           <a href={streamUrl} target="_blank" rel="noopener noreferrer"
             onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}

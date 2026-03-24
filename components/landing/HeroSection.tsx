@@ -72,6 +72,18 @@ export function HeroSection() {
 
         <div style={{ flex: 1 }} />
 
+        {/* Round label */}
+        <p style={{
+          fontFamily: KANIT,
+          fontSize: 'clamp(12px, 1.2vw, 15px)',
+          color: 'rgba(255,255,255,0.7)',
+          fontWeight: 400,
+          marginBottom: 12,
+          letterSpacing: 0.5,
+        }}>
+          Round 1 Coming Soon!
+        </p>
+
         {/* CTA button */}
         <a
           href={SITE.stream.url}

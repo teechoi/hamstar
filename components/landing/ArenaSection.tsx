@@ -27,9 +27,13 @@ function CountdownCard({ streamUrl, targetMs, isLive }: { streamUrl: string; tar
         style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
       <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.45)' }} />
 
-      <div style={{ position: 'relative', zIndex: 1, padding: '28px 28px 32px' }}>
-        {/* Top row: badge + CTA */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
+      <div style={{
+        position: 'relative', zIndex: 1,
+        padding: 'clamp(20px, 3vw, 32px) clamp(20px, 3.5vw, 36px)',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 24,
+      }}>
+        {/* Left: badge + timer */}
+        <div>
           <div style={{
             background: '#735dff',
             color: '#fff',
@@ -38,6 +42,7 @@ function CountdownCard({ streamUrl, targetMs, isLive }: { streamUrl: string; tar
             borderRadius: 9999,
             letterSpacing: 0.5,
             display: 'inline-flex', alignItems: 'center', gap: 7,
+            marginBottom: 12,
           }}>
             <span style={{
               width: 9, height: 9, borderRadius: '50%',
@@ -48,43 +53,43 @@ function CountdownCard({ streamUrl, targetMs, isLive }: { streamUrl: string; tar
             }} />
             {isLive ? 'LIVE NOW' : 'LIVE COUNTDOWN'}
           </div>
-          <a href={streamUrl} target="_blank" rel="noopener noreferrer"
-            onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
-            style={{
-              display: 'inline-flex', alignItems: 'center', gap: 8,
-              padding: '10px 22px',
-              background: YELLOW, color: DARK,
-              border: 'none',
-              borderRadius: 9999,
-              fontFamily: KANIT, fontSize: 'clamp(13px, 1.4vw, 16px)', fontWeight: 700,
-              textDecoration: 'none',
-              transform: hov ? 'scale(1.04)' : 'scale(1)',
-              transition: 'all 0.18s ease-out',
-            }}>
-            ▶ Watch Live Race
-          </a>
-        </div>
 
-        {/* Countdown */}
-        <div style={{ textAlign: 'center' }}>
           {!isLive && (
-            <p style={{ fontFamily: KANIT, fontWeight: 500, fontSize: 'clamp(15px, 2vw, 22px)', color: 'rgba(255,255,255,0.85)', margin: '0 0 8px' }}>
+            <p style={{ fontFamily: KANIT, fontWeight: 400, fontSize: 'clamp(14px, 2vw, 22px)', color: 'rgba(255,255,255,0.85)', margin: '0 0 4px' }}>
               Next Race Starts in
             </p>
           )}
           <div style={{
             fontFamily: KANIT,
-            fontSize: 'clamp(40px, 8vw, 88px)',
-            fontWeight: 700, color: '#fff',
-            letterSpacing: 3, lineHeight: 1,
-            marginBottom: 20,
+            fontSize: 'clamp(36px, 7vw, 80px)',
+            fontWeight: 700, color: YELLOW,
+            letterSpacing: 2, lineHeight: 1,
+            marginBottom: 16,
           }}>
             {isLive ? 'LIVE NOW' : `${pad(h)}:${pad(m)}:${pad(s)}`}
           </div>
-          <p style={{ fontFamily: KANIT, color: 'rgba(255,255,255,0.6)', fontSize: 'clamp(12px, 1.3vw, 16px)', margin: 0, fontWeight: 400 }}>
+          <p style={{ fontFamily: KANIT, color: 'rgba(255,255,255,0.5)', fontSize: 'clamp(11px, 1.2vw, 15px)', margin: 0, fontWeight: 400 }}>
             Race will be streamed live on Pump.fun
           </p>
         </div>
+
+        {/* Right: CTA */}
+        <a href={streamUrl} target="_blank" rel="noopener noreferrer"
+          onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
+          style={{
+            display: 'inline-flex', alignItems: 'center', gap: 8,
+            padding: 'clamp(10px, 1.5vw, 14px) clamp(16px, 2.5vw, 28px)',
+            background: YELLOW, color: DARK,
+            border: '3px solid #000',
+            borderRadius: 9999,
+            fontFamily: KANIT, fontSize: 'clamp(13px, 1.4vw, 18px)', fontWeight: 700,
+            textDecoration: 'none',
+            whiteSpace: 'nowrap', flexShrink: 0,
+            transform: hov ? 'scale(1.04)' : 'scale(1)',
+            transition: 'all 0.18s ease-out',
+          }}>
+          ▶ Watch Live Race
+        </a>
       </div>
     </div>
   )

@@ -35,17 +35,17 @@ export const DECOS = {
   'arena-oats': {
     src: '/images/oats-pile.png',
     label: 'Arena: Oats',
-    style: { right: 20, top: 120, width: 'clamp(80px, 22vw, 340px)' } as CSSProperties,
+    style: { right: -10, top: 40, width: 'clamp(80px, 20vw, 300px)' } as CSSProperties,
   },
   'arena-trophy': {
     src: '/images/hamster-trophy.png',
     label: 'Arena: Trophy',
-    style: { left: 20, bottom: -130, width: 'clamp(70px, 20vw, 305px)' } as CSSProperties,
+    style: { left: -30, bottom: -60, width: 'clamp(80px, 22vw, 320px)', transform: 'rotate(18deg)' } as CSSProperties,
   },
   'arena-bridge': {
     src: '/images/wood-bridge.png',
     label: 'Arena: Bridge',
-    style: { right: 20, bottom: -110, width: 'clamp(80px, 24vw, 370px)' } as CSSProperties,
+    style: { right: -10, bottom: -80, width: 'clamp(90px, 26vw, 400px)' } as CSSProperties,
   },
 } satisfies Record<string, DecoConfig>
 

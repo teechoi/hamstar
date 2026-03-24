@@ -28,8 +28,9 @@ export function LandingNav() {
       {/* Tagline strip */}
       <div style={{
         textAlign: 'center', padding: '6px 0',
-        fontSize: 14, fontWeight: 500, color: '#b0b0b0',
+        fontSize: 14, fontWeight: 500, color: '#fff',
         fontFamily: KANIT,
+        background: '#7B52FF',
       }}>
         The smallest sport on the internet.
       </div>

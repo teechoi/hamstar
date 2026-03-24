@@ -30,12 +30,12 @@ export const DECOS = {
   'racers-turbo': {
     src: '/images/hamster-turbo-pushup.png',
     label: 'Racers: Turbo',
-    style: { right: 20, bottom: -90, width: 'clamp(80px, 23vw, 355px)' } as CSSProperties,
+    style: { right: 20, bottom: -50, width: 'clamp(80px, 23vw, 355px)' } as CSSProperties,
   },
   'arena-oats': {
     src: '/images/oats-pile.png',
     label: 'Arena: Oats',
-    style: { right: 20, top: 10, width: 'clamp(80px, 22vw, 340px)' } as CSSProperties,
+    style: { right: 20, top: 120, width: 'clamp(80px, 22vw, 340px)' } as CSSProperties,
   },
   'arena-trophy': {
     src: '/images/hamster-trophy.png',

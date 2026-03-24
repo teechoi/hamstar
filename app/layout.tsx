@@ -1,6 +1,7 @@
 // app/layout.tsx
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+import { kanit } from '@/lib/fonts'
 
 const inter = Inter({ subsets: ['latin'], weight: ['400', '600', '700', '800', '900'], display: 'swap' })
 
@@ -30,7 +31,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={inter.className}>
+    <html lang="en" className={`${inter.className} ${kanit.variable}`}>
       <head />
       <body style={{ margin: 0, padding: 0, fontFamily: "'Inter', sans-serif" }}>
         {children}

@@ -4,8 +4,9 @@ import { useCountdown } from '@/lib/hooks/useCountdown'
 import { DecoImage } from '@/components/editor/DecoImage'
 import { SITE } from '@/config/site'
 
-const GOLD = '#F5D050'
+const YELLOW = '#FFE790'
 const DARK = '#0D0D14'
+const KANIT = "var(--font-kanit), sans-serif"
 
 function CountdownCard({ streamUrl, targetMs, isLive }: { streamUrl: string; targetMs: number; isLive: boolean }) {
   const { h, m, s } = useCountdown(targetMs)
@@ -15,48 +16,67 @@ function CountdownCard({ streamUrl, targetMs, isLive }: { streamUrl: string; tar
   return (
     <div style={{
       position: 'relative',
-      borderRadius: 20,
+      border: '3px solid #000',
+      borderRadius: 50,
       overflow: 'hidden',
-      maxWidth: 600,
+      maxWidth: 700,
       margin: '0 auto',
-      boxShadow: '0 8px 40px rgba(0,0,0,0.25)',
     }}>
+      {/* Blurred background image */}
       <img src="/images/arena-bg-blurred.png" alt=""
         style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
-      <div style={{ position: 'absolute', inset: 0, background: 'rgba(13,13,20,0.65)' }} />
-      <div style={{
-        position: 'relative', zIndex: 1,
-        padding: '40px 32px',
-        textAlign: 'center',
-        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16,
-      }}>
-        <p style={{ color: 'rgba(255,255,255,0.8)', fontWeight: 700, fontSize: 14, letterSpacing: 0.5, margin: 0 }}>
-          {isLive ? 'Race is LIVE now!' : 'Next Race Starts in'}
-        </p>
-        <div style={{
-          fontFamily: 'monospace',
-          fontSize: 'clamp(36px, 6vw, 64px)',
-          fontWeight: 900, color: '#fff',
-          letterSpacing: 2, lineHeight: 1,
-        }}>
-          {isLive ? 'LIVE NOW' : `${pad(h)}:${pad(m)}:${pad(s)}`}
-        </div>
-        <a href={streamUrl} target="_blank" rel="noopener noreferrer"
-          onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
-          style={{
-            display: 'inline-block', padding: '12px 36px',
-            background: hov ? '#e6bc2a' : GOLD, color: DARK,
-            borderRadius: 9999, fontSize: 15, fontWeight: 900,
-            textDecoration: 'none',
-            transform: hov ? 'scale(1.04)' : 'scale(1)',
-            boxShadow: hov ? `0 6px 24px rgba(245,208,80,0.5)` : `0 3px 12px rgba(245,208,80,0.3)`,
-            transition: 'all 0.18s ease-out', marginTop: 4,
+      <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.45)' }} />
+
+      <div style={{ position: 'relative', zIndex: 1, padding: '28px 28px 32px' }}>
+        {/* Top row: badge + CTA */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
+          <div style={{
+            background: '#5B3FD4',
+            color: '#fff',
+            fontFamily: KANIT, fontWeight: 600, fontSize: 13,
+            padding: '5px 14px',
+            borderRadius: 9999,
+            letterSpacing: 0.5,
           }}>
-          Watch Live Race
-        </a>
-        <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12, margin: 0, fontWeight: 500 }}>
-          Race will be streamed live on Pump.fun
-        </p>
+            {isLive ? '🔴 LIVE NOW' : 'LIVE COUNTDOWN'}
+          </div>
+          <a href={streamUrl} target="_blank" rel="noopener noreferrer"
+            onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: 8,
+              padding: '10px 22px',
+              background: YELLOW, color: DARK,
+              border: 'none',
+              borderRadius: 9999,
+              fontFamily: KANIT, fontSize: 'clamp(13px, 1.4vw, 16px)', fontWeight: 700,
+              textDecoration: 'none',
+              transform: hov ? 'scale(1.04)' : 'scale(1)',
+              transition: 'all 0.18s ease-out',
+            }}>
+            ▶ Watch Live Race
+          </a>
+        </div>
+
+        {/* Countdown */}
+        <div style={{ textAlign: 'center' }}>
+          {!isLive && (
+            <p style={{ fontFamily: KANIT, fontWeight: 500, fontSize: 'clamp(15px, 2vw, 22px)', color: 'rgba(255,255,255,0.85)', margin: '0 0 8px' }}>
+              Next Race Starts in
+            </p>
+          )}
+          <div style={{
+            fontFamily: KANIT,
+            fontSize: 'clamp(40px, 8vw, 88px)',
+            fontWeight: 700, color: '#fff',
+            letterSpacing: 3, lineHeight: 1,
+            marginBottom: 20,
+          }}>
+            {isLive ? 'LIVE NOW' : `${pad(h)}:${pad(m)}:${pad(s)}`}
+          </div>
+          <p style={{ fontFamily: KANIT, color: 'rgba(255,255,255,0.6)', fontSize: 'clamp(12px, 1.3vw, 16px)', margin: 0, fontWeight: 400 }}>
+            Race will be streamed live on Pump.fun
+          </p>
+        </div>
       </div>
     </div>
   )
@@ -65,41 +85,53 @@ function CountdownCard({ streamUrl, targetMs, isLive }: { streamUrl: string; tar
 export function ArenaSection({ targetMs, isLive }: { targetMs: number; isLive: boolean }) {
   return (
     <section id="arena" style={{
-      background: '#F0F0F0',
-      padding: '200px 24px 0',
+      background: '#F2F2F2',
+      padding: '80px 24px 0',
       position: 'relative',
     }}>
       <DecoImage id="arena-oats" className="section-deco" />
       <DecoImage id="arena-trophy" className="section-deco" />
       <DecoImage id="arena-bridge" className="section-deco" />
 
-      <div style={{ maxWidth: 900, margin: '0 auto', position: 'relative' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, marginBottom: 20 }}>
-          <img src="/images/sunflower-seed.png" alt="" style={{ width: 24, opacity: 0.8 }} />
-          <h2 style={{ fontSize: 'clamp(28px, 4vw, 48px)', fontWeight: 900, color: '#0D0D14', letterSpacing: -0.5 }}>
+      <div style={{ maxWidth: 900, margin: '0 auto', position: 'relative', zIndex: 60 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16, marginBottom: 20 }}>
+          <img src="/images/sunflower-seed.png" alt="" style={{ width: 32, opacity: 0.85 }} />
+          <h2 style={{
+            fontFamily: KANIT,
+            fontSize: 'clamp(36px, 5vw, 72px)',
+            fontWeight: 600,
+            color: '#000',
+            margin: 0,
+          }}>
             Hamstar Arena
           </h2>
-          <img src="/images/sunflower-seed.png" alt="" style={{ width: 24, opacity: 0.8 }} />
+          <img src="/images/sunflower-seed.png" alt="" style={{ width: 32, opacity: 0.85 }} />
         </div>
 
-        <p style={{ textAlign: 'center', color: '#555', fontSize: 15, marginBottom: 40, fontWeight: 500 }}>
+        <p style={{
+          textAlign: 'center',
+          fontFamily: KANIT,
+          color: '#000',
+          fontSize: 'clamp(14px, 1.6vw, 20px)',
+          fontWeight: 400,
+          marginBottom: 40,
+        }}>
           Hamstar races are streamed live on Pump.fun. Watch the race and return to see the winner.
         </p>
 
         <CountdownCard streamUrl={SITE.stream.url} targetMs={targetMs} isLive={isLive} />
       </div>
 
-      {/* Seed row — individual seeds, enough margin to clear trophy + bridge */}
+      {/* Seed row */}
       <div style={{
-        marginTop: 220,
-        width: '100%',
-        display: 'flex', justifyContent: 'center', alignItems: 'center',
-        gap: 10, padding: '0 24px 40px',
-        flexWrap: 'nowrap', overflow: 'hidden',
+        marginTop: 120,
+        paddingBottom: 40,
+        display: 'flex', justifyContent: 'center', gap: 'clamp(6px, 1.2vw, 16px)',
+        flexWrap: 'wrap',
       }}>
         {Array.from({ length: 14 }).map((_, i) => (
           <img key={i} src="/images/sunflower-seed.png" alt=""
-            style={{ width: 52, height: 'auto', opacity: 0.6, flexShrink: 0 }} />
+            style={{ width: 'clamp(20px, 2.5vw, 36px)', opacity: 0.7 }} />
         ))}
       </div>
     </section>

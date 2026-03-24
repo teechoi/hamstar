@@ -1,25 +1,35 @@
 'use client'
 import { SITE } from '@/config/site'
 
-const GOLD = '#F5D050'
+const YELLOW = '#FFE790'
 const DARK = '#0D0D14'
+const MUTED = '#503f00'
+const KANIT = "var(--font-kanit), sans-serif"
 
 const linkStyle: React.CSSProperties = {
-  color: DARK,
+  fontFamily: KANIT,
+  color: MUTED,
   textDecoration: 'none',
-  fontSize: 14,
-  fontWeight: 600,
+  fontSize: 'clamp(14px, 1.4vw, 18px)',
+  fontWeight: 400,
   display: 'block',
-  marginBottom: 6,
-  opacity: 0.8,
+  marginBottom: 8,
   transition: 'opacity 0.15s',
+}
+
+const headingStyle: React.CSSProperties = {
+  fontFamily: KANIT,
+  fontWeight: 600,
+  fontSize: 'clamp(14px, 1.4vw, 20px)',
+  color: '#ddad03',
+  marginBottom: 12,
 }
 
 export function LandingFooter() {
   const { socials } = SITE
 
   return (
-    <footer id="footer" style={{ background: GOLD, position: 'relative', zIndex: 1 }}>
+    <footer id="footer" style={{ background: YELLOW, position: 'relative', zIndex: 1 }}>
 
       {/* Main footer body */}
       <div style={{
@@ -33,15 +43,17 @@ export function LandingFooter() {
 
         {/* Left: brand + links */}
         <div>
-          <p style={{ fontWeight: 900, fontSize: 22, color: DARK, marginBottom: 4 }}>Hamstar</p>
-          <p style={{ fontSize: 13, color: 'rgba(13,13,20,0.65)', marginBottom: 28, fontWeight: 500 }}>
+          <p style={{ fontFamily: KANIT, fontWeight: 700, fontSize: 'clamp(22px, 2.5vw, 36px)', color: DARK, marginBottom: 4 }}>
+            Hamstar
+          </p>
+          <p style={{ fontFamily: KANIT, fontSize: 'clamp(13px, 1.3vw, 18px)', color: MUTED, marginBottom: 28, fontWeight: 400 }}>
             Live hamster racing powered by community participation
           </p>
 
-          <div style={{ display: 'flex', gap: 40, flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: 48, flexWrap: 'wrap' }}>
             {/* Social */}
             <div>
-              <p style={{ fontWeight: 800, fontSize: 13, color: DARK, marginBottom: 10 }}>Social</p>
+              <p style={headingStyle}>Social</p>
               {socials.twitter   && <a href={socials.twitter}   target="_blank" rel="noopener noreferrer" style={linkStyle}>X</a>}
               {socials.youtube   && <a href={socials.youtube}   target="_blank" rel="noopener noreferrer" style={linkStyle}>Youtube</a>}
               {socials.instagram && <a href={socials.instagram} target="_blank" rel="noopener noreferrer" style={linkStyle}>Instagram</a>}
@@ -50,7 +62,7 @@ export function LandingFooter() {
 
             {/* Learn */}
             <div>
-              <p style={{ fontWeight: 800, fontSize: 13, color: DARK, marginBottom: 10 }}>Learn</p>
+              <p style={headingStyle}>Learn</p>
               <a href="#about" style={linkStyle} onClick={e => { e.preventDefault(); document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' }) }}>
                 How Hamstar Works
               </a>
@@ -62,8 +74,12 @@ export function LandingFooter() {
         {/* Right: tagline + contact */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'space-between' }}>
           <p style={{
-            fontWeight: 900, fontSize: 'clamp(16px, 2vw, 20px)',
-            color: DARK, textAlign: 'right', lineHeight: 1.4,
+            fontFamily: KANIT,
+            fontWeight: 600,
+            fontSize: 'clamp(16px, 1.8vw, 26px)',
+            color: DARK,
+            textAlign: 'right',
+            lineHeight: 1.4,
           }}>
             Real hamsters.<br />
             Real races.<br />
@@ -71,7 +87,7 @@ export function LandingFooter() {
           </p>
           <a
             href={`mailto:${SITE.sponsorEmail}`}
-            style={{ color: DARK, fontWeight: 700, fontSize: 13, textDecoration: 'none', marginTop: 24 }}
+            style={{ fontFamily: KANIT, color: MUTED, fontWeight: 400, fontSize: 'clamp(13px, 1.3vw, 18px)', textDecoration: 'none', marginTop: 24 }}
           >
             Contact us
           </a>
@@ -80,7 +96,7 @@ export function LandingFooter() {
 
       {/* Dashed divider */}
       <div style={{
-        borderTop: `1.5px dashed rgba(13,13,20,0.25)`,
+        borderTop: `1.5px dashed rgba(80,63,0,0.35)`,
         margin: '0 32px',
       }} />
 
@@ -90,13 +106,15 @@ export function LandingFooter() {
         padding: '16px 32px',
         display: 'flex',
         justifyContent: 'center',
-        gap: 24,
+        gap: 28,
         flexWrap: 'wrap',
       }}>
         {['Terms of Use', 'Risk Disclosure', 'Animal Welfare', 'Privacy Policy'].map(label => (
           <a key={label} href="#" style={{
-            color: 'rgba(13,13,20,0.6)',
-            fontSize: 12, fontWeight: 600,
+            fontFamily: KANIT,
+            color: MUTED,
+            fontSize: 'clamp(12px, 1.2vw, 16px)',
+            fontWeight: 400,
             textDecoration: 'none',
           }}>
             {label}

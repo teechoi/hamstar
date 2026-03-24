@@ -5,8 +5,6 @@ import { AboutSection }   from '@/components/landing/AboutSection'
 import { RacersSection }  from '@/components/landing/RacersSection'
 import { ArenaSection }   from '@/components/landing/ArenaSection'
 import { LandingFooter }  from '@/components/landing/LandingFooter'
-import { EditBar }        from '@/components/editor/EditBar'
-import { CustomDecoLayer } from '@/components/editor/CustomDecoLayer'
 
 export default function LandingPage() {
   const race = getCurrentRaceWindow()
@@ -31,9 +29,7 @@ export default function LandingPage() {
           <ArenaSection targetMs={targetMs} isLive={isLive} />
         </main>
         <LandingFooter />
-        <CustomDecoLayer />
       </div>
-      <EditBar />
     </>
   )
 }

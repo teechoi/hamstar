@@ -9,11 +9,6 @@ type NewSponsor = { name: string; emoji: string; tier: 'SILVER' | 'GOLD' | 'TITL
 const EMPTY: NewSponsor = { name: '', emoji: '🏆', tier: 'SILVER', petId: '', websiteUrl: '' }
 const TIER_COLORS = { TITLE: T.coral, GOLD: T.yellow, SILVER: T.violet }
 const TIER_BG = { TITLE: T.coralSoft, GOLD: '#FFFBE6', SILVER: T.violetSoft }
-const PET_IMAGES: Record<string, string> = {
-  dash:  '/images/hamster-dash.png',
-  flash: '/images/hamster-flash.png',
-  turbo: '/images/hamster-turbo.png',
-}
 
 export default function SponsorsPage() {
   const [sponsors, setSponsors] = useState<Sponsor[]>([])
@@ -93,9 +88,8 @@ export default function SponsorsPage() {
                   None
                 </button>
                 {PETS.map((p) => (
-                  <button key={p.id} onClick={() => update({ petId: p.id })} style={{ padding: '6px 12px 6px 6px', border: `2px solid ${form.petId === p.id ? p.color : T.border}`, borderRadius: 10, background: form.petId === p.id ? p.color + '18' : T.bg, fontSize: 12, fontWeight: 700, cursor: 'pointer', color: form.petId === p.id ? p.color : T.textMid, display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <img src={PET_IMAGES[p.id] ?? ''} alt={p.name} style={{ width: 32, height: 32, borderRadius: 6, objectFit: 'cover', objectPosition: 'top', background: '#e8e8e8' }} />
-                    {p.name}
+                  <button key={p.id} onClick={() => update({ petId: p.id })} style={{ padding: '7px 12px', border: `2px solid ${form.petId === p.id ? p.color : T.border}`, borderRadius: 8, background: form.petId === p.id ? p.color + '18' : T.bg, fontSize: 12, fontWeight: 700, cursor: 'pointer', color: form.petId === p.id ? p.color : T.textMid }}>
+                    {p.emoji} {p.name}
                   </button>
                 ))}
               </div>
@@ -114,12 +108,7 @@ export default function SponsorsPage() {
           const tc = TIER_COLORS[s.tier]
           return (
             <div key={s.id} style={{ background: T.card, border: `2px solid ${tc}44`, borderRadius: 12, padding: '14px 18px', display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
-              <div style={{ width: 40, height: 40, borderRadius: 10, background: tc + '22', border: `1.5px solid ${tc}44`, overflow: 'hidden', flexShrink: 0, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}>
-                {s.pet && PET_IMAGES[s.pet.id]
-                  ? <img src={PET_IMAGES[s.pet.id]} alt={s.pet.name} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }} />
-                  : <span style={{ fontSize: 20, lineHeight: '40px' }}>{s.emoji}</span>
-                }
-              </div>
+              <div style={{ width: 40, height: 40, borderRadius: 10, background: tc, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20 }}>{s.emoji}</div>
               <div style={{ flex: 1 }}>
                 <div style={{ fontSize: 14, fontWeight: 800, color: T.text }}>{s.name}</div>
                 <div style={{ fontSize: 11, color: T.textMuted }}>

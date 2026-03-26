@@ -99,22 +99,6 @@ export default function RacePage() {
 
   const totalSol = race?.entries.reduce((s, e) => s + e.totalSol, 0) ?? 0
 
-  // Derive what arena state users are currently seeing
-  type ArenaState = 'PREPARING' | 'OPEN' | 'LIVE' | 'FINISHED'
-  const arenaState: ArenaState = (() => {
-    if (!race || race.status === 'FINISHED') return 'FINISHED'
-    if (settings?.isLive) return 'LIVE'
-    if (race.status === 'LIVE') return 'OPEN'
-    return 'PREPARING'
-  })()
-
-  const ARENA_STATE_META: Record<ArenaState, { label: string; desc: string; bg: string; color: string }> = {
-    PREPARING: { label: 'Preparing',  desc: 'Race window not started. Betting closed.',      bg: T.blueSoft,   color: T.blue  },
-    OPEN:      { label: 'Open',       desc: 'Race window active. Users can cheer hamsters.',  bg: '#F0FFF4',    color: '#00A550' },
-    LIVE:      { label: 'Live',       desc: 'Stream is live. Betting locked.',                bg: T.greenSoft,  color: T.green },
-    FINISHED:  { label: 'Finished',   desc: 'Race over. Results visible.',                    bg: T.violetSoft, color: T.violet },
-  }
-
   if (loading) return <div style={{ padding: 32, color: T.textMuted }}>Loading...</div>
 
   return (
@@ -201,37 +185,6 @@ export default function RacePage() {
           </div>
         </div>
       )}
-
-      {/* Arena State Preview */}
-      <div style={{ background: T.card, border: `2px solid ${T.border}`, borderRadius: 16, padding: 24, marginBottom: 20 }}>
-        <div style={{ fontSize: 11, fontWeight: 800, color: T.textMuted, textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 16 }}>Arena State (what users see now)</div>
-        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-          {(['PREPARING', 'OPEN', 'LIVE', 'FINISHED'] as ArenaState[]).map((s) => {
-            const m = ARENA_STATE_META[s]
-            const active = s === arenaState
-            return (
-              <div key={s} style={{
-                flex: '1 1 160px',
-                background: active ? m.bg : T.bg,
-                border: `2px solid ${active ? m.color : T.border}`,
-                borderRadius: 12,
-                padding: '14px 16px',
-                opacity: active ? 1 : 0.45,
-                transition: 'opacity 0.15s',
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
-                  {active && <span style={{ width: 8, height: 8, borderRadius: '50%', background: m.color, display: 'inline-block' }} />}
-                  <span style={{ fontSize: 13, fontWeight: 800, color: active ? m.color : T.textMuted }}>{m.label}</span>
-                </div>
-                <div style={{ fontSize: 11, color: T.textMuted, lineHeight: 1.4 }}>{m.desc}</div>
-              </div>
-            )
-          })}
-        </div>
-        <div style={{ marginTop: 14, fontSize: 12, color: T.textMuted }}>
-          To change state: {arenaState === 'PREPARING' ? 'race window opens automatically based on schedule.' : arenaState === 'OPEN' ? 'click "Mark as LIVE" to start the stream.' : arenaState === 'LIVE' ? 'click "Mark Upcoming" to stop live, or "Finish Race" to end.' : 'create or manage a new race.'}
-        </div>
-      </div>
 
       {/* Stream settings */}
       <div style={{ background: T.card, border: `2px solid ${T.border}`, borderRadius: 16, padding: 24, marginBottom: 20 }}>

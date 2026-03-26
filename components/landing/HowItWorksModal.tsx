@@ -121,7 +121,7 @@ export function HowItWorksModal({ onClose, onEnterArena }: HowItWorksModalProps)
               position: 'absolute', top: 8, right: 60,
               background: PURPLE,
               color: '#fff',
-              borderRadius: 20,
+              borderRadius: 48.5,
               padding: '4px 14px',
               fontSize: 14, fontWeight: 500,
               fontFamily: KANIT,
@@ -164,7 +164,7 @@ export function HowItWorksModal({ onClose, onEnterArena }: HowItWorksModalProps)
 
         {/* Body */}
         <p style={{
-          fontSize: 16, color: '#505050', fontWeight: 300,
+          fontSize: 16, color: '#8A8A8A', fontFamily: 'Pretendard, sans-serif', fontWeight: 500,
           textAlign: 'center', lineHeight: 1.6,
           marginBottom: current.note ? 8 : 32,
           whiteSpace: 'pre-line',

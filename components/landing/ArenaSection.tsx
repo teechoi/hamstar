@@ -15,7 +15,7 @@ function CountdownCard({ targetMs, isLive }: { streamUrl: string; targetMs: numb
   return (
     <div style={{
       position: 'relative',
-      borderRadius: 20,
+      borderRadius: 24,
       overflow: 'hidden',
       maxWidth: 765,
       height: 250,

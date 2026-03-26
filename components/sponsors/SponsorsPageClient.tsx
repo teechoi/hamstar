@@ -51,7 +51,7 @@ function RealSponsorCard({ sponsor }: { sponsor: DbSponsor }) {
       style={{
         flex: '1 1 280px', minWidth: 240, maxWidth: 380,
         background: hov ? tc + '08' : '#fff',
-        borderRadius: 40,
+        borderRadius: 24,
         border: `2px solid ${hov ? tc : 'transparent'}`,
         boxShadow: hov
           ? `0 20px 48px ${tg}, 0 0 0 1px ${tc}33`
@@ -111,7 +111,7 @@ function PlaceholderCard({ pet }: { pet: Pet }) {
       style={{
         flex: '1 1 280px', minWidth: 240, maxWidth: 380,
         background: hov ? 'rgba(115,93,255,0.04)' : '#fff',
-        borderRadius: 40,
+        borderRadius: 24,
         boxShadow: hov
           ? '0 20px 48px rgba(115,93,255,0.15), 0 0 0 1px rgba(115,93,255,0.25)'
           : '0 4px 24px rgba(77,67,83,0.06)',
@@ -135,7 +135,7 @@ function PlaceholderCard({ pet }: { pet: Pet }) {
           { label: 'Style', value: pet.chaos >= 70 ? 'Chaotic' : pet.chaos >= 45 ? 'Aggressive' : 'Steady' },
           { label: 'Wins', value: `${pet.wins}` },
         ].map(({ label, value }) => (
-          <p key={label} style={{ fontFamily: KANIT, fontSize: 'clamp(12px, 1.2vw, 14px)', color: '#555' }}>
+          <p key={label} style={{ fontFamily: KANIT, fontSize: 'clamp(12px, 1.2vw, 14px)', color: '#8A8A8A' }}>
             <span style={{ color: '#a0a0a0' }}>{label}:</span> {value}
           </p>
         ))}
@@ -186,7 +186,7 @@ export function SponsorsPageClient({
       <style>{`
         * { box-sizing: border-box; margin: 0; padding: 0; }
         html { scroll-behavior: smooth; }
-        body { font-family: 'Inter', sans-serif; }
+        /* body font inherited from global styles (Pretendard) */
       `}</style>
 
       <LandingNav
@@ -205,14 +205,14 @@ export function SponsorsPageClient({
         <div style={{ position: 'absolute', bottom: -149, left: -105, width: 764, height: 764, borderRadius: '50%', background: 'rgba(252,212,0,0.10)', filter: 'blur(32px)', pointerEvents: 'none' }} />
         <div style={{ position: 'absolute', top: 278, right: -129, width: 683, height: 683, borderRadius: '50%', background: 'rgba(76,0,128,0.05)', filter: 'blur(32px)', pointerEvents: 'none' }} />
 
-        <div style={{ maxWidth: 1100, margin: '0 auto', padding: `clamp(40px, 6vw, 72px) clamp(16px, 4vw, 48px) 80px`, position: 'relative', zIndex: 1 }}>
+        <div style={{ maxWidth: 1280, margin: '0 auto', padding: `clamp(40px, 6vw, 72px) clamp(16px, 4vw, 48px) 80px`, position: 'relative', zIndex: 1 }}>
 
           {/* Header */}
           <div style={{ textAlign: 'center', marginBottom: 48 }}>
             <h1 style={{ fontFamily: KANIT, fontSize: 'clamp(28px, 4vw, 50px)', fontWeight: 700, color: '#0D0D14', marginBottom: 12 }}>
               Sponsor a Racer
             </h1>
-            <p style={{ fontFamily: KANIT, fontSize: 'clamp(14px, 1.6vw, 20px)', color: '#555' }}>
+            <p style={{ fontFamily: 'Pretendard, sans-serif', fontSize: 'clamp(14px, 1.6vw, 20px)', color: '#8A8A8A' }}>
               Race highlights, real hamsters, and behind-the-scenes content.
             </p>
           </div>

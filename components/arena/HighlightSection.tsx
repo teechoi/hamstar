@@ -17,7 +17,7 @@ function VideoCard({ title, index }: { title: string; index: number }) {
       onMouseLeave={() => setHov(false)}
       style={{
         flex: '1 1 260px', minWidth: 220, maxWidth: 400,
-        borderRadius: 20,
+        borderRadius: 24,
         border: '3px solid #000',
         overflow: 'hidden',
         background: '#fff',
@@ -131,7 +131,7 @@ export function HighlightSection({ lastResult }: HighlightSectionProps) {
         {/* Winner bar */}
         <div style={{
           background: '#fff',
-          borderRadius: 20,
+          borderRadius: 24,
           border: '3px solid #000',
           padding: isMobile ? '16px 20px' : '18px 32px',
           display: 'flex',

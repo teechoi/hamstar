@@ -45,7 +45,7 @@ export function PetPageClient() {
       <style>{`
         * { box-sizing: border-box; margin: 0; padding: 0; }
         html { scroll-behavior: smooth; }
-        body { font-family: 'Inter', sans-serif; }
+        /* body font inherited from global styles (Pretendard) */
       `}</style>
 
       <LandingNav
@@ -81,7 +81,7 @@ export function PetPageClient() {
         }} />
 
         <div style={{
-          maxWidth: 1100, margin: '0 auto',
+          maxWidth: 1280, margin: '0 auto',
           padding: `clamp(40px, 6vw, 72px) clamp(16px, 4vw, 48px) 80px`,
           position: 'relative', zIndex: 1,
         }}>
@@ -96,9 +96,9 @@ export function PetPageClient() {
               Hamster Profile
             </h1>
             <p style={{
-              fontFamily: KANIT,
+              fontFamily: 'Pretendard, sans-serif',
               fontSize: 'clamp(14px, 1.6vw, 20px)',
-              color: '#555',
+              color: '#8A8A8A',
             }}>
               Race highlights, real hamsters, and behind-the-scenes content.
             </p>
@@ -122,7 +122,7 @@ export function PetPageClient() {
                     padding: isMobile ? '10px 20px' : '12px 28px',
                     background: '#fff',
                     border: isActive ? '2px solid #735DFF' : '2px solid transparent',
-                    borderRadius: 9999,
+                    borderRadius: 48.5,
                     boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
                     cursor: 'pointer',
                     transition: 'border-color 0.15s, box-shadow 0.15s',
@@ -154,7 +154,7 @@ export function PetPageClient() {
           {/* Detail card */}
           <div style={{
             background: '#fff',
-            borderRadius: 40,
+            borderRadius: 24,
             boxShadow: '0 20px 40px rgba(77,67,83,0.06)',
             overflow: 'hidden',
             display: 'flex',
@@ -183,7 +183,7 @@ export function PetPageClient() {
 
             {/* Info panel */}
             <div style={{ flex: 1, padding: isMobile ? '24px 20px' : '40px 48px' }}>
-              <p style={{ fontFamily: KANIT, fontSize: 14, color: '#a0a0a0', marginBottom: 4 }}>
+              <p style={{ fontFamily: KANIT, fontSize: 14, color: '#8A8A8A', marginBottom: 4 }}>
                 Name
               </p>
               <h2 style={{
@@ -194,13 +194,13 @@ export function PetPageClient() {
                 {selected.name}
               </h2>
 
-              <p style={{ fontFamily: KANIT, fontSize: 14, color: '#a0a0a0', marginBottom: 6 }}>
+              <p style={{ fontFamily: KANIT, fontSize: 14, color: '#8A8A8A', marginBottom: 6 }}>
                 About {selected.name}
               </p>
               <p style={{
-                fontFamily: KANIT,
+                fontFamily: 'Pretendard, sans-serif',
                 fontSize: 'clamp(13px, 1.3vw, 16px)',
-                color: '#555', lineHeight: 1.65,
+                color: '#8A8A8A', lineHeight: 1.65,
                 marginBottom: 28,
                 maxWidth: 600,
               }}>
@@ -222,7 +222,7 @@ export function PetPageClient() {
                   { label: 'Cage Score',  value: `${selected.cageLevel}%` },
                 ].map(({ label, value }) => (
                   <p key={label} style={{ fontFamily: KANIT, fontSize: 'clamp(13px, 1.4vw, 17px)', color: '#0D0D14' }}>
-                    <span style={{ color: '#a0a0a0' }}>{label}:</span> {value}
+                    <span style={{ color: '#8A8A8A' }}>{label}:</span> {value}
                   </p>
                 ))}
               </div>

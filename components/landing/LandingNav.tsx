@@ -225,7 +225,7 @@ function NavPill({ label, onClick }: { label: string; onClick: () => void }) {
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
       style={{
-        padding: '7px 40px',
+        padding: '7px 20px',
         background: YELLOW, border: 'none', borderRadius: 48.5,
         color: DARK, fontSize: 12, fontWeight: 500,
         cursor: 'pointer', fontFamily: KANIT,
@@ -245,7 +245,7 @@ function HowItWorksPill({ isDark, onClick }: { isDark: boolean; onClick: () => v
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
       style={{
-        padding: '7px 40px',
+        padding: '7px 20px',
         // Dark context (landing hero / scrolled): semi-transparent ghost
         // Light context (arena / highlights): solid white with purple text
         background: isDark

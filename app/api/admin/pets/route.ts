@@ -46,13 +46,19 @@ async function seedPets() {
 }
 
 export async function GET() {
-  // Remove any DB pets whose slug isn't in config (stale data from old schema)
-  const configSlugs = PETS.map(p => p.id)
-  await prisma.pet.deleteMany({ where: { slug: { notIn: configSlugs } } })
+  try {
+    // Upsert all config pets (old slugs are ignored, not deleted — FK constraints)
+    await seedPets()
 
-  // Upsert all config pets so DB stays in sync
-  await seedPets()
-
-  const pets = await prisma.pet.findMany({ orderBy: { number: 'asc' } })
-  return NextResponse.json(pets)
+    // Return only pets whose slugs match config (filters out stale hammy/whiskers/nugget)
+    const configSlugs = PETS.map(p => p.id)
+    const pets = await prisma.pet.findMany({
+      where: { slug: { in: configSlugs } },
+      orderBy: { number: 'asc' },
+    })
+    return NextResponse.json(pets)
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err)
+    return NextResponse.json({ error: msg }, { status: 500 })
+  }
 }

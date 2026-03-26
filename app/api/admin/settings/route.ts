@@ -23,32 +23,40 @@ const DEFAULTS = {
 }
 
 export async function GET() {
-  let settings = await prisma.siteSettings.findFirst({ where: { id: 'singleton' } })
-  if (!settings) {
-    settings = await prisma.siteSettings.create({ data: DEFAULTS })
+  try {
+    let settings = await prisma.siteSettings.findFirst({ where: { id: 'singleton' } })
+    if (!settings) {
+      settings = await prisma.siteSettings.create({ data: DEFAULTS })
+    }
+    return NextResponse.json({ ...settings, genesisTs: Number(settings.genesisTs) })
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err)
+    return NextResponse.json({ error: msg }, { status: 500 })
   }
-  return NextResponse.json({ ...settings, genesisTs: Number(settings.genesisTs) })
 }
 
 export async function PATCH(req: Request) {
-  const body = await req.json()
+  try {
+    const body = await req.json()
+    const allowed = [
+      'raceNumber', 'isLive', 'streamUrl', 'replayUrl', 'genesisTs',
+      'twitterUrl', 'tiktokUrl', 'instagramUrl', 'youtubeUrl',
+      'sponsorEmail', 'siteName', 'tagline', 'ogImageUrl', 'buttonLabels',
+    ]
+    const data: Record<string, unknown> = {}
+    for (const key of allowed) {
+      if (key in body) data[key] = body[key]
+    }
+    if ('genesisTs' in data) data.genesisTs = BigInt(data.genesisTs as number)
 
-  // Sanitize: only allow known fields
-  const allowed = [
-    'raceNumber', 'isLive', 'streamUrl', 'replayUrl', 'genesisTs',
-    'twitterUrl', 'tiktokUrl', 'instagramUrl', 'youtubeUrl',
-    'sponsorEmail', 'siteName', 'tagline', 'ogImageUrl', 'buttonLabels',
-  ]
-  const data: Record<string, unknown> = {}
-  for (const key of allowed) {
-    if (key in body) data[key] = body[key]
+    const settings = await prisma.siteSettings.upsert({
+      where: { id: 'singleton' },
+      update: data,
+      create: { ...DEFAULTS, ...data },
+    })
+    return NextResponse.json({ ...settings, genesisTs: Number(settings.genesisTs) })
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err)
+    return NextResponse.json({ error: msg }, { status: 500 })
   }
-  if ('genesisTs' in data) data.genesisTs = BigInt(data.genesisTs as number)
-
-  const settings = await prisma.siteSettings.upsert({
-    where: { id: 'singleton' },
-    update: data,
-    create: { ...DEFAULTS, ...data },
-  })
-  return NextResponse.json({ ...settings, genesisTs: Number(settings.genesisTs) })
 }

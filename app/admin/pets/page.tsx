@@ -71,13 +71,24 @@ export default function PetsPage() {
   const [uploading, setUploading] = useState(false)
   const [seeding,   setSeeding]   = useState(false)
   const [seedMsg,   setSeedMsg]   = useState<string | null>(null)
+  const [loadErr,   setLoadErr]   = useState<string | null>(null)
   const fileRef = useRef<HTMLInputElement>(null)
 
-  const load = () =>
-    fetch('/api/admin/pets').then(r => r.json()).then((data: Pet[]) => {
+  const load = async () => {
+    try {
+      const r = await fetch('/api/admin/pets')
+      const data = await r.json()
+      if (!r.ok || !Array.isArray(data)) {
+        setLoadErr(data?.error ?? 'Failed to load hamsters')
+        return
+      }
+      setLoadErr(null)
       setPets(data)
-      if (data[0] && !draft) setDraft(data[0])
-    })
+      setDraft(prev => prev ? (data.find((p: Pet) => p.id === prev.id) ?? data[0] ?? null) : (data[0] ?? null))
+    } catch (e) {
+      setLoadErr('Network error — could not reach API')
+    }
+  }
 
   useEffect(() => { load() }, []) // eslint-disable-line
 
@@ -130,6 +141,15 @@ export default function PetsPage() {
     setTimeout(() => setSeedMsg(null), 4000)
   }
 
+  if (loadErr) return (
+    <div style={{ padding: 40 }}>
+      <div style={{ fontSize: 16, fontWeight: 700, color: A.red, marginBottom: 8 }}>Failed to load hamsters</div>
+      <div style={{ fontSize: 13, color: A.textMuted, marginBottom: 20 }}>{loadErr}</div>
+      <button onClick={load} style={{ padding: '10px 24px', background: A.yellow, border: 'none', borderRadius: 9999, fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit' }}>
+        Retry
+      </button>
+    </div>
+  )
   if (!draft) return <div style={{ padding: 40, fontSize: 14, color: A.textMuted }}>Loading...</div>
 
   const imgSrc = draft.image || PET_FALLBACK[draft.id.toLowerCase()] || ''

@@ -4,24 +4,29 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
 export async function GET() {
-  const race = await prisma.race.findFirst({
-    where: { status: { not: 'FINISHED' } },
-    include: {
-      entries: {
-        include: { pet: true },
-        orderBy: { totalSol: 'desc' },
+  try {
+    const race = await prisma.race.findFirst({
+      where: { status: { not: 'FINISHED' } },
+      include: {
+        entries: {
+          include: { pet: true },
+          orderBy: { totalSol: 'desc' },
+        },
       },
-    },
-    orderBy: { number: 'asc' },
-  })
+      orderBy: { number: 'asc' },
+    })
 
-  if (!race) return NextResponse.json(null)
+    if (!race) return NextResponse.json(null)
 
-  return NextResponse.json({
-    ...race,
-    entries: race.entries.map((e) => ({
-      ...e,
-      totalSol: Number(e.totalSol),
-    })),
-  })
+    return NextResponse.json({
+      ...race,
+      entries: race.entries.map((e) => ({
+        ...e,
+        totalSol: Number(e.totalSol),
+      })),
+    })
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err)
+    return NextResponse.json({ error: msg }, { status: 500 })
+  }
 }

@@ -12,7 +12,7 @@ export function HeroSection() {
   return (
     <section id="hero" style={{
       position: 'relative',
-      minHeight: '100vh',
+      height: 662,
       overflow: 'hidden',
       background: DARK,
     }}>
@@ -41,11 +41,11 @@ export function HeroSection() {
       {/* Content */}
       <div style={{
         position: 'relative', zIndex: 1,
-        minHeight: '100vh',
+        height: 662,
         display: 'flex', flexDirection: 'column',
         alignItems: 'center',
         textAlign: 'center',
-        padding: '180px 24px 80px',
+        padding: '140px 24px 48px',
       }}>
         <h1 style={{
           fontFamily: KANIT,

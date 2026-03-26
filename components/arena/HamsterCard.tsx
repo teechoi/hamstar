@@ -44,7 +44,8 @@ export function HamsterCard({
   return (
     <div style={{
       background: '#fff',
-      borderRadius: 32,
+      borderRadius: 20,
+      border: goldGlow ? 'none' : '3px solid #000',
       boxShadow: goldGlow
         ? '0 0 0 3px #ffd643, 0 0 32px rgba(255,214,67,0.55), 0 20px 40px rgba(77,67,83,0.08)'
         : '0 20px 40px rgba(77,67,83,0.08)',
@@ -96,11 +97,11 @@ export function HamsterCard({
       </div>
 
       {/* Info */}
-      <div style={{ padding: '20px 24px 24px', width: '100%', textAlign: 'center' }}>
-        <h3 style={{ fontFamily: KANIT, fontSize: 26, fontWeight: 600, color: '#0D0D14', marginBottom: 4 }}>
+      <div style={{ padding: '10px 25px 18px', width: '100%', textAlign: 'center' }}>
+        <h3 style={{ fontFamily: KANIT, fontSize: 20, fontWeight: 500, color: '#0D0D14', marginBottom: 4 }}>
           I&apos;m {name}
         </h3>
-        <p style={{ fontFamily: KANIT, fontSize: 15, color: '#818181', marginBottom: showBar ? 14 : 16 }}>
+        <p style={{ fontFamily: 'Pretendard, sans-serif', fontSize: 14, color: '#818181', marginBottom: showBar ? 14 : 16 }}>
           {tagline}
         </p>
 
@@ -140,8 +141,8 @@ export function HamsterCard({
             style={{
               width: '100%', padding: '14px',
               background: hov ? '#5e47e0' : PURPLE,
-              border: 'none', borderRadius: 48,
-              fontSize: 16, fontWeight: 600,
+              border: 'none', borderRadius: 48.5,
+              fontSize: 14, fontWeight: 500,
               color: '#fff', cursor: 'pointer',
               fontFamily: KANIT, transition: 'background 0.15s',
             }}
@@ -151,18 +152,18 @@ export function HamsterCard({
         ) : (isLive || isFinished) ? (
           <div style={{
             width: '100%', padding: '14px',
-            background: '#e3e3e3', borderRadius: 48,
-            fontSize: 16, fontWeight: 600,
-            color: '#aaa', fontFamily: KANIT, textAlign: 'center',
+            background: '#e3e3e3', borderRadius: 48.5,
+            fontSize: 14, fontWeight: 500,
+            color: '#aaa', fontFamily: 'Pretendard, sans-serif', textAlign: 'center',
           }}>
             {isFinished ? 'Race Finished' : 'Closed'}
           </div>
         ) : (
           <div style={{
             width: '100%', padding: '14px',
-            background: '#d5d5d5', borderRadius: 48,
-            fontSize: 16, fontWeight: 600,
-            color: '#fff', fontFamily: KANIT, textAlign: 'center',
+            background: '#d5d5d5', borderRadius: 48.5,
+            fontSize: 14, fontWeight: 500,
+            color: '#fff', fontFamily: 'Pretendard, sans-serif', textAlign: 'center',
           }}>
             Opens Soon
           </div>

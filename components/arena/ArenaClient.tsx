@@ -95,7 +95,6 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
       <style>{`
         * { box-sizing: border-box; margin: 0; padding: 0; }
         html { scroll-behavior: smooth; }
-        body { font-family: 'Inter', sans-serif; }
         @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.8)} }
       `}</style>
 
@@ -114,12 +113,12 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
         {/* Hero header */}
         <div style={{ textAlign: 'center', padding: isMobile ? '40px 16px 24px' : '60px 24px 32px' }}>
           <h1 style={{
-            fontFamily: KANIT, fontSize: 'clamp(28px, 4vw, 48px)',
-            fontWeight: 700, color: DARK, marginBottom: 12,
+            fontFamily: KANIT, fontSize: 'clamp(20px, 2.5vw, 28px)',
+            fontWeight: 500, color: DARK, marginBottom: 12,
           }}>
             Welcome to Hamstar Arena
           </h1>
-          <p style={{ fontFamily: KANIT, fontSize: 'clamp(14px,1.6vw,20px)', color: '#555', maxWidth: 600, margin: '0 auto' }}>
+          <p style={{ fontFamily: 'Pretendard, sans-serif', fontSize: 16, fontWeight: 500, color: '#8A8A8A', maxWidth: 600, margin: '0 auto' }}>
             {arenaState === 'OPEN'
               ? 'Cheering is open! Pick your hamster and add your support before the race starts.'
               : arenaState === 'LIVE'
@@ -130,12 +129,13 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
           </p>
         </div>
 
-        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 clamp(16px,3vw,48px)' }}>
+        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 clamp(16px,3vw,48px)' }}>
 
           {/* Status card */}
           <div style={{
-            background: '#fff', borderRadius: 32,
-            padding: isMobile ? '20px' : '28px 48px',
+            background: '#fff', borderRadius: 20,
+            border: '3px solid #000',
+            padding: isMobile ? '20px' : '20px 30px',
             boxShadow: '0 20px 40px rgba(77,67,83,0.06)',
             marginBottom: 20,
           }}>
@@ -210,7 +210,7 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
                   {MOCK_TOTAL_SOL} SOL
                 </p>
               </div>
-              <div style={{ width: '100%', height: 12, background: '#f0f0f0', borderRadius: 6, overflow: 'hidden' }}>
+              <div style={{ width: '100%', height: 12, background: '#E9E9E9', borderRadius: 6, overflow: 'hidden' }}>
                 <div style={{
                   width: `${Math.min(100, (MOCK_TOTAL_SOL / MOCK_POOL_TARGET) * 100)}%`,
                   height: '100%', background: PURPLE, borderRadius: 6,
@@ -360,9 +360,9 @@ function YellowBtn({ label, suffix, onClick }: { label: string; suffix: string; 
       onMouseLeave={() => setHov(false)}
       style={{
         flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
-        gap: 12, padding: '22px 32px',
-        background: YELLOW, border: 'none', borderRadius: 70,
-        fontFamily: KANIT, fontSize: 'clamp(16px,2vw,22px)', fontWeight: 700,
+        gap: 12, padding: '16px 59px',
+        background: YELLOW, border: '2px solid #000', borderRadius: 70,
+        fontFamily: KANIT, fontSize: 14, fontWeight: 500,
         color: DARK, cursor: 'pointer',
         opacity: hov ? 0.9 : 1, transition: 'opacity 0.15s',
         boxShadow: '0 20px 40px rgba(77,67,83,0.08)',
@@ -384,10 +384,11 @@ function WatchLiveBtn({ active, href }: { active: boolean; href: string }) {
       onMouseLeave={() => setHov(false)}
       style={{
         flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
-        gap: 12, padding: '22px 32px',
+        gap: 12, padding: '16px 59px',
         background: active ? YELLOW : '#e0e0e0',
+        border: active ? '2px solid #000' : '2px solid #ccc',
         borderRadius: 70, textDecoration: 'none',
-        fontFamily: KANIT, fontSize: 'clamp(16px,2vw,22px)', fontWeight: 700,
+        fontFamily: KANIT, fontSize: 14, fontWeight: 500,
         color: active ? DARK : '#aaa',
         cursor: active ? 'pointer' : 'default',
         opacity: hov ? 0.9 : 1, transition: 'opacity 0.15s',
@@ -404,9 +405,9 @@ function GrayDisabledBtn({ label }: { label: string }) {
   return (
     <div style={{
       flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
-      gap: 12, padding: '22px 32px',
-      background: '#e0e0e0', borderRadius: 70,
-      fontFamily: KANIT, fontSize: 'clamp(16px,2vw,22px)', fontWeight: 700,
+      gap: 12, padding: '16px 59px',
+      background: '#e0e0e0', border: '2px solid #ccc', borderRadius: 70,
+      fontFamily: KANIT, fontSize: 14, fontWeight: 500,
       color: '#aaa', userSelect: 'none',
     }}>
       {label} <span style={{ fontSize: 16 }}>▶</span>
@@ -490,7 +491,7 @@ function FullResultPanel({
             ].map(({ label, value, good }) => (
               <div key={label}>
                 <p style={{ fontFamily: KANIT, fontSize: 12, color: '#aaa', marginBottom: 2 }}>{label}</p>
-                <p style={{ fontFamily: KANIT, fontSize: 22, fontWeight: 700, color: good ? '#00C566' : '#FF3B3B' }}>
+                <p style={{ fontFamily: KANIT, fontSize: 22, fontWeight: 700, color: good ? '#735DFF' : '#FF3B5C' }}>
                   {value}
                 </p>
               </div>

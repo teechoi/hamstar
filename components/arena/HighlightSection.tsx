@@ -17,7 +17,8 @@ function VideoCard({ title, index }: { title: string; index: number }) {
       onMouseLeave={() => setHov(false)}
       style={{
         flex: '1 1 260px', minWidth: 220, maxWidth: 400,
-        borderRadius: 16,
+        borderRadius: 20,
+        border: '3px solid #000',
         overflow: 'hidden',
         background: '#fff',
         boxShadow: hov ? '0 12px 32px rgba(0,0,0,0.13)' : '0 4px 16px rgba(0,0,0,0.07)',
@@ -100,7 +101,7 @@ export function HighlightSection({ lastResult }: HighlightSectionProps) {
 
       {/* Content */}
       <div style={{
-        maxWidth: 1100,
+        maxWidth: 1280,
         margin: '0 auto',
         padding: `0 clamp(16px, 4vw, 48px)`,
         position: 'relative',
@@ -110,16 +111,17 @@ export function HighlightSection({ lastResult }: HighlightSectionProps) {
         <div style={{ textAlign: 'center', marginBottom: 28 }}>
           <h2 style={{
             fontFamily: KANIT,
-            fontSize: 'clamp(28px, 4vw, 48px)',
-            fontWeight: 700,
+            fontSize: 'clamp(20px, 2.5vw, 28px)',
+            fontWeight: 500,
             color: '#0D0D14',
             marginBottom: 8,
           }}>
-            Hamstar Highlight
+            Hamstar Highlights
           </h2>
           <p style={{
-            fontFamily: KANIT,
-            fontSize: 'clamp(14px, 1.5vw, 18px)',
+            fontFamily: 'Pretendard, sans-serif',
+            fontWeight: 500,
+            fontSize: 16,
             color: '#6B5A00',
           }}>
             Catch the best moments from recent races.
@@ -129,7 +131,8 @@ export function HighlightSection({ lastResult }: HighlightSectionProps) {
         {/* Winner bar */}
         <div style={{
           background: '#fff',
-          borderRadius: 16,
+          borderRadius: 20,
+          border: '3px solid #000',
           padding: isMobile ? '16px 20px' : '18px 32px',
           display: 'flex',
           justifyContent: 'space-between',

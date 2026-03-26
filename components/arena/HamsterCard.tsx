@@ -2,6 +2,7 @@
 import { useState } from 'react'
 
 const KANIT = "var(--font-kanit), sans-serif"
+const PURPLE = '#735DFF'
 
 export interface HamsterCardProps {
   id: string
@@ -9,8 +10,12 @@ export interface HamsterCardProps {
   tagline: string
   color: string
   image: string
-  status: 'UPCOMING' | 'LIVE' | 'FINISHED'
-  totalSol?: number
+  arenaState: 'PREPARING' | 'OPEN' | 'LIVE' | 'FINISHED'
+  supportPct?: number     // 0–100, share of total support
+  supporters?: number
+  supportPool?: number    // SOL in pool for this pet
+  isWinner?: boolean      // FINISHED: this pet won
+  isCheering?: boolean    // user is cheering this pet
   onCheer?: () => void
 }
 
@@ -20,23 +25,36 @@ const PET_IMAGES: Record<string, string> = {
   turbo: '/images/hamster-turbo.png',
 }
 
-export function HamsterCard({ id, name, tagline, color, status, totalSol, onCheer }: HamsterCardProps) {
+export function HamsterCard({
+  id, name, tagline, arenaState,
+  supportPct = 0, supporters = 0, supportPool = 0,
+  isWinner = false, isCheering = false,
+  onCheer,
+}: HamsterCardProps) {
   const [hov, setHov] = useState(false)
   const img = PET_IMAGES[id] ?? PET_IMAGES['dash']
-  const isLive = status === 'LIVE'
-  const isFinished = status === 'FINISHED'
+
+  const isOpen     = arenaState === 'OPEN'
+  const isLive     = arenaState === 'LIVE'
+  const isFinished = arenaState === 'FINISHED'
+  const showBar    = isOpen || isLive || isFinished
+  const dimmed     = isFinished && !isWinner
+  const goldGlow   = isFinished && isWinner
 
   return (
     <div style={{
       background: '#fff',
       borderRadius: 32,
-      boxShadow: '0 20px 40px rgba(77,67,83,0.08)',
+      boxShadow: goldGlow
+        ? '0 0 0 3px #ffd643, 0 0 32px rgba(255,214,67,0.55), 0 20px 40px rgba(77,67,83,0.08)'
+        : '0 20px 40px rgba(77,67,83,0.08)',
       overflow: 'hidden',
-      display: 'flex', flexDirection: 'column',
-      alignItems: 'center',
-      flex: '1 1 280px',
-      minWidth: 240, maxWidth: 380,
+      display: 'flex', flexDirection: 'column', alignItems: 'center',
+      flex: '1 1 280px', minWidth: 240, maxWidth: 380,
+      opacity: dimmed ? 0.5 : 1,
+      transition: 'opacity 0.3s, box-shadow 0.3s',
     }}>
+
       {/* Image area */}
       <div style={{
         width: '100%', height: 220,
@@ -65,58 +83,94 @@ export function HamsterCard({ id, name, tagline, color, status, totalSol, onChee
             LIVE
           </div>
         )}
+        {goldGlow && (
+          <div style={{
+            position: 'absolute', top: 12, right: 12,
+            background: '#ffd643', color: '#0D0D14',
+            borderRadius: 20, padding: '3px 10px',
+            fontSize: 11, fontWeight: 700, fontFamily: KANIT,
+          }}>
+            🏆 WINNER
+          </div>
+        )}
       </div>
 
       {/* Info */}
       <div style={{ padding: '20px 24px 24px', width: '100%', textAlign: 'center' }}>
-        <h3 style={{ fontFamily: KANIT, fontSize: 28, fontWeight: 600, color: '#0D0D14', marginBottom: 4 }}>
+        <h3 style={{ fontFamily: KANIT, fontSize: 26, fontWeight: 600, color: '#0D0D14', marginBottom: 4 }}>
           I&apos;m {name}
         </h3>
-        <p style={{ fontFamily: KANIT, fontSize: 16, color: '#818181', marginBottom: 16 }}>
+        <p style={{ fontFamily: KANIT, fontSize: 15, color: '#818181', marginBottom: showBar ? 14 : 16 }}>
           {tagline}
         </p>
 
-        {/* Total */}
-        {(isLive || isFinished) && totalSol !== undefined && (
-          <p style={{ fontFamily: KANIT, fontSize: 14, color: '#aaa', marginBottom: 12 }}>
-            {totalSol > 0 ? `${totalSol.toFixed(2)} SOL in pool` : 'No data yet'}
-          </p>
+        {/* Support bar */}
+        {showBar && (
+          <div style={{ marginBottom: 16, textAlign: 'left' }}>
+            <p style={{ fontFamily: KANIT, fontSize: 12, color: '#888', marginBottom: 6 }}>
+              {supportPct}% of total support
+            </p>
+            <div style={{
+              width: '100%', height: 8, background: '#f0f0f0',
+              borderRadius: 4, overflow: 'hidden', marginBottom: 6,
+            }}>
+              <div style={{
+                width: `${supportPct}%`, height: '100%',
+                background: PURPLE, borderRadius: 4,
+                transition: 'width 0.5s',
+              }} />
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span style={{ fontFamily: KANIT, fontSize: 12, color: '#aaa' }}>
+                Supporters: {supporters}
+              </span>
+              <span style={{ fontFamily: KANIT, fontSize: 12, color: '#aaa' }}>
+                {supportPool} SOL
+              </span>
+            </div>
+          </div>
         )}
 
-        {/* CTA button */}
-        {isLive ? (
+        {/* CTA */}
+        {isOpen ? (
           <button
             onClick={onCheer}
             onMouseEnter={() => setHov(true)}
             onMouseLeave={() => setHov(false)}
             style={{
-              width: '100%', padding: '16px',
-              background: hov ? color : color + 'dd',
+              width: '100%', padding: '14px',
+              background: hov ? '#5e47e0' : PURPLE,
               border: 'none', borderRadius: 48,
-              fontSize: 18, fontWeight: 600,
+              fontSize: 16, fontWeight: 600,
               color: '#fff', cursor: 'pointer',
-              fontFamily: KANIT, transition: 'all 0.15s',
-              transform: hov ? 'scale(1.02)' : 'scale(1)',
+              fontFamily: KANIT, transition: 'background 0.15s',
             }}
           >
-            🎉 Cheer {name}!
+            Cheer {name} 🎉
           </button>
+        ) : (isLive || isFinished) ? (
+          <div style={{
+            width: '100%', padding: '14px',
+            background: '#e3e3e3', borderRadius: 48,
+            fontSize: 16, fontWeight: 600,
+            color: '#aaa', fontFamily: KANIT, textAlign: 'center',
+          }}>
+            {isFinished ? 'Race Finished' : 'Closed'}
+          </div>
         ) : (
           <div style={{
-            width: '100%', padding: '16px',
-            background: '#d5d5d5',
-            borderRadius: 48,
-            fontSize: 18, fontWeight: 600,
-            color: '#fff', fontFamily: KANIT,
-            textAlign: 'center',
+            width: '100%', padding: '14px',
+            background: '#d5d5d5', borderRadius: 48,
+            fontSize: 16, fontWeight: 600,
+            color: '#fff', fontFamily: KANIT, textAlign: 'center',
           }}>
-            {isFinished ? 'Race finished' : 'Opens soon'}
+            Opens Soon
           </div>
         )}
 
-        {!isLive && !isFinished && (
-          <p style={{ fontFamily: KANIT, fontSize: 14, color: '#8d8d8d', marginTop: 12 }}>
-            No data yet
+        {isCheering && (
+          <p style={{ fontFamily: KANIT, fontSize: 12, color: PURPLE, marginTop: 10, fontWeight: 600 }}>
+            ✓ You&apos;re cheering for {name}
           </p>
         )}
       </div>

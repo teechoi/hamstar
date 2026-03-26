@@ -10,7 +10,7 @@ export const SITE = {
   tagline: 'Who will be the Hamstar?',
 
   stream: {
-    // Set isLive: true when a race is actively streaming
+    // Set isLive: true when a race is actively streaming (forces Arena → LIVE state)
     isLive: false,
     // Your pump.fun stream URL (opens in new tab when clicked)
     url: 'https://pump.fun',
@@ -31,6 +31,17 @@ export const SITE = {
 
   // Contact email for sponsorship inquiries
   sponsorEmail: 'sponsors@hamstar.gg',
+
+  // ─── DEMO / PREVIEW ────────────────────────────────────────────────────────
+  // Forces the Arena to show a specific state so all UI is visible.
+  // Set to null (and deploy) to use the real race scheduler.
+  //   'PREPARING' → gray "Opens Soon" buttons, countdown
+  //   'OPEN'      → purple "Cheer" buttons, pool bar, cheering summary
+  //   'LIVE'      → gray "Closed" buttons, race in progress
+  //   'FINISHED'  → gold winner glow, champion row, View Full Result enabled
+  demo: {
+    arenaState: 'OPEN' as 'PREPARING' | 'OPEN' | 'LIVE' | 'FINISHED' | null,
+  },
 }
 
 // ─── PETS ─────────────────────────────────────────────────────────────────────
@@ -122,8 +133,9 @@ export interface RaceResult {
 }
 
 export const RACE_HISTORY: RaceResult[] = [
-  // Uncomment and edit after each race:
-  // { number: 1, date: '2025-03-01', positions: ['dash', 'flash', 'turbo'] },
+  { number: 1, date: '2026-01-15', positions: ['flash', 'dash',  'turbo'] },
+  { number: 2, date: '2026-02-05', positions: ['turbo', 'flash', 'dash']  },
+  { number: 3, date: '2026-03-10', positions: ['dash',  'turbo', 'flash'] },
 ]
 
 // ─── MEDIA ────────────────────────────────────────────────────────────────────

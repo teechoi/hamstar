@@ -4,6 +4,7 @@ import { useIsMobile } from '@/components/ui/index'
 
 const YELLOW = '#FFE790'
 const DARK = '#0D0D14'
+const PURPLE = '#735DFF'
 const KANIT = "var(--font-kanit), sans-serif"
 
 function scrollTo(id: string) {
@@ -14,6 +15,7 @@ export interface LandingNavProps {
   authed?: boolean
   balance?: string
   walletAddress?: string
+  lightBg?: boolean   // true on Arena / Highlights (white bg pages)
   onLoginClick?: () => void
   onDepositClick?: () => void
   onAccountClick?: () => void
@@ -24,6 +26,7 @@ export function LandingNav({
   authed = false,
   balance,
   walletAddress,
+  lightBg = false,
   onLoginClick,
   onDepositClick,
   onAccountClick,
@@ -45,12 +48,15 @@ export function LandingNav({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scrolled])
 
+  // On light-bg pages: use dark colours until the user scrolls (which adds dark overlay)
+  const isDark = !lightBg || scrolled || menuOpen
+
   const NAV_LINKS = [
     { label: 'Home',       id: 'hero',    href: '/'            },
     { label: 'Arena',      id: 'arena',   href: '/arena'       },
     { label: 'Highlights', id: 'hero',    href: '/highlights'  },
-    { label: 'Pet',        id: 'racers',  href: undefined      },
-    { label: 'Sponsors',   id: 'footer',  href: undefined      },
+    { label: 'Pet',        id: 'racers',  href: '/pet'         },
+    { label: 'Sponsors',   id: 'footer',  href: '/sponsors'    },
   ]
 
   return (
@@ -76,10 +82,9 @@ export function LandingNav({
         padding: isMobile ? '10px 16px' : '8px 24px 12px',
         gap: 12,
       }}>
-        {/* Mobile: Logo + hamburger */}
         {isMobile ? (
           <>
-            <span style={{ color: YELLOW, fontFamily: KANIT, fontWeight: 700, fontSize: 16, flex: 1 }}>
+            <span style={{ color: isDark ? YELLOW : DARK, fontFamily: KANIT, fontWeight: 700, fontSize: 16, flex: 1 }}>
               🐹 Hamstar
             </span>
             {authed ? (
@@ -109,19 +114,19 @@ export function LandingNav({
               onClick={() => setMenuOpen(o => !o)}
               style={{
                 background: 'none', border: 'none', cursor: 'pointer',
-                color: '#fff', fontSize: 22, padding: 4, lineHeight: 1,
+                padding: 4, lineHeight: 1,
                 display: 'flex', flexDirection: 'column', gap: 5,
               }}
               aria-label="Menu"
             >
-              <span style={{ display: 'block', width: 22, height: 2, background: menuOpen ? YELLOW : '#fff', transition: 'all 0.2s', transform: menuOpen ? 'translateY(7px) rotate(45deg)' : 'none' }} />
-              <span style={{ display: 'block', width: 22, height: 2, background: menuOpen ? 'transparent' : '#fff', transition: 'all 0.2s' }} />
-              <span style={{ display: 'block', width: 22, height: 2, background: menuOpen ? YELLOW : '#fff', transition: 'all 0.2s', transform: menuOpen ? 'translateY(-7px) rotate(-45deg)' : 'none' }} />
+              {/* Bar colour: yellow when open, theme-aware when closed */}
+              <span style={{ display: 'block', width: 22, height: 2, background: menuOpen ? YELLOW : (isDark ? '#fff' : DARK), transition: 'all 0.2s', transform: menuOpen ? 'translateY(7px) rotate(45deg)' : 'none' }} />
+              <span style={{ display: 'block', width: 22, height: 2, background: menuOpen ? 'transparent' : (isDark ? '#fff' : DARK), transition: 'all 0.2s' }} />
+              <span style={{ display: 'block', width: 22, height: 2, background: menuOpen ? YELLOW : (isDark ? '#fff' : DARK), transition: 'all 0.2s', transform: menuOpen ? 'translateY(-7px) rotate(-45deg)' : 'none' }} />
             </button>
           </>
         ) : (
           <>
-            {/* Desktop left spacer */}
             <div style={{ flex: 1 }} />
 
             {/* Center pills */}
@@ -129,30 +134,32 @@ export function LandingNav({
               {NAV_LINKS.map(({ label, id, href }) => (
                 <NavPill key={label} label={label} onClick={() => href ? window.location.href = href : scrollTo(id)} />
               ))}
-              <GhostPill
-                label="How Hamstar Works"
+              {/* "How Hamstar Works" — white pill + purple text on light bg, ghost on dark */}
+              <HowItWorksPill
+                isDark={isDark}
                 onClick={onHowItWorksClick ?? (() => scrollTo('about'))}
               />
             </div>
 
-            {/* Desktop right: auth */}
+            {/* Right: auth */}
             <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 10 }}>
               {authed ? (
                 <AuthedSection
                   balance={balance}
                   walletAddress={walletAddress}
+                  isDark={isDark}
                   onDepositClick={onDepositClick}
                   onAccountClick={onAccountClick}
                 />
               ) : (
-                <UnauthSection onLoginClick={onLoginClick} />
+                <UnauthSection isDark={isDark} onLoginClick={onLoginClick} />
               )}
             </div>
           </>
         )}
       </div>
 
-      {/* Mobile dropdown menu */}
+      {/* Mobile dropdown — always dark */}
       {isMobile && menuOpen && (
         <div style={{
           background: 'rgba(13,13,20,0.98)',
@@ -160,10 +167,10 @@ export function LandingNav({
           display: 'flex', flexDirection: 'column', gap: 6,
           borderTop: '1px solid rgba(255,255,255,0.08)',
         }}>
-          {NAV_LINKS.map(({ label, id }) => (
+          {NAV_LINKS.map(({ label, id, href }) => (
             <button
               key={label}
-              onClick={() => { scrollTo(id); setMenuOpen(false) }}
+              onClick={() => { href ? (window.location.href = href) : scrollTo(id); setMenuOpen(false) }}
               style={{
                 background: 'none', border: 'none',
                 color: '#fff', fontSize: 15, fontWeight: 500,
@@ -191,8 +198,7 @@ export function LandingNav({
             <button
               onClick={() => { onLoginClick?.(); setMenuOpen(false) }}
               style={{
-                marginTop: 8,
-                padding: '12px',
+                marginTop: 8, padding: '12px',
                 background: YELLOW, border: 'none',
                 borderRadius: 9999, color: DARK,
                 fontSize: 14, fontWeight: 600,
@@ -208,7 +214,7 @@ export function LandingNav({
   )
 }
 
-// ─── Sub-components ────────────────────────────────────────────────────────────
+// ─── Sub-components ─────────────────────────────────────────────────────────────
 
 function NavPill({ label, onClick }: { label: string; onClick: () => void }) {
   const [hov, setHov] = useState(false)
@@ -230,7 +236,7 @@ function NavPill({ label, onClick }: { label: string; onClick: () => void }) {
   )
 }
 
-function GhostPill({ label, onClick }: { label: string; onClick: () => void }) {
+function HowItWorksPill({ isDark, onClick }: { isDark: boolean; onClick: () => void }) {
   const [hov, setHov] = useState(false)
   return (
     <button
@@ -239,19 +245,25 @@ function GhostPill({ label, onClick }: { label: string; onClick: () => void }) {
       onMouseLeave={() => setHov(false)}
       style={{
         padding: '7px 20px',
-        background: hov ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.1)',
+        // Dark context (landing hero / scrolled): semi-transparent ghost
+        // Light context (arena / highlights): solid white with purple text
+        background: isDark
+          ? (hov ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.1)')
+          : (hov ? 'rgba(255,255,255,0.85)' : '#fff'),
         border: 'none', borderRadius: 9999,
-        color: YELLOW, fontSize: 13, fontWeight: 500,
+        color: isDark ? YELLOW : PURPLE,
+        fontSize: 13, fontWeight: 500,
         cursor: 'pointer', fontFamily: KANIT,
-        transition: 'background 0.15s',
+        transition: 'background 0.15s, color 0.15s',
+        boxShadow: isDark ? 'none' : '0 2px 8px rgba(0,0,0,0.08)',
       }}
     >
-      {label}
+      How Hamstar Works
     </button>
   )
 }
 
-function UnauthSection({ onLoginClick }: { onLoginClick?: () => void }) {
+function UnauthSection({ isDark, onLoginClick }: { isDark: boolean; onLoginClick?: () => void }) {
   const [loginHov, setLoginHov] = useState(false)
   const [signupHov, setSignupHov] = useState(false)
   return (
@@ -261,10 +273,11 @@ function UnauthSection({ onLoginClick }: { onLoginClick?: () => void }) {
         onMouseEnter={() => setLoginHov(true)}
         onMouseLeave={() => setLoginHov(false)}
         style={{
-          background: 'none', border: 'none', color: '#fff',
+          background: 'none', border: 'none',
+          color: isDark ? '#fff' : DARK,
           fontSize: 13, fontWeight: 500, cursor: 'pointer',
           fontFamily: KANIT, padding: '7px 10px',
-          opacity: loginHov ? 0.7 : 1, transition: 'opacity 0.15s',
+          opacity: loginHov ? 0.6 : 1, transition: 'opacity 0.15s',
         }}
       >
         Log In
@@ -289,11 +302,13 @@ function UnauthSection({ onLoginClick }: { onLoginClick?: () => void }) {
 function AuthedSection({
   balance,
   walletAddress,
+  isDark,
   onDepositClick,
   onAccountClick,
 }: {
   balance?: string
   walletAddress?: string
+  isDark: boolean
   onDepositClick?: () => void
   onAccountClick?: () => void
 }) {
@@ -307,7 +322,7 @@ function AuthedSection({
   return (
     <>
       {hasBalance && (
-        <span style={{ color: YELLOW, fontSize: 13, fontWeight: 500, fontFamily: KANIT }}>
+        <span style={{ color: isDark ? YELLOW : DARK, fontSize: 13, fontWeight: 500, fontFamily: KANIT }}>
           {balance} USDT
         </span>
       )}
@@ -316,7 +331,8 @@ function AuthedSection({
         onMouseEnter={() => setDepHov(true)}
         onMouseLeave={() => setDepHov(false)}
         style={{
-          background: 'none', border: 'none', color: YELLOW,
+          background: 'none', border: 'none',
+          color: isDark ? YELLOW : PURPLE,
           fontSize: 13, fontWeight: 500, cursor: 'pointer',
           fontFamily: KANIT, padding: '7px 6px',
           opacity: depHov ? 0.75 : 1, transition: 'opacity 0.15s',

@@ -38,36 +38,28 @@ function VideoCard({ title, index }: { title: string; index: number }) {
         cursor: 'pointer',
       }}
     >
-      {/* Thumbnail placeholder */}
+      {/* Thumbnail */}
       <div style={{
         width: '100%', aspectRatio: '16/9',
-        background: 'linear-gradient(135deg, #e8e8e8 0%, #d4d4d4 100%)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
         position: 'relative',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        overflow: 'hidden',
       }}>
-        {/* Play button */}
-        <div style={{
-          width: 56, height: 56,
-          borderRadius: '50%',
-          background: 'rgba(0,0,0,0.28)',
-          backdropFilter: 'blur(4px)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          transition: 'transform 0.15s',
-          transform: hov ? 'scale(1.1)' : 'scale(1)',
-        }}>
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="white">
-            <path d="M8 5v14l11-7z" />
-          </svg>
-        </div>
-        {/* Round label */}
-        <div style={{
-          position: 'absolute', top: 10, left: 12,
-          background: 'rgba(0,0,0,0.5)',
-          borderRadius: 8, padding: '3px 10px',
-          fontFamily: KANIT, fontSize: 11, fontWeight: 600, color: '#fff',
-        }}>
-          CLIP {index + 1}
-        </div>
+        <img
+          src="/images/video-thumbnail.png"
+          alt=""
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+        />
+        <img
+          src="/images/play-button.png"
+          alt="Play"
+          style={{
+            position: 'relative', zIndex: 1,
+            width: 52, height: 52,
+            transform: hov ? 'scale(1.12)' : 'scale(1)',
+            transition: 'transform 0.15s',
+          }}
+        />
       </div>
       {/* Caption */}
       <div style={{ padding: '14px 18px 18px' }}>
@@ -142,6 +134,7 @@ export function HighlightPageClient({ raceHistory }: HighlightPageClientProps) {
       `}</style>
 
       <LandingNav
+        lightBg
         authed={authed}
         walletAddress={walletAddress || undefined}
         onLoginClick={() => setModal('login')}
@@ -151,7 +144,7 @@ export function HighlightPageClient({ raceHistory }: HighlightPageClientProps) {
       />
 
       <main style={{
-        background: '#f8f9fa',
+        background: '#FFE790',
         minHeight: '100vh',
         paddingTop: 87,
         position: 'relative',
@@ -161,33 +154,13 @@ export function HighlightPageClient({ raceHistory }: HighlightPageClientProps) {
         {/* Decorative: hamster wheel top-left */}
         {!isMobile && (
           <img
-            src="/images/hamster-wheel-spin.png"
+            src="/images/hamster-wheel-empty.png"
             alt=""
             aria-hidden
             style={{
               position: 'absolute',
-              top: 60,
-              left: -30,
-              width: 220,
-              height: 'auto',
-              opacity: 0.9,
-              transform: 'rotate(-12deg)',
-              pointerEvents: 'none',
-              zIndex: 0,
-            }}
-          />
-        )}
-
-        {/* Decorative: oats pile bottom-left */}
-        {!isMobile && (
-          <img
-            src="/images/oats-pile.png"
-            alt=""
-            aria-hidden
-            style={{
-              position: 'absolute',
-              bottom: 140,
-              left: 0,
+              top: 80,
+              left: -20,
               width: 180,
               height: 'auto',
               opacity: 0.85,
@@ -205,18 +178,17 @@ export function HighlightPageClient({ raceHistory }: HighlightPageClientProps) {
             aria-hidden
             style={{
               position: 'absolute',
-              bottom: 100,
+              bottom: 120,
               right: 0,
               width: 200,
               height: 'auto',
-              opacity: 0.9,
               pointerEvents: 'none',
               zIndex: 0,
             }}
           />
         )}
 
-        <div style={{ maxWidth: 1100, margin: '0 auto', padding: `0 clamp(16px, 4vw, 48px) 80px`, position: 'relative', zIndex: 1 }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto', padding: `0 clamp(16px, 4vw, 48px) 0`, position: 'relative', zIndex: 1 }}>
 
           {/* Page header */}
           <div style={{
@@ -235,7 +207,7 @@ export function HighlightPageClient({ raceHistory }: HighlightPageClientProps) {
             <p style={{
               fontFamily: KANIT,
               fontSize: 'clamp(14px, 1.6vw, 20px)',
-              color: '#666',
+              color: '#6B5A00',
               maxWidth: 560,
               margin: '0 auto',
             }}>
@@ -336,6 +308,22 @@ export function HighlightPageClient({ raceHistory }: HighlightPageClientProps) {
               </p>
             </div>
           )}
+        </div>
+
+        {/* Oats floor */}
+        <div style={{ width: '100%', lineHeight: 0, marginTop: 40 }}>
+          <img
+            src="/images/oats-pile.png"
+            alt=""
+            aria-hidden
+            style={{
+              width: '100%',
+              height: isMobile ? 80 : 120,
+              objectFit: 'cover',
+              objectPosition: 'top',
+              display: 'block',
+            }}
+          />
         </div>
       </main>
 

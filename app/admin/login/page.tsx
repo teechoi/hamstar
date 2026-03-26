@@ -1,7 +1,8 @@
 'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { A } from '../theme'
+
+const KANIT = 'var(--font-kanit), sans-serif'
 
 export default function LoginPage() {
   const router  = useRouter()
@@ -15,18 +16,49 @@ export default function LoginPage() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: A.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
-      <div style={{ textAlign: 'center' }}>
-        <div style={{ fontSize: 56, marginBottom: 16 }}>🐹</div>
-        <div style={{ fontSize: 24, fontWeight: 900, color: A.gold, marginBottom: 6 }}>Hamstar Admin</div>
-        <div style={{ fontSize: 13, color: A.textMuted, marginBottom: 36 }}>Race management dashboard</div>
+    <div style={{
+      minHeight: '100vh',
+      background: '#0D0D14',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      padding: 20,
+      fontFamily: KANIT,
+    }}>
+      {/* Glow blob */}
+      <div style={{
+        position: 'fixed', bottom: -200, left: -100,
+        width: 600, height: 600, borderRadius: '50%',
+        background: 'rgba(255,231,144,0.06)', filter: 'blur(40px)',
+        pointerEvents: 'none',
+      }} />
+
+      <div style={{ textAlign: 'center', position: 'relative', zIndex: 1 }}>
+        <div style={{ fontSize: 64, marginBottom: 20 }}>🐹</div>
+        <div style={{
+          fontSize: 'clamp(28px, 4vw, 42px)',
+          fontWeight: 900, color: '#FFE790',
+          marginBottom: 8, letterSpacing: -0.5,
+        }}>
+          Hamstar Admin
+        </div>
+        <div style={{ fontSize: 15, color: 'rgba(255,255,255,0.4)', marginBottom: 40 }}>
+          Race management dashboard
+        </div>
         <button
           onClick={enter}
           disabled={loading}
           style={{
-            padding: '14px 40px', background: A.gold, border: 'none', borderRadius: 14,
-            color: A.goldText, fontSize: 16, fontWeight: 900, cursor: loading ? 'not-allowed' : 'pointer',
-            opacity: loading ? 0.7 : 1, fontFamily: 'inherit',
+            padding: '16px 48px',
+            background: '#FFE790',
+            border: 'none',
+            borderRadius: 9999,
+            color: '#0D0D14',
+            fontSize: 18,
+            fontWeight: 900,
+            cursor: loading ? 'not-allowed' : 'pointer',
+            opacity: loading ? 0.7 : 1,
+            fontFamily: KANIT,
+            boxShadow: '0 20px 40px rgba(255,231,144,0.2)',
+            transition: 'opacity 0.15s',
           }}
         >
           {loading ? 'Entering...' : 'Enter Admin →'}

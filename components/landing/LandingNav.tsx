@@ -68,9 +68,10 @@ export function LandingNav({
     }}>
       {/* Tagline strip */}
       <div style={{
-        textAlign: 'center', padding: '6px 0',
-        fontSize: isMobile ? 11 : 13, fontWeight: 500, color: '#fff',
-        fontFamily: KANIT, background: '#7B52FF',
+        textAlign: 'center', height: 35,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        fontSize: isMobile ? 11 : 12, fontWeight: 500, color: '#fff',
+        fontFamily: KANIT, background: '#735DFF',
         letterSpacing: 0.2,
       }}>
         The smallest sport on the internet.
@@ -79,7 +80,7 @@ export function LandingNav({
       {/* Main nav row */}
       <div style={{
         display: 'flex', alignItems: 'center',
-        padding: isMobile ? '10px 16px' : '8px 24px 12px',
+        padding: isMobile ? '10px 16px' : '20px 24px',
         gap: 12,
       }}>
         {isMobile ? (
@@ -92,7 +93,7 @@ export function LandingNav({
                 onClick={onDepositClick}
                 style={{
                   padding: '6px 14px', background: YELLOW, border: 'none',
-                  borderRadius: 9999, color: DARK, fontSize: 12, fontWeight: 600,
+                  borderRadius: 48.5, color: DARK, fontSize: 12, fontWeight: 600,
                   cursor: 'pointer', fontFamily: KANIT,
                 }}
               >
@@ -103,7 +104,7 @@ export function LandingNav({
                 onClick={onLoginClick}
                 style={{
                   padding: '6px 16px', background: YELLOW, border: 'none',
-                  borderRadius: 9999, color: DARK, fontSize: 12, fontWeight: 600,
+                  borderRadius: 48.5, color: DARK, fontSize: 12, fontWeight: 600,
                   cursor: 'pointer', fontFamily: KANIT,
                 }}
               >
@@ -200,8 +201,8 @@ export function LandingNav({
               style={{
                 marginTop: 8, padding: '12px',
                 background: YELLOW, border: 'none',
-                borderRadius: 9999, color: DARK,
-                fontSize: 14, fontWeight: 600,
+                borderRadius: 48.5, color: DARK,
+                fontSize: 12, fontWeight: 600,
                 cursor: 'pointer', fontFamily: KANIT,
               }}
             >
@@ -224,9 +225,9 @@ function NavPill({ label, onClick }: { label: string; onClick: () => void }) {
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
       style={{
-        padding: '7px 20px',
-        background: YELLOW, border: 'none', borderRadius: 9999,
-        color: DARK, fontSize: 13, fontWeight: 500,
+        padding: '7px 40px',
+        background: YELLOW, border: 'none', borderRadius: 48.5,
+        color: DARK, fontSize: 12, fontWeight: 500,
         cursor: 'pointer', fontFamily: KANIT,
         opacity: hov ? 0.85 : 1, transition: 'opacity 0.15s',
       }}
@@ -244,15 +245,15 @@ function HowItWorksPill({ isDark, onClick }: { isDark: boolean; onClick: () => v
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
       style={{
-        padding: '7px 20px',
+        padding: '7px 40px',
         // Dark context (landing hero / scrolled): semi-transparent ghost
         // Light context (arena / highlights): solid white with purple text
         background: isDark
           ? (hov ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.1)')
           : (hov ? 'rgba(255,255,255,0.85)' : '#fff'),
-        border: 'none', borderRadius: 9999,
+        border: 'none', borderRadius: 48.5,
         color: isDark ? YELLOW : PURPLE,
-        fontSize: 13, fontWeight: 500,
+        fontSize: 12, fontWeight: 500,
         cursor: 'pointer', fontFamily: KANIT,
         transition: 'background 0.15s, color 0.15s',
         boxShadow: isDark ? 'none' : '0 2px 8px rgba(0,0,0,0.08)',
@@ -275,7 +276,7 @@ function UnauthSection({ isDark, onLoginClick }: { isDark: boolean; onLoginClick
         style={{
           background: 'none', border: 'none',
           color: isDark ? '#fff' : DARK,
-          fontSize: 13, fontWeight: 500, cursor: 'pointer',
+          fontSize: 12, fontWeight: 500, cursor: 'pointer',
           fontFamily: KANIT, padding: '7px 10px',
           opacity: loginHov ? 0.6 : 1, transition: 'opacity 0.15s',
         }}
@@ -288,7 +289,7 @@ function UnauthSection({ isDark, onLoginClick }: { isDark: boolean; onLoginClick
         onMouseLeave={() => setSignupHov(false)}
         style={{
           padding: '7px 20px', background: YELLOW, border: 'none',
-          borderRadius: 9999, color: DARK, fontSize: 13, fontWeight: 600,
+          borderRadius: 48.5, color: DARK, fontSize: 12, fontWeight: 600,
           cursor: 'pointer', fontFamily: KANIT,
           opacity: signupHov ? 0.85 : 1, transition: 'opacity 0.15s',
         }}
@@ -322,7 +323,7 @@ function AuthedSection({
   return (
     <>
       {hasBalance && (
-        <span style={{ color: isDark ? YELLOW : DARK, fontSize: 13, fontWeight: 500, fontFamily: KANIT }}>
+        <span style={{ color: isDark ? YELLOW : DARK, fontSize: 12, fontWeight: 500, fontFamily: KANIT }}>
           {balance} USDT
         </span>
       )}
@@ -333,7 +334,7 @@ function AuthedSection({
         style={{
           background: 'none', border: 'none',
           color: isDark ? YELLOW : PURPLE,
-          fontSize: 13, fontWeight: 500, cursor: 'pointer',
+          fontSize: 12, fontWeight: 500, cursor: 'pointer',
           fontFamily: KANIT, padding: '7px 6px',
           opacity: depHov ? 0.75 : 1, transition: 'opacity 0.15s',
         }}
@@ -346,8 +347,8 @@ function AuthedSection({
         onMouseLeave={() => setAccHov(false)}
         style={{
           padding: '7px 18px', background: YELLOW,
-          border: 'none', borderRadius: 9999, color: DARK,
-          fontSize: 13, fontWeight: 600, fontFamily: KANIT,
+          border: 'none', borderRadius: 48.5, color: DARK,
+          fontSize: 12, fontWeight: 600, fontFamily: KANIT,
           cursor: 'pointer',
           opacity: accHov ? 0.85 : 1, transition: 'opacity 0.15s',
         }}

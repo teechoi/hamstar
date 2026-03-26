@@ -6,22 +6,24 @@ const DARK = '#0D0D14'
 const MUTED = '#503f00'
 const KANIT = "var(--font-kanit), sans-serif"
 
+const PRETENDARD = "Pretendard, sans-serif"
+
 const linkStyle: React.CSSProperties = {
-  fontFamily: KANIT,
+  fontFamily: PRETENDARD,
   color: MUTED,
   textDecoration: 'none',
   fontSize: 'clamp(14px, 1.4vw, 18px)',
-  fontWeight: 400,
+  fontWeight: 500,
   display: 'block',
   marginBottom: 8,
   transition: 'opacity 0.15s',
 }
 
 const headingStyle: React.CSSProperties = {
-  fontFamily: KANIT,
+  fontFamily: PRETENDARD,
   fontWeight: 600,
   fontSize: 'clamp(14px, 1.4vw, 20px)',
-  color: '#ddad03',
+  color: MUTED,
   marginBottom: 12,
 }
 
@@ -33,8 +35,8 @@ export function LandingFooter() {
 
       {/* Main footer body */}
       <div style={{
-        maxWidth: 1100, margin: '0 auto',
-        padding: '160px 32px 32px',
+        maxWidth: 1280, margin: '0 auto',
+        padding: '60px 32px 32px',
         display: 'flex',
         justifyContent: 'space-between',
         flexWrap: 'wrap',
@@ -43,10 +45,10 @@ export function LandingFooter() {
 
         {/* Left: brand + links */}
         <div>
-          <p style={{ fontFamily: KANIT, fontWeight: 700, fontSize: 'clamp(22px, 2.5vw, 36px)', color: DARK, marginBottom: 4 }}>
+          <p style={{ fontFamily: KANIT, fontWeight: 500, fontSize: 'clamp(22px, 2.5vw, 36px)', color: DARK, marginBottom: 4 }}>
             Hamstar
           </p>
-          <p style={{ fontFamily: KANIT, fontSize: 'clamp(13px, 1.3vw, 18px)', color: MUTED, marginBottom: 28, fontWeight: 400 }}>
+          <p style={{ fontFamily: PRETENDARD, fontSize: 'clamp(13px, 1.3vw, 18px)', color: MUTED, marginBottom: 28, fontWeight: 500 }}>
             Live hamster racing powered by community participation
           </p>
 
@@ -75,7 +77,7 @@ export function LandingFooter() {
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'space-between' }}>
           <p style={{
             fontFamily: KANIT,
-            fontWeight: 600,
+            fontWeight: 500,
             fontSize: 'clamp(16px, 1.8vw, 26px)',
             color: DARK,
             textAlign: 'right',
@@ -87,7 +89,7 @@ export function LandingFooter() {
           </p>
           <a
             href={`mailto:${SITE.sponsorEmail}`}
-            style={{ fontFamily: KANIT, color: MUTED, fontWeight: 400, fontSize: 'clamp(13px, 1.3vw, 18px)', textDecoration: 'none', marginTop: 24 }}
+            style={{ fontFamily: PRETENDARD, color: MUTED, fontWeight: 500, fontSize: 'clamp(13px, 1.3vw, 18px)', textDecoration: 'none', marginTop: 24 }}
           >
             Contact us
           </a>
@@ -102,7 +104,7 @@ export function LandingFooter() {
 
       {/* Bottom legal bar */}
       <div style={{
-        maxWidth: 1100, margin: '0 auto',
+        maxWidth: 1280, margin: '0 auto',
         padding: '16px 32px',
         display: 'flex',
         justifyContent: 'center',
@@ -111,10 +113,10 @@ export function LandingFooter() {
       }}>
         {['Terms of Use', 'Risk Disclosure', 'Animal Welfare', 'Privacy Policy'].map(label => (
           <a key={label} href="#" style={{
-            fontFamily: KANIT,
+            fontFamily: PRETENDARD,
             color: MUTED,
             fontSize: 'clamp(12px, 1.2vw, 16px)',
-            fontWeight: 400,
+            fontWeight: 500,
             textDecoration: 'none',
           }}>
             {label}

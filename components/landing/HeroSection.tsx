@@ -61,10 +61,10 @@ export function HeroSection() {
         </h1>
 
         <p style={{
-          fontFamily: KANIT,
-          fontSize: 'clamp(16px, 2vw, 28px)',
-          color: '#b0b0b0',
-          fontWeight: 500,
+          fontFamily: 'Pretendard, sans-serif',
+          fontSize: 20,
+          color: '#FFE78F',
+          fontWeight: 600,
           marginBottom: 0,
         }}>
           Three hamsters race. One takes the wheel.
@@ -92,21 +92,27 @@ export function HeroSection() {
           onMouseEnter={() => setHov(true)}
           onMouseLeave={() => setHov(false)}
           style={{
-            display: 'inline-block',
-            padding: '18px 56px',
-            background: YELLOW,
-            color: DARK,
-            border: '3px solid #000',
-            borderRadius: 9999,
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 6,
+            width: 150,
+            padding: '5px 10px',
+            background: '#735DFF',
+            color: '#F8F9FA',
+            border: 'none',
+            borderRadius: 70,
             fontFamily: KANIT,
-            fontSize: 'clamp(16px, 1.8vw, 24px)',
-            fontWeight: 700,
+            fontSize: 14,
+            fontWeight: 500,
             textDecoration: 'none',
+            backdropFilter: 'blur(10px)',
             transform: hov ? 'scale(1.04)' : 'scale(1)',
-            boxShadow: hov ? '0 8px 32px rgba(255,231,144,0.4)' : '0 4px 20px rgba(255,231,144,0.25)',
+            boxShadow: hov ? '0 8px 32px rgba(115,93,255,0.5)' : '0 4px 20px rgba(115,93,255,0.3)',
             transition: 'all 0.18s ease-out',
           }}
         >
+          <span style={{ fontSize: 12 }}>▶</span>
           Watch Live Race
         </a>
       </div>

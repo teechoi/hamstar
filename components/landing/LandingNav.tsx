@@ -135,15 +135,14 @@ export function LandingNav({
               {NAV_LINKS.map(({ label, id, href }) => (
                 <NavPill key={label} label={label} onClick={() => href ? window.location.href = href : scrollTo(id)} />
               ))}
-              {/* "How Hamstar Works" — white pill + purple text on light bg, ghost on dark */}
+            </div>
+
+            {/* Right: How Hamstar Works + auth */}
+            <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 10 }}>
               <HowItWorksPill
                 isDark={isDark}
                 onClick={onHowItWorksClick ?? (() => scrollTo('about'))}
               />
-            </div>
-
-            {/* Right: auth */}
-            <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 10 }}>
               {authed ? (
                 <AuthedSection
                   balance={balance}

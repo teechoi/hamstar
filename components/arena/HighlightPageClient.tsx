@@ -15,62 +15,60 @@ const TERMS_KEY = 'hamstar_terms_accepted'
 
 type Modal = 'terms' | 'login' | 'deposit' | 'account' | 'howitworks' | null
 
-interface HighlightPageClientProps {
-  raceHistory: RaceResult[]
+type VideoClip = {
+  id: string; title: string; url: string
+  thumbnail: string | null; duration: string | null; featured: boolean
 }
 
-function VideoCard({ title, index }: { title: string; index: number }) {
+interface HighlightPageClientProps {
+  raceHistory: RaceResult[]
+  videoClips?: VideoClip[]
+}
+
+function VideoCard({ clip }: { clip: VideoClip }) {
   const [hov, setHov] = useState(false)
+  const thumb = clip.thumbnail || '/images/video-thumbnail.png'
   return (
-    <div
+    <a
+      href={clip.url || '#'}
+      target="_blank"
+      rel="noopener noreferrer"
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
       style={{
         flex: '1 1 280px', minWidth: 240, maxWidth: 420,
-        borderRadius: 20,
-        overflow: 'hidden',
-        background: '#fff',
-        boxShadow: hov
-          ? '0 16px 40px rgba(0,0,0,0.12)'
-          : '0 4px 20px rgba(0,0,0,0.06)',
+        borderRadius: 20, overflow: 'hidden', background: '#fff',
+        boxShadow: hov ? '0 16px 40px rgba(0,0,0,0.12)' : '0 4px 20px rgba(0,0,0,0.06)',
         transform: hov ? 'translateY(-6px)' : 'none',
         transition: 'box-shadow 0.2s, transform 0.2s',
-        cursor: 'pointer',
+        cursor: 'pointer', textDecoration: 'none', display: 'block',
       }}
     >
-      {/* Thumbnail */}
       <div style={{
-        width: '100%', aspectRatio: '16/9',
-        position: 'relative',
+        width: '100%', aspectRatio: '16/9', position: 'relative',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         overflow: 'hidden',
       }}>
+        <img src={thumb} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
         <img
-          src="/images/video-thumbnail.png"
-          alt=""
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+          src="/images/play-button.png" alt="Play"
+          style={{ position: 'relative', zIndex: 1, width: 52, height: 52, transform: hov ? 'scale(1.12)' : 'scale(1)', transition: 'transform 0.15s' }}
         />
-        <img
-          src="/images/play-button.png"
-          alt="Play"
-          style={{
-            position: 'relative', zIndex: 1,
-            width: 52, height: 52,
-            transform: hov ? 'scale(1.12)' : 'scale(1)',
-            transition: 'transform 0.15s',
-          }}
-        />
+        {clip.duration && (
+          <span style={{ position: 'absolute', bottom: 8, right: 10, background: 'rgba(0,0,0,0.7)', color: '#fff', fontSize: 11, fontWeight: 700, padding: '2px 7px', borderRadius: 4, fontFamily: KANIT }}>
+            {clip.duration}
+          </span>
+        )}
       </div>
-      {/* Caption */}
       <div style={{ padding: '14px 18px 18px' }}>
         <p style={{ fontFamily: KANIT, fontSize: 15, fontWeight: 600, color: '#0D0D14', marginBottom: 4 }}>
-          {title}
+          {clip.title}
         </p>
         <p style={{ fontFamily: KANIT, fontSize: 12, color: '#999' }}>
           Hamstar Racing · Pump.fun
         </p>
       </div>
-    </div>
+    </a>
   )
 }
 
@@ -107,7 +105,16 @@ function RoundResultRow({ result }: { result: RaceResult }) {
   )
 }
 
-export function HighlightPageClient({ raceHistory }: HighlightPageClientProps) {
+// Static fallback clips shown when no videos have been uploaded yet
+function staticClips(roundNum: number): VideoClip[] {
+  return [
+    { id: 'static-0', title: `Round ${roundNum} — Race Start`,  url: '#', thumbnail: null, duration: null, featured: false },
+    { id: 'static-1', title: `Round ${roundNum} — Final Lap`,   url: '#', thumbnail: null, duration: null, featured: false },
+    { id: 'static-2', title: `Round ${roundNum} — Victory Lap`, url: '#', thumbnail: null, duration: null, featured: false },
+  ]
+}
+
+export function HighlightPageClient({ raceHistory, videoClips = [] }: HighlightPageClientProps) {
   const [modal, setModal] = useState<Modal>(null)
   const [authed, setAuthed] = useState(false)
   const [walletAddress, setWalletAddress] = useState('')
@@ -116,11 +123,10 @@ export function HighlightPageClient({ raceHistory }: HighlightPageClientProps) {
   const lastResult = raceHistory.length ? raceHistory[raceHistory.length - 1] : null
   const winner = lastResult ? PETS.find(p => p.id === lastResult.positions[0]) : null
 
-  const clips = [
-    `Round ${lastResult?.number ?? 1} — Race Start`,
-    `Round ${lastResult?.number ?? 1} — Final Lap`,
-    `Round ${lastResult?.number ?? 1} — Victory Lap`,
-  ]
+  // Use DB video clips if available, otherwise show static placeholders
+  const clips = videoClips.length
+    ? videoClips
+    : staticClips(lastResult?.number ?? 1)
 
   const handleLogin = () => { setAuthed(true); setModal(null) }
   const handleDisconnect = () => { setAuthed(false); setWalletAddress('') }
@@ -267,8 +273,8 @@ export function HighlightPageClient({ raceHistory }: HighlightPageClientProps) {
             Race Clips
           </h2>
           <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap', marginBottom: 56 }}>
-            {clips.map((title, i) => (
-              <VideoCard key={i} title={title} index={i} />
+            {clips.map((clip) => (
+              <VideoCard key={clip.id} clip={clip} />
             ))}
           </div>
 

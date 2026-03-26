@@ -34,6 +34,8 @@ const MOCK_POOL_TARGET = 20
 interface ArenaClientProps {
   race: RaceWindow
   lastResult?: RaceResult
+  isLive?: boolean    // from DB settings — overrides SITE.stream.isLive
+  streamUrl?: string  // from DB settings — overrides SITE.stream.url
 }
 
 function useCountdown(targetMs: number) {
@@ -48,7 +50,7 @@ function useCountdown(targetMs: number) {
   return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`
 }
 
-export function ArenaClient({ race, lastResult }: ArenaClientProps) {
+export function ArenaClient({ race, lastResult, isLive: isLiveProp, streamUrl: streamUrlProp }: ArenaClientProps) {
   const [modal, setModal]         = useState<Modal>(null)
   const [authed, setAuthed]       = useState(false)
   const [walletAddress, setWalletAddress] = useState('')
@@ -56,16 +58,15 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
   const [showResult, setShowResult]       = useState(false)
   const isMobile = useIsMobile()
 
-  // Derive arena state:
-  // - FINISHED: lastResult exists for this race round
-  // - LIVE: race window is LIVE + stream is live (race in progress, cheering closed)
-  // - OPEN: race window is LIVE + stream is not live (cheering open)
-  // - PREPARING: race window is UPCOMING
+  // Derive arena state (DB settings take precedence over static config)
+  const effectiveIsLive  = isLiveProp  ?? SITE.stream.isLive
+  const effectiveStreamUrl = streamUrlProp ?? SITE.stream.url
+
   const isFinished = lastResult?.number === race.raceNumber
   const arenaState: ArenaState = isFinished
     ? 'FINISHED'
     : race.status === 'LIVE'
-      ? (SITE.stream.isLive ? 'LIVE' : 'OPEN')
+      ? (effectiveIsLive ? 'LIVE' : 'OPEN')
       : 'PREPARING'
 
   const countdownTarget = race.status === 'LIVE' ? race.endsAt.getTime() : race.startsAt.getTime()
@@ -273,7 +274,7 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
               </>
             ) : (
               <>
-                <WatchLiveBtn active={arenaState === 'OPEN' || arenaState === 'LIVE'} href={SITE.stream.url} />
+                <WatchLiveBtn active={arenaState === 'OPEN' || arenaState === 'LIVE'} href={effectiveStreamUrl} />
                 <GrayDisabledBtn label="View Full Result" />
               </>
             )}

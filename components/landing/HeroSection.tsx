@@ -16,32 +16,26 @@ export function HeroSection() {
       background: DARK,
       overflow: 'hidden',
     }}>
-      {/* Hero image — inset 107px left, 109px right, top 41px (Figma exact) */}
-      <img
-        src="/images/hero-hamsters.png"
-        alt="Three hamsters ready to race"
-        style={{
-          position: 'absolute',
-          top: 41,
-          left: '8.35%',   // 107/1280
-          right: '8.52%',  // 109/1280
-          height: 577,
-          objectFit: 'cover',
-          objectPosition: 'center center',
-        }}
-      />
-
-      {/* Gradient fades on left and right edges (matching Figma overlays) */}
+      {/* Hero image — centered, max 1064px wide, 577px tall, top 41px */}
       <div style={{
-        position: 'absolute', top: 41, left: 0, width: '10%', height: 577,
-        background: 'linear-gradient(to right, rgba(13,13,20,0.7) 0%, transparent 100%)',
-        pointerEvents: 'none',
-      }} />
-      <div style={{
-        position: 'absolute', top: 41, right: 0, width: '10%', height: 577,
-        background: 'linear-gradient(to left, rgba(13,13,20,0.7) 0%, transparent 100%)',
-        pointerEvents: 'none',
-      }} />
+        position: 'absolute',
+        top: 41,
+        left: 0, right: 0,
+        display: 'flex',
+        justifyContent: 'center',
+        height: 577,
+      }}>
+        <img
+          src="/images/hero-hamsters.png"
+          alt="Three hamsters ready to race"
+          style={{
+            width: 'min(1064px, calc(100% - 216px))',
+            height: '100%',
+            objectFit: 'cover',
+            objectPosition: 'center center',
+          }}
+        />
+      </div>
 
       {/* Content overlay — heading at y=129, CTA at y=556 */}
       <div style={{

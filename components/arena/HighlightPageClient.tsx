@@ -15,8 +15,11 @@ const TERMS_KEY = 'hamstar_terms_accepted'
 
 type Modal = 'terms' | 'login' | 'deposit' | 'account' | 'howitworks' | null
 
+type VideoClip = { id: string; title: string; url: string; thumbnail: string | null; duration: string | null; featured: boolean }
+
 interface HighlightPageClientProps {
   raceHistory: RaceResult[]
+  videoClips?: VideoClip[]
 }
 
 function VideoCard({ title, index }: { title: string; index: number }) {
@@ -107,7 +110,7 @@ function RoundResultRow({ result }: { result: RaceResult }) {
   )
 }
 
-export function HighlightPageClient({ raceHistory }: HighlightPageClientProps) {
+export function HighlightPageClient({ raceHistory, videoClips = [] }: HighlightPageClientProps) {
   const [modal, setModal] = useState<Modal>(null)
   const [authed, setAuthed] = useState(false)
   const [walletAddress, setWalletAddress] = useState('')
@@ -116,11 +119,13 @@ export function HighlightPageClient({ raceHistory }: HighlightPageClientProps) {
   const lastResult = raceHistory.length ? raceHistory[raceHistory.length - 1] : null
   const winner = lastResult ? PETS.find(p => p.id === lastResult.positions[0]) : null
 
-  const clips = [
-    `Round ${lastResult?.number ?? 1} — Race Start`,
-    `Round ${lastResult?.number ?? 1} — Final Lap`,
-    `Round ${lastResult?.number ?? 1} — Victory Lap`,
-  ]
+  const clips = videoClips.length > 0
+    ? videoClips.map(c => c.title)
+    : [
+        `Round ${lastResult?.number ?? 1} — Race Start`,
+        `Round ${lastResult?.number ?? 1} — Final Lap`,
+        `Round ${lastResult?.number ?? 1} — Victory Lap`,
+      ]
 
   const handleLogin = () => { setAuthed(true); setModal(null) }
   const handleDisconnect = () => { setAuthed(false); setWalletAddress('') }

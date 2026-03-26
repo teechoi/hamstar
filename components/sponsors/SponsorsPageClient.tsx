@@ -7,7 +7,7 @@ import { TermsModal } from '@/components/landing/TermsModal'
 import { DepositModal } from '@/components/landing/DepositModal'
 import { AccountModal } from '@/components/landing/AccountModal'
 import { HowItWorksModal } from '@/components/landing/HowItWorksModal'
-import { PETS, SITE } from '@/config/site'
+import { PETS, SITE, type Pet } from '@/config/site'
 import { useIsMobile } from '@/components/ui/index'
 
 const KANIT = "var(--font-kanit), sans-serif"
@@ -90,7 +90,62 @@ function SponsorCard({ petId, name, speed, chaos, wins }: {
   )
 }
 
-export function SponsorsPageClient() {
+export type DbSponsor = {
+  id: string; name: string; emoji: string; tier: string
+  websiteUrl: string | null; solPerRace: number
+  pet: { id: string; slug: string; name: string; color: string; image: string } | null
+}
+
+const TIER_LABEL: Record<string, string> = { TITLE: 'Title Sponsor', GOLD: 'Gold Sponsor', SILVER: 'Silver Sponsor' }
+const TIER_COLOR: Record<string, string> = { TITLE: '#FF3B5C', GOLD: '#f5a623', SILVER: '#7A00FF' }
+const TIER_GLOW:  Record<string, string> = { TITLE: 'rgba(255,59,92,0.18)', GOLD: 'rgba(245,166,35,0.18)', SILVER: 'rgba(122,0,255,0.15)' }
+
+function RealSponsorCard({ sponsor }: { sponsor: DbSponsor }) {
+  const [hov, setHov] = useState(false)
+  const tc = TIER_COLOR[sponsor.tier] ?? '#888'
+  const tg = TIER_GLOW[sponsor.tier]  ?? 'rgba(0,0,0,0.08)'
+  const petImg = sponsor.pet?.image || PET_IMAGES[sponsor.pet?.slug ?? ''] || ''
+  const content = (
+    <div onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)} style={{
+      flex: '1 1 280px', minWidth: 240, maxWidth: 380,
+      background: hov ? tc + '08' : '#fff', borderRadius: 40,
+      border: `2px solid ${hov ? tc : 'transparent'}`,
+      boxShadow: hov ? `0 20px 48px ${tg}, 0 0 0 1px ${tc}33` : '0 4px 24px rgba(77,67,83,0.06)',
+      transform: hov ? 'translateY(-4px)' : 'none',
+      transition: 'box-shadow 0.2s, transform 0.2s, border-color 0.2s, background 0.2s',
+      padding: '32px 28px 36px', display: 'flex', flexDirection: 'column',
+      cursor: sponsor.websiteUrl ? 'pointer' : 'default',
+    }}>
+      <div style={{ alignSelf: 'flex-start', marginBottom: 16, padding: '4px 12px', borderRadius: 99, background: tc + '22', border: `1.5px solid ${tc}`, fontSize: 11, fontWeight: 700, fontFamily: KANIT, color: tc }}>
+        {TIER_LABEL[sponsor.tier] ?? sponsor.tier}
+      </div>
+      <p style={{ fontFamily: KANIT, fontSize: 'clamp(20px,2vw,30px)', fontWeight: 700, color: '#0D0D14', marginBottom: 4 }}>
+        {sponsor.emoji} {sponsor.name}
+      </p>
+      {sponsor.pet && <p style={{ fontFamily: KANIT, fontSize: 13, color: '#a0a0a0', marginBottom: 20 }}>Supporting {sponsor.pet.name}</p>}
+      {petImg && (
+        <div style={{ width: 64, height: 64, borderRadius: '50%', background: '#e8e8e8', overflow: 'hidden', marginTop: 'auto' }}>
+          <img src={petImg} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }} />
+        </div>
+      )}
+    </div>
+  )
+  return sponsor.websiteUrl
+    ? <a href={sponsor.websiteUrl} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', flex: '1 1 280px', minWidth: 240, maxWidth: 380 }}>{content}</a>
+    : content
+}
+
+export function SponsorsPageClient({
+  pets: petsProp,
+  sponsors = [],
+  sponsorEmail: emailProp,
+}: {
+  pets?: Pet[]
+  sponsors?: DbSponsor[]
+  sponsorEmail?: string
+} = {}) {
+  const pets         = petsProp?.length ? petsProp : PETS
+  const sponsorEmail = emailProp ?? SITE.sponsorEmail
   const [modal, setModal] = useState<Modal>(null)
   const [authed, setAuthed] = useState(false)
   const [walletAddress, setWalletAddress] = useState('')
@@ -170,21 +225,24 @@ export function SponsorsPageClient() {
             flexWrap: 'wrap', justifyContent: 'center',
             marginBottom: 56,
           }}>
-            {PETS.map(pet => (
-              <SponsorCard
-                key={pet.id}
-                petId={pet.id}
-                name={pet.name}
-                speed={pet.speed}
-                chaos={pet.chaos}
-                wins={pet.wins}
-              />
-            ))}
+            {sponsors.length > 0
+              ? sponsors.map(s => <RealSponsorCard key={s.id} sponsor={s} />)
+              : pets.map(pet => (
+                <SponsorCard
+                  key={pet.id}
+                  petId={pet.id}
+                  name={pet.name}
+                  speed={pet.speed}
+                  chaos={pet.chaos}
+                  wins={pet.wins}
+                />
+              ))
+            }
           </div>
 
           {/* Get In Touch CTA */}
           <a
-            href={`mailto:${SITE.sponsorEmail}`}
+            href={`mailto:${sponsorEmail}`}
             onMouseEnter={() => setCtaHov(true)}
             onMouseLeave={() => setCtaHov(false)}
             style={{

@@ -31,7 +31,10 @@ const TIER_LABEL: Record<string, string> = {
   TITLE: 'Title Sponsor', GOLD: 'Gold Sponsor', SILVER: 'Silver Sponsor',
 }
 const TIER_COLOR: Record<string, string> = {
-  TITLE: '#ffd643', GOLD: '#f5a623', SILVER: '#b0b0b0',
+  TITLE: '#FF3B5C', GOLD: '#f5a623', SILVER: '#7A00FF',
+}
+const TIER_GLOW: Record<string, string> = {
+  TITLE: 'rgba(255,59,92,0.18)', GOLD: 'rgba(245,166,35,0.18)', SILVER: 'rgba(122,0,255,0.15)',
 }
 
 // ─── Real sponsor card (from DB) ─────────────────────────────────────────────
@@ -39,16 +42,22 @@ function RealSponsorCard({ sponsor }: { sponsor: DbSponsor }) {
   const [hov, setHov] = useState(false)
   const petSlug = sponsor.pet?.slug ?? ''
   const petImg  = sponsor.pet?.image || PET_IMAGES[petSlug] || ''
+  const tc = TIER_COLOR[sponsor.tier] ?? '#888'
+  const tg = TIER_GLOW[sponsor.tier] ?? 'rgba(0,0,0,0.08)'
   const content = (
     <div
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
       style={{
         flex: '1 1 280px', minWidth: 240, maxWidth: 380,
-        background: '#fff', borderRadius: 40,
-        boxShadow: hov ? '0 20px 48px rgba(77,67,83,0.12)' : '0 4px 24px rgba(77,67,83,0.06)',
+        background: hov ? tc + '08' : '#fff',
+        borderRadius: 40,
+        border: `2px solid ${hov ? tc : 'transparent'}`,
+        boxShadow: hov
+          ? `0 20px 48px ${tg}, 0 0 0 1px ${tc}33`
+          : '0 4px 24px rgba(77,67,83,0.06)',
         transform: hov ? 'translateY(-4px)' : 'none',
-        transition: 'box-shadow 0.2s, transform 0.2s',
+        transition: 'box-shadow 0.2s, transform 0.2s, border-color 0.2s, background 0.2s',
         padding: '32px 28px 36px',
         display: 'flex', flexDirection: 'column',
         cursor: sponsor.websiteUrl ? 'pointer' : 'default',
@@ -58,10 +67,10 @@ function RealSponsorCard({ sponsor }: { sponsor: DbSponsor }) {
       <div style={{
         alignSelf: 'flex-start', marginBottom: 16,
         padding: '4px 12px', borderRadius: 99,
-        background: TIER_COLOR[sponsor.tier] + '22',
-        border: `1.5px solid ${TIER_COLOR[sponsor.tier]}`,
+        background: tc + '22',
+        border: `1.5px solid ${tc}`,
         fontSize: 11, fontWeight: 700, fontFamily: KANIT,
-        color: TIER_COLOR[sponsor.tier] === '#b0b0b0' ? '#666' : TIER_COLOR[sponsor.tier],
+        color: tc,
       }}>
         {TIER_LABEL[sponsor.tier] ?? sponsor.tier}
       </div>
@@ -94,41 +103,60 @@ function RealSponsorCard({ sponsor }: { sponsor: DbSponsor }) {
 // ─── Placeholder card shown per-pet when no sponsors yet ─────────────────────
 function PlaceholderCard({ pet }: { pet: Pet }) {
   const [hov, setHov] = useState(false)
+  const petImg = pet.image || PET_IMAGES[pet.id] || ''
   return (
     <div
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
       style={{
         flex: '1 1 280px', minWidth: 240, maxWidth: 380,
-        background: '#fff', borderRadius: 40,
-        boxShadow: hov ? '0 20px 48px rgba(77,67,83,0.12)' : '0 4px 24px rgba(77,67,83,0.06)',
+        background: hov ? 'rgba(115,93,255,0.04)' : '#fff',
+        borderRadius: 40,
+        boxShadow: hov
+          ? '0 20px 48px rgba(115,93,255,0.15), 0 0 0 1px rgba(115,93,255,0.25)'
+          : '0 4px 24px rgba(77,67,83,0.06)',
+        border: `2px ${hov ? 'solid rgba(115,93,255,0.5)' : 'dashed #e0e0e0'}`,
         transform: hov ? 'translateY(-4px)' : 'none',
-        transition: 'box-shadow 0.2s, transform 0.2s',
-        padding: '32px 28px 36px',
-        display: 'flex', flexDirection: 'column', gap: 0,
-        border: '2px dashed #e0e0e0',
+        transition: 'box-shadow 0.2s, transform 0.2s, border 0.2s, background 0.2s',
+        padding: '28px 28px 0',
+        display: 'flex', flexDirection: 'column',
+        overflow: 'hidden',
       }}
     >
-      <div style={{ width: 80, height: 80, borderRadius: '50%', background: '#e8e8e8', overflow: 'hidden', marginBottom: 20 }}>
-        <img src={PET_IMAGES[pet.id] ?? ''} alt={pet.name} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }} />
-      </div>
-      <p style={{ fontFamily: KANIT, fontSize: 'clamp(18px, 2vw, 28px)', fontWeight: 700, color: '#0D0D14', marginBottom: 4 }}>
+      <p style={{ fontFamily: KANIT, fontSize: 'clamp(18px, 2vw, 26px)', fontWeight: 700, color: '#0D0D14', marginBottom: 4 }}>
         Title Sponsor
       </p>
-      <p style={{ fontFamily: KANIT, fontSize: 13, color: '#a0a0a0', marginBottom: 20 }}>
+      <p style={{ fontFamily: KANIT, fontSize: 13, color: '#a0a0a0', marginBottom: 16 }}>
         Available — Supporting {pet.name}
       </p>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 5, marginBottom: 20 }}>
         {[
           { label: 'Performance', value: `${pet.speed}%` },
           { label: 'Style', value: pet.chaos >= 70 ? 'Chaotic' : pet.chaos >= 45 ? 'Aggressive' : 'Steady' },
           { label: 'Wins', value: `${pet.wins}` },
         ].map(({ label, value }) => (
-          <p key={label} style={{ fontFamily: KANIT, fontSize: 'clamp(13px, 1.3vw, 16px)', color: '#333' }}>
-            {label}: {value}
+          <p key={label} style={{ fontFamily: KANIT, fontSize: 'clamp(12px, 1.2vw, 14px)', color: '#555' }}>
+            <span style={{ color: '#a0a0a0' }}>{label}:</span> {value}
           </p>
         ))}
       </div>
+      {/* Full hamster image at bottom of card */}
+      {petImg && (
+        <div style={{ marginTop: 'auto', height: 160, display: 'flex', alignItems: 'flex-end', justifyContent: 'center', overflow: 'hidden' }}>
+          <img
+            src={petImg}
+            alt={pet.name}
+            style={{
+              height: hov ? 175 : 160,
+              width: 'auto',
+              objectFit: 'contain',
+              objectPosition: 'bottom',
+              transition: 'height 0.2s',
+              display: 'block',
+            }}
+          />
+        </div>
+      )}
     </div>
   )
 }

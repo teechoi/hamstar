@@ -7,7 +7,7 @@ import { TermsModal } from '@/components/landing/TermsModal'
 import { DepositModal } from '@/components/landing/DepositModal'
 import { AccountModal } from '@/components/landing/AccountModal'
 import { HowItWorksModal } from '@/components/landing/HowItWorksModal'
-import { PETS, type Pet } from '@/config/site'
+import { PETS } from '@/config/site'
 import { useIsMobile } from '@/components/ui/index'
 
 const KANIT = "var(--font-kanit), sans-serif"
@@ -28,15 +28,14 @@ function styleLabel(chaos: number): string {
   return 'Steady'
 }
 
-export function PetPageClient({ pets: petsProp }: { pets?: Pet[] }) {
-  const pets = petsProp?.length ? petsProp : PETS
+export function PetPageClient() {
   const [modal, setModal] = useState<Modal>(null)
   const [authed, setAuthed] = useState(false)
   const [walletAddress, setWalletAddress] = useState('')
-  const [selectedId, setSelectedId] = useState(pets[0]?.id ?? '')
+  const [selectedId, setSelectedId] = useState(PETS[0].id)
   const isMobile = useIsMobile()
 
-  const selected = pets.find(p => p.id === selectedId) ?? pets[0]
+  const selected = PETS.find(p => p.id === selectedId) ?? PETS[0]
 
   const handleLogin = () => { setAuthed(true); setModal(null) }
   const handleDisconnect = () => { setAuthed(false); setWalletAddress('') }
@@ -112,7 +111,7 @@ export function PetPageClient({ pets: petsProp }: { pets?: Pet[] }) {
             marginBottom: 40,
             flexWrap: 'wrap',
           }}>
-            {pets.map(pet => {
+            {PETS.map(pet => {
               const isActive = pet.id === selectedId
               return (
                 <button

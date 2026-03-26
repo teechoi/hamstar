@@ -1,10 +1,5 @@
 import { getCurrentRaceWindow } from '@/lib/race-scheduler'
-import { LandingNav }     from '@/components/landing/LandingNav'
-import { HeroSection }    from '@/components/landing/HeroSection'
-import { AboutSection }   from '@/components/landing/AboutSection'
-import { RacersSection }  from '@/components/landing/RacersSection'
-import { ArenaSection }   from '@/components/landing/ArenaSection'
-import { LandingFooter }  from '@/components/landing/LandingFooter'
+import { HomeLanding } from '@/components/landing/HomeLanding'
 
 export default function LandingPage() {
   const race = getCurrentRaceWindow()
@@ -20,16 +15,7 @@ export default function LandingPage() {
         @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.8)} }
         @media (max-width: 640px) { .section-deco { display: none !important; } }
       `}</style>
-      <div style={{ position: 'relative' }}>
-        <LandingNav />
-        <main>
-          <HeroSection />
-          <AboutSection />
-          <RacersSection />
-          <ArenaSection targetMs={targetMs} isLive={isLive} />
-        </main>
-        <LandingFooter />
-      </div>
+      <HomeLanding targetMs={targetMs} isLive={isLive} />
     </>
   )
 }

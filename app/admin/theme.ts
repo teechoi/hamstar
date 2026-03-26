@@ -1,0 +1,23 @@
+// Admin-only design tokens — dark Hamstar brand
+export const A = {
+  bg:         '#0D0D14',
+  sidebar:    '#0A0A10',
+  card:       '#181820',
+  cardHov:    '#1E1E2C',
+  border:     'rgba(255,255,255,0.08)',
+  borderMid:  'rgba(255,255,255,0.16)',
+  text:       '#FFFFFF',
+  textMid:    '#BBBBCC',
+  textMuted:  '#77778A',
+  gold:       '#F5D050',
+  goldDark:   '#C9AA30',
+  goldText:   '#0D0D14',
+  goldSoft:   'rgba(245,208,80,0.12)',
+  green:      '#00C566',
+  greenSoft:  'rgba(0,197,102,0.12)',
+  red:        '#FF3B5C',
+  redSoft:    'rgba(255,59,92,0.12)',
+  blue:       '#4F8EF7',
+  blueSoft:   'rgba(79,142,247,0.12)',
+  inputBg:    'rgba(255,255,255,0.05)',
+}

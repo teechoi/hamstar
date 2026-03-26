@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import { T, LimeButton } from '@/components/ui'
+import { A } from '../theme'
 
 type Settings = {
   raceNumber: number; isLive: boolean; streamUrl: string; replayUrl: string | null
@@ -9,7 +9,7 @@ type Settings = {
   buttonLabels: Record<string, string>
 }
 
-const DEFAULT_BUTTON_LABELS: Record<string, string> = {
+const DEFAULT_BTNS: Record<string, string> = {
   watchLive: '▶ Watch Live Now',
   watchUpcoming: '🔔 View on pump.fun',
   raceHistory: '📋 Race History',
@@ -19,17 +19,13 @@ const DEFAULT_BUTTON_LABELS: Record<string, string> = {
 
 function Toggle({ value, onChange, label }: { value: boolean; onChange: (v: boolean) => void; label: string }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 0', borderBottom: `1px solid ${T.border}` }}>
-      <span style={{ fontSize: 13, color: T.text, fontWeight: 600 }}>{label}</span>
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 0', borderBottom: `1px solid ${A.border}` }}>
+      <span style={{ fontSize: 13, color: A.textMid, fontWeight: 600 }}>{label}</span>
       <button onClick={() => onChange(!value)} style={{
         width: 48, height: 26, borderRadius: 13, border: 'none', cursor: 'pointer',
-        background: value ? T.lime : T.border, position: 'relative', transition: 'background 0.2s',
+        background: value ? A.gold : A.border, position: 'relative', transition: 'background 0.2s',
       }}>
-        <span style={{
-          position: 'absolute', top: 3, left: value ? 24 : 3,
-          width: 20, height: 20, borderRadius: '50%', background: '#fff',
-          transition: 'left 0.2s', display: 'block',
-        }} />
+        <span style={{ position: 'absolute', top: 3, left: value ? 24 : 3, width: 20, height: 20, borderRadius: '50%', background: value ? A.goldText : '#fff', transition: 'left 0.2s', display: 'block' }} />
       </button>
     </div>
   )
@@ -38,89 +34,82 @@ function Toggle({ value, onChange, label }: { value: boolean; onChange: (v: bool
 function Field({ label, value, onChange, type = 'text', placeholder }: { label: string; value: string; onChange: (v: string) => void; type?: string; placeholder?: string }) {
   return (
     <div style={{ marginBottom: 16 }}>
-      <label style={{ display: 'block', fontSize: 11, fontWeight: 800, color: T.textMuted, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 6 }}>{label}</label>
-      <input
-        type={type} value={value} onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        style={{ width: '100%', padding: '10px 12px', border: `1.5px solid ${T.border}`, borderRadius: 8, fontSize: 13, color: T.text, fontFamily: 'inherit', outline: 'none', background: T.bg }}
+      <label style={{ display: 'block', fontSize: 11, fontWeight: 800, color: A.textMuted, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 6 }}>{label}</label>
+      <input type={type} value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder}
+        style={{ width: '100%', padding: '10px 14px', background: A.inputBg, border: `1px solid ${A.border}`, borderRadius: 8, fontSize: 13, color: A.text, outline: 'none', fontFamily: 'inherit' }}
       />
     </div>
   )
 }
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+function Card({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div style={{ background: T.card, border: `2px solid ${T.border}`, borderRadius: 16, padding: 24, marginBottom: 20 }}>
-      <div style={{ fontSize: 11, fontWeight: 800, color: T.textMuted, textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 20 }}>{title}</div>
+    <div style={{ background: A.card, border: `1px solid ${A.border}`, borderRadius: 16, padding: 24, marginBottom: 20 }}>
+      <div style={{ fontSize: 11, fontWeight: 800, color: A.textMuted, textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 20 }}>{title}</div>
       {children}
     </div>
   )
 }
 
 export function SettingsForm({ initialSettings }: { initialSettings: Settings }) {
-  const [settings, setSettings] = useState<Settings>(initialSettings)
+  const [s,      setS]      = useState<Settings>(initialSettings)
+  const [btns,   setBtns]   = useState({ ...DEFAULT_BTNS, ...initialSettings.buttonLabels })
   const [saving, setSaving] = useState(false)
-  const [saved, setSaved] = useState(false)
-  const [buttonLabels, setButtonLabels] = useState<Record<string, string>>(
-    { ...DEFAULT_BUTTON_LABELS, ...(initialSettings.buttonLabels ?? {}) }
-  )
+  const [saved,  setSaved]  = useState(false)
 
-  const update = (patch: Partial<Settings>) => setSettings((s) => ({ ...s, ...patch }))
+  const upd = (patch: Partial<Settings>) => setS(prev => ({ ...prev, ...patch }))
 
   const save = async () => {
     setSaving(true)
-    await fetch('/api/admin/settings', {
-      method: 'PATCH', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...settings, buttonLabels }),
-    })
-    setSaving(false)
-    setSaved(true)
+    await fetch('/api/admin/settings', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...s, buttonLabels: btns }) })
+    setSaving(false); setSaved(true)
     setTimeout(() => setSaved(false), 2500)
   }
 
   return (
     <div className="admin-page" style={{ maxWidth: 700 }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 28, flexWrap: 'wrap', gap: 12 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 28, flexWrap: 'wrap', gap: 12 }}>
         <div>
-          <div style={{ fontSize: 22, fontWeight: 900, color: T.text }}>Site Settings</div>
-          <div style={{ fontSize: 13, color: T.textMuted, marginTop: 4 }}>Changes save to the database and go live immediately</div>
+          <div style={{ fontSize: 22, fontWeight: 900, color: A.text }}>Settings</div>
+          <div style={{ fontSize: 13, color: A.textMuted, marginTop: 4 }}>Changes go live immediately after saving</div>
         </div>
-        <LimeButton onClick={save}>{saving ? 'Saving...' : saved ? '✓ Saved!' : 'Save All Changes'}</LimeButton>
+        <button onClick={save} disabled={saving} style={{ padding: '11px 28px', background: A.gold, border: 'none', borderRadius: 12, color: A.goldText, fontSize: 14, fontWeight: 900, cursor: 'pointer', fontFamily: 'inherit' }}>
+          {saving ? 'Saving...' : saved ? '✓ Saved!' : 'Save All'}
+        </button>
       </div>
 
-      <Section title="Race Settings">
-        <Toggle label="Race is LIVE" value={settings.isLive} onChange={(v) => update({ isLive: v })} />
+      <Card title="Race">
+        <Toggle label="Race is LIVE" value={s.isLive} onChange={v => upd({ isLive: v })} />
         <div style={{ height: 16 }} />
-        <Field label="Current Race Number" value={String(settings.raceNumber)} onChange={(v) => update({ raceNumber: parseInt(v) || 1 })} />
-        <Field label="Stream URL" value={settings.streamUrl} onChange={(v) => update({ streamUrl: v })} placeholder="https://pump.fun/..." />
-        <Field label="Replay URL (optional)" value={settings.replayUrl ?? ''} onChange={(v) => update({ replayUrl: v || null })} placeholder="https://youtube.com/watch?v=..." />
-      </Section>
+        <Field label="Current Race Number" value={String(s.raceNumber)} onChange={v => upd({ raceNumber: parseInt(v) || 1 })} />
+        <Field label="Stream URL"         value={s.streamUrl}     onChange={v => upd({ streamUrl: v })}     placeholder="https://pump.fun/..." />
+        <Field label="Replay URL"         value={s.replayUrl ?? ''} onChange={v => upd({ replayUrl: v || null })} placeholder="https://youtube.com/watch?v=..." />
+      </Card>
 
-      <Section title="Social Links">
-        <Field label="Twitter / X" value={settings.twitterUrl ?? ''} onChange={(v) => update({ twitterUrl: v || null })} placeholder="https://twitter.com/hamstar" />
-        <Field label="TikTok" value={settings.tiktokUrl ?? ''} onChange={(v) => update({ tiktokUrl: v || null })} placeholder="https://tiktok.com/@hamstar" />
-        <Field label="Instagram" value={settings.instagramUrl ?? ''} onChange={(v) => update({ instagramUrl: v || null })} placeholder="https://instagram.com/hamstar" />
-        <Field label="YouTube" value={settings.youtubeUrl ?? ''} onChange={(v) => update({ youtubeUrl: v || null })} placeholder="https://youtube.com/@hamstar" />
-      </Section>
+      <Card title="Social Links">
+        <Field label="Twitter / X" value={s.twitterUrl ?? ''}   onChange={v => upd({ twitterUrl: v || null })}   placeholder="https://twitter.com/hamstar" />
+        <Field label="TikTok"      value={s.tiktokUrl ?? ''}    onChange={v => upd({ tiktokUrl: v || null })}    placeholder="https://tiktok.com/@hamstar" />
+        <Field label="Instagram"   value={s.instagramUrl ?? ''} onChange={v => upd({ instagramUrl: v || null })} placeholder="https://instagram.com/hamstar" />
+        <Field label="YouTube"     value={s.youtubeUrl ?? ''}   onChange={v => upd({ youtubeUrl: v || null })}   placeholder="https://youtube.com/@hamstar" />
+      </Card>
 
-      <Section title="Button Labels & CTAs">
-        <div style={{ fontSize: 12, color: T.textMuted, marginBottom: 16 }}>Change any button text across the entire site without touching code.</div>
-        {Object.entries(buttonLabels).map(([key, val]) => (
-          <Field
-            key={key}
-            label={key.replace(/([A-Z])/g, ' $1').replace(/^./, (s) => s.toUpperCase())}
+      <Card title="Button Labels">
+        <div style={{ fontSize: 12, color: A.textMuted, marginBottom: 16 }}>Change button text across the site without touching code.</div>
+        {Object.entries(btns).map(([key, val]) => (
+          <Field key={key}
+            label={key.replace(/([A-Z])/g, ' $1').replace(/^./, s => s.toUpperCase())}
             value={val}
-            onChange={(v) => setButtonLabels((b) => ({ ...b, [key]: v }))}
+            onChange={v => setBtns(b => ({ ...b, [key]: v }))}
           />
         ))}
-      </Section>
+      </Card>
 
-      <Section title="General">
-        <Field label="Site Name" value={settings.siteName} onChange={(v) => update({ siteName: v })} />
-        <Field label="Tagline" value={settings.tagline} onChange={(v) => update({ tagline: v })} />
-        <Field label="Sponsor Contact Email" value={settings.sponsorEmail} onChange={(v) => update({ sponsorEmail: v })} type="email" />
-        <Field label="OG Image URL" value={settings.ogImageUrl ?? ''} onChange={(v) => update({ ogImageUrl: v || null })} placeholder="https://..." />
-      </Section>
+      <Card title="General">
+        <Field label="Site Name"            value={s.siteName}          onChange={v => upd({ siteName: v })} />
+        <Field label="Tagline"              value={s.tagline}           onChange={v => upd({ tagline: v })} />
+        <Field label="Sponsor Contact Email" value={s.sponsorEmail}     onChange={v => upd({ sponsorEmail: v })} type="email" />
+        <Field label="OG Image URL"         value={s.ogImageUrl ?? ''} onChange={v => upd({ ogImageUrl: v || null })} placeholder="https://..." />
+      </Card>
     </div>
   )
 }

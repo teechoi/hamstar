@@ -113,12 +113,12 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
         {/* Hero header */}
         <div style={{ textAlign: 'center', padding: isMobile ? '40px 16px 24px' : '60px 24px 32px' }}>
           <h1 style={{
-            fontFamily: KANIT, fontSize: 'clamp(20px, 2.5vw, 28px)',
-            fontWeight: 500, color: DARK, marginBottom: 12,
+            fontFamily: KANIT, fontSize: 'clamp(22px, 3vw, 32px)',
+            fontWeight: 600, color: DARK, marginBottom: 12,
           }}>
             Welcome to Hamstar Arena
           </h1>
-          <p style={{ fontFamily: 'Pretendard, sans-serif', fontSize: 16, fontWeight: 500, color: '#8A8A8A', maxWidth: 600, margin: '0 auto' }}>
+          <p style={{ fontFamily: KANIT, fontSize: 'clamp(14px, 1.6vw, 18px)', fontWeight: 400, color: DARK, maxWidth: 700, margin: '0 auto' }}>
             {arenaState === 'OPEN'
               ? 'Cheering is open! Pick your hamster and add your support before the race starts.'
               : arenaState === 'LIVE'
@@ -133,10 +133,10 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
 
           {/* Status card */}
           <div style={{
-            background: '#fff', borderRadius: 20,
-            border: '3px solid #000',
-            padding: isMobile ? '20px' : '20px 30px',
+            background: '#fff', borderRadius: 24,
+            padding: isMobile ? '20px' : '24px 48px',
             boxShadow: '0 20px 40px rgba(77,67,83,0.06)',
+            backdropFilter: 'blur(20px)',
             marginBottom: 20,
           }}>
             <div style={{
@@ -159,11 +159,11 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
                   padding: isMobile ? 0 : '0 24px',
                   borderLeft: (!isMobile && i > 0) ? '1px solid #f0f0f0' : 'none',
                 }}>
-                  <p style={{ fontFamily: KANIT, fontSize: 'clamp(12px,1.2vw,15px)', color: '#888', marginBottom: 4 }}>
+                  <p style={{ fontFamily: KANIT, fontSize: isMobile ? 13 : 18, fontWeight: 400, color: '#888', marginBottom: 4 }}>
                     {label}
                   </p>
                   <p style={{
-                    fontFamily: KANIT, fontSize: 'clamp(16px,1.8vw,24px)', fontWeight: 600,
+                    fontFamily: KANIT, fontSize: isMobile ? 16 : 20, fontWeight: 500,
                     color: purple ? PURPLE : DARK,
                     fontVariantNumeric: 'tabular-nums',
                   }}>
@@ -360,9 +360,9 @@ function YellowBtn({ label, suffix, onClick }: { label: string; suffix: string; 
       onMouseLeave={() => setHov(false)}
       style={{
         flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
-        gap: 12, padding: '16px 59px',
+        gap: 12, padding: '16px 48px',
         background: YELLOW, border: '2px solid #000', borderRadius: 70,
-        fontFamily: KANIT, fontSize: 14, fontWeight: 500,
+        fontFamily: 'Pretendard, sans-serif', fontSize: 17, fontWeight: 700,
         color: DARK, cursor: 'pointer',
         opacity: hov ? 0.9 : 1, transition: 'opacity 0.15s',
         boxShadow: '0 20px 40px rgba(77,67,83,0.08)',
@@ -384,11 +384,11 @@ function WatchLiveBtn({ active, href }: { active: boolean; href: string }) {
       onMouseLeave={() => setHov(false)}
       style={{
         flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
-        gap: 12, padding: '16px 59px',
+        gap: 12, padding: '16px 48px',
         background: active ? YELLOW : '#e0e0e0',
         border: active ? '2px solid #000' : '2px solid #ccc',
         borderRadius: 70, textDecoration: 'none',
-        fontFamily: KANIT, fontSize: 14, fontWeight: 500,
+        fontFamily: 'Pretendard, sans-serif', fontSize: 17, fontWeight: 700,
         color: active ? DARK : '#aaa',
         cursor: active ? 'pointer' : 'default',
         opacity: hov ? 0.9 : 1, transition: 'opacity 0.15s',
@@ -405,9 +405,9 @@ function GrayDisabledBtn({ label }: { label: string }) {
   return (
     <div style={{
       flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
-      gap: 12, padding: '16px 59px',
+      gap: 12, padding: '16px 48px',
       background: '#e0e0e0', border: '2px solid #ccc', borderRadius: 70,
-      fontFamily: KANIT, fontSize: 14, fontWeight: 500,
+      fontFamily: 'Pretendard, sans-serif', fontSize: 17, fontWeight: 700,
       color: '#aaa', userSelect: 'none',
     }}>
       {label} <span style={{ fontSize: 16 }}>▶</span>

@@ -44,21 +44,21 @@ export function HamsterCard({
   return (
     <div style={{
       background: '#fff',
-      borderRadius: 20,
-      border: goldGlow ? 'none' : '3px solid #000',
+      borderRadius: 24,
       boxShadow: goldGlow
         ? '0 0 0 3px #ffd643, 0 0 32px rgba(255,214,67,0.55), 0 20px 40px rgba(77,67,83,0.08)'
-        : '0 20px 40px rgba(77,67,83,0.08)',
+        : '0 20px 40px rgba(77,67,83,0.06)',
+      backdropFilter: 'blur(20px)',
       overflow: 'hidden',
       display: 'flex', flexDirection: 'column', alignItems: 'center',
-      flex: '1 1 280px', minWidth: 240, maxWidth: 380,
+      flex: '1 1 300px', minWidth: 260, maxWidth: 400,
       opacity: dimmed ? 0.5 : 1,
       transition: 'opacity 0.3s, box-shadow 0.3s',
     }}>
 
       {/* Image area */}
       <div style={{
-        width: '100%', height: 220,
+        width: '100%', height: 240,
         display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
         background: 'linear-gradient(180deg, #f5f5f5 0%, #efefef 100%)',
         position: 'relative', overflow: 'hidden',
@@ -101,14 +101,14 @@ export function HamsterCard({
         <h3 style={{ fontFamily: KANIT, fontSize: 20, fontWeight: 500, color: '#0D0D14', marginBottom: 4 }}>
           I&apos;m {name}
         </h3>
-        <p style={{ fontFamily: 'Pretendard, sans-serif', fontSize: 14, color: '#818181', marginBottom: showBar ? 14 : 16 }}>
+        <p style={{ fontFamily: KANIT, fontSize: 14, fontWeight: 400, color: '#808080', marginBottom: showBar ? 14 : 16 }}>
           {tagline}
         </p>
 
         {/* Support bar */}
         {showBar && (
           <div style={{ marginBottom: 16, textAlign: 'left' }}>
-            <p style={{ fontFamily: KANIT, fontSize: 12, color: '#888', marginBottom: 6 }}>
+            <p style={{ fontFamily: KANIT, fontSize: 13, color: '#8D8D8D', marginBottom: 6 }}>
               {supportPct}% of total support
             </p>
             <div style={{
@@ -122,10 +122,10 @@ export function HamsterCard({
               }} />
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ fontFamily: KANIT, fontSize: 12, color: '#aaa' }}>
+              <span style={{ fontFamily: KANIT, fontSize: 14, color: '#000' }}>
                 Supporters: {supporters}
               </span>
-              <span style={{ fontFamily: KANIT, fontSize: 12, color: '#aaa' }}>
+              <span style={{ fontFamily: KANIT, fontSize: 14, color: '#000' }}>
                 {supportPool} SOL
               </span>
             </div>

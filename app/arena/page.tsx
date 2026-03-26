@@ -1,53 +1,31 @@
 import { getCurrentRaceWindow } from '@/lib/race-scheduler'
 import { RACE_HISTORY, SITE } from '@/config/site'
 import { ArenaClient } from '@/components/arena/ArenaClient'
-import { prisma } from '@/lib/prisma'
 import type { RaceWindow } from '@/lib/race-scheduler'
 import type { RaceResult } from '@/config/site'
 
-export const dynamic = 'force-dynamic'
-
-export default async function ArenaPage() {
-  // Pull live settings and last finished race from DB
-  let isLive:    boolean         = SITE.stream.isLive
-  let streamUrl: string          = SITE.stream.url
-  let lastResult: RaceResult | undefined = RACE_HISTORY.length ? RACE_HISTORY[RACE_HISTORY.length - 1] : undefined
-
-  try {
-    const [settings, lastRace] = await Promise.all([
-      prisma.siteSettings.findFirst({ where: { id: 'singleton' } }),
-      prisma.race.findFirst({
-        where: { status: 'FINISHED' },
-        orderBy: { number: 'desc' },
-        include: { entries: { orderBy: { position: 'asc' }, include: { pet: { select: { slug: true } } } } },
-      }),
-    ])
-    if (settings) {
-      isLive    = settings.isLive
-      streamUrl = settings.streamUrl || SITE.stream.url
-    }
-    if (lastRace) {
-      lastResult = {
-        number:    lastRace.number,
-        date:      lastRace.startsAt.toISOString().split('T')[0],
-        positions: lastRace.entries.map(e => e.pet.slug),
-      }
-    }
-  } catch { /* DB unavailable — using config defaults */ }
-
+export default function ArenaPage() {
   const realRace = getCurrentRaceWindow()
+  const lastHistoryResult = RACE_HISTORY.length ? RACE_HISTORY[RACE_HISTORY.length - 1] : undefined
 
-  // Demo mode override
   const demoState = SITE.demo?.arenaState
   if (!demoState) {
-    return <ArenaClient race={realRace} lastResult={lastResult} isLive={isLive} streamUrl={streamUrl} />
+    return <ArenaClient race={realRace} lastResult={lastHistoryResult} />
   }
 
+  // Build a mock RaceWindow so ArenaClient's existing logic produces the demo state.
+  // FINISHED  → race.raceNumber matches lastResult.number  → isFinished = true
+  // OPEN      → race.status = 'LIVE', stream.isLive = false → arenaState = 'OPEN'
+  // LIVE      → race.status = 'LIVE', stream.isLive = true  → arenaState = 'LIVE'
+  // PREPARING → race.status = 'UPCOMING'                    → arenaState = 'PREPARING'
   const now = Date.now()
   const ONE_HOUR = 60 * 60 * 1000
+
+  // For FINISHED we reuse the last history result and set raceNumber to match it.
+  // For other states we use the next round number so no stale result interferes.
   const demoRaceNumber = demoState === 'FINISHED'
-    ? (lastResult?.number ?? 3)
-    : (lastResult ? lastResult.number + 1 : 4)
+    ? (lastHistoryResult?.number ?? 3)
+    : (lastHistoryResult ? lastHistoryResult.number + 1 : 4)
 
   const mockRace: RaceWindow = {
     raceNumber:   demoRaceNumber,
@@ -58,16 +36,14 @@ export default async function ArenaPage() {
     msUntilEnd:   ONE_HOUR,
   }
 
+  // The OPEN vs LIVE split inside 'LIVE' status is driven by SITE.stream.isLive in ArenaClient.
+  // Temporarily override here by patching SITE (server-only, no runtime cost).
+  if (demoState === 'LIVE')  SITE.stream.isLive = true
+  if (demoState === 'OPEN')  SITE.stream.isLive = false
+
   const demoLastResult: RaceResult | undefined = demoState === 'FINISHED'
-    ? (lastResult ?? { number: demoRaceNumber, date: '2026-03-25', positions: ['dash', 'flash', 'turbo'] })
+    ? (lastHistoryResult ?? { number: demoRaceNumber, date: '2026-03-25', positions: ['dash', 'flash', 'turbo'] })
     : undefined
 
-  return (
-    <ArenaClient
-      race={mockRace}
-      lastResult={demoLastResult}
-      isLive={demoState === 'LIVE'}
-      streamUrl={streamUrl}
-    />
-  )
+  return <ArenaClient race={mockRace} lastResult={demoLastResult} />
 }

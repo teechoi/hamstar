@@ -34,8 +34,6 @@ const MOCK_POOL_TARGET = 20
 interface ArenaClientProps {
   race: RaceWindow
   lastResult?: RaceResult
-  isLive?: boolean
-  streamUrl?: string
 }
 
 function useCountdown(targetMs: number) {
@@ -50,7 +48,7 @@ function useCountdown(targetMs: number) {
   return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`
 }
 
-export function ArenaClient({ race, lastResult, isLive: isLiveProp, streamUrl: streamUrlProp }: ArenaClientProps) {
+export function ArenaClient({ race, lastResult }: ArenaClientProps) {
   const [modal, setModal]         = useState<Modal>(null)
   const [authed, setAuthed]       = useState(false)
   const [walletAddress, setWalletAddress] = useState('')
@@ -63,14 +61,11 @@ export function ArenaClient({ race, lastResult, isLive: isLiveProp, streamUrl: s
   // - LIVE: race window is LIVE + stream is live (race in progress, cheering closed)
   // - OPEN: race window is LIVE + stream is not live (cheering open)
   // - PREPARING: race window is UPCOMING
-  const effectiveIsLive = isLiveProp ?? SITE.stream.isLive
-  const effectiveStreamUrl = streamUrlProp ?? SITE.stream.url
-
   const isFinished = lastResult?.number === race.raceNumber
   const arenaState: ArenaState = isFinished
     ? 'FINISHED'
     : race.status === 'LIVE'
-      ? (effectiveIsLive ? 'LIVE' : 'OPEN')
+      ? (SITE.stream.isLive ? 'LIVE' : 'OPEN')
       : 'PREPARING'
 
   const countdownTarget = race.status === 'LIVE' ? race.endsAt.getTime() : race.startsAt.getTime()
@@ -278,7 +273,7 @@ export function ArenaClient({ race, lastResult, isLive: isLiveProp, streamUrl: s
               </>
             ) : (
               <>
-                <WatchLiveBtn active={arenaState === 'OPEN' || arenaState === 'LIVE'} href={effectiveStreamUrl} />
+                <WatchLiveBtn active={arenaState === 'OPEN' || arenaState === 'LIVE'} href={SITE.stream.url} />
                 <GrayDisabledBtn label="View Full Result" />
               </>
             )}

@@ -2,152 +2,95 @@
 import { useState } from 'react'
 
 const YELLOW = '#FFE790'
-const DARK = '#0D0D14'
 const KANIT = "var(--font-kanit), sans-serif"
-const PURPLE = '#735DFF'
 
 interface TermsModalProps {
   onAccept: () => void
 }
 
-const SECTIONS = [
-  {
-    num: '① Entertainment Only',
-    body: 'Hamstar Arena is an entertainment platform. It does not constitute financial advice, investment services, or regulated gambling. Participation is for entertainment purposes only.',
-  },
-  {
-    num: '② Risk Disclosure',
-    body: null,
-    bodyRich: true,
-  },
-  {
-    num: '③ No Guarantees',
-    body: 'Past race results do not indicate future outcomes. No returns, profits, or rewards are guaranteed under any circumstance. Hamstar Arena makes no warranties, express or implied, regarding outcomes.',
-  },
-  {
-    num: '④ Restricted Access',
-    body: 'This platform is strictly unavailable to residents or nationals of the United States, China, France, Belgium, Singapore, and other prohibited jurisdictions. Use of VPNs or misrepresentation of location is a direct violation of these Terms and will result in permanent account termination.',
-  },
-  {
-    num: '⑤ On-Chain Finality',
-    body: 'All transactions executed on this platform are processed on-chain and are irreversible. Hamster Arena bears no liability for errors, failed transactions, or losses resulting from network conditions.',
-  },
-]
-
-const CHECKBOXES = [
-  'I am 18 years of age or older and legally eligible to access this platform in my jurisdiction.',
-  'I am not a resident, citizen, or national of any jurisdiction where access to this platform is prohibited by applicable law.',
-  'I understand this is an entertainment platform and not a regulated financial service.',
-  'I have read and agree to the Terms of Use, Risk Disclosure, and Privacy Policy.',
-]
+// Bullet dot y-positions relative to the image container (image-relative coords)
+// Figma card-relative: y=290,302,325,338 → image starts at card y=22 → image-relative: 268,280,303,316
+const BULLET_Y = [268, 280, 303, 316]
 
 export function TermsModal({ onAccept }: TermsModalProps) {
-  const [checks, setChecks] = useState([false, false, false, false])
-  const [attempted, setAttempted] = useState(false)
-  const allChecked = checks.every(Boolean)
-
-  const toggle = (i: number) => setChecks(prev => prev.map((v, j) => j === i ? !v : v))
+  const [hov, setHov] = useState(false)
 
   return (
     <div style={{
       position: 'fixed', inset: 0, zIndex: 10000,
-      background: 'rgba(0,0,0,0.65)',
-      backdropFilter: 'blur(15px)',
+      background: 'rgba(0,0,0,0.5)',
+      backdropFilter: 'blur(10px)',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
-      padding: 20,
     }}>
+      {/* Card — 324×422, white, cornerRadius 20 */}
       <div style={{
-        background: '#fff',
-        borderRadius: 26,
-        width: '100%', maxWidth: 580,
-        maxHeight: '90vh',
-        overflowY: 'auto',
-        padding: '40px 44px',
-        fontFamily: KANIT,
+        background: '#FFFFFF',
+        borderRadius: 20,
+        width: 324,
+        height: 422,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        overflow: 'hidden',
+        flexShrink: 0,
       }}>
-        <h2 style={{
-          fontSize: 26, fontWeight: 600, color: DARK,
-          marginBottom: 8, textAlign: 'center',
+
+        {/* Hamster portrait image — 290×325, 22px from top */}
+        <div style={{
+          width: 290,
+          height: 325,
+          marginTop: 22,
+          position: 'relative',
+          flexShrink: 0,
         }}>
-          Welcome to Hamstar Arena 🐹
-        </h2>
-        <p style={{ fontSize: 15, color: DARK, textAlign: 'center', marginBottom: 4 }}>
-          A live-streamed blockchain-based entertainment experience
-        </p>
-        <p style={{ fontSize: 14, color: PURPLE, fontWeight: 500, textAlign: 'center', marginBottom: 28 }}>
-          Please read before entering:
-        </p>
-
-        {SECTIONS.map((s, i) => (
-          <div key={i} style={{ marginBottom: 20 }}>
-            <p style={{ fontSize: 14, color: '#6e6e6e', fontWeight: 400, marginBottom: 5 }}>
-              {s.num}
-            </p>
-            {s.bodyRich ? (
-              <p style={{ fontSize: 13, color: '#8a8a8a', lineHeight: 1.65 }}>
-                Participating involves digital assets that may fluctuate significantly in value. You may lose the full
-                amount you participate with.{' '}
-                <strong style={{ color: '#6a6a6a' }}>Only use funds you can afford to lose entirely.</strong>
-              </p>
-            ) : (
-              <p style={{ fontSize: 13, color: '#8a8a8a', lineHeight: 1.65 }}>{s.body}</p>
-            )}
-          </div>
-        ))}
-
-        <p style={{
-          fontSize: 13, color: PURPLE, fontWeight: 500,
-          textAlign: 'center', margin: '24px 0 16px',
-        }}>
-          By clicking below, you agree to Hamster Arena's Terms of Use.
-        </p>
-
-        {CHECKBOXES.map((label, i) => (
-          <label key={i} style={{
-            display: 'flex', alignItems: 'flex-start', gap: 10,
-            marginBottom: 12, cursor: 'pointer',
-          }}>
+          <img
+            src="/images/hamster-entry.png"
+            alt="Hamstar"
+            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+          />
+          {/* Bullet dots overlaid on image — Figma: 7×7, #D9D9D9, cornerRadius 1 */}
+          {BULLET_Y.map((top, i) => (
             <div
-              onClick={() => toggle(i)}
+              key={i}
               style={{
-                width: 16, height: 16, borderRadius: 3, flexShrink: 0, marginTop: 2,
-                background: checks[i] ? PURPLE : '#d9d9d9',
-                border: `2px solid ${attempted && !checks[i] ? '#e53e3e' : checks[i] ? PURPLE : '#ccc'}`,
-                cursor: 'pointer',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                transition: 'all 0.15s',
+                position: 'absolute',
+                left: 1,
+                top,
+                width: 7,
+                height: 7,
+                borderRadius: 1,
+                background: '#D9D9D9',
+                pointerEvents: 'none',
               }}
-            >
-              {checks[i] && <span style={{ color: '#fff', fontSize: 10, lineHeight: 1 }}>✓</span>}
-            </div>
-            <span style={{ fontSize: 13, color: attempted && !checks[i] ? '#e53e3e' : DARK, lineHeight: 1.55 }}>{label}</span>
-          </label>
-        ))}
+            />
+          ))}
+        </div>
 
-        {attempted && !allChecked && (
-          <p style={{ fontSize: 12, color: '#e53e3e', textAlign: 'center', marginTop: 8, marginBottom: 0 }}>
-            Please check all boxes above to continue.
-          </p>
-        )}
-
+        {/* CTA button — 280×35, yellow, cornerRadius 70, Kanit 500/14px */}
         <button
-          onClick={() => { setAttempted(true); if (allChecked) onAccept() }}
+          onClick={onAccept}
+          onMouseEnter={() => setHov(true)}
+          onMouseLeave={() => setHov(false)}
           style={{
-            display: 'block', width: '100%',
-            marginTop: 16,
-            padding: '16px',
-            background: allChecked ? YELLOW : '#f0f0f0',
-            border: allChecked ? '2px solid #000' : '2px solid #ccc',
+            width: 280,
+            height: 35,
+            marginTop: 20,
+            background: YELLOW,
+            border: 'none',
             borderRadius: 70,
-            fontSize: 14, fontWeight: 500,
-            color: allChecked ? DARK : '#aaa',
-            cursor: 'pointer',
             fontFamily: KANIT,
-            transition: 'all 0.2s',
+            fontSize: 14,
+            fontWeight: 500,
+            color: '#000000',
+            cursor: 'pointer',
+            flexShrink: 0,
+            opacity: hov ? 0.88 : 1,
+            transition: 'opacity 0.15s',
           }}
         >
           I Understand & Enter Arena
         </button>
+
       </div>
     </div>
   )

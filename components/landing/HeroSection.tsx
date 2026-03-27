@@ -27,19 +27,22 @@ export function HeroSection() {
         display: 'flex',
         justifyContent: 'center',
       }}>
+        {/* Figma: image 1064px wide in 1280px frame = 107px margin each side */}
         <div style={{
           position: 'relative',
-          width: '100%',
+          width: 'min(1064px, calc(100% - 214px))',
         }}>
           <img
             src="/images/hero-hamsters.png"
             alt="Three hamsters ready to race"
             style={{ width: '100%', height: 'auto', display: 'block' }}
           />
-          {/* Top + bottom fades only — no side fades so image fills edge to edge */}
+          {/* Gradient fades — Left 12% (125/1064), Right 9% (92/1064), Top/Bottom 22% (125/577) */}
           <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
-            <div style={{ position: 'absolute', top: 0, left: 0,    width: '100%', height: '22%', background: 'linear-gradient(to bottom, #000, transparent)' }} />
-            <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: '22%', background: 'linear-gradient(to top,    #000, transparent)' }} />
+            <div style={{ position: 'absolute', top: 0, left: 0,    width: '12%',  height: '100%', background: 'linear-gradient(to right, #000, transparent)' }} />
+            <div style={{ position: 'absolute', top: 0, right: 0,   width: '9%',   height: '100%', background: 'linear-gradient(to left,  #000, transparent)' }} />
+            <div style={{ position: 'absolute', top: 0, left: 0,    width: '100%', height: '22%',  background: 'linear-gradient(to bottom, #000, transparent)' }} />
+            <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: '22%',  background: 'linear-gradient(to top,    #000, transparent)' }} />
           </div>
         </div>
       </div>

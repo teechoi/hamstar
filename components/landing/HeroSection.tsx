@@ -36,12 +36,10 @@ export function HeroSection() {
             alt="Three hamsters ready to race"
             style={{ width: '100%', height: 'auto', display: 'block' }}
           />
-          {/* Edge gradient fades — percentages apply to actual rendered image size */}
+          {/* Top + bottom fades only — no side fades so image fills edge to edge */}
           <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
-            <div style={{ position: 'absolute', top: 0, left: 0,    width: '12%',  height: '100%', background: 'linear-gradient(to right, #000, transparent)' }} />
-            <div style={{ position: 'absolute', top: 0, right: 0,   width: '9%',   height: '100%', background: 'linear-gradient(to left,  #000, transparent)' }} />
-            <div style={{ position: 'absolute', top: 0, left: 0,    width: '100%', height: '22%',  background: 'linear-gradient(to bottom, #000, transparent)' }} />
-            <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: '22%',  background: 'linear-gradient(to top,    #000, transparent)' }} />
+            <div style={{ position: 'absolute', top: 0, left: 0,    width: '100%', height: '22%', background: 'linear-gradient(to bottom, #000, transparent)' }} />
+            <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: '22%', background: 'linear-gradient(to top,    #000, transparent)' }} />
           </div>
         </div>
       </div>

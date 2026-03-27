@@ -36,7 +36,7 @@ function RacerCard({ name, tagline, image, featured }: Racer) {
         flexShrink: 0,
         position: 'relative',
         transform: hov ? 'translateY(-6px)' : 'translateY(0)',
-        boxShadow: active ? '0 16px 48px rgba(115,93,255,0.35)' : '0 2px 8px rgba(0,0,0,0.06)',
+        boxShadow: active ? '0 16px 48px rgba(115,93,255,0.8)' : '0 2px 8px rgba(0,0,0,0.06)',
         transition: 'transform 0.2s ease-out, box-shadow 0.2s ease-out, border 0.2s ease-out',
         cursor: 'default',
       }}

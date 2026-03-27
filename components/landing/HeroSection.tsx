@@ -29,7 +29,7 @@ export function HeroSection() {
       }}>
         <div style={{
           position: 'relative',
-          width: isMobile ? 'calc(100% - 32px)' : 'min(1064px, calc(100% - 214px))',
+          width: '100%',
         }}>
           <img
             src="/images/hero-hamsters.png"

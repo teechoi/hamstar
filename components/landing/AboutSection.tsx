@@ -5,82 +5,82 @@ const KANIT = "var(--font-kanit), sans-serif"
 export function AboutSection() {
   return (
     <section id="about" style={{
-      background: '#F2F2F2',
-      padding: '80px 24px 100px',
+      background: '#F8F9FA',
+      height: 526,
+      position: 'relative',
       overflow: 'hidden',
     }}>
+      {/* 1280×526 canvas, centered */}
       <div style={{
-        maxWidth: 1100, margin: '0 auto',
-        display: 'flex', alignItems: 'center', gap: 'clamp(24px, 5vw, 80px)',
+        position: 'absolute',
+        width: 1280,
+        height: 526,
+        left: '50%',
+        transform: 'translateX(-50%)',
       }}>
 
-        {/* Left: images */}
-        <div style={{
-          position: 'relative',
-          flexShrink: 0,
-          width: 'clamp(180px, 28vw, 360px)',
-          alignSelf: 'stretch',
-        }}>
-          {/* Tilted card behind image */}
+        {/* Left group — x=167, y=76, 394×380 */}
+        <div style={{ position: 'absolute', left: 167, top: 76, width: 394, height: 380 }}>
+          {/* White card — 380×380, radius 23 */}
           <div style={{
-            position: 'absolute',
-            inset: '-8%',
-            background: '#fff',
-            border: '1.5px solid #e0e0e0',
-            borderRadius: 24,
-            transform: 'rotate(-11.5deg)',
-            zIndex: 0,
+            position: 'absolute', left: 0, top: 0,
+            width: 380, height: 380,
+            borderRadius: 23,
+            background: '#FFFFFF',
+            boxShadow: '0 4px 24px rgba(0,0,0,0.08)',
           }} />
+          {/* Hamster wheel image — local (62, 44), 219×291 */}
           <img
             src="/images/hamster-wheel.png"
-            alt=""
-            style={{ width: '100%', display: 'block', position: 'relative', zIndex: 1 }}
+            alt="Hamster on wheel"
+            style={{
+              position: 'absolute', left: 62, top: 44,
+              width: 219, height: 291,
+              objectFit: 'contain',
+            }}
           />
+          {/* Sunflower image — local (257, 190), 137×172 */}
           <img
             src="/images/sunflower.png"
             alt=""
             style={{
-              position: 'absolute',
-              bottom: -20,
-              right: -24,
-              width: '55%',
-              pointerEvents: 'none',
-              zIndex: 2,
+              position: 'absolute', left: 257, top: 190,
+              width: 137, height: 172,
+              objectFit: 'contain',
             }}
           />
         </div>
 
-        {/* Right: text */}
-        <div style={{ flex: 1 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 32 }}>
-            <img src="/images/sunflower-seed.png" alt="" style={{ width: 32, opacity: 0.85 }} />
-            <h2 style={{
-              fontFamily: KANIT,
-              fontSize: 'clamp(32px, 4vw, 64px)',
-              fontWeight: 600,
-              color: '#000',
-              margin: 0,
-            }}>
-              About Hamstar
-            </h2>
-            <img src="/images/sunflower-seed.png" alt="" style={{ width: 32, opacity: 0.85 }} />
-          </div>
-
-          <div style={{
+        {/* Right frame — x=640, y=56, 566×368, flex VERTICAL, justify CENTER, pad 20/10, gap 10 */}
+        <div style={{
+          position: 'absolute', left: 640, top: 56,
+          width: 566, height: 368,
+          display: 'flex', flexDirection: 'column', justifyContent: 'center',
+          padding: '20px 10px',
+          gap: 10,
+          boxSizing: 'border-box',
+        }}>
+          <img src="/images/sunflower-seed.png" alt="" style={{ width: 29, height: 43, objectFit: 'contain' }} />
+          <h2 style={{
             fontFamily: KANIT,
-            fontSize: 'clamp(15px, 1.8vw, 22px)',
-            fontWeight: 400,
-            lineHeight: 1.6,
-            color: '#000',
-            display: 'flex', flexDirection: 'column', gap: 12,
+            fontWeight: 700,
+            fontSize: 40,
+            color: '#000000',
+            lineHeight: '48px',
+            margin: 0,
           }}>
-            <p>Hamstar is a tiny internet sport built around real hamster races.</p>
-            <p>
-              In each race, three hamsters compete on a small track
-              while the community watches the race live and cheers for their favourite racer.
-            </p>
-            <p>It&apos;s simple, fast, and unpredictable, just like the hamsters themselves.</p>
-          </div>
+            About Hamstar
+          </h2>
+          <p style={{
+            fontFamily: 'Pretendard, sans-serif',
+            fontWeight: 500,
+            fontSize: 18,
+            color: '#242424',
+            lineHeight: '27px',
+            margin: 0,
+          }}>
+            Hamstar is a tiny internet sport built around real hamster races. In each race, three hamsters compete on a small track while the community watches the race live and cheers for their favourite racer. It&apos;s simple, fast, and unpredictable, just like the hamsters themselves.
+          </p>
         </div>
 
       </div>

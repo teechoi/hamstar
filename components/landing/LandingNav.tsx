@@ -77,11 +77,12 @@ export function LandingNav({
         The smallest sport on the internet.
       </div>
 
-      {/* Main nav row */}
+      {/* Main nav row — Figma: HORIZONTAL, pad:20/20/20/20, gap:90, justify:CENTER */}
       <div style={{
         display: 'flex', alignItems: 'center',
         padding: isMobile ? '10px 16px' : '20px 20px',
-        gap: 12,
+        justifyContent: isMobile ? undefined : 'center',
+        gap: isMobile ? 12 : 90,
       }}>
         {isMobile ? (
           <>
@@ -128,17 +129,15 @@ export function LandingNav({
           </>
         ) : (
           <>
-            <div style={{ flex: 1 }} />
-
-            {/* Center pills */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap', justifyContent: 'center' }}>
+            {/* Left group: nav pills — Figma Frame 2: gap:10 */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
               {NAV_LINKS.map(({ label, id, href }) => (
                 <NavPill key={label} label={label} onClick={() => href ? window.location.href = href : scrollTo(id)} />
               ))}
             </div>
 
-            {/* Right: How Hamstar Works + auth */}
-            <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 10 }}>
+            {/* Right group: How Hamstar Works + auth — Figma Frame 1430107015: gap:20 */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
               <HowItWorksPill
                 isDark={isDark}
                 onClick={onHowItWorksClick ?? (() => scrollTo('about'))}
@@ -244,9 +243,9 @@ function HowItWorksPill({ isDark, onClick }: { isDark: boolean; onClick: () => v
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
       style={{
-        padding: '7px 24px',
-        // Dark context (landing hero / scrolled): solid dark-gray per Figma #717171
-        // Light context (arena / highlights): solid white with purple text
+        padding: '8px 24px',
+        // Dark context: solid #717171 per Figma Frame 1430106978 (150×30px)
+        // Light context: solid white with purple text
         background: isDark
           ? (hov ? '#888' : '#717171')
           : (hov ? 'rgba(255,255,255,0.85)' : '#fff'),

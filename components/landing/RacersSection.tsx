@@ -69,7 +69,7 @@ function RacerCard({ name, tagline, image, featured }: Racer) {
             position: 'absolute', top: 10, left: 10,
             width: 100, height: 30,
             borderRadius: 22,
-            background: '#725DFF',
+            background: '#735DFF',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
             <span style={{

@@ -114,7 +114,7 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
         onHowItWorksClick={() => setModal('howitworks')}
       />
 
-      <main style={{ background: '#f8f9fa', minHeight: '100vh', paddingTop: 87 }}>
+      <main style={{ background: '#F8F9FA', minHeight: '100vh', paddingTop: 87 }}>
 
         {/* Hero header */}
         <div style={{ textAlign: 'center', padding: isMobile ? '40px 16px 24px' : '60px 24px 32px' }}>

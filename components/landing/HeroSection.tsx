@@ -76,7 +76,7 @@ export function HeroSection() {
           <p style={{
             fontFamily: 'Pretendard, sans-serif',
             fontSize: isMobile ? 15 : 20,
-            color: '#FFE78F',
+            color: '#FFE790',
             fontWeight: 600,
             lineHeight: isMobile ? '22px' : '30px',
             margin: isMobile ? '8px 0 0' : 0,

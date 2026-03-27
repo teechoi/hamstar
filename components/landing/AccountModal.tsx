@@ -57,7 +57,7 @@ export function AccountModal({
         {/* Avatar */}
         <div style={{
           width: 64, height: 64, borderRadius: '50%',
-          background: 'linear-gradient(135deg, #735DFF 0%, #9e8ef5 100%)',
+          background: '#735DFF',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           fontSize: 28, margin: '0 auto 16px',
         }}>
@@ -92,7 +92,7 @@ export function AccountModal({
           </div>
         ) : (
           <div style={{
-            background: '#faf8ff', border: '1px dashed #d0c8f8',
+            background: '#F8F9FA', border: '1px dashed rgba(115,93,255,0.3)',
             borderRadius: 12, padding: '16px', margin: '16px 0',
             textAlign: 'center',
           }}>
@@ -118,8 +118,8 @@ export function AccountModal({
             label="Disconnect"
             icon="↩"
             bg="#fff"
-            color="#e05050"
-            border="1px solid #f0e0e0"
+            color="#FF3B5C"
+            border="1px solid rgba(255,59,92,0.2)"
             onClick={() => { onDisconnect(); onClose() }}
           />
         </div>
@@ -164,11 +164,11 @@ function ConnectWalletBtn({ onClick }: { onClick: () => void }) {
       style={{
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         gap: 8, width: '100%', padding: '11px 16px',
-        background: hov ? '#5a47d4' : '#735DFF',
+        background: '#735DFF',
         border: 'none', borderRadius: 48.5,
         fontSize: 13, fontWeight: 600, color: '#fff',
         cursor: 'pointer', fontFamily: KANIT,
-        transition: 'background 0.15s',
+        opacity: hov ? 0.85 : 1, transition: 'opacity 0.15s',
       }}
     >
       Connect Phantom Wallet

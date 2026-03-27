@@ -2,9 +2,9 @@
 import { SITE } from '@/config/site'
 import { useIsMobile } from '@/components/ui/index'
 
-// Figma 36:210 — 1280×350, bg:#FFE68F
-const BG    = '#FFE68F'
-const MUTED = '#503E00'
+// Figma 36:210 — 1280×350, bg:#FFE790
+const BG    = '#FFE790'
+const MUTED = '#503F00'
 const BLACK = '#000000'
 const KANIT = "var(--font-kanit), sans-serif"
 const PRET  = "Pretendard, sans-serif"
@@ -50,7 +50,7 @@ export function LandingFooter() {
         <a href={`mailto:${sponsorEmail}`} style={{ ...link, display: 'block', marginBottom: 24 }}>Contact us</a>
 
         {/* Divider */}
-        <div style={{ height: 1, background: 'rgba(80,62,0,0.3)', marginBottom: 16 }} />
+        <div style={{ height: 1, background: 'rgba(80,63,0,0.3)', marginBottom: 16 }} />
 
         {/* Legal */}
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px 16px' }}>
@@ -107,7 +107,7 @@ export function LandingFooter() {
         <a href={`mailto:${sponsorEmail}`} style={{ position: 'absolute', left: 1010, top: 245, ...link }}>Contact us</a>
 
         {/* Divider — y=292 */}
-        <div style={{ position: 'absolute', left: 0, top: 292, width: '100%', height: 1, background: 'rgba(80,62,0,0.3)' }} />
+        <div style={{ position: 'absolute', left: 0, top: 292, width: '100%', height: 1, background: 'rgba(80,63,0,0.3)' }} />
 
         {/* Legal — y=314: Terms x=423, Risk x=536, Privacy x=659, Animal x=775 */}
         {([['Terms of Use', 423], ['Risk Disclosure', 536], ['Privacy Policy', 659], ['Animal Welfare', 775]] as [string, number][]).map(([label, x]) => (

@@ -37,7 +37,7 @@ function CountdownCard({ targetMs, isLive }: { streamUrl: string; targetMs: numb
           position: 'absolute', left: 20, top: 20,
           width: 145, height: 26,
           borderRadius: 22,
-          background: '#725DFF',
+          background: '#735DFF',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           gap: 8,
         }}>

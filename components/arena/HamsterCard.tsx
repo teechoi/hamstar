@@ -71,7 +71,7 @@ export function HamsterCard({
         {isLive && (
           <div style={{
             position: 'absolute', top: 12, right: 12,
-            background: '#ff3b3b', color: '#fff',
+            background: '#FF3B5C', color: '#fff',
             borderRadius: 20, padding: '3px 10px',
             fontSize: 11, fontWeight: 700, fontFamily: KANIT,
             display: 'flex', alignItems: 'center', gap: 5,
@@ -140,11 +140,11 @@ export function HamsterCard({
             onMouseLeave={() => setHov(false)}
             style={{
               width: '100%', padding: '14px',
-              background: hov ? '#5e47e0' : PURPLE,
+              background: PURPLE,
               border: 'none', borderRadius: 48.5,
               fontSize: 14, fontWeight: 500,
               color: '#fff', cursor: 'pointer',
-              fontFamily: KANIT, transition: 'background 0.15s',
+              fontFamily: KANIT, opacity: hov ? 0.85 : 1, transition: 'opacity 0.15s',
             }}
           >
             Cheer {name} 🎉

@@ -70,13 +70,13 @@ export function PetPageClient() {
         <div style={{
           position: 'absolute', bottom: -149, left: -105,
           width: 764, height: 764, borderRadius: '50%',
-          background: 'rgba(252,212,0,0.10)', filter: 'blur(32px)',
+          background: 'rgba(255,231,144,0.10)', filter: 'blur(32px)',
           pointerEvents: 'none',
         }} />
         <div style={{
           position: 'absolute', top: 278, right: -129,
           width: 683, height: 683, borderRadius: '50%',
-          background: 'rgba(76,0,128,0.05)', filter: 'blur(32px)',
+          background: 'rgba(115,93,255,0.05)', filter: 'blur(32px)',
           pointerEvents: 'none',
         }} />
 
@@ -91,7 +91,7 @@ export function PetPageClient() {
             <h1 style={{
               fontFamily: KANIT,
               fontSize: 'clamp(28px, 4vw, 50px)',
-              fontWeight: 700, color: '#0D0D14', marginBottom: 12,
+              fontWeight: 700, color: '#000000', marginBottom: 12,
             }}>
               Hamster Profile
             </h1>
@@ -142,7 +142,7 @@ export function PetPageClient() {
                   <span style={{
                     fontFamily: KANIT,
                     fontSize: 'clamp(16px, 1.8vw, 22px)',
-                    fontWeight: 600, color: '#0D0D14',
+                    fontWeight: 600, color: '#000000',
                   }}>
                     {pet.name}
                   </span>
@@ -165,7 +165,7 @@ export function PetPageClient() {
             <div style={{
               width: isMobile ? '100%' : 340,
               minHeight: isMobile ? 260 : 'auto',
-              background: '#e8e8e8',
+              background: '#E9E9E9',
               flexShrink: 0,
               display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
               overflow: 'hidden',
@@ -189,7 +189,7 @@ export function PetPageClient() {
               <h2 style={{
                 fontFamily: KANIT,
                 fontSize: 'clamp(24px, 3vw, 42px)',
-                fontWeight: 700, color: '#0D0D14', marginBottom: 16,
+                fontWeight: 700, color: '#000000', marginBottom: 16,
               }}>
                 {selected.name}
               </h2>
@@ -221,7 +221,7 @@ export function PetPageClient() {
                   { label: 'Snack Level', value: `${selected.snackLevel}%` },
                   { label: 'Cage Score',  value: `${selected.cageLevel}%` },
                 ].map(({ label, value }) => (
-                  <p key={label} style={{ fontFamily: KANIT, fontSize: 'clamp(13px, 1.4vw, 17px)', color: '#0D0D14' }}>
+                  <p key={label} style={{ fontFamily: KANIT, fontSize: 'clamp(13px, 1.4vw, 17px)', color: '#000000' }}>
                     <span style={{ color: '#8A8A8A' }}>{label}:</span> {value}
                   </p>
                 ))}

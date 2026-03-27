@@ -63,7 +63,7 @@ function VideoCard({ title, index }: { title: string; index: number }) {
       </div>
       {/* Caption */}
       <div style={{ padding: '14px 18px 18px' }}>
-        <p style={{ fontFamily: KANIT, fontSize: 15, fontWeight: 600, color: '#0D0D14', marginBottom: 4 }}>
+        <p style={{ fontFamily: KANIT, fontSize: 15, fontWeight: 600, color: '#000000', marginBottom: 4 }}>
           {title}
         </p>
         <p style={{ fontFamily: KANIT, fontSize: 12, color: '#999' }}>
@@ -90,17 +90,17 @@ function RoundResultRow({ result }: { result: RaceResult }) {
       flexWrap: 'wrap',
       gap: 12,
     }}>
-      <span style={{ fontFamily: KANIT, fontSize: 16, fontWeight: 700, color: '#0D0D14' }}>
+      <span style={{ fontFamily: KANIT, fontSize: 16, fontWeight: 700, color: '#000000' }}>
         Round {result.number}
       </span>
       <div style={{ display: 'flex', gap: 20, alignItems: 'center', flexWrap: 'wrap' }}>
         {positions.map((pet, i) => (
-          <span key={i} style={{ fontFamily: KANIT, fontSize: 14, color: '#555' }}>
+          <span key={i} style={{ fontFamily: KANIT, fontSize: 14, color: '#8A8A8A' }}>
             {medals[i]} {pet?.name ?? result.positions[i]}
           </span>
         ))}
       </div>
-      <span style={{ fontFamily: KANIT, fontSize: 12, color: '#aaa' }}>
+      <span style={{ fontFamily: KANIT, fontSize: 12, color: '#8A8A8A' }}>
         {result.date}
       </span>
     </div>
@@ -130,7 +130,6 @@ export function HighlightPageClient({ raceHistory }: HighlightPageClientProps) {
       <style>{`
         * { box-sizing: border-box; margin: 0; padding: 0; }
         html { scroll-behavior: smooth; }
-        body { font-family: 'Inter', sans-serif; }
       `}</style>
 
       <LandingNav
@@ -199,15 +198,15 @@ export function HighlightPageClient({ raceHistory }: HighlightPageClientProps) {
               fontFamily: KANIT,
               fontSize: 'clamp(32px, 5vw, 60px)',
               fontWeight: 700,
-              color: '#0D0D14',
+              color: '#000000',
               marginBottom: 12,
             }}>
               🎥 Hamstar Highlight
             </h1>
             <p style={{
-              fontFamily: KANIT,
+              fontFamily: 'Pretendard, sans-serif',
               fontSize: 'clamp(14px, 1.6vw, 20px)',
-              color: '#6B5A00',
+              color: '#503F00',
               maxWidth: 560,
               margin: '0 auto',
             }}>
@@ -229,27 +228,27 @@ export function HighlightPageClient({ raceHistory }: HighlightPageClientProps) {
             marginBottom: 32,
           }}>
             <div>
-              <p style={{ fontFamily: KANIT, fontSize: 13, color: '#aaa', marginBottom: 4 }}>
+              <p style={{ fontFamily: KANIT, fontSize: 13, color: '#8A8A8A', marginBottom: 4 }}>
                 Most Recent Champion
               </p>
               <p style={{
                 fontFamily: KANIT,
                 fontSize: 'clamp(20px, 2.5vw, 32px)',
                 fontWeight: 700,
-                color: '#0D0D14',
+                color: '#000000',
               }}>
                 {winner ? `🏆 ${winner.name}` : '—'}
               </p>
             </div>
             <div style={{ textAlign: isMobile ? 'left' : 'right' }}>
-              <p style={{ fontFamily: KANIT, fontSize: 13, color: '#aaa', marginBottom: 4 }}>
+              <p style={{ fontFamily: KANIT, fontSize: 13, color: '#8A8A8A', marginBottom: 4 }}>
                 Race Round
               </p>
               <p style={{
                 fontFamily: KANIT,
                 fontSize: 'clamp(20px, 2.5vw, 32px)',
                 fontWeight: 700,
-                color: '#0D0D14',
+                color: '#000000',
               }}>
                 {lastResult ? `Round ${lastResult.number}` : '—'}
               </p>
@@ -261,7 +260,7 @@ export function HighlightPageClient({ raceHistory }: HighlightPageClientProps) {
             fontFamily: KANIT,
             fontSize: 'clamp(20px, 2.4vw, 30px)',
             fontWeight: 700,
-            color: '#0D0D14',
+            color: '#000000',
             marginBottom: 20,
           }}>
             Race Clips
@@ -279,7 +278,7 @@ export function HighlightPageClient({ raceHistory }: HighlightPageClientProps) {
                 fontFamily: KANIT,
                 fontSize: 'clamp(20px, 2.4vw, 30px)',
                 fontWeight: 700,
-                color: '#0D0D14',
+                color: '#000000',
                 marginBottom: 20,
               }}>
                 Race History
@@ -300,7 +299,7 @@ export function HighlightPageClient({ raceHistory }: HighlightPageClientProps) {
               boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
             }}>
               <p style={{ fontFamily: KANIT, fontSize: 40, marginBottom: 16 }}>🐹</p>
-              <p style={{ fontFamily: KANIT, fontSize: 18, fontWeight: 600, color: '#0D0D14', marginBottom: 8 }}>
+              <p style={{ fontFamily: KANIT, fontSize: 18, fontWeight: 600, color: '#000000', marginBottom: 8 }}>
                 No races yet
               </p>
               <p style={{ fontFamily: KANIT, fontSize: 14, color: '#999' }}>

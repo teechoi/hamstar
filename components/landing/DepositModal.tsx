@@ -82,7 +82,7 @@ export function DepositModal({ address = '', onClose, onConnectWallet }: Deposit
 
             <div style={{ borderRadius: 16, overflow: 'hidden', marginBottom: 28 }}>
               <div style={{
-                background: '#fff6d6', padding: '12px 20px',
+                background: 'rgba(255,231,144,0.18)', padding: '12px 20px',
                 fontSize: 12, fontFamily: 'monospace', color: DARK,
                 wordBreak: 'break-all',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -171,11 +171,11 @@ function ConnectButton({ onClick }: { onClick: () => void }) {
       style={{
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         gap: 10, width: '100%', padding: '14px 20px',
-        background: hov ? '#5a47d4' : '#735DFF',
+        background: '#735DFF',
         border: 'none', borderRadius: 48.5,
         fontSize: 15, fontWeight: 600, color: '#fff',
         cursor: 'pointer', fontFamily: KANIT,
-        transition: 'background 0.15s',
+        opacity: hov ? 0.85 : 1, transition: 'opacity 0.15s',
       }}
     >
       <svg width="20" height="20" viewBox="0 0 128 128" fill="none">

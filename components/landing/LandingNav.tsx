@@ -52,10 +52,9 @@ export function LandingNav({
   const isDark = !lightBg || scrolled || menuOpen
 
   const NAV_LINKS = [
-    { label: 'Home',       id: 'hero',    href: '/'           },
-    { label: 'Arena',      id: 'arena',   href: '/arena'      },
-    { label: 'Highlights', id: 'hero',    href: '/highlights' },
-    { label: 'Pet',        id: 'racers',  href: '/pet'        },
+    { label: 'Home',  id: 'hero',   href: '/'      },
+    { label: 'Arena', id: 'arena',  href: '/arena' },
+    { label: 'Pet',   id: 'racers', href: '/pet'   },
   ]
 
   return (

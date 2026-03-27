@@ -13,10 +13,10 @@ export function HeroSection() {
     <section id="hero" style={{
       position: 'relative',
       height: 662,
-      background: DARK,
+      background: '#000',
       overflow: 'hidden',
     }}>
-      {/* Hero image — centered, max 1064px wide, 577px tall, top 41px */}
+      {/* Hero image — centered, 1064px wide, 577px tall, top 41px */}
       <div style={{
         position: 'absolute',
         top: 41,
@@ -25,16 +25,20 @@ export function HeroSection() {
         justifyContent: 'center',
         height: 577,
       }}>
-        <img
-          src="/images/hero-hamsters.png"
-          alt="Three hamsters ready to race"
-          style={{
-            width: 'min(1064px, calc(100% - 216px))',
-            height: '100%',
-            objectFit: 'cover',
-            objectPosition: 'center center',
-          }}
-        />
+        <div style={{ position: 'relative', width: 'min(1064px, calc(100% - 216px))', height: '100%' }}>
+          <img
+            src="/images/hero-hamsters.png"
+            alt="Three hamsters ready to race"
+            style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center center', display: 'block' }}
+          />
+          {/* Edge gradient fades — blend image into black background */}
+          <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
+            <div style={{ position: 'absolute', top: 0, left: 0, width: '15%', height: '100%', background: 'linear-gradient(to right, #000, transparent)' }} />
+            <div style={{ position: 'absolute', top: 0, right: 0, width: '12%', height: '100%', background: 'linear-gradient(to left, #000, transparent)' }} />
+            <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '21%', background: 'linear-gradient(to bottom, #000, transparent)' }} />
+            <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: '26%', background: 'linear-gradient(to top, #000, transparent)' }} />
+          </div>
+        </div>
       </div>
 
       {/* Content overlay — heading at y=129, CTA at y=556 */}

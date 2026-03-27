@@ -80,7 +80,7 @@ export function LandingNav({
       {/* Main nav row */}
       <div style={{
         display: 'flex', alignItems: 'center',
-        padding: isMobile ? '10px 16px' : '20px 24px',
+        padding: isMobile ? '10px 16px' : '20px 20px',
         gap: 12,
       }}>
         {isMobile ? (
@@ -224,7 +224,7 @@ function NavPill({ label, onClick }: { label: string; onClick: () => void }) {
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
       style={{
-        padding: '7px 20px',
+        padding: '7px 24px',
         background: YELLOW, border: 'none', borderRadius: 48.5,
         color: DARK, fontSize: 12, fontWeight: 500,
         cursor: 'pointer', fontFamily: KANIT,
@@ -244,11 +244,11 @@ function HowItWorksPill({ isDark, onClick }: { isDark: boolean; onClick: () => v
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
       style={{
-        padding: '7px 20px',
-        // Dark context (landing hero / scrolled): semi-transparent ghost
+        padding: '7px 24px',
+        // Dark context (landing hero / scrolled): solid dark-gray per Figma #717171
         // Light context (arena / highlights): solid white with purple text
         background: isDark
-          ? (hov ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.1)')
+          ? (hov ? '#888' : '#717171')
           : (hov ? 'rgba(255,255,255,0.85)' : '#fff'),
         border: 'none', borderRadius: 48.5,
         color: isDark ? YELLOW : PURPLE,

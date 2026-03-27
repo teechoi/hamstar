@@ -15,7 +15,8 @@
     "seed": "npx tsx scripts/seed.ts",
     "finish-race": "npx tsx scripts/finish-race.ts",
     "setup-helius": "npx tsx scripts/setup-helius.ts",
-    "seed-settings": "npx tsx scripts/seed-settings.ts"
+    "seed-settings": "npx tsx scripts/seed-settings.ts",
+    "figma": "FIGMA_TOKEN=$FIGMA_TOKEN npx tsx scripts/figma-digest.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.10.0",

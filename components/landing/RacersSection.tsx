@@ -19,7 +19,7 @@ const KANIT = "var(--font-kanit), sans-serif"
 
 function RacerCard({ name, tagline, image, featured }: Racer) {
   const [hov, setHov] = useState(false)
-  const active = hov || featured
+  const active = hov
   return (
     <div
       onMouseEnter={() => setHov(true)}

@@ -45,7 +45,7 @@ export const DECOS = {
   'arena-bridge': {
     src: '/images/wood-bridge.png',
     label: 'Arena: Bridge',
-    style: { right: -10, bottom: -80, width: 'clamp(90px, 26vw, 400px)' } as CSSProperties,
+    style: { right: -10, bottom: -30, width: 'clamp(90px, 26vw, 400px)' } as CSSProperties,
   },
 } satisfies Record<string, DecoConfig>
 

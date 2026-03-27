@@ -21,13 +21,24 @@ export function AboutSection() {
 
         {/* Left group — x=167, y=76, 394×380 */}
         <div style={{ position: 'absolute', left: 167, top: 76, width: 394, height: 380 }}>
-          {/* White card — 380×380, radius 23 */}
+          {/* Tilted decorative card behind */}
+          <div style={{
+            position: 'absolute', left: 0, top: 0,
+            width: 380, height: 380,
+            borderRadius: 23,
+            background: '#FFFFFF',
+            border: '1.5px solid #e0e0e0',
+            transform: 'rotate(-11.5deg)',
+            zIndex: 0,
+          }} />
+          {/* Main white card — straight */}
           <div style={{
             position: 'absolute', left: 0, top: 0,
             width: 380, height: 380,
             borderRadius: 23,
             background: '#FFFFFF',
             boxShadow: '0 4px 24px rgba(0,0,0,0.08)',
+            zIndex: 1,
           }} />
           {/* Hamster wheel image — local (62, 44), 219×291 */}
           <img
@@ -37,6 +48,7 @@ export function AboutSection() {
               position: 'absolute', left: 62, top: 44,
               width: 219, height: 291,
               objectFit: 'contain',
+              zIndex: 2,
             }}
           />
           {/* Sunflower image — local (257, 190), 137×172 */}
@@ -47,6 +59,7 @@ export function AboutSection() {
               position: 'absolute', left: 257, top: 190,
               width: 137, height: 172,
               objectFit: 'contain',
+              zIndex: 3,
             }}
           />
         </div>

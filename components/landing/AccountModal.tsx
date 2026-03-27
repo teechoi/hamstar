@@ -57,7 +57,7 @@ export function AccountModal({
         {/* Avatar */}
         <div style={{
           width: 64, height: 64, borderRadius: '50%',
-          background: 'linear-gradient(135deg, #735DFF 0%, #AB9FF2 100%)',
+          background: 'linear-gradient(135deg, #735DFF 0%, #9e8ef5 100%)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           fontSize: 28, margin: '0 auto 16px',
         }}>
@@ -143,7 +143,7 @@ function ActionBtn({
         display: 'flex', alignItems: 'center', gap: 10,
         width: '100%', padding: '13px 18px',
         background: bg, border: border ?? 'none',
-        borderRadius: 12, fontSize: 14, fontWeight: 500,
+        borderRadius: 48.5, fontSize: 14, fontWeight: 500,
         color, cursor: 'pointer', fontFamily: KANIT,
         opacity: hov ? 0.8 : 1, transition: 'opacity 0.15s',
       }}
@@ -164,8 +164,8 @@ function ConnectWalletBtn({ onClick }: { onClick: () => void }) {
       style={{
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         gap: 8, width: '100%', padding: '11px 16px',
-        background: hov ? '#9d8fe0' : '#AB9FF2',
-        border: 'none', borderRadius: 50,
+        background: hov ? '#5a47d4' : '#735DFF',
+        border: 'none', borderRadius: 48.5,
         fontSize: 13, fontWeight: 600, color: '#fff',
         cursor: 'pointer', fontFamily: KANIT,
         transition: 'background 0.15s',

@@ -120,11 +120,13 @@ export function RacersSection() {
       background: '#F8F9FA',
       height: 684,
       position: 'relative',
-      overflow: 'hidden',
     }}>
-      <DecoImage id="racers-sunflower" className="section-deco" />
-      <DecoImage id="racers-oats" className="section-deco" />
-      <DecoImage id="racers-turbo" className="section-deco" />
+      {/* Clip container for decorative images only — lets card shadows render freely */}
+      <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', zIndex: 0 }}>
+        <DecoImage id="racers-sunflower" className="section-deco" />
+        <DecoImage id="racers-oats" className="section-deco" />
+        <DecoImage id="racers-turbo" className="section-deco" />
+      </div>
 
       {/* 1280×684 canvas, centered */}
       <div style={{

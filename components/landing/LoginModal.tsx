@@ -99,7 +99,7 @@ export function LoginModal({ onClose, onLogin }: LoginModalProps) {
         <h2 style={{ fontSize: 'clamp(20px,4vw,26px)', fontWeight: 600, color: DARK, marginBottom: 8, textAlign: 'center' }}>
           Welcome to Hamstar Arena 🐹
         </h2>
-        <p style={{ fontSize: 14, color: '#555', textAlign: 'center', marginBottom: 28 }}>
+        <p style={{ fontSize: 14, color: '#8A8A8A', fontFamily: 'Pretendard, sans-serif', textAlign: 'center', marginBottom: 28 }}>
           A live-streamed blockchain-based entertainment experience
         </p>
 
@@ -113,7 +113,7 @@ export function LoginModal({ onClose, onLogin }: LoginModalProps) {
             gap: 10, width: '100%',
             padding: '14px 20px',
             background: YELLOW,
-            border: 'none', borderRadius: 70,
+            border: 'none', borderRadius: 48.5,
             fontSize: 15, fontWeight: 600, color: DARK,
             cursor: 'pointer', fontFamily: KANIT,
             opacity: googleHov ? 0.85 : 1,

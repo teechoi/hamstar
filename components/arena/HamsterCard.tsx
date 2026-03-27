@@ -169,6 +169,12 @@ export function HamsterCard({
           </div>
         )}
 
+        {arenaState === 'PREPARING' && (
+          <p style={{ fontFamily: 'Pretendard, sans-serif', fontWeight: 500, fontSize: 12, color: '#8D8D8D', textAlign: 'center', margin: '8px 0 0' }}>
+            No data yet
+          </p>
+        )}
+
         {isCheering && (
           <p style={{ fontFamily: KANIT, fontSize: 12, color: PURPLE, marginTop: 10, fontWeight: 600 }}>
             ✓ You&apos;re cheering for {name}

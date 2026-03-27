@@ -84,11 +84,17 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
   }
 
   const statusLabel   = { PREPARING: 'Arena Preparing', OPEN: 'Cheering Open', LIVE: 'Race In Progress', FINISHED: 'Race Finished' }[arenaState]
-  const cheeringLabel = { PREPARING: '—', OPEN: 'Open', LIVE: 'Closed', FINISHED: 'Closed' }[arenaState]
   const winnerPet     = isFinished && lastResult ? PETS.find(p => p.id === lastResult.positions[0]) : null
 
   const showPoolBar = arenaState === 'OPEN' || arenaState === 'LIVE'
-  const showCountdown = !isFinished
+
+  const row3Label = isFinished ? 'Champion' : (race.status === 'LIVE' ? 'Race Ends In' : 'Cheering Opens In')
+  const row3Value = isFinished ? (winnerPet ? `${winnerPet.name} 🏆` : '—') : countdown
+  const statusRows = [
+    { label: 'Arena Status',    value: statusLabel },
+    { label: 'Next Race Round', value: `Round ${race.raceNumber}` },
+    { label: row3Label,         value: row3Value },
+  ]
 
   return (
     <>
@@ -113,12 +119,12 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
         {/* Hero header */}
         <div style={{ textAlign: 'center', padding: isMobile ? '40px 16px 24px' : '60px 24px 32px' }}>
           <h1 style={{
-            fontFamily: KANIT, fontSize: 'clamp(22px, 3vw, 32px)',
-            fontWeight: 600, color: DARK, marginBottom: 12,
+            fontFamily: KANIT, fontSize: 24,
+            fontWeight: 500, color: '#000', marginBottom: 8,
           }}>
             Welcome to Hamstar Arena
           </h1>
-          <p style={{ fontFamily: KANIT, fontSize: 'clamp(14px, 1.6vw, 18px)', fontWeight: 400, color: DARK, maxWidth: 700, margin: '0 auto' }}>
+          <p style={{ fontFamily: 'Pretendard, sans-serif', fontSize: 16, fontWeight: 500, color: '#8A8A8A', maxWidth: 473, margin: '0 auto' }}>
             {arenaState === 'OPEN'
               ? 'Cheering is open! Pick your hamster and add your support before the race starts.'
               : arenaState === 'LIVE'
@@ -129,70 +135,33 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
           </p>
         </div>
 
-        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 clamp(16px,3vw,48px)' }}>
+        <div style={{ maxWidth: 707, margin: '0 auto', padding: isMobile ? '0 16px' : '0' }}>
 
-          {/* Status card */}
+          {/* Status card — labels left, values right */}
           <div style={{
-            background: '#fff', borderRadius: 24,
-            padding: isMobile ? '20px' : '24px 48px',
-            boxShadow: '0 20px 40px rgba(77,67,83,0.06)',
+            background: '#fff', borderRadius: 20,
+            padding: isMobile ? '16px 20px' : '20px 30px',
+            boxShadow: '0 4px 20px rgba(77,67,83,0.08)',
             backdropFilter: 'blur(20px)',
             marginBottom: 20,
           }}>
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: isMobile
-                ? '1fr 1fr'
-                : `repeat(${isFinished && winnerPet ? 4 : 3}, 1fr)`,
-              gap: isMobile ? 16 : 0,
-            }}>
-              {([
-                { label: 'Arena Status', value: statusLabel,                    purple: false },
-                { label: 'Race Round',   value: `Round ${race.raceNumber}`,     purple: false },
-                { label: 'Cheering',     value: cheeringLabel,                   purple: false },
-                ...(isFinished && winnerPet
-                  ? [{ label: 'Champion', value: `${winnerPet.name} 🏆`, purple: true }]
-                  : []),
-              ] as { label: string; value: string; purple: boolean }[]).map(({ label, value, purple }, i, arr) => (
-                <div key={label} style={{
-                  textAlign: isMobile ? 'left' : (i === 0 ? 'left' : i === arr.length - 1 ? 'right' : 'center'),
-                  padding: isMobile ? 0 : '0 24px',
-                  borderLeft: (!isMobile && i > 0) ? '1px solid #f0f0f0' : 'none',
-                }}>
-                  <p style={{ fontFamily: KANIT, fontSize: isMobile ? 13 : 18, fontWeight: 400, color: '#888', marginBottom: 4 }}>
-                    {label}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {statusRows.map(r => (
+                  <p key={r.label} style={{ fontFamily: 'Pretendard, sans-serif', fontWeight: 500, fontSize: 14, color: '#8A8A8A', margin: 0 }}>
+                    {r.label}
                   </p>
-                  <p style={{
-                    fontFamily: KANIT, fontSize: isMobile ? 16 : 20, fontWeight: 500,
-                    color: purple ? PURPLE : DARK,
-                    fontVariantNumeric: 'tabular-nums',
-                  }}>
-                    {value}
+                ))}
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10, alignItems: 'flex-end' }}>
+                {statusRows.map(r => (
+                  <p key={r.label} style={{ fontFamily: 'Pretendard, sans-serif', fontWeight: 500, fontSize: 14, color: '#000', margin: 0, fontVariantNumeric: 'tabular-nums' }}>
+                    {r.value}
                   </p>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
-
-          {/* Countdown */}
-          {showCountdown && (
-            <div style={{
-              background: '#fff', borderRadius: 24,
-              padding: '16px 32px', marginBottom: 20,
-              textAlign: 'center',
-              boxShadow: '0 8px 24px rgba(77,67,83,0.05)',
-            }}>
-              <p style={{ fontFamily: KANIT, fontSize: 13, color: '#888', marginBottom: 4 }}>
-                {race.status === 'LIVE' ? 'Race Ends In' : 'Cheering Opens In'}
-              </p>
-              <p style={{
-                fontFamily: KANIT, fontSize: 'clamp(28px,4vw,48px)',
-                fontWeight: 700, color: DARK, fontVariantNumeric: 'tabular-nums',
-              }}>
-                {countdown}
-              </p>
-            </div>
-          )}
 
           {/* Total Arena Pool progress bar */}
           {showPoolBar && (
@@ -224,7 +193,12 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
           )}
 
           {/* Hamster cards */}
-          <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap', justifyContent: 'center', marginBottom: 20 }}>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
+            gap: 12,
+            marginBottom: 20,
+          }}>
             {PETS.map(pet => {
               const support = MOCK_SUPPORT[pet.id] ?? { pct: 33, supporters: 5, sol: 1.0 }
               return (
@@ -257,25 +231,23 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
           )}
 
           {/* Bottom CTAs */}
-          <div style={{
-            display: 'flex',
-            flexDirection: isMobile ? 'column' : 'row',
-            gap: 16, marginBottom: 40,
-          }}>
+          <div style={{ marginBottom: 40 }}>
             {arenaState === 'FINISHED' ? (
-              <>
+              <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: 12 }}>
                 <YellowBtn
                   label="Watch Previous Race"
                   suffix="▼"
                   onClick={() => document.getElementById('highlight')?.scrollIntoView({ behavior: 'smooth' })}
                 />
                 <YellowBtn label="View Full Result" suffix="▶" onClick={() => setShowResult(s => !s)} />
-              </>
-            ) : (
-              <>
-                <WatchLiveBtn active={arenaState === 'OPEN' || arenaState === 'LIVE'} href={SITE.stream.url} />
+              </div>
+            ) : arenaState === 'OPEN' || arenaState === 'LIVE' ? (
+              <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: 12 }}>
+                <WatchLiveBtn active href={SITE.stream.url} />
                 <GrayDisabledBtn label="View Full Result" />
-              </>
+              </div>
+            ) : (
+              <WatchPreviousRaceBtn onClick={() => document.getElementById('highlight')?.scrollIntoView({ behavior: 'smooth' })} />
             )}
           </div>
 
@@ -412,6 +384,28 @@ function GrayDisabledBtn({ label }: { label: string }) {
     }}>
       {label} <span style={{ fontSize: 16 }}>▶</span>
     </div>
+  )
+}
+
+function WatchPreviousRaceBtn({ onClick }: { onClick: () => void }) {
+  const [hov, setHov] = useState(false)
+  return (
+    <button
+      onClick={onClick}
+      onMouseEnter={() => setHov(true)}
+      onMouseLeave={() => setHov(false)}
+      style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        gap: 10, width: '100%', height: 35,
+        background: YELLOW, border: 'none', borderRadius: 70,
+        fontFamily: KANIT, fontSize: 14, fontWeight: 500,
+        color: '#000', cursor: 'pointer',
+        opacity: hov ? 0.9 : 1, transition: 'opacity 0.15s',
+      }}
+    >
+      Watch Previous Race
+      <span style={{ fontSize: 14, color: '#333' }}>▶</span>
+    </button>
   )
 }
 

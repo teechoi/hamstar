@@ -16,9 +16,8 @@ function VideoCard({ title, index }: { title: string; index: number }) {
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
       style={{
-        flex: '1 1 260px', minWidth: 220, maxWidth: 400,
-        borderRadius: 24,
-        border: '3px solid #000',
+        flex: '1 1 200px',
+        borderRadius: 20,
         overflow: 'hidden',
         background: '#fff',
         boxShadow: hov ? '0 12px 32px rgba(0,0,0,0.13)' : '0 4px 16px rgba(0,0,0,0.07)',
@@ -27,24 +26,19 @@ function VideoCard({ title, index }: { title: string; index: number }) {
         cursor: 'pointer',
       }}
     >
-      {/* Thumbnail */}
+      {/* Thumbnail — gray placeholder with centered play icon */}
       <div style={{
-        width: '100%', aspectRatio: '16/9',
-        position: 'relative',
+        width: '100%', height: 186,
+        background: '#D5D5D5',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
+        position: 'relative',
         overflow: 'hidden',
       }}>
-        <img
-          src="/images/video-thumbnail.png"
-          alt=""
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
-        />
         <img
           src="/images/play-button.png"
           alt="Play"
           style={{
-            position: 'relative', zIndex: 1,
-            width: 48, height: 48,
+            width: 40, height: 40,
             transform: hov ? 'scale(1.12)' : 'scale(1)',
             transition: 'transform 0.15s',
           }}
@@ -74,7 +68,7 @@ export function HighlightSection({ lastResult }: HighlightSectionProps) {
 
   return (
     <section style={{
-      background: '#FFE790',
+      background: '#F8F9FA',
       position: 'relative',
       paddingTop: 'clamp(40px, 6vw, 72px)',
       paddingBottom: 0,
@@ -111,9 +105,9 @@ export function HighlightSection({ lastResult }: HighlightSectionProps) {
         <div style={{ textAlign: 'center', marginBottom: 28 }}>
           <h2 style={{
             fontFamily: KANIT,
-            fontSize: 'clamp(20px, 2.5vw, 28px)',
+            fontSize: 24,
             fontWeight: 500,
-            color: '#0D0D14',
+            color: '#000',
             marginBottom: 8,
           }}>
             Hamstar Highlights
@@ -122,7 +116,7 @@ export function HighlightSection({ lastResult }: HighlightSectionProps) {
             fontFamily: 'Pretendard, sans-serif',
             fontWeight: 500,
             fontSize: 16,
-            color: '#6B5A00',
+            color: '#8A8A8A',
           }}>
             Catch the best moments from recent races.
           </p>
@@ -131,21 +125,18 @@ export function HighlightSection({ lastResult }: HighlightSectionProps) {
         {/* Winner bar */}
         <div style={{
           background: '#fff',
-          borderRadius: 24,
-          border: '3px solid #000',
-          padding: isMobile ? '16px 20px' : '18px 32px',
+          borderRadius: 20,
+          padding: isMobile ? '16px 20px' : '20px 30px',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: 12,
           marginBottom: 24,
           boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
         }}>
-          <span style={{ fontFamily: KANIT, fontSize: 'clamp(15px, 1.8vw, 22px)', fontWeight: 700, color: '#0D0D14' }}>
+          <span style={{ fontFamily: 'Pretendard, sans-serif', fontSize: 14, fontWeight: 500, color: '#8A8A8A' }}>
             Round {lastResult?.number ?? '—'} Winner
           </span>
-          <span style={{ fontFamily: KANIT, fontSize: 'clamp(15px, 1.8vw, 22px)', fontWeight: 700, color: '#0D0D14' }}>
+          <span style={{ fontFamily: 'Pretendard, sans-serif', fontSize: 14, fontWeight: 500, color: '#000' }}>
             {winner?.name ?? '—'}
           </span>
         </div>

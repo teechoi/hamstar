@@ -11,7 +11,7 @@ export default function LandingPage() {
       <style>{`
         * { box-sizing: border-box; margin: 0; padding: 0; }
         html { scroll-behavior: smooth; }
-        body { font-family: 'Inter', 'Helvetica Neue', sans-serif; }
+        body { font-family: 'Pretendard', sans-serif; }
         @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.8)} }
         @media (max-width: 640px) { .section-deco { display: none !important; } }
       `}</style>

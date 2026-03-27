@@ -43,6 +43,7 @@ const CHECKBOXES = [
 
 export function TermsModal({ onAccept }: TermsModalProps) {
   const [checks, setChecks] = useState([false, false, false, false])
+  const [attempted, setAttempted] = useState(false)
   const allChecked = checks.every(Boolean)
 
   const toggle = (i: number) => setChecks(prev => prev.map((v, j) => j === i ? !v : v))
@@ -111,7 +112,7 @@ export function TermsModal({ onAccept }: TermsModalProps) {
               style={{
                 width: 16, height: 16, borderRadius: 3, flexShrink: 0, marginTop: 2,
                 background: checks[i] ? PURPLE : '#d9d9d9',
-                border: `2px solid ${checks[i] ? PURPLE : '#ccc'}`,
+                border: `2px solid ${attempted && !checks[i] ? '#e53e3e' : checks[i] ? PURPLE : '#ccc'}`,
                 cursor: 'pointer',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 transition: 'all 0.15s',
@@ -119,22 +120,28 @@ export function TermsModal({ onAccept }: TermsModalProps) {
             >
               {checks[i] && <span style={{ color: '#fff', fontSize: 10, lineHeight: 1 }}>✓</span>}
             </div>
-            <span style={{ fontSize: 13, color: DARK, lineHeight: 1.55 }}>{label}</span>
+            <span style={{ fontSize: 13, color: attempted && !checks[i] ? '#e53e3e' : DARK, lineHeight: 1.55 }}>{label}</span>
           </label>
         ))}
 
+        {attempted && !allChecked && (
+          <p style={{ fontSize: 12, color: '#e53e3e', textAlign: 'center', marginTop: 8, marginBottom: 0 }}>
+            Please check all boxes above to continue.
+          </p>
+        )}
+
         <button
-          onClick={allChecked ? onAccept : undefined}
+          onClick={() => { setAttempted(true); if (allChecked) onAccept() }}
           style={{
             display: 'block', width: '100%',
-            marginTop: 24,
+            marginTop: 16,
             padding: '16px',
             background: allChecked ? YELLOW : '#f0f0f0',
             border: allChecked ? '2px solid #000' : '2px solid #ccc',
             borderRadius: 70,
             fontSize: 14, fontWeight: 500,
             color: allChecked ? DARK : '#aaa',
-            cursor: allChecked ? 'pointer' : 'not-allowed',
+            cursor: 'pointer',
             fontFamily: KANIT,
             transition: 'all 0.2s',
           }}

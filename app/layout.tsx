@@ -1,9 +1,6 @@
 // app/layout.tsx
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
 import { kanit } from '@/lib/fonts'
-
-const inter = Inter({ subsets: ['latin'], weight: ['400', '600', '700', '800', '900'], display: 'swap' })
 
 export const viewport = {
   width: 'device-width',
@@ -31,9 +28,12 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.className} ${kanit.variable}`}>
-      <head />
-      <body style={{ margin: 0, padding: 0, fontFamily: "'Inter', sans-serif" }}>
+    <html lang="en" className={kanit.variable}>
+      <head>
+        <link rel="preconnect" href="https://cdn.jsdelivr.net" crossOrigin="anonymous" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@latest/dist/web/static/pretendard.css" />
+      </head>
+      <body style={{ margin: 0, padding: 0, fontFamily: "'Pretendard', sans-serif" }}>
         {children}
       </body>
     </html>

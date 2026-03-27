@@ -57,7 +57,7 @@ export function DepositModal({ address = '', onClose, onConnectWallet }: Deposit
         <h2 style={{ fontSize: 24, fontWeight: 600, color: DARK, marginBottom: 6 }}>
           Deposit Funds
         </h2>
-        <p style={{ fontSize: 14, color: '#777', marginBottom: 28 }}>
+        <p style={{ fontSize: 14, color: '#8A8A8A', fontFamily: 'Pretendard, sans-serif', marginBottom: 28 }}>
           Solana Chain
         </p>
 
@@ -115,7 +115,7 @@ export function DepositModal({ address = '', onClose, onConnectWallet }: Deposit
               <span style={{ fontSize: 12, color: '#aaa', fontFamily: KANIT }}>No wallet connected</span>
             </div>
 
-            <p style={{ fontSize: 14, color: '#555', marginBottom: 20, lineHeight: 1.5 }}>
+            <p style={{ fontSize: 14, color: '#8A8A8A', fontFamily: 'Pretendard, sans-serif', marginBottom: 20, lineHeight: 1.5 }}>
               Connect your Phantom wallet to get<br />your personal deposit address.
             </p>
 
@@ -171,8 +171,8 @@ function ConnectButton({ onClick }: { onClick: () => void }) {
       style={{
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         gap: 10, width: '100%', padding: '14px 20px',
-        background: hov ? '#9d8fe0' : '#AB9FF2',
-        border: 'none', borderRadius: 70,
+        background: hov ? '#5a47d4' : '#735DFF',
+        border: 'none', borderRadius: 48.5,
         fontSize: 15, fontWeight: 600, color: '#fff',
         cursor: 'pointer', fontFamily: KANIT,
         transition: 'background 0.15s',

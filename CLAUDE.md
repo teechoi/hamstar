@@ -29,49 +29,55 @@ const [hovered, setHovered] = useState(false);
 **Source of truth:** `/lib/theme.ts`
 
 ```typescript
-export const colors = {
-  bg: '#F1F6FF',          // Page background
-  card: '#FFFFFF',        // Card background
-  cardAlt: '#F7FAFF',     // Alternate card background
-  text: '#0A0F1F',        // Primary text
-  textMid: '#3A4260',     // Secondary text
-  textMuted: '#8892AA',   // Muted/placeholder text
-  border: '#E2E8F5',      // Default border
-  borderDark: '#C8D4ED',  // Emphasized border
+export const T = {
+  // Base
+  bg: '#F8F9FA',         // Page background
+  card: '#FFFFFF',       // Card / modal background
+  cardAlt: '#F8F9FA',    // Alternate card background
+  text: '#000000',       // Primary text (on white)
+  textMid: '#8A8A8A',    // Secondary / muted text
+  textMuted: '#8A8A8A',  // Placeholder text
+  border: '#E9E9E9',     // Divider lines
+  borderDark: '#D5D5D5', // Emphasized border
 
-  // Accent colors
-  lime: '#A6FF00',        // Primary action / highlight
-  limeDark: '#85CC00',    // Lime hover state
-  limeText: '#2A4A00',    // Text on lime backgrounds
-  blue: '#005DFF',        // Secondary action
-  blueSoft: '#EBF0FF',    // Soft blue background
-  coral: '#FF3B5C',       // Error / danger
-  coralSoft: '#FFF0F3',   // Soft coral background
-  violet: '#7A00FF',      // Decorative accent
-  violetSoft: '#F3EBFF',  // Soft violet background
-  yellow: '#FFD000',      // Warning / highlight
-  green: '#00C566',       // Success
-  greenSoft: '#E6FFF3',   // Soft green background
+  // Brand
+  yellow: '#FFE790',     // Main accent — nav, footer, primary buttons
+  purple: '#735DFF',     // Secondary accent — CTAs, announcement bar
+  sub2: '#503F00',       // Text on yellow backgrounds
+
+  // Semantic aliases (used by existing components)
+  lime: '#FFE790',       // → yellow (primary button bg)
+  limeDark: '#F5D850',   // → yellow hover
+  limeText: '#000000',   // → text on yellow
+  blue: '#735DFF',       // → purple (outline button)
+  coral: '#FF3B5C',      // Error / danger (unchanged)
+  coralSoft: '#FFF0F3',  // Soft error bg (unchanged)
+  green: '#735DFF',      // → purple (live indicator)
+  greenSoft: 'rgba(115,93,255,0.1)', // → purple soft bg
 };
 ```
 
 Always import and use `colors` from `/lib/theme.ts` — never hardcode hex values for these tokens.
 
-**Landing page / hero exceptions:** `#0D0D14` (dark bg), `#F5D050` (gold accent) are used only in `/app/page.tsx` and landing components.
+**Landing page / nav exception:** `#0D0D14` is used only as a near-black overlay background for the scrolled nav and mobile menu — do not use it as a text color.
 
 ---
 
 ## Typography
 
-**Font:** Inter (Google Fonts) — loaded in `/app/layout.tsx`
-**Weights:** 400, 500, 600, 700, 800, 900
-**Fallback:** `'Inter', 'Helvetica Neue', sans-serif`
+**Two fonts only — never use others:**
+- **Kanit** — headings (h1–h4), nav pills, display text. Loaded via `next/font/google` in `/lib/fonts.ts` as CSS variable `--font-kanit`.
+- **Pretendard** — all body/paragraph text, links, labels. Loaded from CDN in `/app/layout.tsx`.
 
-Apply font weight directly via inline style:
 ```tsx
-<h1 style={{ fontFamily: 'Inter, Helvetica Neue, sans-serif', fontWeight: 800, fontSize: 'clamp(28px, 5vw, 48px)' }} />
-<p style={{ fontWeight: 400, fontSize: 14, color: colors.textMuted }} />
+const KANIT = "var(--font-kanit), sans-serif"
+const PRETENDARD = "Pretendard, sans-serif"
+
+<h1 style={{ fontFamily: KANIT, fontWeight: 700, fontSize: 40 }} />
+<p style={{ fontFamily: PRETENDARD, fontWeight: 500, fontSize: 16 }} />
 ```
+
+**Body default:** `fontFamily: 'Pretendard', sans-serif` is set on `<body>` — text without explicit fontFamily inherits Pretendard automatically.
 
 **Monospace** (Solana addresses, timers): `fontFamily: 'monospace'`
 
@@ -158,10 +164,10 @@ Path alias: `@/` maps to project root.
 
 Minimal global CSS injected as a string in `/lib/theme.ts` (`globalStyles`) and via inline `<style>` tags:
 - CSS reset: `box-sizing: border-box; margin: 0; padding: 0`
-- Body: `background: #F1F6FF; color: #0A0F1F; font-family: Inter`
+- Body: `background: #F8F9FA; color: #000000; font-family: Pretendard`
 - Keyframes: `pulse`, `petIdle`, `raceBounce`
-- Scrollbar: 6px width
-- Selection highlight: `#A6FF0066` (lime tint)
+- Scrollbar: 6px width, thumb `#D5D5D5`
+- Selection highlight: `rgba(115,93,255,0.2)` (purple tint)
 
 Do not add new global CSS files. Inject additional keyframes via `<style>` tags when needed.
 
@@ -170,10 +176,12 @@ Do not add new global CSS files. Inject additional keyframes via `<style>` tags 
 ## Figma → Code Checklist
 
 When translating a Figma design to code:
-1. Map colors to tokens in `/lib/theme.ts`
+1. Map colors to tokens in `/lib/theme.ts` (see T object above)
 2. Use inline `React.CSSProperties` — no class names
 3. Reuse components from `/components/ui/index.tsx` where applicable
 4. Use `useIsMobile()` for responsive behavior
-5. Use Inter font weights (no other fonts)
-6. Reference existing `/public/images/` assets where possible
-7. Hover states via `useState` + `onMouseEnter`/`onMouseLeave`
+5. Headings/nav → Kanit (`var(--font-kanit), sans-serif`), body text → Pretendard (`Pretendard, sans-serif`)
+6. All pill buttons → `borderRadius: 48.5`
+7. Max content width → `maxWidth: 1280`, centered with `margin: '0 auto'`
+8. Reference existing `/public/images/` assets where possible
+9. Hover states via `useState` + `onMouseEnter`/`onMouseLeave`

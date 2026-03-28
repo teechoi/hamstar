@@ -20,32 +20,44 @@ export const DECOS = {
   'racers-sunflower': {
     src: '/images/sunflower.png',
     label: 'Racers: Sunflower',
-    style: { left: 20, top: 30, width: 'clamp(60px, 16vw, 250px)' } as CSSProperties,
+    // Figma 25:404 — left=-147, top=48, w=387, rotation=0.4585rad (26.3°)
+    style: { left: -147, top: 48, width: 387, height: 399, transform: 'rotate(26.3deg)', transformOrigin: '50% 50%' } as CSSProperties,
   },
   'racers-oats': {
-    src: '/images/oats-pile.png',
-    label: 'Racers: Oats',
-    style: { left: 20, bottom: -120, width: 'clamp(100px, 31vw, 480px)' } as CSSProperties,
+    src: '/images/oats-pile-a.png',
+    label: 'Racers: Oats A',
+    // Figma 25:403 — left=80 at 1280px → calc(50% - 560px) to track card centering
+    style: { left: 'calc(50% - 560px)', top: 426, width: 266 } as CSSProperties,
+  },
+  'racers-oats-2': {
+    src: '/images/oats-pile-b.png',
+    label: 'Racers: Oats B',
+    // Figma 25:372 — left=213 at 1280px → calc(50% - 427px)
+    style: { left: 'calc(50% - 427px)', top: 455, width: 256 } as CSSProperties,
   },
   'racers-turbo': {
     src: '/images/hamster-turbo-pushup.png',
     label: 'Racers: Turbo',
-    style: { right: 20, bottom: -50, width: 'clamp(80px, 23vw, 355px)' } as CSSProperties,
+    // Figma 25:543 — left=962 at 1280px → calc(50% + 322px) to track card centering; zIndex 70 to render above cards
+    style: { left: 'calc(50% + 322px)', top: 447, width: 306, zIndex: 70 } as CSSProperties,
   },
   'arena-oats': {
-    src: '/images/oats-pile.png',
+    src: '/images/arena-oats.png',
     label: 'Arena: Oats',
-    style: { right: -10, top: 40, width: 'clamp(80px, 20vw, 300px)' } as CSSProperties,
+    // Figma 25:675 — frame-relative left=1055, top=140, w=348; inside 1280px canvas div
+    style: { left: 1055, top: 140, width: 348 } as CSSProperties,
   },
   'arena-trophy': {
-    src: '/images/hamster-trophy.png',
-    label: 'Arena: Trophy',
-    style: { left: -30, bottom: -60, width: 'clamp(80px, 22vw, 320px)', transform: 'rotate(18deg)' } as CSSProperties,
+    src: '/images/arena-trophy-hamster.png',
+    label: 'Arena: Trophy Hamster',
+    // Figma 25:410 — left=-152 at 1280px frame; calc(50%-870px) keeps it at ≈-150px from viewport edge at wider viewports
+    style: { left: 'calc(50% - 870px)', top: 349, width: 448, height: 444, transform: 'rotate(17.63deg)', transformOrigin: '50% 50%' } as CSSProperties,
   },
   'arena-bridge': {
-    src: '/images/wood-bridge.png',
+    src: '/images/arena-bridge.png',
     label: 'Arena: Bridge',
-    style: { right: -10, bottom: -30, width: 'clamp(90px, 26vw, 400px)' } as CSSProperties,
+    // Figma 25:434 — frame-relative left=819, top=495, w=404; inside 1280px canvas div
+    style: { left: 819, top: 495, width: 404 } as CSSProperties,
   },
 } satisfies Record<string, DecoConfig>
 

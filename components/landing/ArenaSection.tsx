@@ -62,7 +62,7 @@ function CountdownCard({ targetMs, isLive }: { streamUrl: string; targetMs: numb
         {!isLive && (
           <p style={{
             fontFamily: KANIT, fontWeight: 500, fontSize: 20,
-            color: 'rgba(255,255,255,0.85)',
+            color: '#FFFFFF',
             lineHeight: '24px',
             margin: 0,
           }}>
@@ -103,11 +103,10 @@ export function ArenaSection({ targetMs, isLive }: { targetMs: number; isLive: b
       position: 'relative',
       overflow: 'hidden',
     }}>
-      <DecoImage id="arena-oats" className="section-deco" />
+      {/* Trophy — section-level so calc() tracks viewport edge, not canvas */}
       <DecoImage id="arena-trophy" className="section-deco" />
-      <DecoImage id="arena-bridge" className="section-deco" />
 
-      {/* 1280×684 canvas, centered */}
+      {/* 1280×684 canvas, centered — oats/bridge use frame-relative Figma coords */}
       <div style={{
         position: 'absolute',
         width: 1280,
@@ -116,6 +115,8 @@ export function ArenaSection({ targetMs, isLive }: { targetMs: number; isLive: b
         transform: 'translateX(-50%)',
         zIndex: 60,
       }}>
+        <DecoImage id="arena-oats" className="section-deco" />
+        <DecoImage id="arena-bridge" className="section-deco" />
 
         {/* Title block — x=225, y=82, w=830, h=119, flex VERTICAL align:CENTER gap:20 pad:10 */}
         <div style={{

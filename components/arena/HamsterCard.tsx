@@ -25,6 +25,11 @@ const PET_IMAGES: Record<string, string> = {
   turbo: '/images/hamster-turbo.png',
 }
 
+// Turbo's image includes a platform prop that adds visual bulk — dial it down slightly
+const PET_IMG_HEIGHT: Record<string, number> = {
+  turbo: 130,
+}
+
 export function HamsterCard({
   id, name, tagline, arenaState,
   supportPct = 0, supporters = 0, supportPool = 0,
@@ -33,6 +38,7 @@ export function HamsterCard({
 }: HamsterCardProps) {
   const [hov, setHov] = useState(false)
   const img = PET_IMAGES[id] ?? PET_IMAGES['dash']
+  const imgHeight = PET_IMG_HEIGHT[id] ?? 145
 
   const isOpen     = arenaState === 'OPEN'
   const isLive     = arenaState === 'LIVE'
@@ -46,9 +52,9 @@ export function HamsterCard({
       background: '#fff',
       borderRadius: 24,
       boxShadow: goldGlow
-        ? '0 0 0 3px #ffd643, 0 0 32px rgba(255,214,67,0.55), 0 20px 40px rgba(77,67,83,0.08)'
+        ? '0 0 0 3px #FFD643, 0 0 30px rgba(255,214,67,1), 0 20px 40px rgba(77,67,83,0.08)'
         : '0 20px 40px rgba(77,67,83,0.06)',
-      backdropFilter: 'blur(20px)',
+      backdropFilter: dimmed ? 'blur(20px)' : 'none',
       overflow: 'hidden',
       display: 'flex', flexDirection: 'column', alignItems: 'center',
       width: '100%',
@@ -59,15 +65,15 @@ export function HamsterCard({
       {/* Image area */}
       <div style={{
         width: '100%', height: 175,
-        display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
-        paddingBottom: 12,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        paddingBottom: 0,
         background: 'linear-gradient(180deg, #f5f5f5 0%, #efefef 100%)',
         position: 'relative', overflow: 'hidden',
       }}>
         <img
           src={img}
           alt={name}
-          style={{ height: 145, width: 'auto', objectFit: 'contain', display: 'block' }}
+          style={{ height: imgHeight, width: 'auto', objectFit: 'contain', display: 'block' }}
         />
         {isLive && (
           <div style={{

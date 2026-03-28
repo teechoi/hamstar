@@ -36,7 +36,7 @@ export function AboutSection() {
               About Hamstar
             </h2>
           </div>
-          <p style={{ fontFamily: 'Pretendard, sans-serif', fontWeight: 500, fontSize: 16, color: '#242424', lineHeight: '24px', margin: 0 }}>
+          <p style={{ fontFamily: 'Pretendard, sans-serif', fontWeight: 400, fontSize: 16, color: '#242424', lineHeight: '24px', margin: 0 }}>
             Hamstar is a tiny internet sport built around real hamster races. In each race, three hamsters compete on a small track while the community watches the race live and cheers for their favourite racer. It&apos;s simple, fast, and unpredictable, just like the hamsters themselves.
           </p>
         </div>
@@ -84,18 +84,22 @@ export function AboutSection() {
           />
         </div>
 
-        {/* Right frame — x=640, y=56, 566×368 */}
+        {/* Right frame — x=640, y=56, 566×368, Figma AutoLayout flex-start gap=10 padding=20/10/20/10 */}
         <div style={{
           position: 'absolute', left: 640, top: 56, width: 566, height: 368,
-          display: 'flex', flexDirection: 'column', justifyContent: 'center',
+          display: 'flex', flexDirection: 'column', justifyContent: 'flex-start',
           padding: '20px 10px', gap: 10, boxSizing: 'border-box',
         }}>
           <img src="/images/sunflower-seed.png" alt="" style={{ width: 29, height: 43, objectFit: 'contain' }} />
           <h2 style={{ fontFamily: KANIT, fontWeight: 700, fontSize: 40, color: '#000000', lineHeight: '48px', margin: 0 }}>
             About Hamstar
           </h2>
-          <p style={{ fontFamily: 'Pretendard, sans-serif', fontWeight: 500, fontSize: 18, color: '#242424', lineHeight: '27px', margin: 0 }}>
-            Hamstar is a tiny internet sport built around real hamster races. In each race, three hamsters compete on a small track while the community watches the race live and cheers for their favourite racer. It&apos;s simple, fast, and unpredictable, just like the hamsters themselves.
+          <p style={{ fontFamily: 'Pretendard, sans-serif', fontWeight: 400, fontSize: 18, color: '#242424', lineHeight: '27px', margin: 0 }}>
+            Hamstar is a tiny internet sport built around real hamster races.<br /><br />
+            In each race, three hamsters compete on a small track<br />
+            while the community watches the race live and cheers<br />
+            for their favourite racer.<br /><br />
+            It&apos;s simple, fast, and unpredictable, just like the hamsters themselves.
           </p>
         </div>
       </div>

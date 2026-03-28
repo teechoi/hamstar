@@ -53,7 +53,7 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
   const [authed, setAuthed]       = useState(false)
   const [walletAddress, setWalletAddress] = useState('')
   const [cheeringFor, setCheeringFor]     = useState<string | null>(null)
-  const [showResult, setShowResult]       = useState(false)
+  const [stateOverride, setStateOverride] = useState<ArenaState | null>(null)
   const isMobile = useIsMobile()
 
   // Derive arena state:
@@ -62,11 +62,24 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
   // - OPEN: race window is LIVE + stream is not live (cheering open)
   // - PREPARING: race window is UPCOMING
   const isFinished = lastResult?.number === race.raceNumber
-  const arenaState: ArenaState = isFinished
+  const derivedArenaState: ArenaState = isFinished
     ? 'FINISHED'
     : race.status === 'LIVE'
       ? (SITE.stream.isLive ? 'LIVE' : 'OPEN')
       : 'PREPARING'
+  const arenaState: ArenaState = stateOverride ?? derivedArenaState
+
+  // 3 display states: PRE (PREPARING + OPEN), LIVE, FINISHED
+  const isPre           = arenaState === 'PREPARING' || arenaState === 'OPEN'
+  const isLive          = arenaState === 'LIVE'
+  const isFinishedState = arenaState === 'FINISHED'
+  // HamsterCard receives 'OPEN' for any pre-race state so it shows cheer button + support bar
+  const cardState: ArenaState = isPre ? 'OPEN' : arenaState
+
+  // Preview: when FINISHED is forced via stateOverride with no real lastResult,
+  // use a mock result so the winner card, gold glow, and result section all render
+  const MOCK_FINISHED_RESULT: RaceResult = { number: race.raceNumber, positions: ['dash', 'flash', 'turbo'] }
+  const effectiveResult = isFinishedState ? (lastResult ?? MOCK_FINISHED_RESULT) : lastResult
 
   const countdownTarget = race.status === 'LIVE' ? race.endsAt.getTime() : race.startsAt.getTime()
   const countdown = useCountdown(countdownTarget)
@@ -83,17 +96,17 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
     setCheeringFor(petId)
   }
 
-  const statusLabel   = { PREPARING: 'Arena Preparing', OPEN: 'Cheering Open', LIVE: 'Race In Progress', FINISHED: 'Race Finished' }[arenaState]
-  const winnerPet     = isFinished && lastResult ? PETS.find(p => p.id === lastResult.positions[0]) : null
+  const statusLabel = isFinishedState ? 'Race Finished' : isLive ? 'Race In Progress' : 'Arena Open'
+  const winnerPet   = isFinishedState && effectiveResult ? PETS.find(p => p.id === effectiveResult.positions[0]) : null
 
-  const showPoolBar = arenaState === 'OPEN' || arenaState === 'LIVE'
+  const showPoolBar = true // always visible across all states
 
-  const row3Label = isFinished ? 'Champion' : (arenaState === 'LIVE' ? 'Race Ends In' : arenaState === 'OPEN' ? 'Cheering Closes In' : 'Cheering Opens In')
-  const row3Value = isFinished ? (winnerPet ? `${winnerPet.name} 🏆` : '—') : countdown
-  const statusRows = [
+  const statusRows: { label: string; value: string; purple?: boolean }[] = [
     { label: 'Arena Status',       value: statusLabel },
     { label: 'Current Race Round', value: `Round ${race.raceNumber}` },
-    { label: row3Label,            value: row3Value },
+    { label: isLive || isFinishedState ? 'Cheering' : 'Cheering Closes In',
+      value: isLive || isFinishedState ? 'Closed' : countdown },
+    ...(isFinishedState ? [{ label: 'Champion', value: winnerPet ? `${winnerPet.name} 🏆` : '—', purple: true }] : []),
   ]
 
   return (
@@ -116,6 +129,37 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
 
       <main style={{ background: '#F8F9FA', minHeight: '100vh', paddingTop: 87 }}>
 
+        {/* Dev state preview switcher — remove before launch */}
+        <div style={{
+          background: '#1a1a2e', padding: '8px 16px',
+          display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap',
+        }}>
+          <span style={{ fontFamily: KANIT, fontSize: 11, color: '#888', marginRight: 4 }}>PREVIEW STATE:</span>
+          {([['PRE', 'OPEN'], ['LIVE', 'LIVE'], ['FINISHED', 'FINISHED']] as [string, ArenaState][]).map(([label, s]) => (
+            <button
+              key={s}
+              onClick={() => setStateOverride(stateOverride === s ? null : s)}
+              style={{
+                padding: '3px 12px', borderRadius: 20, border: 'none', cursor: 'pointer',
+                fontFamily: KANIT, fontSize: 11, fontWeight: 600,
+                background: stateOverride === s ? YELLOW : '#333',
+                color: stateOverride === s ? '#000' : '#aaa',
+                transition: 'background 0.15s',
+              }}
+            >
+              {label}
+            </button>
+          ))}
+          {stateOverride && (
+            <button
+              onClick={() => setStateOverride(null)}
+              style={{ marginLeft: 4, background: 'none', border: 'none', color: '#666', cursor: 'pointer', fontFamily: KANIT, fontSize: 11 }}
+            >
+              × reset
+            </button>
+          )}
+        </div>
+
         {/* Hero header */}
         <div style={{ textAlign: 'center', padding: isMobile ? '40px 16px 24px' : '60px 24px 32px' }}>
           <h1 style={{
@@ -124,14 +168,18 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
           }}>
             Welcome to Hamstar Arena
           </h1>
-          <p style={{ fontFamily: 'Pretendard, sans-serif', fontSize: 16, fontWeight: 500, color: '#8A8A8A', maxWidth: 473, margin: '0 auto' }}>
-            {arenaState === 'OPEN'
-              ? 'Cheering is open! Pick your hamster and add your support before the race starts.'
-              : arenaState === 'LIVE'
-                ? 'The race is live! Watch your hamster run for glory.'
-                : arenaState === 'FINISHED'
-                  ? `Round ${race.raceNumber} is over. See who took the crown.`
-                  : 'The arena is preparing for the next race. Cheering will open soon.'}
+          <p style={{
+            fontFamily: KANIT,
+            fontSize: 16,
+            fontWeight: 400,
+            color: '#000',
+            maxWidth: 473, margin: '0 auto',
+          }}>
+            {isPre
+              ? 'Cheer for your favourite racer before the countdown ends.'
+              : isLive
+                ? 'The race is live. Watch live and see who takes the wheel.'
+                : 'The race has finished. Here\'s the result.'}
           </p>
         </div>
 
@@ -166,14 +214,14 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 {statusRows.map(r => (
-                  <p key={r.label} style={{ fontFamily: KANIT, fontWeight: 400, fontSize: 14, color: '#8A8A8A', margin: 0 }}>
+                  <p key={r.label} style={{ fontFamily: KANIT, fontWeight: 400, fontSize: 14, color: r.purple ? PURPLE : '#8A8A8A', margin: 0 }}>
                     {r.label}
                   </p>
                 ))}
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10, alignItems: 'flex-end' }}>
                 {statusRows.map(r => (
-                  <p key={r.label} style={{ fontFamily: KANIT, fontWeight: 500, fontSize: 14, color: '#000', margin: 0, fontVariantNumeric: 'tabular-nums' }}>
+                  <p key={r.label} style={{ fontFamily: KANIT, fontWeight: 500, fontSize: 14, color: r.purple ? PURPLE : '#000', margin: 0, fontVariantNumeric: 'tabular-nums' }}>
                     {r.value}
                   </p>
                 ))}
@@ -185,7 +233,7 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
           {showPoolBar && (
             <p style={{
               fontFamily: KANIT, fontWeight: 400, fontSize: 14,
-              color: '#8A8A8A', textAlign: 'center', marginBottom: 12,
+              color: '#000', textAlign: 'center', marginBottom: 12,
             }}>
               Supporters of the winning racer share this pool.
             </p>
@@ -237,11 +285,11 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
                   tagline={pet.tagline}
                   color={pet.color}
                   image={pet.image ?? ''}
-                  arenaState={arenaState}
+                  arenaState={cardState}
                   supportPct={support.pct}
                   supporters={support.supporters}
                   supportPool={support.sol}
-                  isWinner={isFinished && lastResult?.positions[0] === pet.id}
+                  isWinner={isFinishedState && effectiveResult?.positions[0] === pet.id}
                   isCheering={cheeringFor === pet.id}
                   onCheer={() => handleCheer(pet.id)}
                 />
@@ -250,7 +298,7 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
           </div>
 
           {/* "You're cheering for" summary card */}
-          {authed && cheeringFor && (arenaState === 'OPEN' || arenaState === 'LIVE') && (
+          {authed && cheeringFor && (isPre || isLive) && (
             <CheeringCard
               petId={cheeringFor}
               supportPct={MOCK_SUPPORT[cheeringFor]?.pct ?? 33}
@@ -258,34 +306,48 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
             />
           )}
 
+          {/* LIVE: reminder to return for result */}
+          {isLive && (
+            <p style={{
+              fontFamily: KANIT, fontWeight: 400, fontSize: 14,
+              color: '#000', textAlign: 'center', marginBottom: 16,
+            }}>
+              Return here after the race to see the winner.
+            </p>
+          )}
+
           {/* Bottom CTAs */}
-          <div style={{ marginBottom: 40 }}>
-            {arenaState === 'FINISHED' ? (
+          <div style={{ marginBottom: isFinishedState ? 20 : 40 }}>
+            {isFinishedState ? (
               <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: 12 }}>
                 <YellowBtn
                   label="Watch Previous Race"
                   suffix="▼"
                   onClick={() => document.getElementById('highlight')?.scrollIntoView({ behavior: 'smooth' })}
                 />
-                <YellowBtn label="View Full Result" suffix="▶" onClick={() => setShowResult(s => !s)} />
-              </div>
-            ) : arenaState === 'OPEN' || arenaState === 'LIVE' ? (
-              <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: 12 }}>
-                <WatchLiveBtn active href={SITE.stream.url} />
-                <GrayDisabledBtn label="View Full Result" />
+                <YellowBtn
+                  label="View Full Result"
+                  suffix="▶"
+                  onClick={() => document.getElementById('result-section')?.scrollIntoView({ behavior: 'smooth' })}
+                />
               </div>
             ) : (
-              <WatchPreviousRaceBtn onClick={() => document.getElementById('highlight')?.scrollIntoView({ behavior: 'smooth' })} />
+              <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: 12 }}>
+                <WatchLiveBtn active={isLive} href={SITE.stream.url} />
+                <GrayDisabledBtn label="View Full Result" />
+              </div>
             )}
           </div>
 
-          {/* Full Result panel */}
-          {isFinished && showResult && lastResult && (
-            <FullResultPanel
-              result={lastResult}
-              cheeringFor={cheeringFor}
-              onClose={() => setShowResult(false)}
-            />
+          {/* Inline result section — always visible when FINISHED */}
+          {isFinishedState && effectiveResult && (
+            <div id="result-section" style={{ marginBottom: 40 }}>
+              <ResultSection
+                result={effectiveResult}
+                cheeringFor={cheeringFor}
+                isMobile={!!isMobile}
+              />
+            </div>
           )}
 
         </div>
@@ -416,119 +478,67 @@ function GrayDisabledBtn({ label }: { label: string }) {
   )
 }
 
-function WatchPreviousRaceBtn({ onClick }: { onClick: () => void }) {
-  const [hov, setHov] = useState(false)
-  return (
-    <button
-      onClick={onClick}
-      onMouseEnter={() => setHov(true)}
-      onMouseLeave={() => setHov(false)}
-      style={{
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        gap: 10, width: '100%', height: 35,
-        background: YELLOW, border: 'none', borderRadius: 70,
-        fontFamily: KANIT, fontSize: 14, fontWeight: 500,
-        color: '#000', cursor: 'pointer',
-        opacity: hov ? 0.9 : 1, transition: 'opacity 0.15s',
-      }}
-    >
-      Watch Previous Race
-      <span style={{ fontSize: 14, color: '#333' }}>▶</span>
-    </button>
-  )
-}
-
-function FullResultPanel({
+function ResultSection({
   result,
   cheeringFor,
-  onClose,
+  isMobile,
 }: {
   result: RaceResult
   cheeringFor: string | null
-  onClose: () => void
+  isMobile: boolean
 }) {
-  const isMobile = useIsMobile()
-  const medals = ['🥇', '🥈', '🥉']
   const places = ['1st', '2nd', '3rd']
-  const userPet = cheeringFor ? PETS.find(p => p.id === cheeringFor) : null
+  const medals = ['🥇', '🥈', '🥉']
   const userWon = !!(cheeringFor && result.positions[0] === cheeringFor)
+
+  const row = (label: string, value: string) => (
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+      <p style={{ fontFamily: KANIT, fontWeight: 400, fontSize: 14, color: '#8A8A8A', margin: 0 }}>{label}</p>
+      <p style={{ fontFamily: KANIT, fontWeight: 500, fontSize: 14, color: '#000', margin: 0 }}>{value}</p>
+    </div>
+  )
 
   return (
     <div style={{
-      background: '#fff', borderRadius: 32,
-      padding: isMobile ? '28px 20px' : '40px 48px',
-      marginBottom: 40,
-      boxShadow: '0 20px 40px rgba(77,67,83,0.08)',
-      position: 'relative',
+      background: '#fff', borderRadius: 20,
+      padding: isMobile ? '20px' : '24px 30px',
+      boxShadow: '0 4px 20px rgba(77,67,83,0.08)',
     }}>
-      <button
-        onClick={onClose}
-        style={{
-          position: 'absolute', top: 20, right: 24,
-          background: 'none', border: 'none',
-          fontSize: 22, cursor: 'pointer', color: '#888',
-          fontFamily: KANIT, lineHeight: 1,
-        }}
-      >
-        ×
-      </button>
-
-      <h2 style={{
-        fontFamily: KANIT, fontSize: 'clamp(20px,2.5vw,32px)',
-        fontWeight: 700, color: DARK, marginBottom: 24,
-      }}>
-        Final Result — Round {result.number}
-      </h2>
+      {/* Final Result header */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 16 }}>
+        <p style={{ fontFamily: KANIT, fontWeight: 400, fontSize: 14, color: '#000', margin: 0 }}>Final Result</p>
+        <p style={{ fontFamily: KANIT, fontWeight: 500, fontSize: 14, color: '#000', margin: 0 }}>Round {result.number}</p>
+      </div>
 
       {/* Standings */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 32 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 16 }}>
         {result.positions.map((petId, i) => {
           const pet = PETS.find(p => p.id === petId)
           if (!pet) return null
           return (
-            <div key={petId} style={{
-              display: 'flex', alignItems: 'center', gap: 16,
-              padding: '14px 20px', borderRadius: 16,
-              background: i === 0 ? '#fff9e6' : '#fafafa',
-              border: `1.5px solid ${i === 0 ? '#ffd643' : '#f0f0f0'}`,
-            }}>
-              <span style={{ fontSize: 22 }}>{medals[i]}</span>
-              <span style={{ fontFamily: KANIT, fontSize: 13, color: '#aaa', minWidth: 32 }}>{places[i]}</span>
-              <span style={{ fontFamily: KANIT, fontSize: 18, fontWeight: 600, color: DARK }}>{pet.name}</span>
+            <div key={petId} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+              <p style={{ fontFamily: KANIT, fontWeight: 400, fontSize: 14, color: '#8A8A8A', margin: 0 }}>{places[i]}</p>
+              <p style={{ fontFamily: KANIT, fontWeight: 500, fontSize: 14, color: '#000', margin: 0 }}>
+                {pet.name} {medals[i]}
+              </p>
             </div>
           )
         })}
       </div>
 
-      {/* Dashed divider */}
-      <div style={{ borderTop: '2px dashed #e0e0e0', marginBottom: 24 }} />
+      {/* Divider */}
+      <div style={{ borderTop: '1.5px solid #E9E9E9', marginBottom: 16 }} />
 
-      {/* Your result */}
-      {userPet ? (
-        <div>
-          <p style={{ fontFamily: KANIT, fontSize: 13, color: '#888', marginBottom: 14 }}>Your Result</p>
-          <div style={{ display: 'flex', gap: 32, flexWrap: 'wrap', marginBottom: 14 }}>
-            {[
-              { label: 'Outcome', value: userWon ? 'Won'      : 'Lost',      good: userWon },
-              { label: 'Result',  value: userWon ? '+0.5 SOL' : '-0.5 SOL',  good: userWon },
-            ].map(({ label, value, good }) => (
-              <div key={label}>
-                <p style={{ fontFamily: KANIT, fontSize: 12, color: '#aaa', marginBottom: 2 }}>{label}</p>
-                <p style={{ fontFamily: KANIT, fontSize: 22, fontWeight: 700, color: good ? '#735DFF' : '#FF3B5C' }}>
-                  {value}
-                </p>
-              </div>
-            ))}
-          </div>
-          {userWon && (
-            <p style={{ fontFamily: KANIT, fontSize: 14, color: PURPLE, fontWeight: 600 }}>
-              🎉 You are part of the winning supporters!
-            </p>
-          )}
-        </div>
-      ) : (
-        <p style={{ fontFamily: KANIT, fontSize: 14, color: '#aaa' }}>
-          You didn&apos;t cheer in this race.
+      {/* Your Result */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: cheeringFor ? 14 : 0 }}>
+        {row('Your Result', cheeringFor ? (userWon ? 'Won' : 'Lost') : '—')}
+        {row('Your Reward', cheeringFor ? (userWon ? '+0.5 SOL' : '—') : '—')}
+      </div>
+
+      {/* Win message */}
+      {cheeringFor && userWon && (
+        <p style={{ fontFamily: KANIT, fontWeight: 400, fontSize: 14, color: PURPLE, marginTop: 6 }}>
+          You are part of the winning supporters!
         </p>
       )}
     </div>

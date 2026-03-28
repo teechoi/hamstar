@@ -77,14 +77,14 @@ export function HighlightSection({ lastResult }: HighlightSectionProps) {
       {/* Decorative: hamster ball top-left */}
       {!isMobile && (
         <img
-          src="/images/hamster-wheel-spin.png"
+          src="/images/hamster-ball.png"
           alt=""
           aria-hidden
           style={{
             position: 'absolute',
-            top: 180,
-            left: -181,
-            width: 530,
+            top: 120,
+            left: -75,
+            width: 220,
             height: 'auto',
             pointerEvents: 'none',
             zIndex: 1,
@@ -155,15 +155,14 @@ export function HighlightSection({ lastResult }: HighlightSectionProps) {
         // overflow visible so headset can rise above the oats
         overflow: 'visible',
       }}>
-        {/* Tiled oats — repeat-x so ~6 piles span the width */}
+        {/* Tiled oats — fill strip top-to-bottom, no yellow above */}
         <div style={{
           width: '100%',
-          height: isMobile ? 120 : 255,
-          backgroundColor: '#FFE790',
+          height: isMobile ? 100 : 175,
           backgroundImage: 'url(/images/oats-pile.png), url(/images/oats-pile.png)',
           backgroundRepeat: 'repeat-x, repeat-x',
           backgroundSize: '380px auto, 380px auto',
-          backgroundPosition: isMobile ? '0px 0px, 190px 0px' : '0px 65px, 190px 65px',
+          backgroundPosition: '0px -15px, 190px -15px',
         }} />
 
         {/* Hamster headset — sits on oats, rises above */}

@@ -6,11 +6,12 @@ import { A } from '../theme'
 
 const NAV = [
   { href: '/admin/dashboard', label: 'Dashboard',    icon: '📊' },
+  { href: '/admin/content',   label: 'Content',      icon: '✏️'  },
   { href: '/admin/race',      label: 'Race Control', icon: '🏁' },
   { href: '/admin/pets',      label: 'Hamsters',     icon: '🐹' },
   { href: '/admin/media',     label: 'Media',        icon: '🎥' },
   { href: '/admin/sponsors',  label: 'Sponsors',     icon: '🏆' },
-  { href: '/admin/settings',  label: 'Settings',     icon: '⚙️' },
+  { href: '/admin/settings',  label: 'Settings',     icon: '⚙️'  },
 ]
 
 export function AdminNav() {
@@ -31,15 +32,15 @@ export function AdminNav() {
         display: 'flex', overflowX: 'auto',
       }}>
         {NAV.map(({ href, label, icon }) => {
-          const active = pathname === href
+          const active = pathname.startsWith(href)
           return (
             <Link key={href} href={href} style={{
-              flex: 1, minWidth: 52, padding: '10px 4px',
+              flex: 1, minWidth: 48, padding: '10px 4px',
               display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3,
               textDecoration: 'none',
               borderTop: active ? `2px solid ${A.yellow}` : '2px solid transparent',
             }}>
-              <span style={{ fontSize: 18 }}>{icon}</span>
+              <span style={{ fontSize: 16 }}>{icon}</span>
               <span style={{ fontSize: 9, fontWeight: 800, letterSpacing: 0.5, textTransform: 'uppercase', color: active ? A.yellow : A.sidebarMuted }}>
                 {label.split(' ')[0]}
               </span>
@@ -58,20 +59,18 @@ export function AdminNav() {
       display: 'flex', flexDirection: 'column',
       height: '100vh', position: 'sticky', top: 0,
     }}>
-      {/* Brand */}
       <div style={{ padding: '28px 24px 22px', borderBottom: `1px solid ${A.sidebarBorder}` }}>
-        <div style={{ fontSize: 20, fontWeight: 900, color: A.yellow, letterSpacing: -0.5 }}>
+        <div style={{ fontSize: 20, fontWeight: 900, color: A.yellow, letterSpacing: -0.5, fontFamily: 'var(--font-kanit), sans-serif' }}>
           🐹 Hamstar
         </div>
-        <div style={{ fontSize: 11, color: A.sidebarMuted, marginTop: 3, letterSpacing: 1, textTransform: 'uppercase' }}>
+        <div style={{ fontSize: 11, color: A.sidebarMuted, marginTop: 3, letterSpacing: 1, textTransform: 'uppercase', fontFamily: 'Pretendard, sans-serif' }}>
           Admin Panel
         </div>
       </div>
 
-      {/* Links */}
       <nav style={{ flex: 1, padding: '16px 14px', overflowY: 'auto' }}>
         {NAV.map(({ href, label, icon }) => {
-          const active = pathname === href || pathname.startsWith(href + '/')
+          const active = pathname.startsWith(href)
           return (
             <Link key={href} href={href} style={{
               display: 'flex', alignItems: 'center', gap: 10,
@@ -82,7 +81,7 @@ export function AdminNav() {
               transition: 'all 0.15s',
             }}>
               <span style={{ fontSize: 16, width: 20, textAlign: 'center' }}>{icon}</span>
-              <span style={{ fontSize: 13, fontWeight: 700, color: active ? A.yellow : A.sidebarMuted }}>
+              <span style={{ fontSize: 13, fontWeight: 700, color: active ? A.yellow : A.sidebarMuted, fontFamily: 'Pretendard, sans-serif' }}>
                 {label}
               </span>
             </Link>
@@ -90,7 +89,6 @@ export function AdminNav() {
         })}
       </nav>
 
-      {/* Logout */}
       <div style={{ padding: '14px', borderTop: `1px solid ${A.sidebarBorder}` }}>
         <button onClick={logout} style={{
           width: '100%', padding: '10px 14px',
@@ -98,8 +96,8 @@ export function AdminNav() {
           border: `1.5px solid rgba(255,59,92,0.3)`,
           borderRadius: 9999, cursor: 'pointer',
           display: 'flex', alignItems: 'center', gap: 8,
-          color: '#FF3B5C', fontSize: 12, fontWeight: 700,
-          fontFamily: 'inherit', transition: 'background 0.15s',
+          color: A.red, fontSize: 12, fontWeight: 700,
+          fontFamily: 'Pretendard, sans-serif', transition: 'background 0.15s',
         }}>
           🚪 Logout
         </button>

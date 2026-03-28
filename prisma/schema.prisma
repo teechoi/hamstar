@@ -219,6 +219,15 @@ model SiteSettings {
   tagline      String   @default("Who will be the Hamstar?")
   ogImageUrl   String?
   buttonLabels Json     @default("{}")
+
+  // ── Editable front-end content ──────────────────────────────────────────
+  navTagline    String  @default("The smallest sport on the internet.")
+  heroTitle     String  @default("Who Will Be The Hamstar?")
+  aboutText     String  @default("Hamstar is a tiny internet sport built around real hamster races.\n\nIn each race, three hamsters compete on a small track while the community watches the race live and cheers for their favourite racer.\n\nIt's simple, fast, and unpredictable, just like the hamsters themselves.")
+  arenaSubtitle String  @default("Hamstar races are streamed live on Pump.fun. Watch the race and return to see the winner.")
+  footerTagline String  @default("The smallest sport on the internet.")
+  footerLinks   Json    @default("[]")
+
   updatedAt    DateTime @updatedAt
 
   @@map("site_settings")

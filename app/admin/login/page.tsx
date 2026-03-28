@@ -1,69 +1,81 @@
 'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { A } from '../theme'
 
-const KANIT = 'var(--font-kanit), sans-serif'
-
-export default function LoginPage() {
-  const router  = useRouter()
+export default function AdminLogin() {
+  const router = useRouter()
+  const [pw, setPw] = useState('')
+  const [err, setErr] = useState('')
   const [loading, setLoading] = useState(false)
 
-  const enter = async () => {
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault()
     setLoading(true)
-    const res = await fetch('/api/admin/login', { method: 'POST' })
-    if (res.ok) router.push('/admin/dashboard')
+    setErr('')
+    const res = await fetch('/api/admin/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: pw }),
+    })
     setLoading(false)
+    if (res.ok) {
+      router.push('/admin/dashboard')
+    } else {
+      setErr('Incorrect password')
+    }
   }
 
   return (
     <div style={{
-      minHeight: '100vh',
-      background: '#0D0D14',
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-      padding: 20,
-      fontFamily: KANIT,
+      minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
+      background: A.sidebar,
     }}>
-      {/* Glow blob */}
-      <div style={{
-        position: 'fixed', bottom: -200, left: -100,
-        width: 600, height: 600, borderRadius: '50%',
-        background: 'rgba(255,231,144,0.06)', filter: 'blur(40px)',
-        pointerEvents: 'none',
-      }} />
+      <form onSubmit={submit} style={{
+        background: A.card, borderRadius: 20,
+        padding: '48px 40px', width: 360,
+        boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
+        display: 'flex', flexDirection: 'column', gap: 20,
+      }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ fontSize: 40, marginBottom: 12 }}>🐹</div>
+          <h1 style={{ fontFamily: 'var(--font-kanit), sans-serif', fontSize: 24, fontWeight: 700, color: A.text, marginBottom: 6 }}>
+            Hamstar Admin
+          </h1>
+          <p style={{ fontSize: 14, color: A.textMuted }}>Enter your password to continue</p>
+        </div>
 
-      <div style={{ textAlign: 'center', position: 'relative', zIndex: 1 }}>
-        <div style={{ fontSize: 64, marginBottom: 20 }}>🐹</div>
-        <div style={{
-          fontSize: 'clamp(28px, 4vw, 42px)',
-          fontWeight: 900, color: '#FFE790',
-          marginBottom: 8, letterSpacing: -0.5,
-        }}>
-          Hamstar Admin
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <label style={{ fontSize: 12, fontWeight: 600, color: A.textMid }}>Password</label>
+          <input
+            type="password"
+            value={pw}
+            onChange={e => setPw(e.target.value)}
+            placeholder="••••••••"
+            style={{
+              padding: '12px 16px', borderRadius: 10,
+              border: err ? `1.5px solid ${A.red}` : `1.5px solid ${A.borderMid}`,
+              fontSize: 14, outline: 'none', background: A.pageBg,
+            }}
+          />
+          {err && <p style={{ fontSize: 12, color: A.red }}>{err}</p>}
         </div>
-        <div style={{ fontSize: 15, color: 'rgba(255,255,255,0.4)', marginBottom: 40 }}>
-          Race management dashboard
-        </div>
+
         <button
-          onClick={enter}
+          type="submit"
           disabled={loading}
           style={{
-            padding: '16px 48px',
-            background: '#FFE790',
-            border: 'none',
-            borderRadius: 9999,
-            color: '#0D0D14',
-            fontSize: 18,
-            fontWeight: 900,
+            padding: '14px', borderRadius: 48.5,
+            background: A.yellow, border: 'none',
+            fontFamily: 'var(--font-kanit), sans-serif',
+            fontSize: 15, fontWeight: 700, color: A.yellowText,
             cursor: loading ? 'not-allowed' : 'pointer',
-            opacity: loading ? 0.7 : 1,
-            fontFamily: KANIT,
-            boxShadow: '0 20px 40px rgba(255,231,144,0.2)',
-            transition: 'opacity 0.15s',
+            opacity: loading ? 0.7 : 1, transition: 'opacity 0.15s',
           }}
         >
-          {loading ? 'Entering...' : 'Enter Admin →'}
+          {loading ? 'Checking...' : 'Enter'}
         </button>
-      </div>
+      </form>
     </div>
   )
 }

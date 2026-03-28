@@ -1,37 +1,22 @@
-export const dynamic = 'force-dynamic'
-// app/api/admin/settings/route.ts
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { SITE } from '@/config/site'
 
-const DEFAULTS = {
-  id: 'singleton' as const,
-  raceNumber: SITE.stream.raceNumber,
-  isLive: SITE.stream.isLive,
-  streamUrl: SITE.stream.url,
-  replayUrl: SITE.stream.replayUrl || null,
-  genesisTs: BigInt(process.env.GENESIS_TIMESTAMP || '0'),
-  twitterUrl: SITE.socials.twitter || null,
-  tiktokUrl: SITE.socials.tiktok || null,
-  instagramUrl: SITE.socials.instagram || null,
-  youtubeUrl: SITE.socials.youtube || null,
-  sponsorEmail: SITE.sponsorEmail,
-  siteName: SITE.name,
-  tagline: SITE.tagline,
-  ogImageUrl: null,
-  buttonLabels: {},
+export const dynamic = 'force-dynamic'
+
+async function getSettings() {
+  return prisma.siteSettings.upsert({
+    where: { id: 'singleton' },
+    create: { id: 'singleton' },
+    update: {},
+  })
 }
 
 export async function GET() {
   try {
-    let settings = await prisma.siteSettings.findFirst({ where: { id: 'singleton' } })
-    if (!settings) {
-      settings = await prisma.siteSettings.create({ data: DEFAULTS })
-    }
-    return NextResponse.json({ ...settings, genesisTs: Number(settings.genesisTs) })
-  } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : String(err)
-    return NextResponse.json({ error: msg }, { status: 500 })
+    const s = await getSettings()
+    return NextResponse.json(s)
+  } catch (e) {
+    return NextResponse.json({ error: String(e) }, { status: 500 })
   }
 }
 
@@ -39,24 +24,20 @@ export async function PATCH(req: Request) {
   try {
     const body = await req.json()
     const allowed = [
-      'raceNumber', 'isLive', 'streamUrl', 'replayUrl', 'genesisTs',
-      'twitterUrl', 'tiktokUrl', 'instagramUrl', 'youtubeUrl',
-      'sponsorEmail', 'siteName', 'tagline', 'ogImageUrl', 'buttonLabels',
+      'raceNumber','isLive','streamUrl','replayUrl','genesisTs',
+      'twitterUrl','tiktokUrl','instagramUrl','youtubeUrl',
+      'sponsorEmail','siteName','tagline','ogImageUrl','buttonLabels',
+      'navTagline','heroTitle','aboutText','arenaSubtitle','footerTagline','footerLinks',
     ]
     const data: Record<string, unknown> = {}
-    for (const key of allowed) {
-      if (key in body) data[key] = body[key]
-    }
-    if ('genesisTs' in data) data.genesisTs = BigInt(data.genesisTs as number)
-
-    const settings = await prisma.siteSettings.upsert({
+    for (const k of allowed) if (k in body) data[k] = body[k]
+    const s = await prisma.siteSettings.upsert({
       where: { id: 'singleton' },
+      create: { id: 'singleton', ...data },
       update: data,
-      create: { ...DEFAULTS, ...data },
     })
-    return NextResponse.json({ ...settings, genesisTs: Number(settings.genesisTs) })
-  } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : String(err)
-    return NextResponse.json({ error: msg }, { status: 500 })
+    return NextResponse.json(s)
+  } catch (e) {
+    return NextResponse.json({ error: String(e) }, { status: 500 })
   }
 }

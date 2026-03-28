@@ -88,12 +88,12 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
 
   const showPoolBar = arenaState === 'OPEN' || arenaState === 'LIVE'
 
-  const row3Label = isFinished ? 'Champion' : (race.status === 'LIVE' ? 'Race Ends In' : 'Cheering Opens In')
+  const row3Label = isFinished ? 'Champion' : (arenaState === 'LIVE' ? 'Race Ends In' : arenaState === 'OPEN' ? 'Cheering Closes In' : 'Cheering Opens In')
   const row3Value = isFinished ? (winnerPet ? `${winnerPet.name} 🏆` : '—') : countdown
   const statusRows = [
-    { label: 'Arena Status',    value: statusLabel },
-    { label: 'Next Race Round', value: `Round ${race.raceNumber}` },
-    { label: row3Label,         value: row3Value },
+    { label: 'Arena Status',       value: statusLabel },
+    { label: 'Current Race Round', value: `Round ${race.raceNumber}` },
+    { label: row3Label,            value: row3Value },
   ]
 
   return (
@@ -166,20 +166,30 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 {statusRows.map(r => (
-                  <p key={r.label} style={{ fontFamily: 'Pretendard, sans-serif', fontWeight: 500, fontSize: 14, color: '#8A8A8A', margin: 0 }}>
+                  <p key={r.label} style={{ fontFamily: KANIT, fontWeight: 400, fontSize: 14, color: '#8A8A8A', margin: 0 }}>
                     {r.label}
                   </p>
                 ))}
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10, alignItems: 'flex-end' }}>
                 {statusRows.map(r => (
-                  <p key={r.label} style={{ fontFamily: 'Pretendard, sans-serif', fontWeight: 500, fontSize: 14, color: '#000', margin: 0, fontVariantNumeric: 'tabular-nums' }}>
+                  <p key={r.label} style={{ fontFamily: KANIT, fontWeight: 500, fontSize: 14, color: '#000', margin: 0, fontVariantNumeric: 'tabular-nums' }}>
                     {r.value}
                   </p>
                 ))}
               </div>
             </div>
           </div>
+
+          {/* Pool description */}
+          {showPoolBar && (
+            <p style={{
+              fontFamily: KANIT, fontWeight: 400, fontSize: 14,
+              color: '#8A8A8A', textAlign: 'center', marginBottom: 12,
+            }}>
+              Supporters of the winning racer share this pool.
+            </p>
+          )}
 
           {/* Total Arena Pool progress bar */}
           {showPoolBar && (

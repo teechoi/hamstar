@@ -78,7 +78,7 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
 
   // Preview: when FINISHED is forced via stateOverride with no real lastResult,
   // use a mock result so the winner card, gold glow, and result section all render
-  const MOCK_FINISHED_RESULT: RaceResult = { number: race.raceNumber, positions: ['dash', 'flash', 'turbo'] }
+  const MOCK_FINISHED_RESULT: RaceResult = { number: race.raceNumber, date: '', positions: ['dash', 'flash', 'turbo'] }
   const effectiveResult = isFinishedState ? (lastResult ?? MOCK_FINISHED_RESULT) : lastResult
 
   const countdownTarget = race.status === 'LIVE' ? race.endsAt.getTime() : race.startsAt.getTime()

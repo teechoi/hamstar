@@ -94,9 +94,9 @@ export function HighlightSection({ lastResult }: HighlightSectionProps) {
 
       {/* Content */}
       <div style={{
-        maxWidth: 1280,
+        maxWidth: 707,
         margin: '0 auto',
-        padding: `0 clamp(16px, 4vw, 48px)`,
+        padding: isMobile ? '0 16px' : '0',
         position: 'relative',
         zIndex: 1,
       }}>
@@ -159,10 +159,11 @@ export function HighlightSection({ lastResult }: HighlightSectionProps) {
         <div style={{
           width: '100%',
           height: isMobile ? 120 : 255,
+          backgroundColor: '#FFE790',
           backgroundImage: 'url(/images/oats-pile.png), url(/images/oats-pile.png)',
           backgroundRepeat: 'repeat-x, repeat-x',
           backgroundSize: '380px auto, 380px auto',
-          backgroundPosition: '0 bottom, 190px bottom',
+          backgroundPosition: isMobile ? '0px 0px, 190px 0px' : '0px 65px, 190px 65px',
         }} />
 
         {/* Hamster headset — sits on oats, rises above */}

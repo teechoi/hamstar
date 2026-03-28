@@ -60,6 +60,7 @@ export function HamsterCard({
       <div style={{
         width: '100%', height: 175,
         display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
+        paddingBottom: 12,
         background: 'linear-gradient(180deg, #f5f5f5 0%, #efefef 100%)',
         position: 'relative', overflow: 'hidden',
       }}>

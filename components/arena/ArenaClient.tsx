@@ -139,7 +139,7 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
           {/* Left decorative hamster — Figma: x=-57 in 1280px frame, partially off-screen left */}
           {!isMobile && (
             <img
-              src="/images/hamster-arena-left.png"
+              src="/images/hamster-flash-flex.png"
               alt=""
               aria-hidden
               style={{

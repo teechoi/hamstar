@@ -21,7 +21,7 @@ export interface HamsterCardProps {
 
 const PET_IMAGES: Record<string, string> = {
   dash:  '/images/hamster-dash.png',
-  flash: '/images/hamster-flash.png',
+  flash: '/images/hamster-flash-flex.png',
   turbo: '/images/hamster-turbo.png',
 }
 
@@ -66,7 +66,7 @@ export function HamsterCard({
         <img
           src={img}
           alt={name}
-          style={{ width: 130, height: 155, objectFit: 'contain', display: 'block' }}
+          style={{ width: 145, height: 168, objectFit: 'contain', display: 'block' }}
         />
         {isLive && (
           <div style={{

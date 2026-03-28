@@ -146,7 +146,7 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
                 position: 'absolute',
                 left: 'calc(50% - 698px)',
                 top: 120,
-                width: 294,
+                width: 220,
                 height: 'auto',
                 pointerEvents: 'none',
                 zIndex: 0,

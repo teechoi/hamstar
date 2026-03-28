@@ -66,7 +66,7 @@ export function HamsterCard({
         <img
           src={img}
           alt={name}
-          style={{ height: 155, width: 'auto', objectFit: 'contain', display: 'block' }}
+          style={{ width: 130, height: 155, objectFit: 'contain', display: 'block' }}
         />
         {isLive && (
           <div style={{

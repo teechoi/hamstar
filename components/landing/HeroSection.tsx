@@ -12,38 +12,36 @@ export function HeroSection() {
   return (
     <section id="hero" style={{
       position: 'relative',
-      height: '100vh',
+      height: 662,
       minHeight: 500,
       background: '#000000',
       overflow: 'hidden',
     }}>
-      {/* Hero image — pinned to bottom, aspect-ratio preserved (no crop)
-          Figma: 1064×577 image, 44px from section bottom.
-          We use height:auto so all three hamsters always show at full width.   */}
+      {/* Hero image — Figma: x:107, y:41, 1064×577 in 1280×662 frame */}
       <div style={{
         position: 'absolute',
+        top: 41,
         bottom: 44,
-        left: 0, right: 0,
-        display: 'flex',
-        justifyContent: 'center',
+        left: '8.4%',
+        right: '8.5%',
       }}>
-        {/* Figma: image 1064px wide in 1280px frame = 107px margin each side */}
-        <div style={{
-          position: 'relative',
-          width: 'min(1064px, calc(100% - 214px))',
-        }}>
-          <img
-            src="/images/hero-hamsters.png"
-            alt="Three hamsters ready to race"
-            style={{ width: '100%', height: 'auto', display: 'block' }}
-          />
-          {/* Gradient fades — Left 12% (125/1064), Right 9% (92/1064), Top/Bottom 22% (125/577) */}
-          <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
-            <div style={{ position: 'absolute', top: 0, left: 0,    width: '12%',  height: '100%', background: 'linear-gradient(to right, #000, transparent)' }} />
-            <div style={{ position: 'absolute', top: 0, right: 0,   width: '9%',   height: '100%', background: 'linear-gradient(to left,  #000, transparent)' }} />
-            <div style={{ position: 'absolute', top: 0, left: 0,    width: '100%', height: '22%',  background: 'linear-gradient(to bottom, #000, transparent)' }} />
-            <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: '22%',  background: 'linear-gradient(to top,    #000, transparent)' }} />
-          </div>
+        <img
+          src="/images/hero-hamsters.png"
+          alt="Three hamsters ready to race"
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            objectPosition: 'center center',
+            display: 'block',
+          }}
+        />
+        {/* Gradient fades — Figma: left 14.7%, right 11.7%, top 21.7%, bottom 26.3% of image */}
+        <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
+          <div style={{ position: 'absolute', top: 0, left: 0,    width: '14.7%', height: '100%', background: 'linear-gradient(to right, #000, transparent)' }} />
+          <div style={{ position: 'absolute', top: 0, right: 0,   width: '11.7%', height: '100%', background: 'linear-gradient(to left,  #000, transparent)' }} />
+          <div style={{ position: 'absolute', top: 0, left: 0,    width: '100%',  height: '21.7%', background: 'linear-gradient(to bottom, #000, transparent)' }} />
+          <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%',  height: '26.3%', background: 'linear-gradient(to top,    #000, transparent)' }} />
         </div>
       </div>
 

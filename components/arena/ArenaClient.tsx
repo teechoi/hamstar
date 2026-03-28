@@ -135,7 +135,25 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
           </p>
         </div>
 
-        <div style={{ maxWidth: 707, margin: '0 auto', padding: isMobile ? '0 16px' : '0' }}>
+        <div style={{ position: 'relative' }}>
+          {/* Left decorative hamster — Figma: x=-57 in 1280px frame, partially off-screen left */}
+          {!isMobile && (
+            <img
+              src="/images/hamster-arena-left.png"
+              alt=""
+              aria-hidden
+              style={{
+                position: 'absolute',
+                left: 'calc(50% - 698px)',
+                top: 120,
+                width: 294,
+                height: 'auto',
+                pointerEvents: 'none',
+                zIndex: 0,
+              }}
+            />
+          )}
+        <div style={{ maxWidth: 707, margin: '0 auto', padding: isMobile ? '0 16px' : '0', position: 'relative', zIndex: 1 }}>
 
           {/* Status card — labels left, values right */}
           <div style={{
@@ -261,6 +279,7 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
           )}
 
         </div>
+        </div>{/* end position:relative wrapper */}
 
         {/* Highlight section — always visible */}
         <div id="highlight">

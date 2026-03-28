@@ -10,27 +10,21 @@ export function AboutSection() {
     return (
       <section id="about" style={{ background: '#F8F9FA', padding: '48px 24px 56px' }}>
         {/* Image area — stacked on top, centered */}
-        <div style={{ position: 'relative', width: 260, height: 260, margin: '0 auto 36px' }}>
+        <div style={{ position: 'relative', width: 280, height: 260, margin: '0 auto 36px' }}>
           <div style={{
-            position: 'absolute', inset: 0,
-            borderRadius: 23, background: '#FFFFFF',
-            border: '1.5px solid #e0e0e0',
-            transform: 'rotate(-11.5deg)',
-          }} />
-          <div style={{
-            position: 'absolute', inset: 0,
+            position: 'absolute', left: 0, top: 0, width: 260, height: 260,
             borderRadius: 23, background: '#FFFFFF',
             boxShadow: '0 4px 24px rgba(0,0,0,0.08)',
           }} />
           <img
             src="/images/hamster-wheel.png"
             alt="Hamster on wheel"
-            style={{ position: 'absolute', left: '15%', top: '10%', width: '55%', height: '75%', objectFit: 'contain', zIndex: 2 }}
+            style={{ position: 'absolute', left: '10%', top: '8%', width: '55%', height: '75%', objectFit: 'contain' }}
           />
           <img
             src="/images/sunflower.png"
             alt=""
-            style={{ position: 'absolute', right: '-8%', bottom: '-8%', width: '35%', objectFit: 'contain', zIndex: 3 }}
+            style={{ position: 'absolute', right: 0, bottom: '-5%', width: '33%', objectFit: 'contain' }}
           />
         </div>
 
@@ -63,28 +57,30 @@ export function AboutSection() {
         width: 1280, height: 526,
         left: '50%', transform: 'translateX(-50%)',
       }}>
-        {/* Left group — x=167, y=76, 394×380 */}
-        <div style={{ position: 'absolute', left: 167, top: 76, width: 394, height: 380 }}>
+        {/* Left group — Figma: Group 36 at x=167, y=76
+            Rectangle 22: 380×380, rot=-0.2019rad = -11.57°, cornerRadius 23
+            image 13 (hamster wheel): at group-rel (62, 44), 218×291 — not rotated, sits on top
+            image 25 (sunflower): at group-rel (257, 190), 137×172 — not rotated, sits on top */}
+        <div style={{ position: 'absolute', left: 167, top: 76, width: 414, height: 420 }}>
+          {/* Tilted white card */}
           <div style={{
             position: 'absolute', left: 0, top: 0, width: 380, height: 380,
             borderRadius: 23, background: '#FFFFFF',
-            border: '1.5px solid #e0e0e0',
-            transform: 'rotate(-11.5deg)', zIndex: 0,
+            boxShadow: '0 8px 32px rgba(0,0,0,0.10)',
+            transform: 'rotate(-11.57deg)',
+            transformOrigin: 'center center',
           }} />
-          <div style={{
-            position: 'absolute', left: 0, top: 0, width: 380, height: 380,
-            borderRadius: 23, background: '#FFFFFF',
-            boxShadow: '0 4px 24px rgba(0,0,0,0.08)', zIndex: 1,
-          }} />
+          {/* Hamster wheel — on top of tilted card, not rotated */}
           <img
             src="/images/hamster-wheel.png"
             alt="Hamster on wheel"
-            style={{ position: 'absolute', left: 62, top: 44, width: 219, height: 291, objectFit: 'contain', zIndex: 2 }}
+            style={{ position: 'absolute', left: 20, top: 0, width: 290, height: 380, objectFit: 'contain', zIndex: 1 }}
           />
+          {/* Sunflower — on top, extends past card right edge */}
           <img
             src="/images/sunflower.png"
             alt=""
-            style={{ position: 'absolute', left: 257, top: 190, width: 137, height: 172, objectFit: 'contain', zIndex: 3 }}
+            style={{ position: 'absolute', left: 235, top: 155, width: 185, height: 232, objectFit: 'contain', zIndex: 2 }}
           />
         </div>
 

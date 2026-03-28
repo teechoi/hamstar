@@ -7,17 +7,22 @@ interface Racer {
   tagline: string
   image: string
   featured?: boolean
+  imgW?: number
+  imgH?: number
+  imgLeft?: number
+  imgTop?: number
 }
 
 const RACERS: Racer[] = [
   { name: 'Dash',  tagline: 'The Speedster',    image: '/images/hamster-dash.png'  },
   { name: 'Flash', tagline: 'The Sprinter',     image: '/images/hamster-flash.png', featured: true },
-  { name: 'Turbo', tagline: 'The Chaos Runner', image: '/images/hamster-turbo.png' },
+  // Turbo's PNG has extra whitespace — scale up to match apparent size of Dash/Flash
+  { name: 'Turbo', tagline: 'The Chaos Runner', image: '/images/hamster-turbo.png', imgW: 210, imgH: 190, imgLeft: 27, imgTop: -21 },
 ]
 
 const KANIT = "var(--font-kanit), sans-serif"
 
-function RacerCard({ name, tagline, image, featured }: Racer) {
+function RacerCard({ name, tagline, image, featured, imgW = 166, imgH = 149, imgLeft = 49, imgTop = 20 }: Racer) {
   const [hov, setHov] = useState(false)
   const active = hov
   return (
@@ -26,7 +31,7 @@ function RacerCard({ name, tagline, image, featured }: Racer) {
       onMouseLeave={() => setHov(false)}
       style={{
         background: '#FFFFFF',
-        border: active ? '3px solid #735DFF' : '1.5px solid #D5D5D5',
+        border: 'none',
         borderRadius: 20,
         overflow: 'visible',
         display: 'flex',
@@ -36,8 +41,9 @@ function RacerCard({ name, tagline, image, featured }: Racer) {
         flexShrink: 0,
         position: 'relative',
         transform: hov ? 'translateY(-6px)' : 'translateY(0)',
-        boxShadow: active ? '0 16px 48px rgba(115,93,255,0.8)' : '0 2px 8px rgba(0,0,0,0.06)',
-        transition: 'transform 0.2s ease-out, box-shadow 0.2s ease-out, border 0.2s ease-out',
+        outline: active ? '3px solid #735DFF' : '1.5px solid #D5D5D5',
+        boxShadow: active ? '0 8px 24px rgba(115,93,255,0.45)' : '0 2px 8px rgba(0,0,0,0.06)',
+        transition: 'transform 0.2s ease-out, box-shadow 0.2s ease-out, outline 0.2s ease-out',
         cursor: 'default',
       }}
     >
@@ -57,8 +63,8 @@ function RacerCard({ name, tagline, image, featured }: Racer) {
           alt={name}
           style={{
             position: 'absolute',
-            left: 49, top: 20,
-            width: 166, height: 149,
+            left: imgLeft, top: imgTop,
+            width: imgW, height: imgH,
             objectFit: 'contain',
             objectPosition: 'center bottom',
           }}
@@ -128,44 +134,35 @@ export function RacersSection() {
         <DecoImage id="racers-turbo" className="section-deco" />
       </div>
 
-      {/* 1280×684 canvas, centered */}
+      {/* Title — centered, Figma y=94 */}
       <div style={{
-        position: 'absolute',
-        width: 1280,
-        height: 684,
-        left: '50%',
-        transform: 'translateX(-50%)',
+        position: 'absolute', top: 94, left: 0, right: 0,
+        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
         zIndex: 60,
       }}>
-
-        {/* Title — x=455, y=94, 370×48, flex HORIZONTAL justify:CENTER gap:10 */}
-        <div style={{
-          position: 'absolute', left: 455, top: 94,
-          width: 370, height: 48,
-          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+        <img src="/images/sunflower-seed.png" alt="" style={{ width: 29, height: 43, objectFit: 'contain' }} />
+        <h2 style={{
+          fontFamily: KANIT,
+          fontWeight: 700, fontSize: 40,
+          color: '#000000',
+          lineHeight: '48px',
+          margin: 0,
+          whiteSpace: 'nowrap',
         }}>
-          <img src="/images/sunflower-seed.png" alt="" style={{ width: 29, height: 43, objectFit: 'contain' }} />
-          <h2 style={{
-            fontFamily: KANIT,
-            fontWeight: 700, fontSize: 40,
-            color: '#000000',
-            lineHeight: '48px',
-            margin: 0,
-            whiteSpace: 'nowrap',
-          }}>
-            Meet the Racers
-          </h2>
-          <img src="/images/sunflower-seed.png" alt="" style={{ width: 29, height: 43, objectFit: 'contain' }} />
-        </div>
+          Meet the Racers
+        </h2>
+        <img src="/images/sunflower-seed.png" alt="" style={{ width: 29, height: 43, objectFit: 'contain' }} />
+      </div>
 
-        {/* Cards — y=202, left card at x=222, gap:20 */}
-        <div style={{
-          position: 'absolute', top: 202, left: 222,
-          display: 'flex', gap: 20,
-        }}>
-          {RACERS.map(r => <RacerCard key={r.name} {...r} />)}
-        </div>
-
+      {/* Cards — centered, Figma y=202, gap:20 */}
+      <div style={{
+        position: 'absolute', top: 202, left: 0, right: 0,
+        display: 'flex', justifyContent: 'center', gap: 20,
+        zIndex: 60,
+        padding: '0 24px',
+        boxSizing: 'border-box',
+      }}>
+        {RACERS.map(r => <RacerCard key={r.name} {...r} />)}
       </div>
     </section>
   )

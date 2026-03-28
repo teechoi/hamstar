@@ -51,14 +51,14 @@ export function HamsterCard({
       backdropFilter: 'blur(20px)',
       overflow: 'hidden',
       display: 'flex', flexDirection: 'column', alignItems: 'center',
-      flex: '1 1 300px', minWidth: 260, maxWidth: 400,
+      width: '100%',
       opacity: dimmed ? 0.5 : 1,
       transition: 'opacity 0.3s, box-shadow 0.3s',
     }}>
 
       {/* Image area */}
       <div style={{
-        width: '100%', height: 240,
+        width: '100%', height: 175,
         display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
         background: 'linear-gradient(180deg, #f5f5f5 0%, #efefef 100%)',
         position: 'relative', overflow: 'hidden',
@@ -66,7 +66,7 @@ export function HamsterCard({
         <img
           src={img}
           alt={name}
-          style={{ height: 210, width: 'auto', objectFit: 'contain', display: 'block' }}
+          style={{ height: 155, width: 'auto', objectFit: 'contain', display: 'block' }}
         />
         {isLive && (
           <div style={{

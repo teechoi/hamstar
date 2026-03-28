@@ -82,11 +82,10 @@ export function HighlightSection({ lastResult }: HighlightSectionProps) {
           aria-hidden
           style={{
             position: 'absolute',
-            top: 16,
-            left: -16,
-            width: 150,
+            top: 180,
+            left: -181,
+            width: 530,
             height: 'auto',
-            opacity: 0.95,
             pointerEvents: 'none',
             zIndex: 1,
           }}
@@ -159,11 +158,11 @@ export function HighlightSection({ lastResult }: HighlightSectionProps) {
         {/* Tiled oats — repeat-x so ~6 piles span the width */}
         <div style={{
           width: '100%',
-          height: isMobile ? 100 : 160,
-          backgroundImage: 'url(/images/oats-pile.png)',
-          backgroundRepeat: 'repeat-x',
-          backgroundSize: 'auto 100%',
-          backgroundPosition: 'bottom center',
+          height: isMobile ? 120 : 255,
+          backgroundImage: 'url(/images/oats-pile.png), url(/images/oats-pile.png)',
+          backgroundRepeat: 'repeat-x, repeat-x',
+          backgroundSize: '380px auto, 380px auto',
+          backgroundPosition: '0 bottom, 190px bottom',
         }} />
 
         {/* Hamster headset — sits on oats, rises above */}
@@ -174,9 +173,9 @@ export function HighlightSection({ lastResult }: HighlightSectionProps) {
             aria-hidden
             style={{
               position: 'absolute',
-              bottom: 40,
-              right: 40,
-              width: 220,
+              top: -100,
+              right: 44,
+              width: 189,
               height: 'auto',
               pointerEvents: 'none',
               zIndex: 2,

@@ -358,10 +358,10 @@ export function EditBar() {
         onClick={() => setOpen(prev => !prev)}
         style={{
           padding: '12px 20px',
-          background: open ? '#2563eb' : '#F5D050',
+          background: open ? '#2563eb' : '#FFE790',
           border: `3px solid ${open ? '#1d4ed8' : '#d4a800'}`,
           borderRadius: 9999,
-          color: open ? '#fff' : '#0D0D14',
+          color: open ? '#fff' : '#000000',
           cursor: 'pointer',
           fontSize: 14,
           fontWeight: 900,

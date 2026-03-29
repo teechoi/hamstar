@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { useIsMobile } from '@/components/ui/index'
 
 const YELLOW = '#FFE790'
-const DARK = '#0D0D14'
+const DARK = '#000000'
 const PURPLE = '#735DFF'
 const KANIT = "var(--font-kanit), sans-serif"
 

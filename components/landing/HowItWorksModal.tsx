@@ -2,7 +2,7 @@
 import { useState } from 'react'
 
 const YELLOW = '#FFE790'
-const DARK = '#0D0D14'
+const DARK = '#000000'
 const KANIT = "var(--font-kanit), sans-serif"
 const PURPLE = '#735DFF'
 
@@ -79,7 +79,7 @@ export function HowItWorksModal({ onClose, onEnterArena }: HowItWorksModalProps)
           background: '#fff',
           borderRadius: 26,
           width: '100%', maxWidth: 480,
-          padding: '32px 36px 36px',
+          padding: 'clamp(20px, 5vw, 32px) clamp(20px, 6vw, 36px) clamp(24px, 5vw, 36px)',
           fontFamily: KANIT,
           position: 'relative',
           display: 'flex', flexDirection: 'column', alignItems: 'center',
@@ -110,7 +110,7 @@ export function HowItWorksModal({ onClose, onEnterArena }: HowItWorksModalProps)
           <img
             src={current.image}
             alt={current.title}
-            style={{ width: 260, height: 200, objectFit: 'contain' }}
+            style={{ width: 'min(260px, 100%)', height: 'auto', maxHeight: 200, objectFit: 'contain' }}
           />
           {current.badge && (
             <div style={{
@@ -152,7 +152,7 @@ export function HowItWorksModal({ onClose, onEnterArena }: HowItWorksModalProps)
 
         {/* Title */}
         <h2 style={{
-          fontSize: 24, fontWeight: 600, color: DARK,
+          fontSize: 'clamp(18px, 4vw, 24px)', fontWeight: 600, color: DARK,
           marginBottom: 12, textAlign: 'center',
         }}>
           {current.num}. {current.title}
@@ -197,7 +197,7 @@ function CtaButton({ label, onClick }: { label: string; onClick: () => void }) {
         padding: '18px',
         background: YELLOW,
         border: 'none',
-        borderRadius: 70,
+        borderRadius: 48.5,
         fontSize: 18, fontWeight: 600,
         color: DARK,
         cursor: 'pointer',

@@ -10,7 +10,7 @@ export function AboutSection() {
     return (
       <section id="about" style={{ background: '#F8F9FA', padding: '48px 24px 56px' }}>
         {/* Image area — stacked on top, centered */}
-        <div style={{ position: 'relative', width: 280, height: 260, margin: '0 auto 36px' }}>
+        <div style={{ position: 'relative', width: 'min(280px, 80vw)', height: 'min(260px, 74vw)', margin: '0 auto 36px' }}>
           <div style={{
             position: 'absolute', left: 0, top: 0, width: 260, height: 260,
             borderRadius: 23, background: '#FFFFFF',

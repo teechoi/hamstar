@@ -110,7 +110,7 @@ export function PetPageClient() {
           <div style={{ textAlign: 'center', marginBottom: 32 }}>
             <h1 style={{
               fontFamily: KANIT,
-              fontSize: 24,
+              fontSize: 'clamp(20px, 2.5vw, 24px)',
               fontWeight: 600,
               color: '#000',
               marginBottom: 10,
@@ -119,7 +119,7 @@ export function PetPageClient() {
             </h1>
             <p style={{
               fontFamily: 'Pretendard, sans-serif',
-              fontSize: 17,
+              fontSize: 'clamp(14px, 1.6vw, 17px)',
               fontWeight: 500,
               color: '#000',
             }}>
@@ -168,7 +168,7 @@ export function PetPageClient() {
                     />
                   </div>
                   <span style={{
-                    fontFamily: 'Pretendard, sans-serif',
+                    fontFamily: KANIT,
                     fontSize: 16,
                     fontWeight: 600,
                     color: '#000',

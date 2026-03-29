@@ -2,7 +2,7 @@
 import { useState } from 'react'
 
 const YELLOW = '#FFE790'
-const DARK = '#0D0D14'
+const DARK = '#000000'
 const KANIT = "var(--font-kanit), sans-serif"
 const PURPLE = '#735DFF'
 
@@ -54,7 +54,7 @@ export function DepositModal({ address = '', onClose, onConnectWallet }: Deposit
           lineHeight: 1,
         }}>×</button>
 
-        <h2 style={{ fontSize: 24, fontWeight: 600, color: DARK, marginBottom: 6 }}>
+        <h2 style={{ fontSize: 'clamp(18px, 4vw, 24px)', fontWeight: 600, color: DARK, marginBottom: 6 }}>
           Deposit Funds
         </h2>
         <p style={{ fontSize: 14, color: '#8A8A8A', fontFamily: 'Pretendard, sans-serif', marginBottom: 28 }}>

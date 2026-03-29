@@ -2,7 +2,7 @@
 import { useState } from 'react'
 
 const YELLOW = '#FFE790'
-const DARK = '#0D0D14'
+const DARK = '#000000'
 const KANIT = "var(--font-kanit), sans-serif"
 
 interface AccountModalProps {
@@ -64,7 +64,7 @@ export function AccountModal({
           🐹
         </div>
 
-        <h2 style={{ fontSize: 20, fontWeight: 600, color: DARK, textAlign: 'center', marginBottom: 4 }}>
+        <h2 style={{ fontSize: 'clamp(16px, 3.5vw, 20px)', fontWeight: 600, color: DARK, textAlign: 'center', marginBottom: 4 }}>
           My Account
         </h2>
 

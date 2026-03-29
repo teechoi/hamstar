@@ -94,7 +94,7 @@ export function HamsterCard({
         {goldGlow && (
           <div style={{
             position: 'absolute', top: 12, right: 12,
-            background: '#ffd643', color: '#0D0D14',
+            background: '#ffd643', color: '#000000',
             borderRadius: 20, padding: '3px 10px',
             fontSize: 11, fontWeight: 700, fontFamily: KANIT,
           }}>
@@ -105,7 +105,7 @@ export function HamsterCard({
 
       {/* Info */}
       <div style={{ padding: '10px 25px 18px', width: '100%', textAlign: 'center' }}>
-        <h3 style={{ fontFamily: KANIT, fontSize: 20, fontWeight: 500, color: '#0D0D14', marginBottom: 4 }}>
+        <h3 style={{ fontFamily: KANIT, fontSize: 'clamp(16px, 1.8vw, 20px)', fontWeight: 500, color: '#000000', marginBottom: 4 }}>
           I&apos;m {name}
         </h3>
         <p style={{ fontFamily: KANIT, fontSize: 14, fontWeight: 400, color: '#808080', marginBottom: showBar ? 14 : 16 }}>
@@ -161,7 +161,7 @@ export function HamsterCard({
             width: '100%', padding: '14px',
             background: '#e3e3e3', borderRadius: 48.5,
             fontSize: 14, fontWeight: 500,
-            color: '#aaa', fontFamily: 'Pretendard, sans-serif', textAlign: 'center',
+            color: '#aaa', fontFamily: KANIT, textAlign: 'center',
           }}>
             {isFinished ? 'Race Finished' : 'Closed'}
           </div>
@@ -170,14 +170,14 @@ export function HamsterCard({
             width: '100%', padding: '14px',
             background: '#d5d5d5', borderRadius: 48.5,
             fontSize: 14, fontWeight: 500,
-            color: '#fff', fontFamily: 'Pretendard, sans-serif', textAlign: 'center',
+            color: '#fff', fontFamily: KANIT, textAlign: 'center',
           }}>
             Opens Soon
           </div>
         )}
 
         {arenaState === 'PREPARING' && (
-          <p style={{ fontFamily: 'Pretendard, sans-serif', fontWeight: 500, fontSize: 12, color: '#8D8D8D', textAlign: 'center', margin: '8px 0 0' }}>
+          <p style={{ fontFamily: KANIT, fontWeight: 500, fontSize: 12, color: '#8D8D8D', textAlign: 'center', margin: '8px 0 0' }}>
             No data yet
           </p>
         )}

@@ -2,7 +2,7 @@
 import { useState } from 'react'
 
 const YELLOW = '#FFE790'
-const DARK = '#0D0D14'
+const DARK = '#000000'
 const KANIT = "var(--font-kanit), sans-serif"
 
 interface LoginModalProps {

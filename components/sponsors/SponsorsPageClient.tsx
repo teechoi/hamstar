@@ -76,7 +76,7 @@ function RealSponsorCard({ sponsor }: { sponsor: DbSponsor }) {
       </div>
 
       {/* Sponsor identity */}
-      <p style={{ fontFamily: KANIT, fontSize: 'clamp(20px, 2vw, 30px)', fontWeight: 700, color: '#0D0D14', marginBottom: 4 }}>
+      <p style={{ fontFamily: KANIT, fontSize: 'clamp(20px, 2vw, 30px)', fontWeight: 700, color: '#000000', marginBottom: 4 }}>
         {sponsor.emoji} {sponsor.name}
       </p>
 
@@ -123,7 +123,7 @@ function PlaceholderCard({ pet }: { pet: Pet }) {
         overflow: 'hidden',
       }}
     >
-      <p style={{ fontFamily: KANIT, fontSize: 'clamp(18px, 2vw, 26px)', fontWeight: 700, color: '#0D0D14', marginBottom: 4 }}>
+      <p style={{ fontFamily: KANIT, fontSize: 'clamp(18px, 2vw, 26px)', fontWeight: 700, color: '#000000', marginBottom: 4 }}>
         Title Sponsor
       </p>
       <p style={{ fontFamily: KANIT, fontSize: 13, color: '#a0a0a0', marginBottom: 16 }}>
@@ -209,7 +209,7 @@ export function SponsorsPageClient({
 
           {/* Header */}
           <div style={{ textAlign: 'center', marginBottom: 48 }}>
-            <h1 style={{ fontFamily: KANIT, fontSize: 'clamp(28px, 4vw, 50px)', fontWeight: 700, color: '#0D0D14', marginBottom: 12 }}>
+            <h1 style={{ fontFamily: KANIT, fontSize: 'clamp(24px, 4vw, 50px)', fontWeight: 700, color: '#000000', marginBottom: 12 }}>
               Sponsor a Racer
             </h1>
             <p style={{ fontFamily: 'Pretendard, sans-serif', fontSize: 'clamp(14px, 1.6vw, 20px)', color: '#8A8A8A' }}>
@@ -233,8 +233,8 @@ export function SponsorsPageClient({
             style={{
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16,
               width: '100%', padding: '24px 32px',
-              background: '#FFE790', border: 'none', borderRadius: 70,
-              fontFamily: KANIT, fontSize: 'clamp(18px, 2vw, 28px)', fontWeight: 700, color: '#0D0D14',
+              background: '#FFE790', border: 'none', borderRadius: 48.5,
+              fontFamily: KANIT, fontSize: 'clamp(18px, 2vw, 28px)', fontWeight: 700, color: '#000000',
               textDecoration: 'none', cursor: 'pointer',
               opacity: ctaHov ? 0.9 : 1, transition: 'opacity 0.15s',
               boxShadow: '0 20px 40px rgba(77,67,83,0.08)',

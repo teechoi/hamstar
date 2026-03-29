@@ -73,7 +73,7 @@ export function HeroSection() {
           </h1>
           <p style={{
             fontFamily: 'Pretendard, sans-serif',
-            fontSize: isMobile ? 15 : 'clamp(17px, 1.6vw, 26px)',
+            fontSize: isMobile ? 'clamp(13px, 4vw, 17px)' : 'clamp(17px, 1.6vw, 26px)',
             color: '#FFE790',
             fontWeight: 500,
             lineHeight: isMobile ? '22px' : '30px',
@@ -100,7 +100,7 @@ export function HeroSection() {
               display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
               gap: 8, padding: '13px 28px',
               background: '#735DFF', color: '#F8F9FA',
-              border: 'none', borderRadius: 70,
+              border: 'none', borderRadius: 48.5,
               fontFamily: KANIT, fontSize: 16, fontWeight: 500,
               textDecoration: 'none',
               transform: hov ? 'scale(1.04)' : 'scale(1)',

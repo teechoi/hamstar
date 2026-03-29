@@ -50,7 +50,7 @@ function CountdownCard({ targetMs, isLive }: { streamUrl: string; targetMs: numb
             flexShrink: 0,
           }} />
           <span style={{
-            fontFamily: 'Pretendard, sans-serif',
+            fontFamily: KANIT,
             fontWeight: 500, fontSize: 12,
             color: '#FFFFFF',
             lineHeight: '14px',
@@ -74,7 +74,7 @@ function CountdownCard({ targetMs, isLive }: { streamUrl: string; targetMs: numb
         {/* Timer — Kanit 700 60px #FFE68F lh:72px */}
         <div style={{
           fontFamily: KANIT,
-          fontWeight: 700, fontSize: 60,
+          fontWeight: 700, fontSize: 'clamp(40px, 5vw, 60px)',
           color: YELLOW,
           letterSpacing: 2, lineHeight: '72px',
         }}>
@@ -108,7 +108,7 @@ function MobileCountdownCard({ targetMs, isLive }: { targetMs: number; isLive: b
       <div style={{ position: 'relative', zIndex: 1, padding: '28px 20px 24px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, textAlign: 'center' }}>
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '0 16px', height: 26, borderRadius: 22, background: '#735DFF' }}>
           <span style={{ width: 10, height: 10, borderRadius: '50%', background: isLive ? '#ff4444' : '#FFFFFF', display: 'inline-block', animation: 'pulse 1.5s ease-in-out infinite', flexShrink: 0 }} />
-          <span style={{ fontFamily: 'Pretendard, sans-serif', fontWeight: 500, fontSize: 12, color: '#FFFFFF', lineHeight: '14px' }}>
+          <span style={{ fontFamily: KANIT, fontWeight: 500, fontSize: 12, color: '#FFFFFF', lineHeight: '14px' }}>
             {isLive ? 'LIVE NOW' : 'LIVE COUNTDOWN'}
           </span>
         </div>

@@ -22,12 +22,11 @@ export function TermsModal({ onAccept }: TermsModalProps) {
       backdropFilter: 'blur(10px)',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
     }}>
-      {/* Card — 324×422, white, cornerRadius 20 */}
+      {/* Card — max 324px wide, auto height */}
       <div style={{
         background: '#FFFFFF',
         borderRadius: 20,
-        width: 324,
-        height: 422,
+        width: 'min(324px, calc(100vw - 40px))',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -37,8 +36,8 @@ export function TermsModal({ onAccept }: TermsModalProps) {
 
         {/* Hamster portrait image — 290×325, 22px from top */}
         <div style={{
-          width: 290,
-          height: 325,
+          width: 'min(290px, calc(100vw - 74px))',
+          height: 'min(325px, 65vw)',
           marginTop: 22,
           position: 'relative',
           flexShrink: 0,
@@ -72,12 +71,13 @@ export function TermsModal({ onAccept }: TermsModalProps) {
           onMouseEnter={() => setHov(true)}
           onMouseLeave={() => setHov(false)}
           style={{
-            width: 280,
+            width: 'min(280px, calc(100% - 40px))',
             height: 35,
             marginTop: 20,
+            marginBottom: 20,
             background: YELLOW,
             border: 'none',
-            borderRadius: 70,
+            borderRadius: 48.5,
             fontFamily: KANIT,
             fontSize: 14,
             fontWeight: 500,

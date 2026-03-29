@@ -46,7 +46,7 @@ function VideoCard({ title, index }: { title: string; index: number }) {
       </div>
       {/* Caption */}
       <div style={{ padding: '12px 16px 16px' }}>
-        <p style={{ fontFamily: KANIT, fontSize: 14, fontWeight: 600, color: '#0D0D14' }}>
+        <p style={{ fontFamily: KANIT, fontSize: 14, fontWeight: 600, color: '#000000' }}>
           {title}
         </p>
       </div>
@@ -104,7 +104,7 @@ export function HighlightSection({ lastResult }: HighlightSectionProps) {
         <div style={{ textAlign: 'center', marginBottom: 28 }}>
           <h2 style={{
             fontFamily: KANIT,
-            fontSize: 24,
+            fontSize: 'clamp(20px, 2.5vw, 24px)',
             fontWeight: 500,
             color: '#000',
             marginBottom: 8,

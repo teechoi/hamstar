@@ -80,7 +80,7 @@ function RacerCard({ name, tagline, image, featured, imgW = 166, imgH = 149, img
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
             <span style={{
-              fontFamily: 'Pretendard, sans-serif',
+              fontFamily: KANIT,
               fontWeight: 500, fontSize: 14,
               color: '#FFFFFF',
               lineHeight: '17px',

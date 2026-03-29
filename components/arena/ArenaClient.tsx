@@ -16,7 +16,7 @@ import { useIsMobile } from '@/components/ui/index'
 const KANIT = "var(--font-kanit), sans-serif"
 const PURPLE = '#735DFF'
 const YELLOW = '#FFE790'
-const DARK   = '#0D0D14'
+const DARK   = '#000000'
 const TERMS_KEY = 'hamstar_terms_accepted'
 
 type Modal = 'terms' | 'login' | 'deposit' | 'account' | 'howitworks' | null
@@ -163,14 +163,14 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
         {/* Hero header */}
         <div style={{ textAlign: 'center', padding: isMobile ? '40px 16px 24px' : '60px 24px 32px' }}>
           <h1 style={{
-            fontFamily: KANIT, fontSize: 24,
+            fontFamily: KANIT, fontSize: 'clamp(20px, 2.5vw, 24px)',
             fontWeight: 500, color: '#000', marginBottom: 8,
           }}>
             Welcome to Hamstar Arena
           </h1>
           <p style={{
             fontFamily: KANIT,
-            fontSize: 16,
+            fontSize: 'clamp(14px, 1.5vw, 16px)',
             fontWeight: 400,
             color: '#000',
             maxWidth: 473, margin: '0 auto',
@@ -424,8 +424,8 @@ function YellowBtn({ label, suffix, onClick }: { label: string; suffix: string; 
       style={{
         flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
         gap: 12, padding: '16px 48px',
-        background: YELLOW, border: '2px solid #000', borderRadius: 70,
-        fontFamily: 'Pretendard, sans-serif', fontSize: 17, fontWeight: 700,
+        background: YELLOW, border: '2px solid #000', borderRadius: 48.5,
+        fontFamily: KANIT, fontSize: 'clamp(14px, 1.5vw, 17px)', fontWeight: 700,
         color: DARK, cursor: 'pointer',
         opacity: hov ? 0.9 : 1, transition: 'opacity 0.15s',
         boxShadow: '0 20px 40px rgba(77,67,83,0.08)',
@@ -450,8 +450,8 @@ function WatchLiveBtn({ active, href }: { active: boolean; href: string }) {
         gap: 12, padding: '16px 48px',
         background: active ? YELLOW : '#e0e0e0',
         border: active ? '2px solid #000' : '2px solid #ccc',
-        borderRadius: 70, textDecoration: 'none',
-        fontFamily: 'Pretendard, sans-serif', fontSize: 17, fontWeight: 700,
+        borderRadius: 48.5, textDecoration: 'none',
+        fontFamily: KANIT, fontSize: 'clamp(14px, 1.5vw, 17px)', fontWeight: 700,
         color: active ? DARK : '#aaa',
         cursor: active ? 'pointer' : 'default',
         opacity: hov ? 0.9 : 1, transition: 'opacity 0.15s',
@@ -469,8 +469,8 @@ function GrayDisabledBtn({ label }: { label: string }) {
     <div style={{
       flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
       gap: 12, padding: '16px 48px',
-      background: '#e0e0e0', border: '2px solid #ccc', borderRadius: 70,
-      fontFamily: 'Pretendard, sans-serif', fontSize: 17, fontWeight: 700,
+      background: '#e0e0e0', border: '2px solid #ccc', borderRadius: 48.5,
+      fontFamily: KANIT, fontSize: 'clamp(14px, 1.5vw, 17px)', fontWeight: 700,
       color: '#aaa', userSelect: 'none',
     }}>
       {label} <span style={{ fontSize: 16 }}>▶</span>

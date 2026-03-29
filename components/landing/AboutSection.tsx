@@ -3,7 +3,7 @@ import { useIsMobile } from '@/components/ui/index'
 
 const KANIT = "var(--font-kanit), sans-serif"
 
-const DEFAULT_ABOUT_TEXT = "Hamstar is a tiny internet sport built around real hamster races. In each race, three hamsters compete on a small track while the community watches the race live and cheers for their favourite racer. It's simple, fast, and unpredictable, just like the hamsters themselves."
+const DEFAULT_ABOUT_TEXT = "Hamstar is a tiny internet sport built around real hamster races.\n\nIn each race, three hamsters compete on a small track while the community watches the race live and cheers for their favourite racer.\n\nIt's simple, fast, and unpredictable, just like the hamsters themselves."
 
 export function AboutSection({
   aboutTitle = 'About Hamstar',
@@ -103,9 +103,11 @@ export function AboutSection({
           <h2 style={{ fontFamily: KANIT, fontWeight: 700, fontSize: 40, color: '#000000', lineHeight: '48px', margin: 0 }}>
             {aboutTitle}
           </h2>
-          <p style={{ fontFamily: 'Pretendard, sans-serif', fontWeight: 400, fontSize: 18, color: '#242424', lineHeight: '27px', margin: 0, whiteSpace: 'pre-line' }}>
-            {bodyText}
-          </p>
+          <div style={{ fontFamily: 'Pretendard, sans-serif', fontWeight: 400, fontSize: 18, color: '#242424', lineHeight: '27px' }}>
+            {bodyText.split('\n\n').map((para, i) => (
+              <p key={i} style={{ margin: i === 0 ? 0 : '12px 0 0' }}>{para}</p>
+            ))}
+          </div>
         </div>
       </div>
     </section>

@@ -50,7 +50,7 @@ export function HeroSection() {
         position: 'absolute', inset: 0,
         display: 'flex', flexDirection: 'column',
         alignItems: 'center', textAlign: 'center',
-        paddingTop: isMobile ? 100 : 'clamp(110px, 10vw, 165px)',
+        paddingTop: isMobile ? 80 : 'clamp(80px, 7vw, 115px)',
         paddingBottom: 42,
         paddingLeft: isMobile ? 20 : 0,
         paddingRight: isMobile ? 20 : 0,

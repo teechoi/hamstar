@@ -38,9 +38,9 @@ export function SponsorsView() {
   const isMobile = useIsMobile()
 
   return (
-    <div style={{ maxWidth: 1080, margin: '0 auto', padding: isMobile ? '24px 16px' : '40px 28px' }}>
+    <div style={{ maxWidth: 1400, margin: '0 auto', padding: isMobile ? '24px 16px' : '40px 28px' }}>
       <Tag label="🏎️ Sponsorships" color={T.blue} bg={T.blueSoft} />
-      <h2 style={{ fontFamily: 'Georgia, serif', fontSize: isMobile ? 28 : 40, color: T.text, marginTop: 10, marginBottom: 8, letterSpacing: -1, fontWeight: 900 }}>
+      <h2 style={{ fontFamily: 'Georgia, serif', fontSize: isMobile ? 28 : 'clamp(36px, 3.2vw, 52px)', color: T.text, marginTop: 10, marginBottom: 8, letterSpacing: -1, fontWeight: 900 }}>
         Sponsor a Racer
       </h2>
       <p style={{ color: T.textMid, fontSize: isMobile ? 14 : 15, maxWidth: 520, marginBottom: 28 }}>
@@ -48,7 +48,7 @@ export function SponsorsView() {
       </p>
 
       {/* Tier cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: isMobile ? 14 : 20, marginBottom: 28 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(280px, 1fr))', gap: isMobile ? 14 : 20, marginBottom: 28 }}>
         {TIERS.map((tier) => (
           <div key={tier.key} style={{ background: tier.bg, border: `2px solid ${tier.color}`, borderRadius: 20, padding: isMobile ? 20 : 28, boxShadow: `4px 4px 0px ${tier.color}44`, position: 'relative', overflow: 'hidden' }}>
             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 5, background: tier.color }} />

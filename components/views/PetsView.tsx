@@ -10,11 +10,11 @@ export function PetsView() {
   const isMobile = useIsMobile()
 
   return (
-    <div style={{ maxWidth: 1200, margin: '0 auto', padding: isMobile ? '24px 16px' : '40px 28px' }}>
+    <div style={{ maxWidth: 1400, margin: '0 auto', padding: isMobile ? '24px 16px' : '40px 28px' }}>
       {/* Header */}
       <div style={{ marginBottom: 28 }}>
         <Tag label="🏁 The Lineup" color={T.blue} bg={T.blueSoft} />
-        <h2 style={{ fontFamily: 'Georgia, serif', fontSize: isMobile ? 28 : 40, fontWeight: 900, color: T.text, marginTop: 10, marginBottom: 8, letterSpacing: -1 }}>
+        <h2 style={{ fontFamily: 'Georgia, serif', fontSize: isMobile ? 28 : 'clamp(36px, 3.2vw, 52px)', fontWeight: 900, color: T.text, marginTop: 10, marginBottom: 8, letterSpacing: -1 }}>
           Meet the Racers
         </h2>
         <p style={{ color: T.textMid, fontSize: isMobile ? 14 : 15, maxWidth: 520 }}>

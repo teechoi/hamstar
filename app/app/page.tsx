@@ -41,7 +41,7 @@ export default function Home() {
         <main>{views[tab]}</main>
         <footer style={{ background: T.text, borderTop: `4px solid ${T.lime}` }}>
           <CheckerBar />
-          <div style={{ padding: '20px 28px', maxWidth: 1280, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+          <div style={{ padding: '20px 28px', maxWidth: 1400, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
             <span style={{ color: T.lime, fontSize: 13, fontWeight: 800 }}>🐹 Hamstar</span>
             <span style={{ color: '#8892BB', fontSize: 12 }}>Real hamsters · Real races · One champion</span>
             {footerLinks.length > 0 && (

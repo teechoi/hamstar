@@ -26,14 +26,14 @@ export function CommunityView() {
     { label: 'YouTube', icon: '▶', color: '#FF0000', url: socials.youtube },
   ].filter((s) => s.url)
 
-  const columns = isMobile ? 1 : 3
+  const columns = isMobile ? 1 : 4
 
   return (
-    <div style={{ maxWidth: 1080, margin: '0 auto', padding: isMobile ? '24px 16px' : '40px 28px' }}>
+    <div style={{ maxWidth: 1400, margin: '0 auto', padding: isMobile ? '24px 16px' : '40px 28px' }}>
       <div style={{ display: 'flex', alignItems: isMobile ? 'flex-start' : 'flex-end', flexDirection: isMobile ? 'column' : 'row', justifyContent: 'space-between', marginBottom: 28, gap: 16 }}>
         <div>
           <Tag label="🎬 Content" color={T.blue} bg={T.blueSoft} />
-          <h2 style={{ fontFamily: 'Georgia, serif', fontSize: isMobile ? 26 : 36, color: T.text, marginTop: 10, marginBottom: 6, letterSpacing: -0.5, fontWeight: 900 }}>
+          <h2 style={{ fontFamily: 'Georgia, serif', fontSize: isMobile ? 26 : 'clamp(32px, 2.8vw, 48px)', color: T.text, marginTop: 10, marginBottom: 6, letterSpacing: -0.5, fontWeight: 900 }}>
             Hamstar TV
           </h2>
           <p style={{ color: T.textMuted, fontSize: 14 }}>Race highlights, real hamsters, and behind-the-scenes content.</p>

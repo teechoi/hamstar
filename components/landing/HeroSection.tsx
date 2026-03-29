@@ -12,8 +12,7 @@ export function HeroSection() {
   return (
     <section id="hero" style={{
       position: 'relative',
-      height: 662,
-      minHeight: 500,
+      height: 'clamp(580px, 52vw, 820px)',
       background: '#000000',
       overflow: 'hidden',
     }}>
@@ -50,7 +49,7 @@ export function HeroSection() {
         position: 'absolute', inset: 0,
         display: 'flex', flexDirection: 'column',
         alignItems: 'center', textAlign: 'center',
-        paddingTop: isMobile ? 100 : 129,
+        paddingTop: isMobile ? 100 : 'clamp(110px, 10vw, 165px)',
         paddingBottom: 42,
         paddingLeft: isMobile ? 20 : 0,
         paddingRight: isMobile ? 20 : 0,
@@ -58,22 +57,22 @@ export function HeroSection() {
         {/* Heading */}
         <div style={{
           display: 'flex', flexDirection: 'column', alignItems: 'center',
-          width: isMobile ? '100%' : 722,
+          width: isMobile ? '100%' : 'clamp(600px, 60vw, 900px)',
         }}>
           <h1 style={{
             fontFamily: KANIT,
-            fontSize: isMobile ? 'clamp(28px, 7vw, 52px)' : 60,
+            fontSize: isMobile ? 'clamp(28px, 7vw, 52px)' : 'clamp(52px, 4.7vw, 80px)',
             fontWeight: 700,
             color: '#ffffff',
             letterSpacing: 0,
-            lineHeight: isMobile ? 1.15 : '72px',
+            lineHeight: isMobile ? 1.15 : 1.2,
             margin: 0,
           }}>
             Who Will Be The Hamstar?
           </h1>
           <p style={{
             fontFamily: 'Pretendard, sans-serif',
-            fontSize: isMobile ? 15 : 20,
+            fontSize: isMobile ? 15 : 'clamp(17px, 1.6vw, 26px)',
             color: '#FFE790',
             fontWeight: 600,
             lineHeight: isMobile ? '22px' : '30px',

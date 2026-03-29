@@ -19,7 +19,7 @@ export function RaceView() {
         </div>
         <div style={{ height: 6, background: T.lime, margin: isMobile ? '0 -16px 28px' : '0 -28px 40px' }} />
 
-        <div style={{ maxWidth: 1080, margin: '0 auto' }}>
+        <div style={{ maxWidth: 1400, margin: '0 auto' }}>
           <div style={{ display: 'flex', gap: 10, marginBottom: 16, flexWrap: 'wrap' }}>
             <Tag label="Season 01" color={T.lime} bg="#A6FF0022" border={T.lime} />
             <Tag
@@ -30,7 +30,7 @@ export function RaceView() {
             />
           </div>
 
-          <h1 style={{ fontFamily: 'Georgia, serif', fontSize: isMobile ? 36 : 64, fontWeight: 900, color: T.card, lineHeight: 1, marginBottom: 14, letterSpacing: isMobile ? -1 : -2 }}>
+          <h1 style={{ fontFamily: 'Georgia, serif', fontSize: isMobile ? 36 : 'clamp(52px, 5vw, 80px)', fontWeight: 900, color: T.card, lineHeight: 1, marginBottom: 14, letterSpacing: isMobile ? -1 : -2 }}>
             WHO WILL BE{isMobile ? ' ' : <br />}<span style={{ color: T.lime }}>THE HAMSTAR?</span>
           </h1>
           <div style={{ fontSize: 11, color: T.textMuted, fontWeight: 800, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 10 }}>
@@ -64,7 +64,7 @@ export function RaceView() {
         </div>
       </div>
 
-      <div style={{ maxWidth: 1080, margin: '0 auto', padding: isMobile ? '24px 16px' : '36px 28px' }}>
+      <div style={{ maxWidth: 1400, margin: '0 auto', padding: isMobile ? '24px 16px' : '36px 28px' }}>
 
         {/* ── STREAM SECTION ── */}
         <div style={{ borderRadius: 16, overflow: 'hidden', border: `2px solid ${T.text}`, marginBottom: 24 }}>

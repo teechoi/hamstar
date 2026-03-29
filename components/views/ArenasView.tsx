@@ -21,14 +21,14 @@ export function ArenasView() {
   }
 
   return (
-    <div style={{ maxWidth: 900, margin: '0 auto', padding: isMobile ? '24px 16px' : '48px 28px' }}>
+    <div style={{ maxWidth: 1200, margin: '0 auto', padding: isMobile ? '24px 16px' : '48px 28px' }}>
       {/* Hero */}
       <div style={{ background: T.text, borderRadius: 20, padding: isMobile ? '32px 20px' : '52px 44px', marginBottom: 28, position: 'relative', overflow: 'hidden', textAlign: 'center' }}>
         <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 6, background: T.lime }} />
         <div style={{ position: 'absolute', right: -20, bottom: -40, fontSize: isMobile ? 120 : 220, opacity: 0.04, pointerEvents: 'none', userSelect: 'none' }}>🏟</div>
 
         <Tag label="🚧 Coming Soon" color={T.lime} bg={T.lime + '22'} border={T.lime} />
-        <h1 style={{ fontFamily: 'Georgia, serif', fontSize: isMobile ? 30 : 48, fontWeight: 900, color: T.card, marginTop: 16, marginBottom: 14, lineHeight: 1.1, letterSpacing: -1 }}>
+        <h1 style={{ fontFamily: 'Georgia, serif', fontSize: isMobile ? 30 : 'clamp(40px, 3.8vw, 60px)', fontWeight: 900, color: T.card, marginTop: 16, marginBottom: 14, lineHeight: 1.1, letterSpacing: -1 }}>
           Arenas are{isMobile ? ' ' : <br />}being built 🏗️
         </h1>
         <p style={{ fontSize: isMobile ? 14 : 15, color: '#8892BB', maxWidth: 460, margin: '0 auto 28px', lineHeight: 1.8 }}>

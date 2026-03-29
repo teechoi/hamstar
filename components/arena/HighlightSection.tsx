@@ -70,7 +70,6 @@ export function HighlightSection({ lastResult }: HighlightSectionProps) {
     <section style={{
       background: '#F8F9FA',
       position: 'relative',
-      overflow: 'hidden',
       paddingTop: 'clamp(40px, 6vw, 72px)',
       paddingBottom: 0,
     }}>
@@ -84,7 +83,7 @@ export function HighlightSection({ lastResult }: HighlightSectionProps) {
           style={{
             position: 'absolute',
             top: 120,
-            left: 'calc(50% - 700px)',
+            left: 'max(calc(50% - 700px), 20px)',
             width: 220,
             height: 'auto',
             pointerEvents: 'none',

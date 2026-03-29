@@ -83,7 +83,7 @@ export function HighlightSection({ lastResult }: HighlightSectionProps) {
           style={{
             position: 'absolute',
             top: 80,
-            left: -30,
+            left: 'clamp(-30px, calc(50% - 700px), 40px)',
             width: 220,
             height: 'auto',
             pointerEvents: 'none',

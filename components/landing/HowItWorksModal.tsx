@@ -104,14 +104,14 @@ export function HowItWorksModal({ onClose, onEnterArena }: HowItWorksModalProps)
         <div style={{
           position: 'relative',
           width: '100%',
-          height: 250,
+          height: 210,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           marginBottom: 20,
         }}>
           <img
             src={current.image}
             alt={current.title}
-            style={{ width: 375, height: 230, objectFit: 'contain' }}
+            style={{ width: 260, height: 200, objectFit: 'contain' }}
           />
           {current.badge && (
             <div style={{

@@ -65,9 +65,9 @@ export function PetPageClient() {
         position: 'relative',
       }}>
 
-        {/* Glow blobs — radial gradients anchored to corners, never clip */}
-        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 600px 600px at 0% 100%, rgba(252,212,0,0.22) 0%, transparent 70%)', pointerEvents: 'none', zIndex: 0 }} />
-        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 560px 560px at 100% 30%, rgba(115,93,255,0.14) 0%, transparent 70%)', pointerEvents: 'none', zIndex: 0 }} />
+        {/* Glow blobs — positioned at corners with no negative offsets so they never clip */}
+        <div style={{ position: 'absolute', bottom: 0, left: 0, width: 700, height: 700, borderRadius: '50%', background: 'rgba(252,212,0,0.22)', filter: 'blur(100px)', pointerEvents: 'none', zIndex: 0 }} />
+        <div style={{ position: 'absolute', top: 200, right: 0, width: 600, height: 600, borderRadius: '50%', background: 'rgba(115,93,255,0.14)', filter: 'blur(100px)', pointerEvents: 'none', zIndex: 0 }} />
 
         {/* Right decorative hamster */}
         {!isMobile && (

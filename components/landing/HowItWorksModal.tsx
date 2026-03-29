@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react'
+import type { HowItWorksStep } from '@/types'
 
 const YELLOW = '#FFE790'
 const DARK = '#000000'
@@ -9,9 +10,10 @@ const PURPLE = '#735DFF'
 interface HowItWorksModalProps {
   onClose: () => void
   onEnterArena: () => void
+  steps?: HowItWorksStep[]
 }
 
-const STEPS = [
+const DEFAULT_STEPS: HowItWorksStep[] = [
   {
     num: 1,
     title: 'Pick Your Hamster',
@@ -50,8 +52,9 @@ const STEPS = [
   },
 ]
 
-export function HowItWorksModal({ onClose, onEnterArena }: HowItWorksModalProps) {
+export function HowItWorksModal({ onClose, onEnterArena, steps }: HowItWorksModalProps) {
   const [step, setStep] = useState(0)
+  const STEPS = (steps && steps.length > 0) ? steps : DEFAULT_STEPS
   const current = STEPS[step]
   const isLast = step === STEPS.length - 1
 

@@ -6,13 +6,14 @@ const KANIT = "var(--font-kanit), sans-serif"
 
 interface TermsModalProps {
   onAccept: () => void
+  termsButtonText?: string
 }
 
 // Bullet dot y-positions relative to the image container (image-relative coords)
 // Figma card-relative: y=290,302,325,338 → image starts at card y=22 → image-relative: 268,280,303,316
 const BULLET_Y = [268, 280, 303, 316]
 
-export function TermsModal({ onAccept }: TermsModalProps) {
+export function TermsModal({ onAccept, termsButtonText = 'I Understand & Enter Arena' }: TermsModalProps) {
   const [hov, setHov] = useState(false)
 
   return (
@@ -88,7 +89,7 @@ export function TermsModal({ onAccept }: TermsModalProps) {
             transition: 'opacity 0.15s',
           }}
         >
-          I Understand & Enter Arena
+          {termsButtonText}
         </button>
 
       </div>

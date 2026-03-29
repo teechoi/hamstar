@@ -3,8 +3,17 @@ import { useIsMobile } from '@/components/ui/index'
 
 const KANIT = "var(--font-kanit), sans-serif"
 
-export function AboutSection() {
+const DEFAULT_ABOUT_TEXT = "Hamstar is a tiny internet sport built around real hamster races. In each race, three hamsters compete on a small track while the community watches the race live and cheers for their favourite racer. It's simple, fast, and unpredictable, just like the hamsters themselves."
+
+export function AboutSection({
+  aboutTitle = 'About Hamstar',
+  aboutText,
+}: {
+  aboutTitle?: string
+  aboutText?: string
+}) {
   const isMobile = useIsMobile()
+  const bodyText = aboutText || DEFAULT_ABOUT_TEXT
 
   if (isMobile) {
     return (
@@ -33,11 +42,11 @@ export function AboutSection() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
             <img src="/images/sunflower-seed.png" alt="" style={{ width: 22, height: 33, objectFit: 'contain' }} />
             <h2 style={{ fontFamily: KANIT, fontWeight: 700, fontSize: 32, color: '#000000', lineHeight: '40px', margin: 0 }}>
-              About Hamstar
+              {aboutTitle}
             </h2>
           </div>
-          <p style={{ fontFamily: 'Pretendard, sans-serif', fontWeight: 400, fontSize: 16, color: '#242424', lineHeight: '24px', margin: 0 }}>
-            Hamstar is a tiny internet sport built around real hamster races. In each race, three hamsters compete on a small track while the community watches the race live and cheers for their favourite racer. It&apos;s simple, fast, and unpredictable, just like the hamsters themselves.
+          <p style={{ fontFamily: 'Pretendard, sans-serif', fontWeight: 400, fontSize: 16, color: '#242424', lineHeight: '24px', margin: 0, whiteSpace: 'pre-line' }}>
+            {bodyText}
           </p>
         </div>
       </section>
@@ -92,14 +101,10 @@ export function AboutSection() {
         }}>
           <img src="/images/sunflower-seed.png" alt="" style={{ width: 29, height: 43, objectFit: 'contain' }} />
           <h2 style={{ fontFamily: KANIT, fontWeight: 700, fontSize: 40, color: '#000000', lineHeight: '48px', margin: 0 }}>
-            About Hamstar
+            {aboutTitle}
           </h2>
-          <p style={{ fontFamily: 'Pretendard, sans-serif', fontWeight: 400, fontSize: 18, color: '#242424', lineHeight: '27px', margin: 0 }}>
-            Hamstar is a tiny internet sport built around real hamster races.<br /><br />
-            In each race, three hamsters compete on a small track<br />
-            while the community watches the race live and cheers<br />
-            for their favourite racer.<br /><br />
-            It&apos;s simple, fast, and unpredictable, just like the hamsters themselves.
+          <p style={{ fontFamily: 'Pretendard, sans-serif', fontWeight: 400, fontSize: 18, color: '#242424', lineHeight: '27px', margin: 0, whiteSpace: 'pre-line' }}>
+            {bodyText}
           </p>
         </div>
       </div>

@@ -222,11 +222,36 @@ model SiteSettings {
 
   // ── Editable front-end content ──────────────────────────────────────────
   navTagline    String  @default("The smallest sport on the internet.")
+
+  // Hero
   heroTitle     String  @default("Who Will Be The Hamstar?")
+  heroSubtitle  String  @default("Three hamsters race. One takes the wheel.")
+  heroCtaTag    String  @default("Round 1 Coming Soon!")
+  heroButtonText String @default("Watch Live Race")
+
+  // Racers
+  racersTitle   String  @default("Meet the Racers")
+
+  // About
+  aboutTitle    String  @default("About Hamstar")
   aboutText     String  @default("Hamstar is a tiny internet sport built around real hamster races.\n\nIn each race, three hamsters compete on a small track while the community watches the race live and cheers for their favourite racer.\n\nIt's simple, fast, and unpredictable, just like the hamsters themselves.")
-  arenaSubtitle String  @default("Hamstar races are streamed live on Pump.fun. Watch the race and return to see the winner.")
-  footerTagline String  @default("The smallest sport on the internet.")
-  footerLinks   Json    @default("[]")
+
+  // Arena section
+  arenaTitle      String @default("Hamstar Arena")
+  arenaSubtitle   String @default("Hamstar races are streamed live on Pump.fun. Watch the race and return to see the winner.")
+  arenaStreamNote String @default("Race will be streamed live on Pump.fun")
+
+  // Footer
+  footerTagline    String @default("The smallest sport on the internet.")
+  footerBrandDesc  String @default("Live hamster racing powered by community participation")
+  footerTaglineRight String @default("Real hamsters.\nReal races.\nOne tiny champion.")
+  footerLinks      Json   @default("[]")
+
+  // Modals
+  loginTitle      String @default("Welcome to Hamstar Arena 🐹")
+  loginSubtitle   String @default("A live-streamed blockchain-based entertainment experience")
+  termsButtonText String @default("I Understand & Enter Arena")
+  howitWorksSteps Json   @default("[]")
 
   updatedAt    DateTime @updatedAt
 

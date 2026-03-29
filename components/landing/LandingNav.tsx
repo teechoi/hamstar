@@ -16,6 +16,7 @@ export interface LandingNavProps {
   balance?: string
   walletAddress?: string
   lightBg?: boolean   // true on Arena / Highlights (white bg pages)
+  navTagline?: string
   onLoginClick?: () => void
   onDepositClick?: () => void
   onAccountClick?: () => void
@@ -27,6 +28,7 @@ export function LandingNav({
   balance,
   walletAddress,
   lightBg = false,
+  navTagline,
   onLoginClick,
   onDepositClick,
   onAccountClick,
@@ -72,7 +74,7 @@ export function LandingNav({
         fontFamily: KANIT, background: '#735DFF',
         letterSpacing: 0.2,
       }}>
-        The smallest sport on the internet.
+        {navTagline ?? 'The smallest sport on the internet.'}
       </div>
 
       {/* Main nav row — Figma: HORIZONTAL, pad:20/20/20/20, gap:90, justify:CENTER */}

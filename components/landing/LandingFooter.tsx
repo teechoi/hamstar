@@ -1,5 +1,4 @@
 'use client'
-import { SITE } from '@/config/site'
 import { useIsMobile } from '@/components/ui/index'
 
 // Figma 36:210 — 1280×350, bg:#FFE790
@@ -14,9 +13,34 @@ const link: React.CSSProperties = {
   color: MUTED, lineHeight: '17px', textDecoration: 'none',
 }
 
-export function LandingFooter() {
-  const { socials, sponsorEmail } = SITE
+interface LandingFooterProps {
+  footerBrandDesc?: string
+  footerTaglineRight?: string
+  footerTagline?: string
+  twitterUrl?: string | null
+  tiktokUrl?: string | null
+  instagramUrl?: string | null
+  youtubeUrl?: string | null
+  sponsorEmail?: string
+}
+
+export function LandingFooter({
+  footerBrandDesc = 'Live hamster racing powered by community participation',
+  footerTaglineRight = 'Real hamsters.\nReal races.\nOne tiny champion.',
+  twitterUrl,
+  tiktokUrl,
+  instagramUrl,
+  youtubeUrl,
+  sponsorEmail = '',
+}: LandingFooterProps) {
   const isMobile = useIsMobile()
+
+  const socials: [string, string | null | undefined][] = [
+    ['X', twitterUrl],
+    ['Youtube', youtubeUrl],
+    ['Instagram', instagramUrl],
+    ['Tiktok', tiktokUrl],
+  ]
 
   if (isMobile) {
     return (
@@ -24,17 +48,16 @@ export function LandingFooter() {
         {/* Brand */}
         <p style={{ fontFamily: KANIT, fontWeight: 500, fontSize: 28, color: BLACK, lineHeight: '34px', margin: '0 0 4px' }}>Hamstar</p>
         <p style={{ fontFamily: PRET, fontWeight: 500, fontSize: 14, color: MUTED, lineHeight: '19px', margin: '0 0 28px' }}>
-          Live hamster racing powered by community participation
+          {footerBrandDesc}
         </p>
 
         {/* Columns */}
         <div style={{ display: 'flex', gap: 48, marginBottom: 28 }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             <p style={{ fontFamily: PRET, fontWeight: 600, fontSize: 16, color: MUTED, margin: 0 }}>Social</p>
-            {socials.twitter   && <a href={socials.twitter}   target="_blank" rel="noopener noreferrer" style={link}>X</a>}
-            {socials.youtube   && <a href={socials.youtube}   target="_blank" rel="noopener noreferrer" style={link}>Youtube</a>}
-            {socials.instagram && <a href={socials.instagram} target="_blank" rel="noopener noreferrer" style={link}>Instagram</a>}
-            {socials.tiktok    && <a href={socials.tiktok}    target="_blank" rel="noopener noreferrer" style={link}>Tiktok</a>}
+            {socials.map(([label, href]) => href && (
+              <a key={label} href={href} target="_blank" rel="noopener noreferrer" style={link}>{label}</a>
+            ))}
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             <p style={{ fontFamily: PRET, fontWeight: 600, fontSize: 16, color: MUTED, margin: 0 }}>Learn</p>
@@ -44,10 +67,12 @@ export function LandingFooter() {
         </div>
 
         {/* Right tagline */}
-        <p style={{ fontFamily: KANIT, fontWeight: 500, fontSize: 20, color: BLACK, lineHeight: '26px', margin: '0 0 12px' }}>
-          Real hamsters.{'\n'}Real races.{'\n'}One tiny champion.
+        <p style={{ fontFamily: KANIT, fontWeight: 500, fontSize: 20, color: BLACK, lineHeight: '26px', margin: '0 0 12px', whiteSpace: 'pre-line' }}>
+          {footerTaglineRight}
         </p>
-        <a href={`mailto:${sponsorEmail}`} style={{ ...link, display: 'block', marginBottom: 24 }}>Contact us</a>
+        {sponsorEmail && (
+          <a href={`mailto:${sponsorEmail}`} style={{ ...link, display: 'block', marginBottom: 24 }}>Contact us</a>
+        )}
 
         {/* Divider */}
         <div style={{ height: 1, background: 'rgba(80,63,0,0.3)', marginBottom: 16 }} />
@@ -73,13 +98,13 @@ export function LandingFooter() {
             <div>
               <p style={{ fontFamily: KANIT, fontWeight: 500, fontSize: 'clamp(24px, 2.5vw, 34px)', color: BLACK, lineHeight: 1.2, margin: '0 0 8px' }}>Hamstar</p>
               <p style={{ fontFamily: PRET, fontWeight: 500, fontSize: 16, color: MUTED, lineHeight: '19px', margin: 0, maxWidth: 320 }}>
-                Live hamster racing powered by community participation
+                {footerBrandDesc}
               </p>
             </div>
             <div style={{ display: 'flex', gap: 48 }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 <p style={{ fontFamily: PRET, fontWeight: 600, fontSize: 18, color: MUTED, lineHeight: '27px', margin: 0 }}>Social</p>
-                {([['X', socials.twitter], ['Youtube', socials.youtube], ['Instagram', socials.instagram], ['Tiktok', socials.tiktok]] as [string, string | undefined][]).map(([label, href]) => href && (
+                {socials.map(([label, href]) => href && (
                   <a key={label} href={href} target="_blank" rel="noopener noreferrer" style={link}>{label}</a>
                 ))}
               </div>
@@ -94,9 +119,11 @@ export function LandingFooter() {
           {/* Right: tagline + contact */}
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 16 }}>
             <p style={{ fontFamily: KANIT, fontWeight: 500, fontSize: 'clamp(18px, 1.8vw, 24px)', color: BLACK, lineHeight: '29px', margin: 0, textAlign: 'right', whiteSpace: 'pre-line' }}>
-              {`Real hamsters.\nReal races.\nOne tiny champion.`}
+              {footerTaglineRight}
             </p>
-            <a href={`mailto:${sponsorEmail}`} style={link}>Contact us</a>
+            {sponsorEmail && (
+              <a href={`mailto:${sponsorEmail}`} style={link}>Contact us</a>
+            )}
           </div>
         </div>
 

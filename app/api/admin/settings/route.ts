@@ -27,7 +27,13 @@ export async function PATCH(req: Request) {
       'raceNumber','isLive','streamUrl','replayUrl','genesisTs',
       'twitterUrl','tiktokUrl','instagramUrl','youtubeUrl',
       'sponsorEmail','siteName','tagline','ogImageUrl','buttonLabels',
-      'navTagline','heroTitle','aboutText','arenaSubtitle','footerTagline','footerLinks',
+      'navTagline',
+      'heroTitle','heroSubtitle','heroCtaTag','heroButtonText',
+      'racersTitle',
+      'aboutTitle','aboutText',
+      'arenaTitle','arenaSubtitle','arenaStreamNote',
+      'footerTagline','footerBrandDesc','footerTaglineRight','footerLinks',
+      'loginTitle','loginSubtitle','termsButtonText','howitWorksSteps',
     ]
     const data: Record<string, unknown> = {}
     for (const k of allowed) if (k in body) data[k] = body[k]

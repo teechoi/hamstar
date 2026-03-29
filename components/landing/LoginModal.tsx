@@ -8,6 +8,8 @@ const KANIT = "var(--font-kanit), sans-serif"
 interface LoginModalProps {
   onClose: () => void
   onLogin: () => void
+  loginTitle?: string
+  loginSubtitle?: string
 }
 
 // ─── Social provider definitions ──────────────────────────────────────────────
@@ -58,7 +60,12 @@ const SOCIAL_PROVIDERS = [
   },
 ]
 
-export function LoginModal({ onClose, onLogin }: LoginModalProps) {
+export function LoginModal({
+  onClose,
+  onLogin,
+  loginTitle = 'Welcome to Hamstar Arena 🐹',
+  loginSubtitle = 'A live-streamed blockchain-based entertainment experience',
+}: LoginModalProps) {
   const [googleHov, setGoogleHov] = useState(false)
 
   return (
@@ -97,10 +104,10 @@ export function LoginModal({ onClose, onLogin }: LoginModalProps) {
         </button>
 
         <h2 style={{ fontSize: 'clamp(20px,4vw,26px)', fontWeight: 600, color: DARK, marginBottom: 8, textAlign: 'center' }}>
-          Welcome to Hamstar Arena 🐹
+          {loginTitle}
         </h2>
         <p style={{ fontSize: 14, color: '#8A8A8A', fontFamily: 'Pretendard, sans-serif', textAlign: 'center', marginBottom: 28 }}>
-          A live-streamed blockchain-based entertainment experience
+          {loginSubtitle}
         </p>
 
         {/* Google CTA */}

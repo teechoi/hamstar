@@ -5,7 +5,21 @@ import { useIsMobile } from '@/components/ui/index'
 
 const KANIT = "var(--font-kanit), sans-serif"
 
-export function HeroSection() {
+interface HeroSectionProps {
+  heroTitle?: string
+  heroSubtitle?: string
+  heroCtaTag?: string
+  heroButtonText?: string
+  streamUrl?: string
+}
+
+export function HeroSection({
+  heroTitle = 'Who Will Be The Hamstar?',
+  heroSubtitle = 'Three hamsters race. One takes the wheel.',
+  heroCtaTag = 'Round 1 Coming Soon!',
+  heroButtonText = 'Watch Live Race',
+  streamUrl,
+}: HeroSectionProps) {
   const [hov, setHov] = useState(false)
   const isMobile = useIsMobile()
 
@@ -69,7 +83,7 @@ export function HeroSection() {
             lineHeight: isMobile ? 1.15 : 1.2,
             margin: 0,
           }}>
-            Who Will Be The Hamstar?
+            {heroTitle}
           </h1>
           <p style={{
             fontFamily: 'Pretendard, sans-serif',
@@ -79,7 +93,7 @@ export function HeroSection() {
             lineHeight: isMobile ? '22px' : '30px',
             margin: isMobile ? '8px 0 0' : 0,
           }}>
-            Three hamsters race. One takes the wheel.
+            {heroSubtitle}
           </p>
         </div>
 
@@ -88,10 +102,10 @@ export function HeroSection() {
         {/* CTA */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '10px', gap: 10 }}>
           <p style={{ fontFamily: 'Pretendard, sans-serif', fontSize: 12, fontWeight: 500, color: '#8a8a8a', margin: 0 }}>
-            Round 1 Coming Soon!
+            {heroCtaTag}
           </p>
           <a
-            href={SITE.stream.url}
+            href={streamUrl || SITE.stream.url}
             target="_blank"
             rel="noopener noreferrer"
             onMouseEnter={() => setHov(true)}
@@ -109,7 +123,7 @@ export function HeroSection() {
             }}
           >
             <span style={{ fontSize: 15 }}>▶</span>
-            Watch Live Race
+            {heroButtonText}
           </a>
         </div>
       </div>

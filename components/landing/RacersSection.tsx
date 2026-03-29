@@ -121,7 +121,7 @@ function RacerCard({ name, tagline, image, featured, imgW = 166, imgH = 149, img
   )
 }
 
-export function RacersSection() {
+export function RacersSection({ racersTitle = 'Meet the Racers' }: { racersTitle?: string }) {
   const isMobile = useIsMobile()
 
   if (isMobile) {
@@ -131,7 +131,7 @@ export function RacersSection() {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 32, padding: '0 24px' }}>
           <img src="/images/sunflower-seed.png" alt="" style={{ width: 22, height: 33, objectFit: 'contain' }} />
           <h2 style={{ fontFamily: KANIT, fontWeight: 700, fontSize: 32, color: '#000000', lineHeight: '40px', margin: 0 }}>
-            Meet the Racers
+            {racersTitle}
           </h2>
           <img src="/images/sunflower-seed.png" alt="" style={{ width: 22, height: 33, objectFit: 'contain' }} />
         </div>
@@ -174,7 +174,7 @@ export function RacersSection() {
           margin: 0,
           whiteSpace: 'nowrap',
         }}>
-          Meet the Racers
+          {racersTitle}
         </h2>
         <img src="/images/sunflower-seed.png" alt="" style={{ width: 29, height: 43, objectFit: 'contain' }} />
       </div>

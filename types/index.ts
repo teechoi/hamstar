@@ -1,5 +1,53 @@
 // types/index.ts — Shared types for Hamstar
 
+export interface HowItWorksStep {
+  num: number
+  title: string
+  body: string
+  image: string
+  badge?: { text: string; color: string } | null
+  note?: string | null
+  cta: string
+}
+
+export interface SiteContent {
+  // Stream
+  streamUrl: string
+  isLive: boolean
+  raceNumber: number
+  // Socials
+  twitterUrl?: string | null
+  tiktokUrl?: string | null
+  instagramUrl?: string | null
+  youtubeUrl?: string | null
+  sponsorEmail: string
+  // Nav
+  navTagline: string
+  // Hero
+  heroTitle: string
+  heroSubtitle: string
+  heroCtaTag: string
+  heroButtonText: string
+  // Racers
+  racersTitle: string
+  // About
+  aboutTitle: string
+  aboutText: string
+  // Arena
+  arenaTitle: string
+  arenaSubtitle: string
+  arenaStreamNote: string
+  // Footer
+  footerTagline: string
+  footerBrandDesc: string
+  footerTaglineRight: string
+  // Modals
+  loginTitle: string
+  loginSubtitle: string
+  termsButtonText: string
+  howitWorksSteps: HowItWorksStep[]
+}
+
 export interface Race {
   id:       string
   number:   number

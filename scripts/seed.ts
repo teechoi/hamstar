@@ -9,18 +9,30 @@
 
 import { PrismaClient } from '@prisma/client'
 import { PETS }         from '../config/site'
-import { UPGRADE_CATALOG } from '../lib/pets-config'
 import { getCurrentRaceWindow } from '../lib/race-scheduler'
 
 const prisma = new PrismaClient()
 
 // ─── Wallet addresses from env ────────────────────────────────────────────────
-// Set these in .env.local before running seed.
+// Set DASH_WALLET, FLASH_WALLET, TURBO_WALLET in .env.local before running seed.
 const WALLETS: Record<string, string> = {
-  hammy:    process.env.HAMMY_WALLET    ?? 'HAMMY_WALLET_PLACEHOLDER',
-  whiskers: process.env.WHISKERS_WALLET ?? 'WHISKERS_WALLET_PLACEHOLDER',
-  nugget:   process.env.NUGGET_WALLET   ?? 'NUGGET_WALLET_PLACEHOLDER',
+  dash:  process.env.DASH_WALLET  ?? 'DASH_WALLET_PLACEHOLDER',
+  flash: process.env.FLASH_WALLET ?? 'FLASH_WALLET_PLACEHOLDER',
+  turbo: process.env.TURBO_WALLET ?? 'TURBO_WALLET_PLACEHOLDER',
 }
+
+const UPGRADE_CATALOG = [
+  // SNACK UPGRADES
+  { category: 'SNACK', tier: 'BASIC',     name: 'Sunflower Seeds',      emoji: '🌻', description: 'Standard daily fuel',                 costSol: 0.1, sortOrder: 1 },
+  { category: 'SNACK', tier: 'UPGRADE',   name: 'Premium Veggie Mix',   emoji: '🥦', description: 'Fresh greens for peak performance',    costSol: 0.5, sortOrder: 2 },
+  { category: 'SNACK', tier: 'ELITE',     name: 'Champion Seed Blend',  emoji: '⭐', description: 'Hand-selected racing nutrition',       costSol: 2.0, sortOrder: 3 },
+  { category: 'SNACK', tier: 'LEGENDARY', name: 'Exotic Fruit Tray',    emoji: '🍇', description: 'Exclusive seasonal superfood platter', costSol: 5.0, sortOrder: 4 },
+  // CAGE UPGRADES
+  { category: 'CAGE',  tier: 'BASIC',     name: 'Basic Cage',           emoji: '📦', description: 'Standard starter habitat',            costSol: 0.0, sortOrder: 1 },
+  { category: 'CAGE',  tier: 'UPGRADE',   name: 'Cozy Bedding',         emoji: '🛏️', description: 'Soft premium nesting material',        costSol: 0.5, sortOrder: 2 },
+  { category: 'CAGE',  tier: 'ELITE',     name: 'Adventure Tunnel',     emoji: '🌀', description: 'Enrichment maze & tunnel system',     costSol: 2.0, sortOrder: 3 },
+  { category: 'CAGE',  tier: 'LEGENDARY', name: 'Deluxe Penthouse',     emoji: '🏠', description: 'Multi-level luxury habitat',          costSol: 8.0, sortOrder: 4 },
+] as const
 
 async function main() {
   console.log('\n🌱 Seeding Hamstar database...\n')

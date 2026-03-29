@@ -1,4 +1,4 @@
-# HamstarHub — Design System Rules for Figma Integration
+# HamstarHub — Design System & Codebase Rules
 
 ## Styling Approach
 
@@ -130,13 +130,25 @@ padding: 'clamp(16px, 4vw, 48px)'
 
 ## Assets
 
-- **Images:** `/public/images/*.png` (36 PNG files)
+- **Images:** `/public/images/*.png` — 29 active PNGs (see list below)
 - **Reference via:** `/images/filename.png` (no optimization — `unoptimized` in next.config.js)
 - **CDN:** Cloudinary (`**.cloudinary.com`) for admin-uploaded media
+- **Archive:** Unused images moved to `/_archive/images/` — do not use those
 
-Import images with Next.js `<Image>` or plain `<img>` tag:
+**Active images:**
+```
+arena-bg-blurred, arena-bridge, arena-oats, arena-trophy-hamster
+carousel-champion, carousel-join-race, carousel-pick-hamster, carousel-watch-race
+cheese-hideout, hamster-arena-left, hamster-ball, hamster-dash, hamster-entry
+hamster-flash-flex, hamster-flash, hamster-headset, hamster-pet-right
+hamster-turbo-pushup, hamster-turbo, hamster-wheel-empty, hamster-wheel
+hero-hamsters, oats-pile-a, oats-pile-b, oats-pile, play-button
+sunflower-seed, sunflower, video-thumbnail
+```
+
+Import images with plain `<img>` tag:
 ```tsx
-<img src="/images/hamster-dash.png" alt="Hammy" style={{ width: 120, height: 'auto' }} />
+<img src="/images/hamster-dash.png" alt="Dash" style={{ width: 120, height: 'auto' }} />
 ```
 
 ---
@@ -144,19 +156,53 @@ Import images with Next.js `<Image>` or plain `<img>` tag:
 ## Project Structure
 
 ```
-app/           # Next.js App Router pages & API routes
-components/    # React components
-  ui/          # Core reusable UI components
-  landing/     # Landing page sections
-  views/       # Main app views
-  editor/      # Decoration editor
-lib/           # Utilities (theme.ts, hooks, db clients)
-config/        # Site & decoration configuration
-public/images/ # Static PNG assets
-prisma/        # DB schema
+app/
+  layout.tsx              # Root layout — fonts, body styles
+  page.tsx                # → HomeLanding (landing page)
+  arena/page.tsx          # → ArenaClient (race arena)
+  pet/page.tsx            # → PetPageClient (hamster profiles)
+  sponsors/page.tsx       # → SponsorsPageClient
+  highlights/page.tsx     # → HighlightPageClient
+  admin/                  # Password-protected admin panel
+  api/                    # API routes (admin + public /api/settings)
+
+components/
+  ui/index.tsx            # Core UI: LimeButton, OutlineButton, Tag, RaceBar, LivePulse, CheckerBar, SolAddress, useIsMobile
+  landing/                # Landing page sections + all modals
+  arena/                  # ArenaClient, HamsterCard, HighlightSection, HighlightPageClient
+  pet/                    # PetPageClient
+  sponsors/               # SponsorsPageClient
+  editor/                 # Decoration layer editor (admin-only)
+
+lib/
+  theme.ts                # Design tokens (T object) + globalStyles
+  fonts.ts                # Kanit font loader
+  race-scheduler.ts       # Deterministic 48h race schedule
+  helius.ts               # Solana webhook processor
+  auth.ts                 # JWT session (jose, edge-safe)
+  prisma.ts               # PrismaClient singleton
+  supabase.ts             # Realtime client
+  hooks/useRace.ts        # Race data hook + Supabase realtime + 30s polling fallback
+  hooks/useCountdown.ts   # Countdown timer hook
+
+config/
+  site.ts                 # PETS array, SITE config, RACE_HISTORY
+  decorations.ts          # Decorative image layer config
+
+public/images/            # 29 active PNG assets
+_archive/                 # Old code/docs/images — do not import from here
+prisma/schema.prisma      # Database schema
+scripts/                  # Seed + setup scripts
+types/index.ts            # Shared TypeScript types
 ```
 
 Path alias: `@/` maps to project root.
+
+**Content widths by page:**
+- Landing: `maxWidth: 1280`
+- Arena + Highlights: `maxWidth: 900`
+- Pet: `maxWidth: 960`
+- Admin: unstyled
 
 ---
 
@@ -170,6 +216,39 @@ Minimal global CSS injected as a string in `/lib/theme.ts` (`globalStyles`) and 
 - Selection highlight: `rgba(115,93,255,0.2)` (purple tint)
 
 Do not add new global CSS files. Inject additional keyframes via `<style>` tags when needed.
+
+---
+
+## Decorative Image Positioning Patterns
+
+Two established patterns for absolutely-positioned decorative images:
+
+**1. "Always peek from wall"** — fixed negative offset from viewport edge
+```tsx
+// Ball always peeks from left wall regardless of viewport width
+style={{ position: 'absolute', top: 80, left: -30, width: 'clamp(300px, 28vw, 420px)' }}
+```
+
+**2. "Track content center"** — anchored to content, floats beside it
+```tsx
+// Hamster tracks right edge of maxWidth: 900 content column
+style={{ position: 'absolute', top: 220, left: 'calc(50% + 420px)', width: 'clamp(300px, 28vw, 440px)' }}
+// Must wrap in a section with overflow: hidden to clip on narrow viewports
+```
+
+**Glow blobs** — never use negative offsets (causes viewport clipping):
+```tsx
+// Gold blob — bottom-left corner
+<div style={{ position: 'absolute', bottom: 0, left: 0, width: 700, height: 700,
+  borderRadius: '50%', background: 'rgba(252,212,0,0.22)', filter: 'blur(100px)',
+  pointerEvents: 'none', zIndex: 0 }} />
+// Purple blob — top-right corner
+<div style={{ position: 'absolute', top: 200, right: 0, width: 600, height: 600,
+  borderRadius: '50%', background: 'rgba(115,93,255,0.14)', filter: 'blur(100px)',
+  pointerEvents: 'none', zIndex: 0 }} />
+```
+On tall pages (arena), use `top: '55vh'` instead of `bottom: 0` for gold blob so it stays in viewport.
+Parent `<main>` must NOT have `overflow: hidden` or blobs will be clipped.
 
 ---
 

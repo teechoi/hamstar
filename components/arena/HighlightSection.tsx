@@ -70,6 +70,7 @@ export function HighlightSection({ lastResult }: HighlightSectionProps) {
     <section style={{
       background: '#F8F9FA',
       position: 'relative',
+      overflow: 'hidden',
       paddingTop: 'clamp(40px, 6vw, 72px)',
       paddingBottom: 0,
     }}>
@@ -83,7 +84,7 @@ export function HighlightSection({ lastResult }: HighlightSectionProps) {
           style={{
             position: 'absolute',
             top: 120,
-            left: -20,
+            left: 'calc(50% - 700px)',
             width: 220,
             height: 'auto',
             pointerEvents: 'none',
@@ -94,9 +95,9 @@ export function HighlightSection({ lastResult }: HighlightSectionProps) {
 
       {/* Content */}
       <div style={{
-        maxWidth: 707,
+        maxWidth: 900,
         margin: '0 auto',
-        padding: isMobile ? '0 16px' : '0',
+        padding: isMobile ? '0 16px' : '0 24px',
         position: 'relative',
         zIndex: 1,
       }}>
@@ -174,7 +175,7 @@ export function HighlightSection({ lastResult }: HighlightSectionProps) {
             style={{
               position: 'absolute',
               top: -100,
-              right: 44,
+              right: 'calc(50% - 599px)',
               width: 189,
               height: 'auto',
               pointerEvents: 'none',

@@ -79,6 +79,7 @@ export function HowItWorksModal({ onClose, onEnterArena }: HowItWorksModalProps)
           background: '#fff',
           borderRadius: 26,
           width: '100%', maxWidth: 480,
+          minHeight: 560,
           padding: 'clamp(20px, 5vw, 32px) clamp(20px, 6vw, 36px) clamp(24px, 5vw, 36px)',
           fontFamily: KANIT,
           position: 'relative',
@@ -178,8 +179,10 @@ export function HowItWorksModal({ onClose, onEnterArena }: HowItWorksModalProps)
           </p>
         )}
 
-        {/* CTA */}
-        <CtaButton label={current.cta} onClick={handleCta} />
+        {/* CTA — pushed to bottom so card height stays consistent */}
+        <div style={{ marginTop: 'auto', width: '100%' }}>
+          <CtaButton label={current.cta} onClick={handleCta} />
+        </div>
       </div>
     </div>
   )
@@ -204,7 +207,6 @@ function CtaButton({ label, onClick }: { label: string; onClick: () => void }) {
         fontFamily: KANIT,
         opacity: hov ? 0.85 : 1,
         transition: 'opacity 0.15s',
-        marginTop: 24,
       }}
     >
       {label}

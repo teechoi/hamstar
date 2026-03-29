@@ -76,9 +76,10 @@ export function HighlightSection({ lastResult }: HighlightSectionProps) {
 
       {/* Content row — ball on left, cards on right */}
       <div style={{
+        maxWidth: 1180,
+        margin: '0 auto',
         display: 'flex',
         alignItems: 'flex-start',
-        justifyContent: 'center',
         gap: 0,
         padding: isMobile ? '0 16px' : '0 24px',
       }}>

@@ -130,7 +130,7 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
       <main style={{ background: '#F8F9FA', minHeight: '100vh', paddingTop: 87, position: 'relative' }}>
 
         {/* Glow blobs — positioned at corners with no negative offsets so they never clip */}
-        <div style={{ position: 'absolute', bottom: 0, left: 0, width: 700, height: 700, borderRadius: '50%', background: 'rgba(252,212,0,0.22)', filter: 'blur(100px)', pointerEvents: 'none', zIndex: 0 }} />
+        <div style={{ position: 'absolute', top: '55vh', left: 0, width: 700, height: 700, borderRadius: '50%', background: 'rgba(252,212,0,0.22)', filter: 'blur(100px)', pointerEvents: 'none', zIndex: 0 }} />
         <div style={{ position: 'absolute', top: 200, right: 0, width: 600, height: 600, borderRadius: '50%', background: 'rgba(115,93,255,0.14)', filter: 'blur(100px)', pointerEvents: 'none', zIndex: 0 }} />
 
         {/* Dev state preview switcher — remove before launch */}

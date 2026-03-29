@@ -89,7 +89,7 @@ export function PetPageClient() {
             style={{
               position: 'absolute',
               top: 266,
-              right: -20,
+              left: 'calc(50% + 300px)',
               width: 358,
               height: 'auto',
               pointerEvents: 'none',
@@ -272,7 +272,7 @@ export function PetPageClient() {
             style={{
               position: 'absolute',
               bottom: 41,
-              left: 95,
+              left: 'max(calc(50% - 650px), 0px)',
               width: 312,
               height: 'auto',
               pointerEvents: 'none',

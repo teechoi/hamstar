@@ -98,17 +98,17 @@ export function HeroSection() {
             onMouseLeave={() => setHov(false)}
             style={{
               display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-              gap: 6, width: 150, height: 30, padding: '5px 10px',
+              gap: 8, padding: '13px 28px',
               background: '#735DFF', color: '#F8F9FA',
               border: 'none', borderRadius: 70,
-              fontFamily: KANIT, fontSize: 14, fontWeight: 500,
+              fontFamily: KANIT, fontSize: 16, fontWeight: 500,
               textDecoration: 'none',
               transform: hov ? 'scale(1.04)' : 'scale(1)',
               boxShadow: hov ? '0 8px 32px rgba(115,93,255,0.5)' : '0 4px 20px rgba(115,93,255,0.3)',
               transition: 'all 0.18s ease-out',
             }}
           >
-            <span style={{ fontSize: 12 }}>▶</span>
+            <span style={{ fontSize: 15 }}>▶</span>
             Watch Live Race
           </a>
         </div>

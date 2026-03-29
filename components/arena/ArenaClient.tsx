@@ -183,8 +183,8 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
           </p>
         </div>
 
-        <div style={{ position: 'relative' }}>
-          {/* Left decorative hamster — Figma: x=-57 in 1280px frame, partially off-screen left */}
+        <div style={{ position: 'relative', overflow: 'hidden' }}>
+          {/* Left decorative hamster — tracks content left edge (maxWidth 707 → half=353.5px) with 30px gap */}
           {!isMobile && (
             <img
               src="/images/hamster-flash-flex.png"
@@ -192,7 +192,7 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
               aria-hidden
               style={{
                 position: 'absolute',
-                left: 'min(calc(50% - 698px), -58px)',
+                left: 'calc(50% - 604px)',
                 top: 120,
                 width: 220,
                 height: 'auto',

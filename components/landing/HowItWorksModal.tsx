@@ -78,9 +78,8 @@ export function HowItWorksModal({ onClose, onEnterArena }: HowItWorksModalProps)
         style={{
           background: '#fff',
           borderRadius: 26,
-          width: '100%', maxWidth: 548,
-          minHeight: 640,
-          padding: '36px 40px 40px',
+          width: '100%', maxWidth: 480,
+          padding: '32px 36px 36px',
           fontFamily: KANIT,
           position: 'relative',
           display: 'flex', flexDirection: 'column', alignItems: 'center',
@@ -205,7 +204,7 @@ function CtaButton({ label, onClick }: { label: string; onClick: () => void }) {
         fontFamily: KANIT,
         opacity: hov ? 0.85 : 1,
         transition: 'opacity 0.15s',
-        marginTop: 'auto',
+        marginTop: 24,
       }}
     >
       {label}

@@ -53,7 +53,6 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
   const [authed, setAuthed]       = useState(false)
   const [walletAddress, setWalletAddress] = useState('')
   const [cheeringFor, setCheeringFor]     = useState<string | null>(null)
-  const [stateOverride, setStateOverride] = useState<ArenaState | null>(null)
   const isMobile = useIsMobile()
 
   // Derive arena state:
@@ -67,7 +66,7 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
     : race.status === 'LIVE'
       ? (SITE.stream.isLive ? 'LIVE' : 'OPEN')
       : 'PREPARING'
-  const arenaState: ArenaState = stateOverride ?? derivedArenaState
+  const arenaState: ArenaState = derivedArenaState
 
   // 3 display states: PRE (PREPARING + OPEN), LIVE, FINISHED
   const isPre           = arenaState === 'PREPARING' || arenaState === 'OPEN'
@@ -76,10 +75,7 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
   // HamsterCard receives 'OPEN' for any pre-race state so it shows cheer button + support bar
   const cardState: ArenaState = isPre ? 'OPEN' : arenaState
 
-  // Preview: when FINISHED is forced via stateOverride with no real lastResult,
-  // use a mock result so the winner card, gold glow, and result section all render
-  const MOCK_FINISHED_RESULT: RaceResult = { number: race.raceNumber, date: '', positions: ['dash', 'flash', 'turbo'] }
-  const effectiveResult = isFinishedState ? (lastResult ?? MOCK_FINISHED_RESULT) : lastResult
+  const effectiveResult = isFinishedState ? lastResult : lastResult
 
   const countdownTarget = race.status === 'LIVE' ? race.endsAt.getTime() : race.startsAt.getTime()
   const countdown = useCountdown(countdownTarget)
@@ -132,37 +128,6 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
         {/* Glow blobs — positioned at corners with no negative offsets so they never clip */}
         <div style={{ position: 'absolute', top: '55vh', left: 0, width: 700, height: 700, borderRadius: '50%', background: 'rgba(252,212,0,0.22)', filter: 'blur(100px)', pointerEvents: 'none', zIndex: 0 }} />
         <div style={{ position: 'absolute', top: 200, right: 0, width: 600, height: 600, borderRadius: '50%', background: 'rgba(115,93,255,0.14)', filter: 'blur(100px)', pointerEvents: 'none', zIndex: 0 }} />
-
-        {/* Dev state preview switcher — remove before launch */}
-        <div style={{
-          background: '#1a1a2e', padding: '8px 16px',
-          display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap',
-        }}>
-          <span style={{ fontFamily: KANIT, fontSize: 11, color: '#888', marginRight: 4 }}>PREVIEW STATE:</span>
-          {([['PRE', 'OPEN'], ['LIVE', 'LIVE'], ['FINISHED', 'FINISHED']] as [string, ArenaState][]).map(([label, s]) => (
-            <button
-              key={s}
-              onClick={() => setStateOverride(stateOverride === s ? null : s)}
-              style={{
-                padding: '3px 12px', borderRadius: 20, border: 'none', cursor: 'pointer',
-                fontFamily: KANIT, fontSize: 11, fontWeight: 600,
-                background: stateOverride === s ? YELLOW : '#333',
-                color: stateOverride === s ? '#000' : '#aaa',
-                transition: 'background 0.15s',
-              }}
-            >
-              {label}
-            </button>
-          ))}
-          {stateOverride && (
-            <button
-              onClick={() => setStateOverride(null)}
-              style={{ marginLeft: 4, background: 'none', border: 'none', color: '#666', cursor: 'pointer', fontFamily: KANIT, fontSize: 11 }}
-            >
-              × reset
-            </button>
-          )}
-        </div>
 
         {/* Hero header */}
         <div style={{ textAlign: 'center', padding: isMobile ? '40px 16px 24px' : '60px 24px 32px' }}>

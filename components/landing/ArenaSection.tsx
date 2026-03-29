@@ -2,6 +2,7 @@
 import { useCountdown } from '@/lib/hooks/useCountdown'
 import { DecoImage } from '@/components/editor/DecoImage'
 import { SITE } from '@/config/site'
+import { useIsMobile } from '@/components/ui/index'
 
 const YELLOW = '#FFE790'
 const KANIT = "var(--font-kanit), sans-serif"
@@ -95,7 +96,59 @@ function CountdownCard({ targetMs, isLive }: { streamUrl: string; targetMs: numb
   )
 }
 
+function MobileCountdownCard({ targetMs, isLive }: { targetMs: number; isLive: boolean }) {
+  const { h, m, s } = useCountdown(targetMs)
+  const pad = (n: number) => String(n).padStart(2, '0')
+
+  return (
+    <div style={{ borderRadius: 20, overflow: 'hidden', boxShadow: '0 20px 30px rgba(77,67,83,0.3)', position: 'relative' }}>
+      <img src="/images/arena-bg-blurred.png" alt=""
+        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+      <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.50)' }} />
+      <div style={{ position: 'relative', zIndex: 1, padding: '28px 20px 24px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, textAlign: 'center' }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '0 16px', height: 26, borderRadius: 22, background: '#735DFF' }}>
+          <span style={{ width: 10, height: 10, borderRadius: '50%', background: isLive ? '#ff4444' : '#FFFFFF', display: 'inline-block', animation: 'pulse 1.5s ease-in-out infinite', flexShrink: 0 }} />
+          <span style={{ fontFamily: 'Pretendard, sans-serif', fontWeight: 500, fontSize: 12, color: '#FFFFFF', lineHeight: '14px' }}>
+            {isLive ? 'LIVE NOW' : 'LIVE COUNTDOWN'}
+          </span>
+        </div>
+        {!isLive && (
+          <p style={{ fontFamily: KANIT, fontWeight: 500, fontSize: 18, color: '#FFFFFF', lineHeight: '22px', margin: 0 }}>
+            Next Race Starts in
+          </p>
+        )}
+        <div style={{ fontFamily: KANIT, fontWeight: 700, fontSize: 'clamp(40px, 13vw, 60px)', color: YELLOW, letterSpacing: 2, lineHeight: 1.1 }}>
+          {isLive ? 'LIVE NOW' : `${pad(h)}:${pad(m)}:${pad(s)}`}
+        </div>
+        <p style={{ fontFamily: 'Pretendard, sans-serif', fontWeight: 500, fontSize: 12, color: '#D9D9D9', lineHeight: '14px', margin: 0 }}>
+          Race will be streamed live on Pump.fun
+        </p>
+      </div>
+    </div>
+  )
+}
+
 export function ArenaSection({ targetMs, isLive }: { targetMs: number; isLive: boolean }) {
+  const isMobile = useIsMobile()
+
+  if (isMobile) {
+    return (
+      <section id="arena" style={{ background: '#F8F9FA', padding: '48px 24px 56px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 8 }}>
+          <img src="/images/sunflower-seed.png" alt="" style={{ width: 22, height: 33, objectFit: 'contain' }} />
+          <h2 style={{ fontFamily: KANIT, fontWeight: 700, fontSize: 32, color: '#000000', lineHeight: '40px', margin: 0 }}>
+            Hamstar Arena
+          </h2>
+          <img src="/images/sunflower-seed.png" alt="" style={{ width: 22, height: 33, objectFit: 'contain' }} />
+        </div>
+        <p style={{ fontFamily: 'Pretendard, sans-serif', fontWeight: 600, fontSize: 15, color: '#8A8A8A', lineHeight: '22px', margin: '0 0 28px', textAlign: 'center' }}>
+          Hamstar races are streamed live on Pump.fun. Watch live and return to see the winner.
+        </p>
+        <MobileCountdownCard targetMs={targetMs} isLive={isLive} />
+      </section>
+    )
+  }
+
   return (
     <section id="arena" style={{
       background: '#F8F9FA',

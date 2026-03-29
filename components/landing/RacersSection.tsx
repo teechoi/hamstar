@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { DecoImage } from '@/components/editor/DecoImage'
+import { useIsMobile } from '@/components/ui/index'
 
 interface Racer {
   name: string
@@ -121,6 +122,27 @@ function RacerCard({ name, tagline, image, featured, imgW = 166, imgH = 149, img
 }
 
 export function RacersSection() {
+  const isMobile = useIsMobile()
+
+  if (isMobile) {
+    return (
+      <section id="racers" style={{ background: '#F8F9FA', padding: '48px 0 56px' }}>
+        {/* Title */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 32, padding: '0 24px' }}>
+          <img src="/images/sunflower-seed.png" alt="" style={{ width: 22, height: 33, objectFit: 'contain' }} />
+          <h2 style={{ fontFamily: KANIT, fontWeight: 700, fontSize: 32, color: '#000000', lineHeight: '40px', margin: 0 }}>
+            Meet the Racers
+          </h2>
+          <img src="/images/sunflower-seed.png" alt="" style={{ width: 22, height: 33, objectFit: 'contain' }} />
+        </div>
+        {/* Horizontally scrollable cards */}
+        <div style={{ overflowX: 'auto', scrollbarWidth: 'none', display: 'flex', gap: 16, padding: '0 24px 8px' }}>
+          {RACERS.map(r => <RacerCard key={r.name} {...r} />)}
+        </div>
+      </section>
+    )
+  }
+
   return (
     <section id="racers" style={{
       background: '#F8F9FA',

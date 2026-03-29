@@ -28,7 +28,7 @@ function VideoCard({ title, index }: { title: string; index: number }) {
     >
       {/* Thumbnail — gray placeholder with centered play icon */}
       <div style={{
-        width: '100%', height: 186,
+        width: '100%', height: 220,
         background: '#D5D5D5',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         position: 'relative',
@@ -70,7 +70,7 @@ export function HighlightSection({ lastResult }: HighlightSectionProps) {
     <section style={{
       background: '#F8F9FA',
       position: 'relative',
-      paddingTop: 'clamp(40px, 6vw, 72px)',
+      paddingTop: 'clamp(60px, 8vw, 100px)',
       paddingBottom: 0,
     }}>
 
@@ -101,7 +101,7 @@ export function HighlightSection({ lastResult }: HighlightSectionProps) {
         zIndex: 1,
       }}>
         {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: 28 }}>
+        <div style={{ textAlign: 'center', marginBottom: 40 }}>
           <h2 style={{
             fontFamily: KANIT,
             fontSize: 'clamp(20px, 2.5vw, 24px)',
@@ -129,7 +129,7 @@ export function HighlightSection({ lastResult }: HighlightSectionProps) {
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          marginBottom: 24,
+          marginBottom: 32,
           boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
         }}>
           <span style={{ fontFamily: 'Pretendard, sans-serif', fontSize: 14, fontWeight: 500, color: '#8A8A8A' }}>
@@ -151,7 +151,7 @@ export function HighlightSection({ lastResult }: HighlightSectionProps) {
       {/* Bottom decoration strip */}
       <div style={{
         position: 'relative',
-        marginTop: 48,
+        marginTop: 72,
         // overflow visible so headset can rise above the oats
         overflow: 'visible',
       }}>

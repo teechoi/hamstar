@@ -50,8 +50,8 @@ export const DECOS = {
   'arena-trophy': {
     src: '/images/arena-trophy-hamster.png',
     label: 'Arena: Trophy Hamster',
-    // Figma 25:410 — left=-152 at 1280px frame; calc(50%-870px) keeps it at ≈-150px from viewport edge at wider viewports
-    style: { left: 'calc(50% - 870px)', top: 349, width: 448, height: 444, transform: 'rotate(17.63deg)', transformOrigin: '50% 50%' } as CSSProperties,
+    // Figma 25:410 — left=-152 at 1280px frame; min() caps at -150px so it stays at left edge on wide monitors
+    style: { left: 'min(calc(50% - 870px), -150px)', top: 349, width: 448, height: 444, transform: 'rotate(17.63deg)', transformOrigin: '50% 50%' } as CSSProperties,
   },
   'arena-bridge': {
     src: '/images/arena-bridge.png',

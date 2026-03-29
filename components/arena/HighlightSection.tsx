@@ -74,32 +74,32 @@ export function HighlightSection({ lastResult }: HighlightSectionProps) {
       paddingBottom: 0,
     }}>
 
-      {/* Decorative: hamster ball top-left */}
-      {!isMobile && (
-        <img
-          src="/images/hamster-ball.png"
-          alt=""
-          aria-hidden
-          style={{
-            position: 'absolute',
-            top: 120,
-            left: 'max(calc(50% - 700px), 20px)',
-            width: 220,
-            height: 'auto',
-            pointerEvents: 'none',
-            zIndex: 1,
-          }}
-        />
-      )}
-
-      {/* Content */}
+      {/* Content row — ball on left, cards on right */}
       <div style={{
-        maxWidth: 900,
-        margin: '0 auto',
+        display: 'flex',
+        alignItems: 'flex-start',
+        justifyContent: 'center',
+        gap: 0,
         padding: isMobile ? '0 16px' : '0 24px',
-        position: 'relative',
-        zIndex: 1,
       }}>
+
+        {/* Ball column */}
+        {!isMobile && (
+          <div style={{ flexShrink: 0, width: 240, paddingTop: 80 }}>
+            <img
+              src="/images/hamster-ball.png"
+              alt=""
+              aria-hidden
+              style={{ width: 220, height: 'auto', display: 'block', pointerEvents: 'none' }}
+            />
+          </div>
+        )}
+
+        {/* Content */}
+        <div style={{
+          flex: 1,
+          maxWidth: 900,
+        }}>
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: 28 }}>
           <h2 style={{
@@ -147,6 +147,7 @@ export function HighlightSection({ lastResult }: HighlightSectionProps) {
           ))}
         </div>
       </div>
+      </div>{/* end flex row */}
 
       {/* Bottom decoration strip */}
       <div style={{

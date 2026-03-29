@@ -17,7 +17,6 @@ const STEPS = [
     title: 'Pick Your Hamster',
     body: 'Choose the racer you believe will win.\nEach race features three hamsters.',
     image: '/images/carousel-pick-hamster.png',
-    imageStyle: { width: 240, height: 180, objectFit: 'contain' as const },
     badge: { text: 'Support me!', color: PURPLE },
     note: null,
     cta: 'Next',
@@ -27,7 +26,6 @@ const STEPS = [
     title: 'Join The Race Round',
     body: 'Join the race round before the countdown ends.\nEach hamster gathers supporters into their pool.',
     image: '/images/carousel-join-race.png',
-    imageStyle: { width: 240, height: 200, objectFit: 'contain' as const },
     badge: null,
     note: null,
     cta: 'Next',
@@ -37,7 +35,6 @@ const STEPS = [
     title: 'Watch The Live Race',
     body: 'The race is streamed live on Pump.fun.\nWatch the hamsters compete in real time',
     image: '/images/carousel-watch-race.png',
-    imageStyle: { width: 240, height: 200, objectFit: 'contain' as const },
     badge: null,
     note: '*Races are streamed externally on Pump.fun.',
     cta: 'Next',
@@ -47,7 +44,6 @@ const STEPS = [
     title: 'Champion Takes The Wheel',
     body: 'The winning hamster takes the wheel.\nSupporters of the champion share the reward pool.',
     image: '/images/carousel-champion.png',
-    imageStyle: { width: 200, height: 210, objectFit: 'contain' as const },
     badge: null,
     note: null,
     cta: 'Enter The Arena',
@@ -83,7 +79,7 @@ export function HowItWorksModal({ onClose, onEnterArena }: HowItWorksModalProps)
           background: '#fff',
           borderRadius: 26,
           width: '100%', maxWidth: 548,
-          minHeight: 580,
+          minHeight: 640,
           padding: '36px 40px 40px',
           fontFamily: KANIT,
           position: 'relative',
@@ -107,14 +103,15 @@ export function HowItWorksModal({ onClose, onEnterArena }: HowItWorksModalProps)
         {/* Image area */}
         <div style={{
           position: 'relative',
-          height: 220,
-          display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
+          width: '100%',
+          height: 250,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
           marginBottom: 20,
         }}>
           <img
             src={current.image}
             alt={current.title}
-            style={current.imageStyle}
+            style={{ width: 375, height: 230, objectFit: 'contain' }}
           />
           {current.badge && (
             <div style={{

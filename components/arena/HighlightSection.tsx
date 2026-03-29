@@ -74,33 +74,32 @@ export function HighlightSection({ lastResult }: HighlightSectionProps) {
       paddingBottom: 0,
     }}>
 
-      {/* Content row — ball on left, cards on right */}
+      {/* Ball — absolutely positioned, tracks content left edge (maxWidth 900 → half=450, +24px padding+220px width+20px gap) */}
+      {!isMobile && (
+        <img
+          src="/images/hamster-ball.png"
+          alt=""
+          aria-hidden
+          style={{
+            position: 'absolute',
+            top: 80,
+            left: 'max(calc(50% - 714px), 20px)',
+            width: 220,
+            height: 'auto',
+            pointerEvents: 'none',
+            zIndex: 1,
+          }}
+        />
+      )}
+
+      {/* Content — matches arena maxWidth exactly */}
       <div style={{
-        maxWidth: 1180,
+        maxWidth: 900,
         margin: '0 auto',
-        display: 'flex',
-        alignItems: 'flex-start',
-        gap: 0,
         padding: isMobile ? '0 16px' : '0 24px',
+        position: 'relative',
+        zIndex: 1,
       }}>
-
-        {/* Ball column */}
-        {!isMobile && (
-          <div style={{ flexShrink: 0, width: 240, paddingTop: 80 }}>
-            <img
-              src="/images/hamster-ball.png"
-              alt=""
-              aria-hidden
-              style={{ width: 220, height: 'auto', display: 'block', pointerEvents: 'none' }}
-            />
-          </div>
-        )}
-
-        {/* Content */}
-        <div style={{
-          flex: 1,
-          maxWidth: 900,
-        }}>
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: 28 }}>
           <h2 style={{
@@ -148,7 +147,6 @@ export function HighlightSection({ lastResult }: HighlightSectionProps) {
           ))}
         </div>
       </div>
-      </div>{/* end flex row */}
 
       {/* Bottom decoration strip */}
       <div style={{

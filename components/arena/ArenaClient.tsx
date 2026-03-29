@@ -129,9 +129,9 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
 
       <main style={{ background: '#F8F9FA', minHeight: '100vh', paddingTop: 87, position: 'relative' }}>
 
-        {/* Glow blobs */}
-        <div style={{ position: 'absolute', bottom: 0, left: -105, width: 764, height: 764, borderRadius: '50%', background: 'rgba(252,212,0,0.18)', filter: 'blur(80px)', pointerEvents: 'none', zIndex: 0 }} />
-        <div style={{ position: 'absolute', top: 200, right: -129, width: 683, height: 683, borderRadius: '50%', background: 'rgba(115,93,255,0.12)', filter: 'blur(80px)', pointerEvents: 'none', zIndex: 0 }} />
+        {/* Glow blobs — radial gradients anchored to corners, never clip */}
+        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 600px 600px at 0% 100%, rgba(252,212,0,0.22) 0%, transparent 70%)', pointerEvents: 'none', zIndex: 0 }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 560px 560px at 100% 30%, rgba(115,93,255,0.14) 0%, transparent 70%)', pointerEvents: 'none', zIndex: 0 }} />
 
         {/* Dev state preview switcher — remove before launch */}
         <div style={{

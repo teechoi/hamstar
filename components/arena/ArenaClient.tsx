@@ -192,7 +192,7 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
               aria-hidden
               style={{
                 position: 'absolute',
-                left: 'calc(50% - 604px)',
+                left: 'calc(50% - 700px)',
                 top: 120,
                 width: 220,
                 height: 'auto',
@@ -201,7 +201,7 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
               }}
             />
           )}
-        <div style={{ maxWidth: 707, margin: '0 auto', padding: isMobile ? '0 16px' : '0', position: 'relative', zIndex: 1 }}>
+        <div style={{ maxWidth: 900, margin: '0 auto', padding: isMobile ? '0 16px' : '0 24px', position: 'relative', zIndex: 1 }}>
 
           {/* Status card — labels left, values right */}
           <div style={{

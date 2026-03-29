@@ -89,7 +89,7 @@ export function PetPageClient() {
             style={{
               position: 'absolute',
               top: 266,
-              left: 'calc(50% + 300px)',
+              left: 'calc(50% + 380px)',
               width: 358,
               height: 'auto',
               pointerEvents: 'none',
@@ -99,9 +99,9 @@ export function PetPageClient() {
         )}
 
         <div style={{
-          maxWidth: 707,
+          maxWidth: 860,
           margin: '0 auto',
-          padding: isMobile ? '40px 16px 80px' : '60px 0 80px',
+          padding: isMobile ? '40px 16px 80px' : '60px 24px 80px',
           position: 'relative',
           zIndex: 1,
         }}>

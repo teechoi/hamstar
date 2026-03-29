@@ -192,7 +192,7 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
               aria-hidden
               style={{
                 position: 'absolute',
-                left: 'min(calc(50% - 698px), -30px)',
+                left: 'min(calc(50% - 698px), -58px)',
                 top: 120,
                 width: 220,
                 height: 'auto',

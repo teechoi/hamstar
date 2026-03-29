@@ -12,7 +12,8 @@ export function HeroSection() {
   return (
     <section id="hero" style={{
       position: 'relative',
-      height: 'clamp(580px, 52vw, 820px)',
+      height: '100vh',
+      minHeight: 580,
       background: '#000000',
       overflow: 'hidden',
     }}>
@@ -74,7 +75,7 @@ export function HeroSection() {
             fontFamily: 'Pretendard, sans-serif',
             fontSize: isMobile ? 15 : 'clamp(17px, 1.6vw, 26px)',
             color: '#FFE790',
-            fontWeight: 600,
+            fontWeight: 500,
             lineHeight: isMobile ? '22px' : '30px',
             margin: isMobile ? '8px 0 0' : 0,
           }}>

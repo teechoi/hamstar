@@ -63,24 +63,23 @@ export function PetPageClient() {
         minHeight: '100vh',
         paddingTop: 87,
         position: 'relative',
-        overflow: 'hidden',
       }}>
 
-        {/* Decorative blobs */}
+        {/* Glow blobs — no overflow:hidden so they aren't clipped */}
         <div style={{
-          position: 'absolute', bottom: -149, left: -105,
+          position: 'absolute', bottom: 0, left: -105,
           width: 764, height: 764, borderRadius: '50%',
-          background: 'rgba(255,231,144,0.10)', filter: 'blur(32px)',
-          pointerEvents: 'none',
+          background: 'rgba(252,212,0,0.18)', filter: 'blur(80px)',
+          pointerEvents: 'none', zIndex: 0,
         }} />
         <div style={{
-          position: 'absolute', top: 278, right: -129,
+          position: 'absolute', top: 200, right: -129,
           width: 683, height: 683, borderRadius: '50%',
-          background: 'rgba(115,93,255,0.05)', filter: 'blur(32px)',
-          pointerEvents: 'none',
+          background: 'rgba(115,93,255,0.12)', filter: 'blur(80px)',
+          pointerEvents: 'none', zIndex: 0,
         }} />
 
-        {/* Right decorative hamster — partially off-screen right */}
+        {/* Right decorative hamster */}
         {!isMobile && (
           <img
             src="/images/hamster-pet-right.png"
@@ -88,9 +87,9 @@ export function PetPageClient() {
             aria-hidden
             style={{
               position: 'absolute',
-              top: 266,
-              left: 'calc(50% + 380px)',
-              width: 358,
+              top: 220,
+              left: 'calc(50% + 420px)',
+              width: 'clamp(300px, 28vw, 440px)',
               height: 'auto',
               pointerEvents: 'none',
               zIndex: 0,
@@ -99,7 +98,7 @@ export function PetPageClient() {
         )}
 
         <div style={{
-          maxWidth: 860,
+          maxWidth: 960,
           margin: '0 auto',
           padding: isMobile ? '40px 16px 80px' : '60px 24px 80px',
           position: 'relative',
@@ -110,7 +109,7 @@ export function PetPageClient() {
           <div style={{ textAlign: 'center', marginBottom: 32 }}>
             <h1 style={{
               fontFamily: KANIT,
-              fontSize: 'clamp(20px, 2.5vw, 24px)',
+              fontSize: 'clamp(20px, 2.5vw, 28px)',
               fontWeight: 600,
               color: '#000',
               marginBottom: 10,
@@ -132,7 +131,7 @@ export function PetPageClient() {
             display: 'flex',
             justifyContent: 'center',
             gap: 12,
-            marginBottom: 20,
+            marginBottom: 24,
             flexWrap: 'wrap',
           }}>
             {PETS.map(pet => {
@@ -145,7 +144,7 @@ export function PetPageClient() {
                     display: 'flex',
                     alignItems: 'center',
                     gap: 12,
-                    padding: '8px 20px 8px 10px',
+                    padding: '10px 24px 10px 12px',
                     background: '#fff',
                     border: isActive ? '2px solid #735DFF' : '2px solid transparent',
                     borderRadius: 16,
@@ -155,7 +154,7 @@ export function PetPageClient() {
                   }}
                 >
                   <div style={{
-                    width: 41, height: 41,
+                    width: 48, height: 48,
                     borderRadius: '50%',
                     background: '#D9D9D9',
                     overflow: 'hidden',
@@ -169,7 +168,7 @@ export function PetPageClient() {
                   </div>
                   <span style={{
                     fontFamily: KANIT,
-                    fontSize: 16,
+                    fontSize: 18,
                     fontWeight: 600,
                     color: '#000',
                   }}>
@@ -183,16 +182,16 @@ export function PetPageClient() {
           {/* Profile detail card */}
           <div style={{
             background: '#fff',
-            borderRadius: 20,
-            boxShadow: '0 4px 20px rgba(77,67,83,0.08)',
+            borderRadius: 24,
+            boxShadow: '0 4px 24px rgba(77,67,83,0.10)',
             overflow: 'hidden',
             display: 'flex',
             flexDirection: isMobile ? 'column' : 'row',
           }}>
             {/* Photo panel */}
             <div style={{
-              width: isMobile ? '100%' : 195,
-              height: isMobile ? 220 : 276,
+              width: isMobile ? '100%' : 260,
+              height: isMobile ? 260 : 360,
               background: '#D9D9D9',
               flexShrink: 0,
               overflow: 'hidden',
@@ -204,7 +203,7 @@ export function PetPageClient() {
                 src={PET_IMAGES[selected.id]}
                 alt={selected.name}
                 style={{
-                  height: 190,
+                  height: 260,
                   width: 'auto',
                   display: 'block',
                   flexShrink: 0,
@@ -213,14 +212,14 @@ export function PetPageClient() {
             </div>
 
             {/* Info panel */}
-            <div style={{ flex: 1, padding: isMobile ? '24px 20px' : '28px 32px' }}>
+            <div style={{ flex: 1, padding: isMobile ? '28px 20px' : '36px 40px' }}>
 
-              <p style={{ fontFamily: KANIT, fontSize: 12, fontWeight: 400, color: '#9F9F9F', marginBottom: 4 }}>
+              <p style={{ fontFamily: KANIT, fontSize: 13, fontWeight: 400, color: '#9F9F9F', marginBottom: 4 }}>
                 Name
               </p>
               <h2 style={{
                 fontFamily: KANIT,
-                fontSize: 20,
+                fontSize: 'clamp(20px, 2.5vw, 28px)',
                 fontWeight: 600,
                 color: '#000',
                 marginBottom: 16,
@@ -228,16 +227,16 @@ export function PetPageClient() {
                 {selected.name}
               </h2>
 
-              <p style={{ fontFamily: KANIT, fontSize: 12, fontWeight: 400, color: '#9F9F9F', marginBottom: 6 }}>
+              <p style={{ fontFamily: KANIT, fontSize: 13, fontWeight: 400, color: '#9F9F9F', marginBottom: 6 }}>
                 About {selected.name}
               </p>
               <p style={{
                 fontFamily: KANIT,
-                fontSize: 13,
+                fontSize: 'clamp(13px, 1.4vw, 15px)',
                 fontWeight: 300,
                 color: '#9F9F9F',
-                lineHeight: 1.6,
-                marginBottom: 20,
+                lineHeight: 1.7,
+                marginBottom: 28,
               }}>
                 {selected.bio}
               </p>
@@ -246,7 +245,7 @@ export function PetPageClient() {
               <div style={{
                 display: 'grid',
                 gridTemplateColumns: '1fr 1fr',
-                gap: '6px 24px',
+                gap: '10px 32px',
               }}>
                 {[
                   { label: 'Performance', value: `${selected.speed}%` },
@@ -254,7 +253,7 @@ export function PetPageClient() {
                   { label: 'Style',       value: styleLabel(selected.chaos) },
                   { label: 'Chaos',       value: `${selected.chaos}%` },
                 ].map(({ label, value }) => (
-                  <p key={label} style={{ fontFamily: KANIT, fontSize: 14, fontWeight: 400, color: '#000', margin: 0 }}>
+                  <p key={label} style={{ fontFamily: KANIT, fontSize: 'clamp(13px, 1.4vw, 15px)', fontWeight: 400, color: '#000', margin: 0 }}>
                     {label}: {value}
                   </p>
                 ))}
@@ -263,17 +262,17 @@ export function PetPageClient() {
           </div>
         </div>
 
-        {/* Bottom-left decorative */}
+        {/* Bottom-left decorative — cheese hideout */}
         {!isMobile && (
           <img
-            src="/images/hamster-pet-bottom.png"
+            src="/images/cheese-hideout.png"
             alt=""
             aria-hidden
             style={{
               position: 'absolute',
-              bottom: 41,
-              left: 'max(calc(50% - 650px), 0px)',
-              width: 312,
+              bottom: 0,
+              left: 'max(calc(50% - 720px), -60px)',
+              width: 'clamp(260px, 24vw, 380px)',
               height: 'auto',
               pointerEvents: 'none',
               zIndex: 0,

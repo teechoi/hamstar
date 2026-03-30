@@ -94,7 +94,7 @@ export function LandingFooter({
         {/* Brand row */}
         <div style={{ marginBottom: 28 }}>
           <p style={{ fontFamily: KANIT, fontWeight: 700, fontSize: 'clamp(24px, 2.5vw, 34px)', color: BLACK, lineHeight: 1.2, margin: '0 0 8px' }}>Hamstar</p>
-          <p style={{ fontFamily: PRET, fontWeight: 500, fontSize: 16, color: MUTED, lineHeight: '19px', margin: 0, maxWidth: 360 }}>
+          <p style={{ fontFamily: PRET, fontWeight: 500, fontSize: 16, color: MUTED, lineHeight: '19px', margin: 0, whiteSpace: 'nowrap' }}>
             {footerBrandDesc}
           </p>
         </div>

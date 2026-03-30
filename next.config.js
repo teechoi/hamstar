@@ -5,7 +5,7 @@ const nextConfig = {
   // (Privy is client-side anyway, so 'use client' components are unaffected).
   // Rename to serverExternalPackages when upgrading to Next.js 15.
   experimental: {
-    serverComponentsExternalPackages: ['@privy-io/react-auth', '@privy-io/js-sdk-core'],
+    serverComponentsExternalPackages: ['@privy-io/react-auth', '@privy-io/react-auth/solana', '@privy-io/js-sdk-core'],
   },
   basePath: process.env.NEXT_PUBLIC_BASE_PATH || '',
   images: {

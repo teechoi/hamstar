@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { QRCodeSVG } from 'qrcode.react'
+// useFundWallet from @privy-io/react-auth/solana requires @solana/kit peer deps not yet installed
 import { T } from '@/lib/theme'
 import { HAMSTAR_SYMBOL, HAMSTAR_JUPITER_URL, HAMSTAR_MINT, FAN_TIERS } from '@/lib/hamstar-token'
 
@@ -126,13 +127,15 @@ export function DepositModal({ address = '', onClose, onConnectWallet }: Deposit
           </div>
         )}
 
-        {/* ── Body ── */}
-        {!hasAddress
-          ? <NoWalletDeposit onConnect={onConnectWallet ?? onClose} />
-          : tab === 'sol'
-            ? <ConnectedDeposit address={address} copied={copied} onCopy={copyAddress} />
-            : <GetHamstarTab />
-        }
+        {/* ── Body — fixed height so tabs don't shift modal size ── */}
+        <div style={{ minHeight: 420 }}>
+          {!hasAddress
+            ? <NoWalletDeposit onConnect={onConnectWallet ?? onClose} />
+            : tab === 'sol'
+              ? <ConnectedDeposit address={address} copied={copied} onCopy={copyAddress} />
+              : <GetHamstarTab />
+          }
+        </div>
 
         {/* Footer */}
         <div style={{ display: 'flex', justifyContent: 'center', gap: 20, flexWrap: 'wrap', padding: '0 28px 24px' }}>
@@ -149,7 +152,14 @@ export function DepositModal({ address = '', onClose, onConnectWallet }: Deposit
 
 // ─── Connected: QR + address ──────────────────────────────────────────────────
 
+function openCoinbaseOnramp(address: string) {
+  const dest = encodeURIComponent(JSON.stringify([{ address, assets: ['SOL', 'USDC'], network: 'solana' }]))
+  window.open(`https://pay.coinbase.com/buy/select-asset?appId=hamstarhub&destinationWallets=${dest}`, '_blank', 'noopener,noreferrer')
+}
+
 function ConnectedDeposit({ address, copied, onCopy }: { address: string; copied: boolean; onCopy: () => void }) {
+  const [hovCard, setHovCard] = useState(false)
+
   return (
     <div style={{ padding: '24px 28px 16px' }}>
       {/* QR card */}
@@ -183,6 +193,31 @@ function ConnectedDeposit({ address, copied, onCopy }: { address: string; copied
 
       {/* Copy button */}
       <CopyBtn copied={copied} onClick={onCopy} />
+
+      {/* Divider */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, margin: '12px 0' }}>
+        <div style={{ flex: 1, height: 1, background: T.border }} />
+        <span style={{ fontFamily: KANIT, fontSize: 11, color: '#ccc' }}>or</span>
+        <div style={{ flex: 1, height: 1, background: T.border }} />
+      </div>
+
+      {/* Buy with card */}
+      <button
+        onClick={() => openCoinbaseOnramp(address)}
+        onMouseEnter={() => setHovCard(true)}
+        onMouseLeave={() => setHovCard(false)}
+        style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+          width: '100%', padding: '14px 20px',
+          background: hovCard ? '#111' : T.text,
+          border: 'none', borderRadius: 48.5,
+          fontFamily: KANIT, fontSize: 14, fontWeight: 700, color: T.yellow,
+          cursor: 'pointer', transition: 'background 0.15s',
+          marginBottom: 12,
+        }}
+      >
+        💳 Buy with Card / USDC
+      </button>
 
       {/* Warning */}
       <div style={{
@@ -333,9 +368,34 @@ function GetHamstarTab() {
         🪐 Buy {HAMSTAR_SYMBOL} on Jupiter ↗
       </a>
 
-      <p style={{ fontFamily: PRET, fontSize: 11, color: '#ccc', textAlign: 'center', margin: '0 0 8px', lineHeight: 1.5 }}>
-        You'll need SOL in your wallet first to swap. Deposit SOL using the other tab.
-      </p>
+      {/* How to get started steps */}
+      <div style={{
+        background: T.bg, border: `1px solid ${T.border}`,
+        borderRadius: 14, overflow: 'hidden', marginBottom: 10,
+      }}>
+        {[
+          { step: '1', icon: '◎', title: 'Deposit SOL', desc: 'Use the Deposit SOL tab to fund your wallet.' },
+          { step: '2', icon: '🪐', title: 'Swap on Jupiter', desc: 'Swap SOL for $HAMSTAR using the button above.' },
+          { step: '3', icon: '🏆', title: 'Hold & earn tiers', desc: 'Hold tokens to unlock fan badges and rewards.' },
+        ].map((s, i, arr) => (
+          <div key={s.step} style={{
+            display: 'flex', alignItems: 'center', gap: 12,
+            padding: '11px 14px',
+            borderBottom: i < arr.length - 1 ? `1px solid ${T.border}` : 'none',
+          }}>
+            <div style={{
+              width: 32, height: 32, borderRadius: '50%', flexShrink: 0,
+              background: T.yellow, border: '1.5px solid rgba(255,200,0,0.4)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: 14,
+            }}>{s.icon}</div>
+            <div>
+              <p style={{ fontFamily: KANIT, fontSize: 12, fontWeight: 700, color: T.text, margin: 0 }}>{s.title}</p>
+              <p style={{ fontFamily: PRET, fontSize: 11, color: T.textMid, margin: 0 }}>{s.desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }

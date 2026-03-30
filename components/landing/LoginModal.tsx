@@ -30,20 +30,6 @@ export function LoginModal({ onClose, loginTitle, loginSubtitle }: LoginModalPro
     if (connected && !alreadyConnected.current) onCloseRef.current()
   }, [connected])
 
-  // After select() changes the wallet, call connect() explicitly.
-  // We can't call connect() immediately after select() in the same handler
-  // because connect() in that closure still references the OLD wallet (stale).
-  // Waiting for wallet to update in state guarantees we connect the right one.
-  const pendingConnect = useRef(false)
-  useEffect(() => {
-    if (!pendingConnect.current || !wallet) return
-    pendingConnect.current = false
-    connect().catch((e: any) => {
-      setConnectingName(null)
-      setErr(e?.message ?? 'Could not connect. Please try again.')
-    })
-  }, [wallet]) // eslint-disable-line react-hooks/exhaustive-deps
-
   // Reset spinner if wallet popup was dismissed without connecting
   useEffect(() => {
     if (!connecting && connectingName && !connected) {
@@ -68,22 +54,31 @@ export function LoginModal({ onClose, loginTitle, loginSubtitle }: LoginModalPro
   const handleSelect = (name: string) => {
     setErr('')
     setConnectingName(name)
+
+    const found = uniqueWallets.find(w => w.adapter.name === name)
+    if (!found) { setConnectingName(null); return }
+
     try {
       if (wallet?.adapter.name === name) {
-        // Wallet already selected — state won't change so useEffect won't fire.
-        // Call connect() directly with the current (correct) adapter.
+        // Already selected — connect() works directly here (synchronous user gesture)
         connect().catch((e: any) => {
           setConnectingName(null)
           setErr(e?.message ?? 'Could not connect. Please try again.')
         })
       } else {
-        pendingConnect.current = true
+        // Switch wallet then connect the adapter directly — MUST stay in this
+        // synchronous click handler so the browser allows the wallet popup.
+        // Calling connect() inside a useEffect delays it past the user gesture
+        // boundary and causes browsers to silently block the popup.
         select(name as any)
+        found.adapter.connect().catch((e: any) => {
+          setConnectingName(null)
+          setErr(e?.message ?? 'Could not connect. Please try again.')
+        })
       }
-    } catch {
-      pendingConnect.current = false
+    } catch (e: any) {
       setConnectingName(null)
-      setErr('Could not open wallet. Please try again.')
+      setErr(e?.message ?? 'Could not open wallet. Please try again.')
     }
   }
 

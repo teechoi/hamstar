@@ -115,7 +115,7 @@ export function DepositModal({ address = '', onClose, onConnectWallet }: Deposit
         )}
 
         {/* ── Body — fixed height so tabs don't shift modal size ── */}
-        <div style={{ minHeight: 500 }}>
+        <div style={{ minHeight: 560 }}>
           {!hasAddress
             ? <NoWalletDeposit onConnect={onConnectWallet ?? onClose} />
             : tab === 'sol'

@@ -115,7 +115,7 @@ export function DepositModal({ address = '', onClose, onConnectWallet }: Deposit
         )}
 
         {/* ── Body — fixed height so tabs don't shift modal size ── */}
-        <div style={{ minHeight: 420 }}>
+        <div style={{ minHeight: 500 }}>
           {!hasAddress
             ? <NoWalletDeposit onConnect={onConnectWallet ?? onClose} />
             : tab === 'sol'
@@ -154,18 +154,18 @@ function ConnectedDeposit({ address, copied, onCopy }: { address: string; copied
         background: T.bg,
         border: `1.5px solid ${T.border}`,
         borderRadius: 20,
-        padding: '14px',
+        padding: '20px',
         display: 'flex', flexDirection: 'column', alignItems: 'center',
         marginBottom: 16,
-        gap: 12,
+        gap: 16,
       }}>
         {/* QR with yellow frame */}
         <div style={{
-          padding: 8, borderRadius: 12,
+          padding: 12, borderRadius: 12,
           background: '#fff',
           boxShadow: `0 0 0 4px ${T.yellow}`,
         }}>
-          <QRCodeSVG value={address} size={124} />
+          <QRCodeSVG value={address} size={148} />
         </div>
 
         <div style={{ textAlign: 'center' }}>

@@ -60,8 +60,17 @@ export function LoginModal({ onClose, loginTitle, loginSubtitle }: LoginModalPro
     setErr('')
     setConnectingName(name)
     try {
-      pendingConnect.current = true
-      select(name as any)
+      if (wallet?.adapter.name === name) {
+        // Wallet already selected — state won't change so useEffect won't fire.
+        // Call connect() directly with the current (correct) adapter.
+        connect().catch((e: any) => {
+          setConnectingName(null)
+          setErr(e?.message ?? 'Could not connect. Please try again.')
+        })
+      } else {
+        pendingConnect.current = true
+        select(name as any)
+      }
     } catch {
       pendingConnect.current = false
       setConnectingName(null)

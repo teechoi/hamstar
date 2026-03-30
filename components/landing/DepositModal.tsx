@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { QRCodeSVG } from 'qrcode.react'
+import { useIsMobile } from '@/components/ui/index'
 // useFundWallet from @privy-io/react-auth/solana requires @solana/kit peer deps not yet installed
 import { T } from '@/lib/theme'
 import { HAMSTAR_SYMBOL, HAMSTAR_JUPITER_URL, HAMSTAR_MINT, FAN_TIERS } from '@/lib/hamstar-token'
@@ -16,6 +17,7 @@ interface DepositModalProps {
 }
 
 export function DepositModal({ address = '', onClose, onConnectWallet }: DepositModalProps) {
+  const isMobile = useIsMobile()
   const [copied, setCopied] = useState(false)
   const [tab, setTab]       = useState<'sol' | 'hamstar'>('sol')
   const hasAddress = address.length > 0
@@ -54,7 +56,7 @@ export function DepositModal({ address = '', onClose, onConnectWallet }: Deposit
         <div style={{
           background: T.yellow,
           borderRadius: '28px 28px 0 0',
-          padding: '22px 22px 20px',
+          padding: isMobile ? '16px 16px 14px' : '22px 22px 20px',
           position: 'relative', overflow: 'hidden',
         }}>
           {/* Cheese decoration */}
@@ -115,7 +117,7 @@ export function DepositModal({ address = '', onClose, onConnectWallet }: Deposit
         )}
 
         {/* ── Body — fixed height so tabs don't shift modal size ── */}
-        <div style={{ minHeight: 560 }}>
+        <div style={{ minHeight: isMobile ? 'auto' : 560 }}>
           {!hasAddress
             ? <NoWalletDeposit onConnect={onConnectWallet ?? onClose} />
             : tab === 'sol'
@@ -145,27 +147,28 @@ function openCoinbaseOnramp(address: string) {
 }
 
 function ConnectedDeposit({ address, copied, onCopy }: { address: string; copied: boolean; onCopy: () => void }) {
+  const isMobile = useIsMobile()
   const [hovCard, setHovCard] = useState(false)
 
   return (
-    <div style={{ padding: '24px 28px 16px' }}>
+    <div style={{ padding: isMobile ? '16px 20px 12px' : '24px 28px 16px' }}>
       {/* QR card */}
       <div style={{
         background: T.bg,
         border: `1.5px solid ${T.border}`,
         borderRadius: 20,
-        padding: '20px',
+        padding: isMobile ? '14px' : '20px',
         display: 'flex', flexDirection: 'column', alignItems: 'center',
         marginBottom: 16,
-        gap: 16,
+        gap: isMobile ? 12 : 16,
       }}>
         {/* QR with yellow frame */}
         <div style={{
-          padding: 12, borderRadius: 12,
+          padding: isMobile ? 8 : 12, borderRadius: 12,
           background: '#fff',
           boxShadow: `0 0 0 4px ${T.yellow}`,
         }}>
-          <QRCodeSVG value={address} size={148} />
+          <QRCodeSVG value={address} size={isMobile ? 120 : 148} />
         </div>
 
         <div style={{ textAlign: 'center' }}>

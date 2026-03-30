@@ -73,7 +73,7 @@ export function TermsModal({ onAccept, termsButtonText = 'I Understand & Enter A
           onMouseLeave={() => setHov(false)}
           style={{
             width: 'min(280px, calc(100% - 40px))',
-            height: 35,
+            padding: '13px 20px',
             marginTop: 20,
             marginBottom: 20,
             background: YELLOW,

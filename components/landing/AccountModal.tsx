@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { useConnection } from '@solana/wallet-adapter-react'
+import { useIsMobile } from '@/components/ui/index'
 import { PublicKey } from '@solana/web3.js'
 import { T } from '@/lib/theme'
 import { getCheerHistory, type CheerEntry } from '@/lib/cheer-history'
@@ -83,7 +84,7 @@ export function AccountModal({
           background: '#fff',
           borderRadius: 28,
           width: '100%', maxWidth: 440,
-          maxHeight: '90vh', overflowY: 'auto',
+          maxHeight: '96vh', overflowY: 'auto',
           position: 'relative',
           boxShadow: '0 32px 80px rgba(0,0,0,0.18)',
         }}
@@ -125,6 +126,7 @@ function ConnectedView({
   onDeposit: () => void
   onDisconnect: () => void
 }) {
+  const isMobile = useIsMobile()
   const tier  = getFanTier(hamstarBalance)
   const wins  = history.filter(e => e.won === true).length
   const total = history.filter(e => e.won !== null).length
@@ -135,7 +137,7 @@ function ConnectedView({
       <div style={{
         background: T.yellow,
         borderRadius: '28px 28px 0 0',
-        padding: '22px 28px 0',
+        padding: isMobile ? '16px 20px 0' : '22px 28px 0',
         position: 'relative', overflow: 'hidden',
       }}>
         <img
@@ -215,7 +217,7 @@ function ConnectedView({
       </div>
 
       {/* ── Body ── */}
-      <div style={{ padding: '14px 24px 20px' }}>
+      <div style={{ padding: isMobile ? '12px 16px 16px' : '14px 24px 20px' }}>
 
         {/* $HAMSTAR token card */}
         <HamstarTokenCard hamstarBalance={hamstarBalance} tier={tier} />

@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import type { HowItWorksStep } from '@/types'
 
 const YELLOW = '#FFE790'
@@ -110,11 +110,11 @@ export function HowItWorksModal({ onClose, onEnterArena, steps }: HowItWorksModa
           <img
             src={current.image}
             alt={current.title}
-            style={{ width: 260, height: 200, objectFit: 'contain', objectPosition: 'center bottom' }}
+            style={{ width: 'min(260px, 100%)', height: 200, objectFit: 'contain', objectPosition: 'center bottom' }}
           />
           {current.badge && (
             <div style={{
-              position: 'absolute', top: 8, right: 60,
+              position: 'absolute', top: 8, right: 'clamp(12px, 8vw, 60px)',
               background: PURPLE,
               color: '#fff',
               borderRadius: 48.5,

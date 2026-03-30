@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { WalletReadyState } from '@solana/wallet-adapter-base'
+import { useIsMobile } from '@/components/ui/index'
 import { T } from '@/lib/theme'
 
 const KANIT = "var(--font-kanit), sans-serif"
@@ -14,6 +15,7 @@ interface LoginModalProps {
 }
 
 export function LoginModal({ onClose, loginTitle, loginSubtitle }: LoginModalProps) {
+  const isMobile = useIsMobile()
   const { wallets, select, connect, connecting, connected, wallet } = useWallet()
   const [connectingName, setConnectingName] = useState<string | null>(null)
   const [err, setErr] = useState('')
@@ -85,15 +87,15 @@ export function LoginModal({ onClose, loginTitle, loginSubtitle }: LoginModalPro
           borderRadius: 28,
           width: '100%',
           maxWidth: 460,
-          maxHeight: '92vh',
+          maxHeight: isMobile ? '96vh' : '92vh',
           overflowY: 'auto',
           position: 'relative',
           boxShadow: '0 40px 100px rgba(0,0,0,0.4)',
         }}
       >
         {/* ── Header ── */}
-        <div style={{ padding: '36px 32px 24px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 20 }}>
+        <div style={{ padding: isMobile ? '24px 20px 16px' : '36px 32px 24px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: isMobile ? 14 : 20 }}>
             <div style={{
               width: 52, height: 52, borderRadius: 16, flexShrink: 0,
               background: T.yellow,
@@ -122,7 +124,7 @@ export function LoginModal({ onClose, loginTitle, loginSubtitle }: LoginModalPro
         </div>
 
         {/* ── Body ── */}
-        <div style={{ padding: '0 32px 28px' }}>
+        <div style={{ padding: isMobile ? '0 20px 24px' : '0 32px 28px' }}>
 
           {/* Error */}
           {err && (
@@ -174,7 +176,7 @@ export function LoginModal({ onClose, loginTitle, loginSubtitle }: LoginModalPro
           {getable.length > 0 && (
             <div style={{ marginBottom: 20 }}>
               <SectionLabel text={detected.length > 0 ? 'More Wallets' : 'Get a Wallet'} />
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 8 }}>
                 {getable.slice(0, 6).map(w => (
                   <WalletGetCard key={w.adapter.name} name={w.adapter.name} icon={w.adapter.icon} url={w.adapter.url} />
                 ))}

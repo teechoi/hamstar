@@ -93,8 +93,8 @@ export function LandingNav({
               <button
                 onClick={onDepositClick}
                 style={{
-                  padding: '6px 14px', background: YELLOW, border: 'none',
-                  borderRadius: 48.5, color: DARK, fontSize: 12, fontWeight: 600,
+                  padding: '9px 16px', background: YELLOW, border: 'none',
+                  borderRadius: 48.5, color: DARK, fontSize: 13, fontWeight: 600,
                   cursor: 'pointer', fontFamily: KANIT,
                 }}
               >
@@ -104,8 +104,8 @@ export function LandingNav({
               <button
                 onClick={onLoginClick}
                 style={{
-                  padding: '6px 16px', background: YELLOW, border: 'none',
-                  borderRadius: 48.5, color: DARK, fontSize: 12, fontWeight: 600,
+                  padding: '9px 18px', background: YELLOW, border: 'none',
+                  borderRadius: 48.5, color: DARK, fontSize: 13, fontWeight: 600,
                   cursor: 'pointer', fontFamily: KANIT,
                 }}
               >
@@ -116,7 +116,7 @@ export function LandingNav({
               onClick={() => setMenuOpen(o => !o)}
               style={{
                 background: 'none', border: 'none', cursor: 'pointer',
-                padding: 4, lineHeight: 1,
+                padding: 8, lineHeight: 1,
                 display: 'flex', flexDirection: 'column', gap: 5,
               }}
               aria-label="Menu"
@@ -174,7 +174,7 @@ export function LandingNav({
                 background: 'none', border: 'none',
                 color: '#fff', fontSize: 15, fontWeight: 500,
                 cursor: 'pointer', fontFamily: KANIT,
-                textAlign: 'left', padding: '10px 4px',
+                textAlign: 'left', padding: '13px 8px',
                 borderBottom: '1px solid rgba(255,255,255,0.06)',
               }}
             >
@@ -187,7 +187,7 @@ export function LandingNav({
               background: 'none', border: 'none',
               color: YELLOW, fontSize: 15, fontWeight: 500,
               cursor: 'pointer', fontFamily: KANIT,
-              textAlign: 'left', padding: '10px 4px',
+              textAlign: 'left', padding: '13px 8px',
               borderBottom: '1px solid rgba(255,255,255,0.06)',
             }}
           >
@@ -197,10 +197,10 @@ export function LandingNav({
             <button
               onClick={() => { onLoginClick?.(); setMenuOpen(false) }}
               style={{
-                marginTop: 8, padding: '12px',
+                marginTop: 8, padding: '14px',
                 background: YELLOW, border: 'none',
                 borderRadius: 48.5, color: DARK,
-                fontSize: 12, fontWeight: 600,
+                fontSize: 14, fontWeight: 600,
                 cursor: 'pointer', fontFamily: KANIT,
               }}
             >

@@ -19,7 +19,7 @@ interface LoginModalProps {
 type View = 'connect' | 'email'
 
 export function LoginModal({ onClose, loginTitle, loginSubtitle }: LoginModalProps) {
-  const { wallets, select, connect, connecting, connected, disconnect } = useWallet()
+  const { wallets, select, connecting, connected } = useWallet()
   const login = usePrivyLogin()
   const [view, setView] = useState<View>('connect')
   const [connectingName, setConnectingName] = useState<string | null>(null)
@@ -47,25 +47,16 @@ export function LoginModal({ onClose, loginTitle, loginSubtitle }: LoginModalPro
   )
   const getable = wallets.filter(w => w.readyState === WalletReadyState.NotDetected)
 
-  const handleSelect = async (name: string) => {
+  const handleSelect = (name: string) => {
     setErr('')
     setConnectingName(name)
     try {
-      // If a different wallet was previously connected, disconnect first
-      if (connected) await disconnect()
       select(name as any)
-      // Give the adapter one tick to register the selection, then connect
-      await new Promise(r => setTimeout(r, 80))
-      await connect()
-    } catch (e: any) {
+      // autoConnect:true on WalletProvider handles connect() automatically
+      // after the selected wallet changes — no explicit connect() needed here
+    } catch {
       setConnectingName(null)
-      // WalletNotReadyError or user rejection — show friendly message
-      const msg = e?.name === 'WalletNotReadyError'
-        ? 'Wallet not ready. Make sure it is installed and unlocked.'
-        : e?.name === 'WalletWindowClosedError' || e?.message?.includes('User rejected')
-          ? 'Connection cancelled.'
-          : 'Could not connect. Please try again.'
-      setErr(msg)
+      setErr('Could not open wallet. Please try again.')
     }
   }
 
@@ -126,7 +117,7 @@ function ConnectView({
   err: string
   loginTitle?: string
   loginSubtitle?: string
-  onSelect: (n: string) => Promise<void>
+  onSelect: (n: string) => void
   onEmailView: () => void
   onPrivyLogin: ReturnType<typeof usePrivyLogin>
 }) {

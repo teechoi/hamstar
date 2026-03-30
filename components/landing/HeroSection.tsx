@@ -72,16 +72,17 @@ export function HeroSection({
         {/* Heading */}
         <div style={{
           display: 'flex', flexDirection: 'column', alignItems: 'center',
-          width: isMobile ? '100%' : 'clamp(600px, 60vw, 900px)',
+          width: isMobile ? '100%' : 'min(80vw, 1050px)',
         }}>
           <h1 style={{
             fontFamily: KANIT,
-            fontSize: isMobile ? 'clamp(28px, 7vw, 52px)' : 'clamp(52px, 4.7vw, 80px)',
+            fontSize: isMobile ? 'clamp(28px, 7vw, 52px)' : 'clamp(44px, 4.2vw, 64px)',
             fontWeight: 700,
             color: '#ffffff',
             letterSpacing: 0,
             lineHeight: isMobile ? 1.15 : 1.2,
             margin: 0,
+            whiteSpace: isMobile ? 'normal' : 'nowrap',
           }}>
             {heroTitle}
           </h1>

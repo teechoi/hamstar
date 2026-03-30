@@ -88,18 +88,6 @@ export function AccountModal({
           boxShadow: '0 32px 80px rgba(0,0,0,0.18)',
         }}
       >
-        <button
-          onClick={onClose}
-          style={{
-            position: 'absolute', top: 16, right: 18,
-            background: 'rgba(0,0,0,0.12)', border: 'none',
-            width: 28, height: 28, borderRadius: '50%',
-            fontSize: 16, cursor: 'pointer', color: T.text,
-            fontFamily: KANIT, lineHeight: 1, zIndex: 10,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}
-        >×</button>
-
         {hasWallet
           ? <ConnectedView
               walletAddress={walletAddress!}

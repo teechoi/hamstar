@@ -90,19 +90,6 @@ export function HowItWorksModal({ onClose, onEnterArena, steps }: HowItWorksModa
         }}
         onClick={e => e.stopPropagation()}
       >
-        {/* Close */}
-        <button
-          onClick={onClose}
-          style={{
-            position: 'absolute', top: 16, right: 20,
-            background: 'none', border: 'none',
-            fontSize: 22, cursor: 'pointer', color: '#999',
-            fontFamily: KANIT, lineHeight: 1,
-          }}
-        >
-          ×
-        </button>
-
         {/* Image area */}
         <div style={{
           position: 'relative',
@@ -114,7 +101,7 @@ export function HowItWorksModal({ onClose, onEnterArena, steps }: HowItWorksModa
           <img
             src={current.image}
             alt={current.title}
-            style={{ width: 'min(260px, 100%)', height: 'auto', maxHeight: 200, objectFit: 'contain' }}
+            style={{ width: 260, height: 200, objectFit: 'contain', objectPosition: 'center bottom' }}
           />
           {current.badge && (
             <div style={{

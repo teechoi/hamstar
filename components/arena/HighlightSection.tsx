@@ -68,7 +68,7 @@ export function HighlightSection({ lastResult }: HighlightSectionProps) {
 
   return (
     <section style={{
-      background: '#F8F9FA',
+      background: 'transparent',
       position: 'relative',
       paddingTop: 'clamp(60px, 8vw, 100px)',
       paddingBottom: 0,

@@ -1,12 +1,16 @@
 'use client'
+import { useState, useEffect } from 'react'
 import { PrivyProvider } from '@privy-io/react-auth'
 import { SolanaWalletProvider } from './WalletProvider'
 
 const PRIVY_APP_ID = process.env.NEXT_PUBLIC_PRIVY_APP_ID ?? ''
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
-  // If Privy app ID is not configured, skip PrivyProvider and just use wallet adapter
-  if (!PRIVY_APP_ID) {
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => { setMounted(true) }, [])
+
+  // During SSR / prerendering, skip PrivyProvider entirely to avoid validation errors
+  if (!mounted || !PRIVY_APP_ID) {
     return <SolanaWalletProvider>{children}</SolanaWalletProvider>
   }
 

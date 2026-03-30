@@ -55,8 +55,8 @@ export function LandingFooter({
         <div style={{ display: 'flex', gap: 48, marginBottom: 28 }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             <p style={{ fontFamily: PRET, fontWeight: 600, fontSize: 16, color: MUTED, margin: 0 }}>Social</p>
-            {socials.map(([label, href]) => href && (
-              <a key={label} href={href} target="_blank" rel="noopener noreferrer" style={link}>{label}</a>
+            {socials.map(([label, href]) => (
+              <a key={label} href={href || '#'} target={href ? '_blank' : undefined} rel="noopener noreferrer" style={link}>{label}</a>
             ))}
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -90,35 +90,36 @@ export function LandingFooter({
   return (
     <footer id="footer" style={{ background: BG }}>
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: 'clamp(32px, 4vw, 56px) clamp(24px, 8vw, 200px) 0' }}>
-        {/* Main row */}
+
+        {/* Brand row */}
+        <div style={{ marginBottom: 28 }}>
+          <p style={{ fontFamily: KANIT, fontWeight: 700, fontSize: 'clamp(24px, 2.5vw, 34px)', color: BLACK, lineHeight: 1.2, margin: '0 0 8px' }}>Hamstar</p>
+          <p style={{ fontFamily: PRET, fontWeight: 500, fontSize: 16, color: MUTED, lineHeight: '19px', margin: 0, maxWidth: 360 }}>
+            {footerBrandDesc}
+          </p>
+        </div>
+
+        {/* Columns + tagline row */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 40, flexWrap: 'wrap', paddingBottom: 40 }}>
 
-          {/* Left: brand + columns */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 20, minWidth: 260 }}>
-            <div>
-              <p style={{ fontFamily: KANIT, fontWeight: 500, fontSize: 'clamp(24px, 2.5vw, 34px)', color: BLACK, lineHeight: 1.2, margin: '0 0 8px' }}>Hamstar</p>
-              <p style={{ fontFamily: PRET, fontWeight: 500, fontSize: 16, color: MUTED, lineHeight: '19px', margin: 0, maxWidth: 320 }}>
-                {footerBrandDesc}
-              </p>
+          {/* Left: Social + Learn columns */}
+          <div style={{ display: 'flex', gap: 48 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <p style={{ fontFamily: PRET, fontWeight: 600, fontSize: 18, color: MUTED, lineHeight: '27px', margin: 0 }}>Social</p>
+              {socials.map(([label, href]) => (
+                <a key={label} href={href || '#'} target={href ? '_blank' : undefined} rel="noopener noreferrer" style={link}>{label}</a>
+              ))}
             </div>
-            <div style={{ display: 'flex', gap: 48 }}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                <p style={{ fontFamily: PRET, fontWeight: 600, fontSize: 18, color: MUTED, lineHeight: '27px', margin: 0 }}>Social</p>
-                {socials.map(([label, href]) => href && (
-                  <a key={label} href={href} target="_blank" rel="noopener noreferrer" style={link}>{label}</a>
-                ))}
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                <p style={{ fontFamily: PRET, fontWeight: 600, fontSize: 18, color: MUTED, lineHeight: '27px', margin: 0 }}>Learn</p>
-                <a href="#about" onClick={e => { e.preventDefault(); document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' }) }} style={link}>How Hamstar Works</a>
-                <a href="#" style={link}>Race Rules</a>
-              </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <p style={{ fontFamily: PRET, fontWeight: 600, fontSize: 18, color: MUTED, lineHeight: '27px', margin: 0 }}>Learn</p>
+              <a href="#about" onClick={e => { e.preventDefault(); document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' }) }} style={link}>How Hamstar Works</a>
+              <a href="#" style={link}>Race Rules</a>
             </div>
           </div>
 
           {/* Right: tagline + contact */}
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 16 }}>
-            <p style={{ fontFamily: KANIT, fontWeight: 500, fontSize: 'clamp(18px, 1.8vw, 24px)', color: BLACK, lineHeight: '29px', margin: 0, textAlign: 'right', whiteSpace: 'pre-line' }}>
+            <p style={{ fontFamily: KANIT, fontWeight: 700, fontSize: 'clamp(18px, 1.8vw, 24px)', color: BLACK, lineHeight: '32px', margin: 0, textAlign: 'right', whiteSpace: 'pre-line' }}>
               {footerTaglineRight}
             </p>
             {sponsorEmail && (
@@ -127,8 +128,8 @@ export function LandingFooter({
           </div>
         </div>
 
-        {/* Divider */}
-        <div style={{ height: 1, background: 'rgba(80,63,0,0.3)', marginBottom: 16 }} />
+        {/* Dashed divider */}
+        <div style={{ borderTop: '1.5px dashed rgba(80,63,0,0.35)', marginBottom: 16 }} />
 
         {/* Legal */}
         <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '8px 24px', paddingBottom: 20 }}>

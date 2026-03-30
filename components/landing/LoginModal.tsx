@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { WalletReadyState } from '@solana/wallet-adapter-base'
 import { usePrivy } from '@privy-io/react-auth'
@@ -25,9 +25,12 @@ export function LoginModal({ onClose, loginTitle, loginSubtitle }: LoginModalPro
   const [connectingName, setConnectingName] = useState<string | null>(null)
   const [err, setErr] = useState('')
 
+  // Stable ref so the effect doesn't re-fire when onClose identity changes
+  const onCloseRef = useRef(onClose)
+  useEffect(() => { onCloseRef.current = onClose }, [onClose])
   useEffect(() => {
-    if (connected) onClose()
-  }, [connected, onClose])
+    if (connected) onCloseRef.current()
+  }, [connected])
 
   const detected = wallets.filter(
     w => w.readyState === WalletReadyState.Installed || w.readyState === WalletReadyState.Loadable
@@ -69,21 +72,6 @@ export function LoginModal({ onClose, loginTitle, loginSubtitle }: LoginModalPro
           boxShadow: '0 40px 100px rgba(0,0,0,0.4)',
         }}
       >
-        {/* Close */}
-        <button
-          onClick={onClose}
-          style={{
-            position: 'absolute', top: 16, right: 18,
-            background: T.bg, border: `1px solid ${T.border}`,
-            width: 30, height: 30, borderRadius: '50%',
-            fontSize: 16, cursor: 'pointer', color: T.textMid,
-            fontFamily: KANIT, lineHeight: 1, zIndex: 10,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}
-        >
-          ×
-        </button>
-
         {view === 'connect'
           ? <ConnectView
               detected={detected}

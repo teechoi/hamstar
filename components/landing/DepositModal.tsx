@@ -68,19 +68,6 @@ export function DepositModal({ address = '', onClose, onConnectWallet }: Deposit
             }}
           />
 
-          {/* Close button */}
-          <button
-            onClick={onClose}
-            style={{
-              position: 'absolute', top: 14, right: 14,
-              background: 'rgba(0,0,0,0.1)', border: 'none',
-              width: 28, height: 28, borderRadius: '50%',
-              fontSize: 16, cursor: 'pointer', color: T.text,
-              fontFamily: KANIT, lineHeight: 1, zIndex: 10,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}
-          >×</button>
-
           <div style={{ position: 'relative', zIndex: 1 }}>
             <div style={{
               display: 'inline-flex', alignItems: 'center', gap: 5,
@@ -167,18 +154,18 @@ function ConnectedDeposit({ address, copied, onCopy }: { address: string; copied
         background: T.bg,
         border: `1.5px solid ${T.border}`,
         borderRadius: 20,
-        padding: '20px',
+        padding: '14px',
         display: 'flex', flexDirection: 'column', alignItems: 'center',
         marginBottom: 16,
-        gap: 16,
+        gap: 12,
       }}>
         {/* QR with yellow frame */}
         <div style={{
-          padding: 12, borderRadius: 14,
+          padding: 8, borderRadius: 12,
           background: '#fff',
           boxShadow: `0 0 0 4px ${T.yellow}`,
         }}>
-          <QRCodeSVG value={address} size={148} />
+          <QRCodeSVG value={address} size={124} />
         </div>
 
         <div style={{ textAlign: 'center' }}>

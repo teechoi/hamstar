@@ -58,6 +58,15 @@ export function HowItWorksModal({ onClose, onEnterArena, steps }: HowItWorksModa
   const current = STEPS[step]
   const isLast = step === STEPS.length - 1
 
+  // Preload all step images on mount so subsequent steps appear instantly
+  useEffect(() => {
+    STEPS.forEach(s => {
+      if (!s.image) return
+      const img = new Image()
+      img.src = s.image
+    })
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
   const handleCta = () => {
     if (isLast) {
       onEnterArena()

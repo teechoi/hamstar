@@ -19,32 +19,53 @@ interface LoginModalProps {
 type View = 'connect' | 'email'
 
 export function LoginModal({ onClose, loginTitle, loginSubtitle }: LoginModalProps) {
-  const { wallets, select, connecting, connected } = useWallet()
+  const { wallets, select, connect, connecting, connected, disconnect } = useWallet()
   const login = usePrivyLogin()
   const [view, setView] = useState<View>('connect')
   const [connectingName, setConnectingName] = useState<string | null>(null)
   const [err, setErr] = useState('')
 
-  // Stable ref so the effect doesn't re-fire when onClose identity changes
+  // Stable refs
   const onCloseRef = useRef(onClose)
   useEffect(() => { onCloseRef.current = onClose }, [onClose])
+
+  // Only close when we NEWLY connect — ignore if already connected when modal opens
+  const alreadyConnected = useRef(connected)
   useEffect(() => {
-    if (connected) onCloseRef.current()
+    if (connected && !alreadyConnected.current) onCloseRef.current()
   }, [connected])
+
+  // Reset spinner if wallet popup was dismissed (connecting dropped without connecting)
+  useEffect(() => {
+    if (!connecting && connectingName && !connected) {
+      setConnectingName(null)
+    }
+  }, [connecting]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const detected = wallets.filter(
     w => w.readyState === WalletReadyState.Installed || w.readyState === WalletReadyState.Loadable
   )
   const getable = wallets.filter(w => w.readyState === WalletReadyState.NotDetected)
 
-  const handleSelect = (name: string) => {
+  const handleSelect = async (name: string) => {
     setErr('')
     setConnectingName(name)
     try {
+      // If a different wallet was previously connected, disconnect first
+      if (connected) await disconnect()
       select(name as any)
-    } catch {
+      // Give the adapter one tick to register the selection, then connect
+      await new Promise(r => setTimeout(r, 80))
+      await connect()
+    } catch (e: any) {
       setConnectingName(null)
-      setErr('Could not open wallet. Please try again.')
+      // WalletNotReadyError or user rejection — show friendly message
+      const msg = e?.name === 'WalletNotReadyError'
+        ? 'Wallet not ready. Make sure it is installed and unlocked.'
+        : e?.name === 'WalletWindowClosedError' || e?.message?.includes('User rejected')
+          ? 'Connection cancelled.'
+          : 'Could not connect. Please try again.'
+      setErr(msg)
     }
   }
 
@@ -105,7 +126,7 @@ function ConnectView({
   err: string
   loginTitle?: string
   loginSubtitle?: string
-  onSelect: (n: string) => void
+  onSelect: (n: string) => Promise<void>
   onEmailView: () => void
   onPrivyLogin: ReturnType<typeof usePrivyLogin>
 }) {

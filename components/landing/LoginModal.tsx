@@ -208,11 +208,12 @@ export function LoginModal({ onClose, loginTitle, loginSubtitle }: LoginModalPro
           {detected.length === 0 && getable.length === 0 && <GetStartedList />}
 
           {/* Footer links */}
-          <div style={{ display: 'flex', justifyContent: 'center', gap: 20, marginTop: 8 }}>
-            {['Terms of Use', 'Privacy Policy'].map(link => (
-              <a key={link} href="#" style={{ fontSize: 11, color: '#ccc', fontFamily: KANIT, textDecoration: 'none' }}>
-                {link}
-              </a>
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '4px 0', marginTop: 8 }}>
+            {['Terms of Use', 'Privacy Policy'].map((link, i, arr) => (
+              <span key={link} style={{ display: 'flex', alignItems: 'center' }}>
+                <a href="#" style={{ fontSize: 13, color: '#8A8A8A', fontFamily: KANIT, textDecoration: 'none' }}>{link}</a>
+                {i < arr.length - 1 && <span style={{ margin: '0 10px', color: '#D5D5D5', fontSize: 13 }}>·</span>}
+              </span>
             ))}
           </div>
         </div>

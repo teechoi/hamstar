@@ -78,9 +78,12 @@ export function LandingFooter({
         <div style={{ height: 1, background: 'rgba(80,63,0,0.3)', marginBottom: 16 }} />
 
         {/* Legal */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px 16px' }}>
-          {['Terms of Use', 'Risk Disclosure', 'Privacy Policy', 'Animal Welfare'].map(label => (
-            <a key={label} href="#" style={{ fontFamily: PRET, fontWeight: 500, fontSize: 12, color: MUTED, textDecoration: 'none' }}>{label}</a>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px 0' }}>
+          {['Terms of Use', 'Risk Disclosure', 'Privacy Policy', 'Animal Welfare'].map((label, i, arr) => (
+            <span key={label} style={{ display: 'flex', alignItems: 'center' }}>
+              <a href="#" style={{ fontFamily: PRET, fontWeight: 500, fontSize: 13, color: MUTED, textDecoration: 'none' }}>{label}</a>
+              {i < arr.length - 1 && <span style={{ margin: '0 10px', color: MUTED, opacity: 0.4, fontSize: 13 }}>·</span>}
+            </span>
           ))}
         </div>
       </footer>
@@ -132,9 +135,12 @@ export function LandingFooter({
         <div style={{ borderTop: '1.5px dashed rgba(80,63,0,0.35)', marginBottom: 16 }} />
 
         {/* Legal */}
-        <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '8px 24px', paddingBottom: 20 }}>
-          {['Terms of Use', 'Risk Disclosure', 'Privacy Policy', 'Animal Welfare'].map(label => (
-            <a key={label} href="#" style={{ fontFamily: PRET, fontWeight: 500, fontSize: 12, color: MUTED, lineHeight: '14px', textDecoration: 'none' }}>{label}</a>
+        <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', alignItems: 'center', gap: '6px 0', paddingBottom: 24 }}>
+          {['Terms of Use', 'Risk Disclosure', 'Privacy Policy', 'Animal Welfare'].map((label, i, arr) => (
+            <span key={label} style={{ display: 'flex', alignItems: 'center' }}>
+              <a href="#" style={{ fontFamily: PRET, fontWeight: 500, fontSize: 13, color: MUTED, lineHeight: '20px', textDecoration: 'none' }}>{label}</a>
+              {i < arr.length - 1 && <span style={{ margin: '0 12px', color: MUTED, opacity: 0.4, fontSize: 13 }}>·</span>}
+            </span>
           ))}
         </div>
       </div>

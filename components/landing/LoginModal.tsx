@@ -140,7 +140,7 @@ function ConnectView({
           </div>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
-              <h2 style={{ fontFamily: KANIT, fontSize: 17, fontWeight: 800, color: T.text, margin: 0, whiteSpace: 'nowrap' }}>
+              <h2 style={{ fontFamily: KANIT, fontSize: 'clamp(18px, 4vw, 22px)', fontWeight: 800, color: T.text, margin: 0 }}>
                 {loginTitle ?? 'Connect Wallet'}
               </h2>
               <span style={{

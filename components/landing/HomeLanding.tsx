@@ -74,8 +74,8 @@ export function HomeLanding({ targetMs, isLive }: HomeLandingProps) {
           footerTagline:    d.footerTagline    ?? 'The smallest sport on the internet.',
           footerBrandDesc:  d.footerBrandDesc  ?? 'Live hamster racing powered by community participation',
           footerTaglineRight: d.footerTaglineRight ?? 'Real hamsters.\nReal races.\nOne tiny champion.',
-          loginTitle:       d.loginTitle       ?? 'Welcome to Hamstar Arena 🐹',
-          loginSubtitle:    d.loginSubtitle    ?? 'A live-streamed Solana entertainment experience',
+          loginTitle:       d.loginTitle       ?? 'Connect Wallet',
+          loginSubtitle:    d.loginSubtitle    ?? 'Connect your wallet to join the race.',
           termsButtonText:  d.termsButtonText  ?? 'I Understand & Enter Arena',
           howitWorksSteps:  Array.isArray(d.howitWorksSteps) && d.howitWorksSteps.length > 0 ? d.howitWorksSteps : [],
         })

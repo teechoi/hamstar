@@ -329,7 +329,7 @@ export function HighlightPageClient({ raceHistory }: HighlightPageClientProps) {
       <LandingFooter />
 
       {modal === 'terms'    && <TermsModal onAccept={() => { localStorage.setItem(TERMS_KEY, '1'); setModal('login') }} />}
-      {modal === 'login'    && <LoginModal onClose={() => setModal(null)} onLogin={handleLogin} />}
+      {modal === 'login'    && <LoginModal onClose={() => setModal(null)} />}
       {modal === 'deposit'  && <DepositModal address={walletAddress} onClose={() => setModal(null)} />}
       {modal === 'account'  && (
         <AccountModal

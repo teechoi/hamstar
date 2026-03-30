@@ -81,8 +81,8 @@ export function TermsModal({ onAccept, termsButtonText = 'I Understand & Enter A
           <h2 style={{ fontFamily: KANIT, fontSize: isMobile ? 20 : 22, fontWeight: 700, color: T.text, margin: '0 0 4px', textAlign: 'center' }}>
             Welcome to Hamstar Arena 🐹
           </h2>
-          <p style={{ fontFamily: PRET, fontSize: 14, color: T.textMid, margin: '0 0 6px', textAlign: 'center' }}>
-            A live-streamed blockchain-based entertainment experience
+          <p style={{ fontFamily: KANIT, fontSize: 14, fontWeight: 500, color: T.textMid, margin: '0 0 6px', textAlign: 'center' }}>
+            A live-streamed Solana-based entertainment experience
           </p>
           <p style={{ fontFamily: KANIT, fontSize: 13, fontWeight: 600, color: T.purple, textAlign: 'center', margin: 0 }}>
             Please read before entering

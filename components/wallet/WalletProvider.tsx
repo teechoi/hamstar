@@ -7,7 +7,6 @@ import {
   createDefaultAddressSelector,
   createDefaultWalletNotFoundHandler,
 } from '@solana-mobile/wallet-adapter-mobile'
-import { SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 
 // Use Helius RPC if configured, fall back to public mainnet
 const ENDPOINT =
@@ -19,9 +18,6 @@ const Wallet = WalletProvider as React.FC<{ wallets: any[]; autoConnect: boolean
 
 export function SolanaWalletProvider({ children }: { children: React.ReactNode }) {
   const wallets = useMemo(() => [
-    // Explicit Solflare adapter — ensures it appears reliably without depending
-    // on Wallet Standard timing (which can cause it to flash or not show at all)
-    new SolflareWalletAdapter(),
     // Solana Mobile Wallet Adapter — handles Android wallet chooser (Seeker + all MWA wallets)
     // Solana Seeker phone connects through this on Android. Shows as "Unsupported"
     // on desktop / iOS — filtered out in the UI.
@@ -36,8 +32,10 @@ export function SolanaWalletProvider({ children }: { children: React.ReactNode }
       onWalletNotFound: createDefaultWalletNotFoundHandler(),
       cluster: 'mainnet-beta',
     } as any),
-    // All other Wallet Standard wallets (Phantom, Backpack, OKX, Coinbase, Magic Eden, etc.)
+    // All Wallet Standard wallets (Phantom, Backpack, Solflare, OKX, Coinbase, Magic Eden, etc.)
     // register themselves on window automatically — no explicit adapters needed.
+    // Solflare uses Wallet Standard exclusively — adding an explicit adapter causes
+    // duplicate registration conflicts, so we intentionally leave it out.
   ], [])
 
   return (

@@ -96,10 +96,10 @@ export function TermsModal({ onAccept, termsButtonText = 'I Understand & Enter A
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16, marginBottom: 20 }}>
             {SECTIONS.map(s => (
               <div key={s.num}>
-                <p style={{ fontFamily: KANIT, fontSize: 14, fontWeight: 700, color: T.text, margin: '0 0 4px' }}>
+                <p style={{ fontFamily: KANIT, fontSize: 15, fontWeight: 800, color: T.text, margin: '0 0 4px' }}>
                   {s.num} {s.title}
                 </p>
-                <p style={{ fontFamily: PRET, fontSize: 14, color: T.textMid, lineHeight: 1.6, margin: 0 }}>
+                <p style={{ fontFamily: PRET, fontSize: 14, fontWeight: 500, color: T.text, lineHeight: 1.6, margin: 0 }}>
                   {s.body}
                 </p>
               </div>
@@ -108,7 +108,7 @@ export function TermsModal({ onAccept, termsButtonText = 'I Understand & Enter A
 
           {/* Agreement line */}
           <p style={{
-            fontFamily: KANIT, fontSize: 13, fontWeight: 600,
+            fontFamily: KANIT, fontSize: 14, fontWeight: 600,
             color: T.purple, textAlign: 'center',
             margin: '0 0 16px',
           }}>
@@ -139,7 +139,7 @@ export function TermsModal({ onAccept, termsButtonText = 'I Understand & Enter A
                 </div>
                 <span
                   onClick={() => toggle(i)}
-                  style={{ fontFamily: PRET, fontSize: 13, color: T.text, lineHeight: 1.5 }}
+                  style={{ fontFamily: PRET, fontSize: 14, fontWeight: 500, color: T.text, lineHeight: 1.5 }}
                 >
                   {label}
                 </span>
@@ -172,7 +172,7 @@ export function TermsModal({ onAccept, termsButtonText = 'I Understand & Enter A
             {termsButtonText}
           </button>
           {!allChecked && (
-            <p style={{ fontFamily: PRET, fontSize: 12, color: T.textMid, textAlign: 'center', margin: '8px 0 0' }}>
+            <p style={{ fontFamily: PRET, fontSize: 13, fontWeight: 500, color: T.textMid, textAlign: 'center', margin: '8px 0 0' }}>
               Please check all boxes above to continue
             </p>
           )}

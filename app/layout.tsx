@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Hamstar',
     description: 'Three racers. One champion. Who will be the Hamstar?',
-    images: ['/og-image.png'],
+    images: ['/images/hero-hamsters.png'],
     url: 'https://hamstarhub.xyz',
   },
   twitter: {
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     site: '@hamstar',
     title: 'Hamstar',
     description: 'Who will be the Hamstar? Real hamsters. Real races.',
-    images: ['/og-image.png'],
+    images: ['/images/hero-hamsters.png'],
   },
 }
 

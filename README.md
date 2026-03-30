@@ -1,9 +1,19 @@
 # Hamstar
 
-Hamster racing platform. Three racers, live stream on pump.fun, community-driven.
+Live hamster racing on Solana. Three hamsters race, community cheers with SOL, the champion's supporters share the reward pool. Races are streamed live on Pump.fun.
 
-> **This is v1** — a fully deployable static site driven by `config/site.ts`. No database or blockchain required.
-> For the full live platform (real-time donations, Solana wallet integration, automated race tracking), see **[INTEGRATION.md](./INTEGRATION.md)**.
+---
+
+## Stack
+
+- **Framework:** Next.js 14 (App Router)
+- **Wallet:** Solana Wallet Adapter (Phantom, Backpack, Solflare, all Wallet Standard wallets)
+- **Database:** PostgreSQL via Prisma + Supabase
+- **Realtime:** Supabase Realtime (live arena bar updates)
+- **Solana indexing:** Helius webhooks (donation tracking)
+- **Styling:** Inline React.CSSProperties — no Tailwind, no CSS modules
+- **Fonts:** Kanit (headings) + Pretendard (body)
+- **Deployment:** Vercel
 
 ---
 
@@ -13,261 +23,131 @@ Hamster racing platform. Three racers, live stream on pump.fun, community-driven
 
 ```bash
 npm install
+cp .env.example .env.local   # fill in values (see below)
 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
 
-No database, no API keys, no environment variables needed for v1.
+The site loads without a database — content falls back to defaults. For full functionality (live race data, wallet balances, donation tracking) you need the env vars below.
 
 ---
 
-## How to update content
+## Environment variables
 
-Everything is controlled from one file: **`config/site.ts`**
+Create `.env.local` from the example and fill in:
 
-Make a change, save — the site updates instantly via hot reload.
-
-### Toggle live / upcoming
-
-```ts
-stream: {
-  isLive: true,   // true = LIVE badge + "Watch Live" CTA
-  url: 'https://pump.fun/your-token',
-  raceNumber: 1,
-},
-```
-
-### Update social links
-
-```ts
-socials: {
-  twitter:   'https://twitter.com/hamstar',
-  tiktok:    'https://tiktok.com/@hamstar',
-  instagram: 'https://instagram.com/hamstar',
-  youtube:   'https://youtube.com/@hamstar',
-},
-```
-
-Leave a field as `''` to hide that button.
-
-### Edit a pet profile
-
-```ts
-{
-  id:       'hammy',
-  name:     'Hammy',
-  emoji:    '🐹',
-  tagline:  "Hammy doesn't lose. Until he does.",
-  bio:      'Your bio here...',
-  speed:    78,
-  chaos:    45,
-  wins:     3,
-  snackLevel: 65,  // 0–100, lifestyle display
-  cageLevel:  70,
-  image:    '',    // see "Adding images" below
-},
-```
-
-### Record a race result
-
-After each race, add an entry to `RACE_HISTORY`:
-
-```ts
-export const RACE_HISTORY: RaceResult[] = [
-  { number: 1, date: '2025-04-01', positions: ['hammy', 'nugget', 'whiskers'] },
-  //                                            ^ 1st     ^ 2nd     ^ 3rd
-]
-```
-
-Pet IDs: `'hammy'` `'whiskers'` `'nugget'`
-
-### Add a sponsor
-
-```ts
-export const SPONSORS: Sponsor[] = [
-  {
-    id:    's1',
-    name:  'AcmeCorp',
-    emoji: '🚀',
-    tier:  'GOLD',       // 'TITLE' | 'GOLD' | 'SILVER'
-    petId: 'hammy',      // optional — which racer they back
-    url:   'https://acme.com',  // optional — makes their card clickable
-  },
-]
-```
+| Variable | Description |
+|---|---|
+| `DATABASE_URL` | Supabase → Settings → Database → Pooling connection string |
+| `DIRECT_URL` | Supabase → Settings → Database → Direct connection string |
+| `NEXT_PUBLIC_SUPABASE_URL` | Supabase → Settings → API |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase → Settings → API |
+| `SUPABASE_SERVICE_ROLE_KEY` | Supabase → Settings → API |
+| `NEXT_PUBLIC_HELIUS_RPC` | Helius RPC URL (falls back to public mainnet if unset) |
+| `HELIUS_API_KEY` | [dev.helius.xyz](https://dev.helius.xyz) → API Keys |
+| `HELIUS_WEBHOOK_SECRET` | `openssl rand -hex 32` |
+| `HAMMY_WALLET` | Solana public address for Hammy's donation wallet |
+| `WHISKERS_WALLET` | Solana public address for Whiskers' donation wallet |
+| `NUGGET_WALLET` | Solana public address for Nugget's donation wallet |
+| `GENESIS_TIMESTAMP` | Unix ms of Race #1 start — e.g. `new Date('2025-04-01T18:00:00Z').getTime()` |
+| `CLOUDINARY_CLOUD_NAME` | Cloudinary (admin media uploads) |
+| `CLOUDINARY_API_KEY` | Cloudinary |
+| `CLOUDINARY_API_SECRET` | Cloudinary |
+| `ADMIN_PASSWORD` | Password for `/admin` panel |
+| `JWT_SECRET` | `openssl rand -hex 32` — signs admin sessions |
 
 ---
 
-## Adding images and videos
+## Database setup
 
-### Pet photos
-
-1. Drop the image into `/public/pets/` (e.g. `hammy.jpg`)
-2. Set `image: '/pets/hammy.jpg'` on the pet in `config/site.ts`
-3. Leave `image: ''` to show the emoji instead
-
-### Media gallery (Community tab)
-
-Add entries to the `MEDIA` array in `config/site.ts`:
-
-**Photo:**
-```ts
-{
-  id:          'photo-1',
-  type:        'PHOTO',
-  title:       'Nugget post-race',
-  url:         '/media/nugget-photo.jpg',  // put file in /public/media/
-  featured:    false,
-  publishedAt: '2025-04-01',
-},
+```bash
+npx prisma db push    # sync schema to Supabase
+npx prisma db seed    # seed pets, upgrade catalog, Race #1
+npx prisma studio     # browse data at localhost:5555
 ```
-
-**YouTube video:**
-```ts
-{
-  id:          'race1-highlight',
-  type:        'VIDEO',
-  title:       'Race #1 Highlights',
-  description: 'Optional description',
-  url:         'https://youtube.com/watch?v=VIDEO_ID',
-  thumbnail:   'https://img.youtube.com/vi/VIDEO_ID/maxresdefault.jpg',
-  duration:    '2:14',
-  featured:    true,
-  publishedAt: '2025-04-01',
-},
-```
-
-Clicking a video card opens the link in a new tab.
-
-### External image hosting
-
-To keep images out of the repo, use any public URL directly:
-- **Cloudinary** — free tier, great CDN. Upload at [cloudinary.com](https://cloudinary.com), paste the URL.
-- YouTube thumbnails, TikTok links, or any direct image URL all work.
 
 ---
 
 ## Project structure
 
 ```
-hamstar/
-├── config/
-│   └── site.ts           ← Edit this to update all site content
-├── app/
-│   ├── page.tsx           Main SPA
-│   └── layout.tsx         HTML head / metadata
-├── components/
-│   ├── Nav.tsx
-│   ├── ui/index.tsx       Theme colors + shared UI components
-│   └── views/
-│       ├── RaceView.tsx
-│       ├── PetsView.tsx
-│       ├── CommunityView.tsx
-│       ├── SponsorsView.tsx
-│       └── ArenasView.tsx
-├── public/
-│   ├── pets/              ← Drop pet photos here
-│   └── media/             ← Drop gallery images here
-│
-│ ── v2 service layer (wired up, needs credentials) ──
-├── lib/
-│   ├── prisma.ts          Prisma client singleton
-│   ├── supabase.ts        Supabase client + realtime helpers
-│   ├── helius.ts          Solana webhook processor
-│   ├── race-scheduler.ts  Deterministic 48h race timing
-│   └── hooks/
-│       ├── useRace.ts     Race data + realtime subscription
-│       └── useCountdown.ts
-├── app/api/
-│   ├── races/route.ts
-│   ├── pets/route.ts
-│   ├── sponsors/route.ts
-│   ├── media/route.ts
-│   └── webhook/route.ts   Helius donation webhook
-├── prisma/
-│   └── schema.prisma      Full database schema
-└── scripts/
-    ├── seed.ts            Initialize the database
-    ├── finish-race.ts     Close a race + create the next one
-    └── setup-helius.ts    Register Solana webhook
+app/
+  layout.tsx              Root layout — fonts, metadata, providers
+  page.tsx                Landing page
+  arena/page.tsx          Live race arena
+  pet/page.tsx            Hamster profiles
+  sponsors/page.tsx       Sponsors page
+  highlights/page.tsx     Race highlights
+  admin/                  Password-protected admin panel
+  api/                    API routes
+
+components/
+  ui/index.tsx            Core UI: LimeButton, OutlineButton, Tag, RaceBar,
+                          LivePulse, CheckerBar, SolAddress, useIsMobile
+  landing/                Landing page sections + all modals
+  arena/                  Arena, HamsterCard, HighlightSection
+  pet/                    Pet profile page
+  sponsors/               Sponsors page
+  wallet/                 Providers.tsx, WalletProvider.tsx
+
+lib/
+  theme.ts                Design tokens (T object)
+  fonts.ts                Kanit font loader
+  hamstar-token.ts        $HAMSTAR token config + fan tier system
+  race-scheduler.ts       Deterministic 48h race schedule
+  helius.ts               Solana webhook processor
+  cheer-history.ts        Client-side cheer history (localStorage)
+  auth.ts                 JWT admin session (jose, edge-safe)
+  prisma.ts               PrismaClient singleton
+  supabase.ts             Supabase realtime client
+  hooks/useRace.ts        Race data + Supabase realtime + 30s polling
+  hooks/useCountdown.ts   Countdown timer
+
+config/
+  site.ts                 PETS array, SITE config, RACE_HISTORY
+  decorations.ts          Decorative image layer config
+
+prisma/schema.prisma      Full database schema
+public/images/            29 PNG assets
 ```
 
 ---
 
-## Deploying to Vercel (v1 — no database)
+## What's live vs. still needed
+
+### Working
+- Wallet connect (all Wallet Standard wallets — Phantom, Backpack, Solflare, etc.)
+- Landing page, arena, pet profiles, sponsors, highlights
+- Admin panel (site content, stream URL, race management, media)
+- User records created on wallet connect
+- Helius webhook processor — indexes SOL donations into DB
+- Race schedule (deterministic 48h slots)
+- Fan tier system (SOL balance thresholds)
+- Supabase realtime subscriptions for live bar updates
+
+### Still needed to go fully live
+1. **Hamster wallet addresses** — set `HAMMY_WALLET`, `WHISKERS_WALLET`, `NUGGET_WALLET` in env
+2. **Helius webhook** — configure Helius to POST to `https://hamstar.io/api/webhooks/helius` for each pet wallet
+3. **$HAMSTAR token launch** — update mint address + Jupiter URL in `lib/hamstar-token.ts`
+4. **Wire real donation data into arena UI** — replace mocked `MOCK_SUPPORT`/`MOCK_TOTAL_SOL` in `ArenaClient.tsx` with live DB data
+5. **Actual cheer transaction flow** — clicking Cheer should trigger a SOL transfer to the hamster's wallet; Helius detects it and updates the arena in real time
+6. **Supabase realtime env vars** — set `NEXT_PUBLIC_SUPABASE_URL` + `NEXT_PUBLIC_SUPABASE_ANON_KEY` for live arena updates
+7. **Race winner + payout logic** — admin declares winner, prize pool distributes to supporters
+
+---
+
+## Admin panel
+
+Visit `/admin` — password set via `ADMIN_PASSWORD` env var.
+
+Manage: site content, stream URL, live toggle, race number, social links, how-it-works steps, hamster profiles, sponsors, media gallery.
+
+---
+
+## Deploying
 
 1. Push to GitHub
-2. Import the repo at [vercel.com/new](https://vercel.com/new)
-3. No environment variables needed — deploy as-is
-
-To update content after deploy: edit `config/site.ts`, push to GitHub — Vercel redeploys automatically (~30 seconds).
-
----
-
-## Setting up v2 (database + blockchain)
-
-All v2 code is already written and in the repo. You just need credentials.
-
-### 1. Create a `.env.local` file
-
-Copy the example and fill in each value:
-
-```bash
-cp .env.example .env.local
-```
-
-Open `.env.local` — every field has an empty string. Fill these in:
-
-| Variable | Where to get it |
-|---|---|
-| `DATABASE_URL` | Supabase → Settings → Database → **Pooling** connection string |
-| `DIRECT_URL` | Supabase → Settings → Database → **Direct** connection string |
-| `NEXT_PUBLIC_SUPABASE_URL` | Supabase → Settings → API |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase → Settings → API |
-| `SUPABASE_SERVICE_ROLE_KEY` | Supabase → Settings → API |
-| `HELIUS_API_KEY` | [dev.helius.xyz](https://dev.helius.xyz) → API Keys |
-| `HELIUS_WEBHOOK_SECRET` | Run `openssl rand -hex 32` and paste the output |
-| `HAMMY_WALLET` | Create a Solana wallet in Phantom → copy the **public** address |
-| `WHISKERS_WALLET` | Same |
-| `NUGGET_WALLET` | Same |
-| `GENESIS_TIMESTAMP` | `new Date('2025-04-01T18:00:00Z').getTime()` — your Race #1 start time |
-| `NEXT_PUBLIC_SITE_URL` | Your Vercel domain (fill in after deploying) |
-
-### 2. Push the schema and seed the database
-
-```bash
-npm run db:push   # creates all tables in Supabase
-npm run seed      # creates pets, upgrade catalog, and Race #1
-```
-
-The seed script reads pet profiles from `config/site.ts` and wallet addresses from `.env.local` — so your config stays as the single source of truth.
-
-### 3. Deploy to Vercel
-
-Add all `.env.local` values to **Vercel → Project → Settings → Environment Variables**, then redeploy.
-
-### 4. Register the Helius webhook
-
-After your site is live at its domain:
-
-```bash
-npm run setup-helius
-```
-
-This tells Helius to ping `/api/webhook` every time SOL is sent to any pet wallet. Donations are then indexed automatically in real time.
-
-### 5. Operational commands
-
-**After each race ends:**
-```bash
-npm run finish-race       # closes current race, sets positions, creates next race
-npm run finish-race 3     # or specify a race number explicitly
-```
-
-**Browse the database:**
-```bash
-npm run db:studio         # opens Prisma Studio at localhost:5555
-```
-
-For full technical details on wiring the view components to the API (swapping from config-driven to live data), see **[INTEGRATION.md](./INTEGRATION.md)**.
+2. Import repo at [vercel.com/new](https://vercel.com/new)
+3. Add all env vars under **Settings → Environment Variables**
+4. Deploy — Vercel redeploys automatically on every push to `main`

@@ -80,7 +80,7 @@ export function HowItWorksModal({ onClose, onEnterArena, steps }: HowItWorksModa
       style={{
         position: 'fixed', inset: 0, zIndex: 10000,
         background: 'rgba(0,0,0,0.6)',
-        backdropFilter: 'blur(15px)',
+        backdropFilter: 'blur(6px)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         padding: 20,
       }}

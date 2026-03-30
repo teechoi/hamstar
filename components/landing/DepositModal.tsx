@@ -36,7 +36,7 @@ export function DepositModal({ address = '', onClose, onConnectWallet }: Deposit
       style={{
         position: 'fixed', inset: 0, zIndex: 10000,
         background: 'rgba(0,0,0,0.55)',
-        backdropFilter: 'blur(16px)',
+        backdropFilter: 'blur(6px)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         padding: 16,
       }}

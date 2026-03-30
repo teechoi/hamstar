@@ -20,7 +20,7 @@ export function TermsModal({ onAccept, termsButtonText = 'I Understand & Enter A
     <div style={{
       position: 'fixed', inset: 0, zIndex: 10000,
       background: 'rgba(0,0,0,0.5)',
-      backdropFilter: 'blur(10px)',
+      backdropFilter: 'blur(6px)',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
     }}>
       {/* Card — max 324px wide, auto height */}

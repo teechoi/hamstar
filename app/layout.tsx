@@ -10,9 +10,13 @@ export const viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://hamstarhub.xyz'),
-  title: 'Hamstar — Who Will Be the Hamstar?',
+  title: 'Hamstar',
   description: 'Three hamsters. One champion. The wheel decides.',
   manifest: '/manifest.json',
+  icons: {
+    icon: '/images/sunflower-seed.png',
+    apple: '/images/sunflower-seed.png',
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',

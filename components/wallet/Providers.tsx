@@ -2,10 +2,17 @@
 import { PrivyProvider } from '@privy-io/react-auth'
 import { SolanaWalletProvider } from './WalletProvider'
 
+const PRIVY_APP_ID = process.env.NEXT_PUBLIC_PRIVY_APP_ID ?? ''
+
 export function AppProviders({ children }: { children: React.ReactNode }) {
+  // If Privy app ID is not configured, skip PrivyProvider and just use wallet adapter
+  if (!PRIVY_APP_ID) {
+    return <SolanaWalletProvider>{children}</SolanaWalletProvider>
+  }
+
   return (
     <PrivyProvider
-      appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID!}
+      appId={PRIVY_APP_ID}
       config={{
         loginMethods: ['email', 'google', 'apple', 'wallet'],
         appearance: {

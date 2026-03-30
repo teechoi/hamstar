@@ -1,13 +1,23 @@
 'use client'
-import { useState, useEffect, Component } from 'react'
+import { useState, useEffect, Component, createContext, useContext } from 'react'
 import type { ReactNode } from 'react'
-import { PrivyProvider } from '@privy-io/react-auth'
+import { PrivyProvider, usePrivy } from '@privy-io/react-auth'
 import { SolanaWalletProvider } from './WalletProvider'
 
 const PRIVY_APP_ID = process.env.NEXT_PUBLIC_PRIVY_APP_ID ?? ''
 
-// Error boundary so a Privy init failure falls back to wallet-adapter-only
-// instead of crashing the entire page
+// Exposed to the rest of the app — null means Privy isn't available
+type PrivyLogin = ReturnType<typeof usePrivy>['login'] | null
+export const PrivyLoginCtx = createContext<PrivyLogin>(null)
+export function usePrivyLogin() { return useContext(PrivyLoginCtx) }
+
+// Bridge: lives inside a working PrivyProvider, extracts login and publishes it
+function PrivyBridge({ children }: { children: ReactNode }) {
+  const { login } = usePrivy()
+  return <PrivyLoginCtx.Provider value={login}>{children}</PrivyLoginCtx.Provider>
+}
+
+// Error boundary: catches any Privy init throw, renders fallback instead
 class PrivyErrorBoundary extends Component<
   { children: ReactNode; fallback: ReactNode },
   { crashed: boolean }
@@ -23,9 +33,13 @@ export function AppProviders({ children }: { children: ReactNode }) {
   const [mounted, setMounted] = useState(false)
   useEffect(() => { setMounted(true) }, [])
 
-  const fallback = <SolanaWalletProvider>{children}</SolanaWalletProvider>
+  // Fallback: no Privy — PrivyLoginCtx stays null, wallet-adapter still works
+  const fallback = (
+    <PrivyLoginCtx.Provider value={null}>
+      <SolanaWalletProvider>{children}</SolanaWalletProvider>
+    </PrivyLoginCtx.Provider>
+  )
 
-  // During SSR / prerendering skip PrivyProvider to avoid validation errors
   if (!mounted || !PRIVY_APP_ID) return fallback
 
   return (
@@ -44,7 +58,9 @@ export function AppProviders({ children }: { children: ReactNode }) {
           },
         }}
       >
-        <SolanaWalletProvider>{children}</SolanaWalletProvider>
+        <PrivyBridge>
+          <SolanaWalletProvider>{children}</SolanaWalletProvider>
+        </PrivyBridge>
       </PrivyProvider>
     </PrivyErrorBoundary>
   )

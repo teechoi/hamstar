@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { WalletReadyState } from '@solana/wallet-adapter-base'
-import { usePrivy } from '@privy-io/react-auth'
+import { usePrivyLogin } from '@/components/wallet/Providers'
 import { T } from '@/lib/theme'
 
 const KANIT = "var(--font-kanit), sans-serif"
@@ -20,7 +20,7 @@ type View = 'connect' | 'email'
 
 export function LoginModal({ onClose, loginTitle, loginSubtitle }: LoginModalProps) {
   const { wallets, select, connecting, connected } = useWallet()
-  const { login } = usePrivy()
+  const login = usePrivyLogin()
   const [view, setView] = useState<View>('connect')
   const [connectingName, setConnectingName] = useState<string | null>(null)
   const [err, setErr] = useState('')
@@ -107,7 +107,7 @@ function ConnectView({
   loginSubtitle?: string
   onSelect: (n: string) => void
   onEmailView: () => void
-  onPrivyLogin: ReturnType<typeof usePrivy>['login']
+  onPrivyLogin: ReturnType<typeof usePrivyLogin>
 }) {
   const noWallets = detected.length === 0
 
@@ -208,25 +208,28 @@ function ConnectView({
         {/* Fallback curated list */}
         {noWallets && getable.length === 0 && <GetStartedList />}
 
-        {/* Social / email */}
-        <ModalDivider label="or sign in with" />
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 16 }}>
-          <PillBtn
-            icon={<MailIcon />}
-            label="Continue with Email"
-            bg={T.bg}
-            color={T.text}
-            border={`1.5px solid ${T.border}`}
-            hoverBg="#EEEEEE"
-            onClick={onEmailView}
-          />
-          <PrivyGoogleBtn onLogin={onPrivyLogin} />
-          <PrivyAppleBtn onLogin={onPrivyLogin} />
-        </div>
-
-        <p style={{ fontFamily: PRET, fontSize: 11, color: '#ccc', textAlign: 'center', marginTop: 16, lineHeight: 1.5 }}>
-          Email & social sign-in creates a free self-custodial Solana wallet. No seed phrase.
-        </p>
+        {/* Social / email — only shown when Privy is available */}
+        {onPrivyLogin && (
+          <>
+            <ModalDivider label="or sign in with" />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 16 }}>
+              <PillBtn
+                icon={<MailIcon />}
+                label="Continue with Email"
+                bg={T.bg}
+                color={T.text}
+                border={`1.5px solid ${T.border}`}
+                hoverBg="#EEEEEE"
+                onClick={onEmailView}
+              />
+              <PrivyGoogleBtn onLogin={onPrivyLogin} />
+              <PrivyAppleBtn onLogin={onPrivyLogin} />
+            </div>
+            <p style={{ fontFamily: PRET, fontSize: 11, color: '#ccc', textAlign: 'center', marginTop: 16, lineHeight: 1.5 }}>
+              Email & social sign-in creates a free self-custodial Solana wallet. No seed phrase.
+            </p>
+          </>
+        )}
 
         {/* Footer */}
         <div style={{ display: 'flex', justifyContent: 'center', gap: 20, marginTop: 8 }}>
@@ -243,11 +246,11 @@ function ConnectView({
 
 // ─── Email view ───────────────────────────────────────────────────────────────
 
-function EmailView({ onBack, onPrivyLogin }: { onBack: () => void; onPrivyLogin: ReturnType<typeof usePrivy>['login'] }) {
+function EmailView({ onBack, onPrivyLogin }: { onBack: () => void; onPrivyLogin: ReturnType<typeof usePrivyLogin> }) {
   const [email, setEmail] = useState('')
 
   const handleSubmit = () => {
-    if (!email.trim()) return
+    if (!email.trim() || !onPrivyLogin) return
     onPrivyLogin({ loginMethods: ['email'], prefill: { type: 'email', value: email } })
   }
 
@@ -286,11 +289,15 @@ function EmailView({ onBack, onPrivyLogin }: { onBack: () => void; onPrivyLogin:
 
         <PrivyEmailLoginSection email={email} onEmailChange={setEmail} onSubmit={handleSubmit} />
 
-        <ModalDivider label="or continue with" />
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 16 }}>
-          <PrivyGoogleBtn onLogin={onPrivyLogin} />
-          <PrivyAppleBtn onLogin={onPrivyLogin} />
-        </div>
+        {onPrivyLogin && (
+          <>
+            <ModalDivider label="or continue with" />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 16 }}>
+              <PrivyGoogleBtn onLogin={onPrivyLogin} />
+              <PrivyAppleBtn onLogin={onPrivyLogin} />
+            </div>
+          </>
+        )}
       </div>
     </>
   )
@@ -327,7 +334,7 @@ function PrivyEmailLoginSection({
   )
 }
 
-function PrivyGoogleBtn({ onLogin }: { onLogin: ReturnType<typeof usePrivy>['login'] }) {
+function PrivyGoogleBtn({ onLogin }: { onLogin: NonNullable<ReturnType<typeof usePrivyLogin>> }) {
   const [hov, setHov] = useState(false)
   return (
     <button
@@ -351,7 +358,7 @@ function PrivyGoogleBtn({ onLogin }: { onLogin: ReturnType<typeof usePrivy>['log
   )
 }
 
-function PrivyAppleBtn({ onLogin }: { onLogin: ReturnType<typeof usePrivy>['login'] }) {
+function PrivyAppleBtn({ onLogin }: { onLogin: NonNullable<ReturnType<typeof usePrivyLogin>> }) {
   const [hov, setHov] = useState(false)
   return (
     <button

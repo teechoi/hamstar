@@ -94,7 +94,7 @@ export function HamsterCard({
         {goldGlow && (
           <div style={{
             position: 'absolute', top: 12, right: 12,
-            background: '#ffd643', color: '#000000',
+            background: '#FFE790', color: '#503F00',
             borderRadius: 20, padding: '3px 10px',
             fontSize: 11, fontWeight: 700, fontFamily: KANIT,
           }}>
@@ -108,7 +108,7 @@ export function HamsterCard({
         <h3 style={{ fontFamily: KANIT, fontSize: 'clamp(16px, 1.8vw, 20px)', fontWeight: 500, color: '#000000', marginBottom: 4 }}>
           I&apos;m {name}
         </h3>
-        <p style={{ fontFamily: KANIT, fontSize: 14, fontWeight: 400, color: '#808080', marginBottom: showBar ? 14 : 16 }}>
+        <p style={{ fontFamily: KANIT, fontSize: 14, fontWeight: 400, color: '#8A8A8A', marginBottom: showBar ? 14 : 16 }}>
           {tagline}
         </p>
 
@@ -119,7 +119,7 @@ export function HamsterCard({
               {supportPct}% of total support
             </p>
             <div style={{
-              width: '100%', height: 8, background: '#f0f0f0',
+              width: '100%', height: 8, background: '#E9E9E9',
               borderRadius: 4, overflow: 'hidden', marginBottom: 6,
             }}>
               <div style={{

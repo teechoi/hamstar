@@ -60,11 +60,18 @@ export function LoginModal({ onClose, loginTitle, loginSubtitle }: LoginModalPro
 
     try {
       if (wallet?.adapter.name === name) {
-        // Already selected — connect() works directly here (synchronous user gesture)
-        connect().catch((e: any) => {
-          setConnectingName(null)
-          setErr(e?.message ?? 'Could not connect. Please try again.')
-        })
+        // Already selected — disconnect first to clear any stuck autoConnect state
+        // (e.g. Solflare gets stuck mid-connecting after page load with autoConnect=true).
+        // Then immediately reconnect — both happen within the browser's user gesture
+        // window so the popup is allowed. The WalletProvider picks up the reconnect
+        // via its event listeners on the adapter.
+        found.adapter.disconnect()
+          .catch(() => {})
+          .then(() => found.adapter.connect())
+          .catch((e: any) => {
+            setConnectingName(null)
+            setErr(e?.message ?? 'Could not connect. Please try again.')
+          })
       } else {
         // Switch wallet then connect the adapter directly — MUST stay in this
         // synchronous click handler so the browser allows the wallet popup.

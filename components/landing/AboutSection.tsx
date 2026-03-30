@@ -45,7 +45,7 @@ export function AboutSection({
               {aboutTitle}
             </h2>
           </div>
-          <p style={{ fontFamily: 'Pretendard, sans-serif', fontWeight: 400, fontSize: 16, color: '#242424', lineHeight: '24px', margin: 0, whiteSpace: 'pre-line' }}>
+          <p style={{ fontFamily: 'Pretendard, sans-serif', fontWeight: 400, fontSize: 16, color: '#000000', lineHeight: '24px', margin: 0, whiteSpace: 'pre-line' }}>
             {bodyText}
           </p>
         </div>
@@ -103,7 +103,7 @@ export function AboutSection({
           <h2 style={{ fontFamily: KANIT, fontWeight: 700, fontSize: 40, color: '#000000', lineHeight: '48px', margin: 0 }}>
             {aboutTitle}
           </h2>
-          <div style={{ fontFamily: 'Pretendard, sans-serif', fontWeight: 400, fontSize: 18, color: '#242424', lineHeight: '27px' }}>
+          <div style={{ fontFamily: 'Pretendard, sans-serif', fontWeight: 400, fontSize: 18, color: '#000000', lineHeight: '27px' }}>
             {bodyText.split('\n\n').map((para, i) => (
               <p key={i} style={{ margin: i === 0 ? 0 : '12px 0 0' }}>{para}</p>
             ))}

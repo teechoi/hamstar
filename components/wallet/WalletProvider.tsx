@@ -40,7 +40,7 @@ export function SolanaWalletProvider({ children }: { children: React.ReactNode }
 
   return (
     <Conn endpoint={ENDPOINT}>
-      <Wallet wallets={wallets} autoConnect={false}>
+      <Wallet wallets={wallets} autoConnect>
         {children}
       </Wallet>
     </Conn>

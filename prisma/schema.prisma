@@ -39,6 +39,7 @@ model Pet {
   donations   Donation[]
   raceEntries RaceEntry[]
   upgrades    PetUpgrade[]
+  cheers      Cheer[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -56,8 +57,9 @@ model Race {
   title    String?
   recap    String?
 
-  entries  RaceEntry[]
+  entries   RaceEntry[]
   donations Donation[]
+  cheers    Cheer[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -200,6 +202,38 @@ model Media {
 enum MediaType {
   VIDEO
   PHOTO
+}
+
+// ─── USERS ────────────────────────────────────────────────────────────────────
+model User {
+  id            String   @id @default(cuid())
+  walletAddress String   @unique          // Solana public key — primary identity
+  privyUserId   String?  @unique          // 'did:privy:...' — set when using embedded wallet
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  cheers Cheer[]
+
+  @@index([walletAddress])
+  @@map("users")
+}
+
+// ─── CHEERS ───────────────────────────────────────────────────────────────────
+model Cheer {
+  id            String   @id @default(cuid())
+  walletAddress String
+  raceId        String
+  petId         String
+  won           Boolean?           // null until race finishes
+  createdAt     DateTime @default(now())
+
+  user User @relation(fields: [walletAddress], references: [walletAddress])
+  race Race @relation(fields: [raceId],        references: [id])
+  pet  Pet  @relation(fields: [petId],         references: [id])
+
+  @@unique([walletAddress, raceId])   // one cheer per user per race
+  @@index([walletAddress])
+  @@map("cheers")
 }
 
 // ─── SITE SETTINGS ────────────────────────────────────────────────────────────

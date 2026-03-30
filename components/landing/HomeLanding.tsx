@@ -32,6 +32,16 @@ export function HomeLanding({ targetMs, isLive }: HomeLandingProps) {
   const walletAddress = publicKey?.toString() ?? ''
   const authed = connected
 
+  // Upsert user record in DB whenever a wallet connects
+  useEffect(() => {
+    if (!walletAddress) return
+    fetch('/api/user', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ walletAddress }),
+    }).catch(() => { /* non-critical */ })
+  }, [walletAddress])
+
   useEffect(() => {
     const accepted = localStorage.getItem(TERMS_KEY)
     if (!accepted) setModal('terms')

@@ -96,10 +96,10 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
   const handleCheer = (petId: string) => {
     if (!authed) { setModal('login'); return }
     setCheeringFor(petId)
-    // Persist cheer entry so account modal can show history
     if (walletAddress) {
       const pet = PETS.find(p => p.id === petId)
       if (pet) {
+        // Write to localStorage for instant local feedback
         saveCheerEntry(walletAddress, {
           round: race.raceNumber,
           petId: pet.id,
@@ -109,6 +109,12 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
           won: null,
           timestamp: Date.now(),
         })
+        // Persist to DB (fire-and-forget)
+        fetch('/api/user/cheer', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ walletAddress, petId, raceNumber: race.raceNumber }),
+        }).catch(() => { /* non-critical */ })
       }
     }
   }
@@ -116,7 +122,14 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
   // Update cheer result when race finishes
   useEffect(() => {
     if (isFinishedState && lastResult && walletAddress) {
+      // Update localStorage
       updateCheerResult(walletAddress, lastResult.number, lastResult.positions[0])
+      // Update DB (fire-and-forget) — uses raceNumber to resolve raceId server-side
+      fetch('/api/user/cheer', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ raceNumber: lastResult.number, winnerPetId: lastResult.positions[0] }),
+      }).catch(() => { /* non-critical */ })
     }
   }, [isFinishedState, lastResult, walletAddress])
 

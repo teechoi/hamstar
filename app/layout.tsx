@@ -1,6 +1,7 @@
 // app/layout.tsx
 import type { Metadata } from 'next'
 import { kanit } from '@/lib/fonts'
+import { AppProviders } from '@/components/wallet/Providers'
 
 export const viewport = {
   width: 'device-width',
@@ -11,6 +12,12 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://hamstarhub.xyz'),
   title: 'Hamstar — Who Will Be the Hamstar?',
   description: 'Three hamsters. One champion. The wheel decides.',
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'Hamstar',
+  },
   openGraph: {
     title: 'Hamstar',
     description: 'Three racers. One champion. Who will be the Hamstar?',
@@ -32,9 +39,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <link rel="preconnect" href="https://cdn.jsdelivr.net" crossOrigin="anonymous" />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@latest/dist/web/static/pretendard.css" />
+        <meta name="theme-color" content="#FFE790" />
+        <meta name="mobile-web-app-capable" content="yes" />
       </head>
       <body style={{ margin: 0, padding: 0, fontFamily: "'Pretendard', sans-serif" }}>
-        {children}
+        <AppProviders>
+          {children}
+        </AppProviders>
       </body>
     </html>
   )

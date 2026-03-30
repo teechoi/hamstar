@@ -1,10 +1,12 @@
 'use client'
 import { useState } from 'react'
+import { QRCodeSVG } from 'qrcode.react'
+import { T } from '@/lib/theme'
+import { HAMSTAR_SYMBOL, HAMSTAR_JUPITER_URL, HAMSTAR_MINT, FAN_TIERS } from '@/lib/hamstar-token'
 
-const YELLOW = '#FFE790'
-const DARK = '#000000'
 const KANIT = "var(--font-kanit), sans-serif"
-const PURPLE = '#735DFF'
+const PRET  = 'Pretendard, sans-serif'
+const MONO  = 'monospace'
 
 interface DepositModalProps {
   address?: string
@@ -14,6 +16,7 @@ interface DepositModalProps {
 
 export function DepositModal({ address = '', onClose, onConnectWallet }: DepositModalProps) {
   const [copied, setCopied] = useState(false)
+  const [tab, setTab]       = useState<'sol' | 'hamstar'>('sol')
   const hasAddress = address.length > 0
 
   const copyAddress = async () => {
@@ -21,7 +24,7 @@ export function DepositModal({ address = '', onClose, onConnectWallet }: Deposit
     try {
       await navigator.clipboard.writeText(address)
       setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
+      setTimeout(() => setCopied(false), 2500)
     } catch { /* silent */ }
   }
 
@@ -29,108 +32,112 @@ export function DepositModal({ address = '', onClose, onConnectWallet }: Deposit
     <div
       style={{
         position: 'fixed', inset: 0, zIndex: 10000,
-        background: 'rgba(0,0,0,0.65)',
-        backdropFilter: 'blur(15px)',
+        background: 'rgba(0,0,0,0.55)',
+        backdropFilter: 'blur(16px)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        padding: 20,
+        padding: 16,
       }}
       onClick={onClose}
     >
       <div
-        style={{
-          background: '#fff', borderRadius: 26,
-          width: '100%', maxWidth: 480,
-          padding: '36px 40px 32px',
-          fontFamily: KANIT, position: 'relative',
-          textAlign: 'center',
-        }}
         onClick={e => e.stopPropagation()}
+        style={{
+          background: '#fff', borderRadius: 28,
+          width: '100%', maxWidth: 440,
+          position: 'relative',
+          boxShadow: '0 32px 80px rgba(0,0,0,0.18)',
+          overflow: 'hidden',
+        }}
       >
-        {/* Close */}
-        <button onClick={onClose} style={{
-          position: 'absolute', top: 14, right: 18,
-          background: 'none', border: 'none',
-          fontSize: 22, cursor: 'pointer', color: '#aaa',
-          lineHeight: 1,
-        }}>×</button>
+        {/* ── Yellow header ── */}
+        <div style={{
+          background: T.yellow,
+          borderRadius: '28px 28px 0 0',
+          padding: '22px 22px 20px',
+          position: 'relative', overflow: 'hidden',
+        }}>
+          {/* Cheese decoration */}
+          <img
+            src="/images/cheese-hideout.png" alt=""
+            style={{
+              position: 'absolute', top: '50%', right: -14,
+              transform: 'translateY(-50%) rotate(8deg)',
+              width: 110, opacity: 0.28,
+              pointerEvents: 'none', userSelect: 'none',
+            }}
+          />
 
-        <h2 style={{ fontSize: 'clamp(18px, 4vw, 24px)', fontWeight: 600, color: DARK, marginBottom: 6 }}>
-          Deposit Funds
-        </h2>
-        <p style={{ fontSize: 14, color: '#8A8A8A', fontFamily: 'Pretendard, sans-serif', marginBottom: 28 }}>
-          Solana Chain
-        </p>
-
-        {hasAddress ? (
-          /* ── Connected: show QR + address ── */
-          <>
-            <div style={{
-              width: 180, height: 180,
-              background: '#f7f7f7', borderRadius: 16,
-              margin: '0 auto 20px',
+          {/* Close button */}
+          <button
+            onClick={onClose}
+            style={{
+              position: 'absolute', top: 14, right: 14,
+              background: 'rgba(0,0,0,0.1)', border: 'none',
+              width: 28, height: 28, borderRadius: '50%',
+              fontSize: 16, cursor: 'pointer', color: T.text,
+              fontFamily: KANIT, lineHeight: 1, zIndex: 10,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              boxShadow: '0 4px 20px rgba(77,67,83,0.06)',
+            }}
+          >×</button>
+
+          <div style={{ position: 'relative', zIndex: 1 }}>
+            <div style={{
+              display: 'inline-flex', alignItems: 'center', gap: 5,
+              background: 'rgba(0,0,0,0.08)', borderRadius: 6,
+              padding: '3px 10px', marginBottom: 8,
             }}>
-              <span style={{ fontSize: 11, color: '#bbb', lineHeight: 1.5, padding: '0 16px' }}>
-                QR code<br />will appear here
+              <span style={{ fontFamily: KANIT, fontSize: 11, fontWeight: 700, color: T.sub2, letterSpacing: 0.5 }}>
+                ◎ SOLANA MAINNET
               </span>
             </div>
-
-            <p style={{ fontSize: 13, color: '#727272', marginBottom: 8 }}>
-              Your deposit address
+            <h2 style={{ fontFamily: KANIT, fontSize: 22, fontWeight: 800, color: T.text, margin: '0 0 4px' }}>
+              Deposit Funds
+            </h2>
+            <p style={{ fontFamily: PRET, fontSize: 13, color: 'rgba(0,0,0,0.5)', margin: 0 }}>
+              {hasAddress
+                ? 'Scan the QR code or copy your wallet address.'
+                : 'Connect a wallet to get your deposit address.'}
             </p>
+          </div>
+        </div>
 
-            <div style={{ borderRadius: 16, overflow: 'hidden', marginBottom: 28 }}>
-              <div style={{
-                background: 'rgba(255,231,144,0.18)', padding: '12px 20px',
-                fontSize: 12, fontFamily: 'monospace', color: DARK,
-                wordBreak: 'break-all',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                borderRadius: '11px 11px 0 0',
-              }}>
-                {address}
-              </div>
-              <CopyButton copied={copied} onClick={copyAddress} />
-            </div>
-          </>
-        ) : (
-          /* ── Not connected: prompt wallet connection ── */
-          <>
-            <div style={{
-              width: 180, height: 180,
-              background: '#f7f7f7', borderRadius: 16,
-              margin: '0 auto 24px',
-              display: 'flex', flexDirection: 'column',
-              alignItems: 'center', justifyContent: 'center', gap: 10,
-              boxShadow: '0 4px 20px rgba(77,67,83,0.06)',
-            }}>
-              {/* Phantom ghost icon */}
-              <svg width="48" height="48" viewBox="0 0 128 128" fill="none">
-                <path d="M110.584 64.9142H99.142C99.142 41.7651 80.173 23 56.7724 23C33.6612 23 14.8716 41.3491 14.4308 64.1671C13.9728 87.8985 33.3299 108 57.151 108H60.6151C82.1958 108 110.584 89.2057 110.584 64.9142Z" fill="#AB9FF2" />
-                <ellipse cx="77" cy="63" rx="7" ry="7" fill="white" />
-                <ellipse cx="95" cy="63" rx="7" ry="7" fill="white" />
-                <ellipse cx="77" cy="63" rx="3.5" ry="3.5" fill="#AB9FF2" />
-                <ellipse cx="95" cy="63" rx="3.5" ry="3.5" fill="#AB9FF2" />
-              </svg>
-              <span style={{ fontSize: 12, color: '#aaa', fontFamily: KANIT }}>No wallet connected</span>
-            </div>
-
-            <p style={{ fontSize: 14, color: '#8A8A8A', fontFamily: 'Pretendard, sans-serif', marginBottom: 20, lineHeight: 1.5 }}>
-              Connect your Phantom wallet to get<br />your personal deposit address.
-            </p>
-
-            <ConnectButton onClick={onConnectWallet ?? onClose} />
-
-            <p style={{ fontSize: 12, color: '#bbb', marginTop: 14, marginBottom: 20 }}>
-              Send only <strong style={{ color: '#888' }}>SOL</strong> to this address on Solana mainnet.
-            </p>
-          </>
+        {/* ── Tabs (white, outside yellow header) ── */}
+        {hasAddress && (
+          <div style={{
+            display: 'flex', gap: 0,
+            borderBottom: `1px solid ${T.border}`,
+            background: '#fff',
+          }}>
+            {([['sol', '◎ Deposit SOL'], ['hamstar', `🐹 Get ${HAMSTAR_SYMBOL}`]] as const).map(([id, label]) => (
+              <button
+                key={id}
+                onClick={() => setTab(id)}
+                style={{
+                  flex: 1, padding: '13px 12px',
+                  background: 'transparent',
+                  border: 'none',
+                  borderBottom: tab === id ? `2.5px solid ${T.text}` : '2.5px solid transparent',
+                  fontFamily: KANIT, fontSize: 13, fontWeight: 700,
+                  color: tab === id ? T.text : T.textMid,
+                  cursor: 'pointer', transition: 'all 0.15s',
+                }}
+              >{label}</button>
+            ))}
+          </div>
         )}
 
-        {/* Footer links */}
-        <div style={{ display: 'flex', justifyContent: 'center', gap: 20, flexWrap: 'wrap' }}>
+        {/* ── Body ── */}
+        {!hasAddress
+          ? <NoWalletDeposit onConnect={onConnectWallet ?? onClose} />
+          : tab === 'sol'
+            ? <ConnectedDeposit address={address} copied={copied} onCopy={copyAddress} />
+            : <GetHamstarTab />
+        }
+
+        {/* Footer */}
+        <div style={{ display: 'flex', justifyContent: 'center', gap: 20, flexWrap: 'wrap', padding: '0 28px 24px' }}>
           {['Terms of Use', 'Risk Disclosure', 'Privacy Policy'].map(link => (
-            <a key={link} href="#" style={{ fontSize: 12, color: '#bbb', textDecoration: 'none', fontFamily: KANIT }}>
+            <a key={link} href="#" style={{ fontSize: 11, color: '#ccc', textDecoration: 'none', fontFamily: KANIT }}>
               {link}
             </a>
           ))}
@@ -140,7 +147,202 @@ export function DepositModal({ address = '', onClose, onConnectWallet }: Deposit
   )
 }
 
-function CopyButton({ copied, onClick }: { copied: boolean; onClick: () => void }) {
+// ─── Connected: QR + address ──────────────────────────────────────────────────
+
+function ConnectedDeposit({ address, copied, onCopy }: { address: string; copied: boolean; onCopy: () => void }) {
+  return (
+    <div style={{ padding: '24px 28px 16px' }}>
+      {/* QR card */}
+      <div style={{
+        background: T.bg,
+        border: `1.5px solid ${T.border}`,
+        borderRadius: 20,
+        padding: '20px',
+        display: 'flex', flexDirection: 'column', alignItems: 'center',
+        marginBottom: 16,
+        gap: 16,
+      }}>
+        {/* QR with yellow frame */}
+        <div style={{
+          padding: 12, borderRadius: 14,
+          background: '#fff',
+          boxShadow: `0 0 0 4px ${T.yellow}`,
+        }}>
+          <QRCodeSVG value={address} size={148} />
+        </div>
+
+        <div style={{ textAlign: 'center' }}>
+          <p style={{ fontFamily: KANIT, fontSize: 10, fontWeight: 700, color: '#bbb', textTransform: 'uppercase', letterSpacing: 1, margin: '0 0 6px' }}>
+            Your Deposit Address
+          </p>
+          <p style={{ fontFamily: MONO, fontSize: 11, color: T.text, margin: 0, wordBreak: 'break-all', lineHeight: 1.6 }}>
+            {address}
+          </p>
+        </div>
+      </div>
+
+      {/* Copy button */}
+      <CopyBtn copied={copied} onClick={onCopy} />
+
+      {/* Warning */}
+      <div style={{
+        display: 'flex', alignItems: 'flex-start', gap: 8,
+        background: 'rgba(255,231,144,0.15)',
+        border: `1px solid rgba(255,200,0,0.2)`,
+        borderRadius: 12, padding: '10px 14px',
+        marginTop: 12,
+      }}>
+        <span style={{ fontSize: 14, flexShrink: 0 }}>⚠️</span>
+        <p style={{ fontFamily: PRET, fontSize: 12, color: T.sub2, margin: 0, lineHeight: 1.5 }}>
+          Send only <strong>SOL</strong> to this address on Solana mainnet. Other tokens may be lost.
+        </p>
+      </div>
+    </div>
+  )
+}
+
+// ─── No wallet connected ───────────────────────────────────────────────────────
+
+function NoWalletDeposit({ onConnect }: { onConnect: () => void }) {
+  return (
+    <div style={{ padding: '28px 28px 16px', textAlign: 'center' }}>
+      <div style={{
+        width: 80, height: 80, borderRadius: '50%',
+        background: 'linear-gradient(135deg, #735DFF 0%, #AB9FF2 100%)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        fontSize: 36, margin: '0 auto 16px',
+        boxShadow: '0 6px 20px rgba(115,93,255,0.3)',
+      }}>🐹</div>
+      <p style={{ fontFamily: PRET, fontSize: 14, color: T.textMid, marginBottom: 24, lineHeight: 1.6 }}>
+        Connect your Solana wallet to get<br />your personal deposit address.
+      </p>
+      <ConnectBtn onClick={onConnect} />
+    </div>
+  )
+}
+
+// ─── Get $HAMSTAR tab ─────────────────────────────────────────────────────────
+
+function GetHamstarTab() {
+  const [copiedMint, setCopiedMint] = useState(false)
+  const [hovJup, setHovJup]         = useState(false)
+
+  const copyMint = async () => {
+    try {
+      await navigator.clipboard.writeText(HAMSTAR_MINT)
+      setCopiedMint(true)
+      setTimeout(() => setCopiedMint(false), 2000)
+    } catch { /* silent */ }
+  }
+
+  return (
+    <div style={{ padding: '20px 20px 8px' }}>
+      {/* Token hero card */}
+      <div style={{
+        background: 'rgba(255,231,144,0.2)',
+        border: '1.5px solid rgba(255,200,0,0.3)',
+        borderRadius: 18, padding: '18px',
+        marginBottom: 14,
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
+          <div style={{
+            width: 46, height: 46, borderRadius: 13,
+            background: T.yellow,
+            border: '1.5px solid rgba(255,200,0,0.4)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: 22,
+          }}>🐹</div>
+          <div>
+            <p style={{ fontFamily: KANIT, fontSize: 11, color: T.textMid, margin: 0, letterSpacing: 0.5 }}>
+              HAMSTAR TOKEN
+            </p>
+            <p style={{ fontFamily: KANIT, fontSize: 22, fontWeight: 800, color: T.text, margin: 0 }}>
+              {HAMSTAR_SYMBOL}
+            </p>
+          </div>
+        </div>
+        <p style={{ fontFamily: PRET, fontSize: 13, color: T.textMid, margin: '0 0 14px', lineHeight: 1.5 }}>
+          Hold {HAMSTAR_SYMBOL} to unlock fan tiers, exclusive badges, and future rewards.
+        </p>
+        {/* Tier ladder */}
+        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+          {FAN_TIERS.map(t => (
+            <div key={t.label} style={{
+              background: 'rgba(0,0,0,0.07)', borderRadius: 6,
+              padding: '3px 8px',
+              display: 'flex', alignItems: 'center', gap: 3,
+            }}>
+              <span style={{ fontSize: 11 }}>{t.emoji}</span>
+              <span style={{ fontFamily: KANIT, fontSize: 9, fontWeight: 700, color: T.sub2, letterSpacing: 0.3 }}>
+                {t.minTokens >= 1000 ? `${t.minTokens / 1000}K` : t.minTokens === 0 ? '0' : t.minTokens}+
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Token mint address */}
+      <div style={{
+        background: T.bg, border: `1px solid ${T.border}`,
+        borderRadius: 14, overflow: 'hidden', marginBottom: 10,
+      }}>
+        <div style={{ padding: '10px 14px', borderBottom: `1px solid ${T.border}` }}>
+          <p style={{ fontFamily: KANIT, fontSize: 10, fontWeight: 700, color: '#bbb', textTransform: 'uppercase', letterSpacing: 1, margin: '0 0 4px' }}>
+            Token Contract Address
+          </p>
+          <p style={{ fontFamily: MONO, fontSize: 11, color: T.text, margin: 0, wordBreak: 'break-all', lineHeight: 1.5 }}>
+            {HAMSTAR_MINT.includes('xxx') ? 'Coming soon — token launching shortly' : HAMSTAR_MINT}
+          </p>
+        </div>
+        {!HAMSTAR_MINT.includes('xxx') && (
+          <button
+            onClick={copyMint}
+            style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+              width: '100%', padding: '10px',
+              background: copiedMint ? 'rgba(34,197,94,0.08)' : '#fff',
+              border: 'none', cursor: 'pointer',
+              fontFamily: KANIT, fontSize: 12, fontWeight: 700,
+              color: copiedMint ? '#15803D' : T.textMid,
+              transition: 'all 0.15s',
+            }}
+          >
+            {copiedMint ? '✓ Copied!' : 'Copy contract address'}
+          </button>
+        )}
+      </div>
+
+      {/* Jupiter CTA */}
+      <a
+        href={HAMSTAR_JUPITER_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        onMouseEnter={() => setHovJup(true)}
+        onMouseLeave={() => setHovJup(false)}
+        style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+          width: '100%', padding: '14px 20px',
+          background: hovJup ? T.limeDark : T.yellow,
+          borderRadius: 48.5,
+          fontFamily: KANIT, fontSize: 14, fontWeight: 700, color: T.text,
+          textDecoration: 'none', transition: 'background 0.15s',
+          boxShadow: '0 4px 14px rgba(255,215,0,0.3)',
+          marginBottom: 10,
+        }}
+      >
+        🪐 Buy {HAMSTAR_SYMBOL} on Jupiter ↗
+      </a>
+
+      <p style={{ fontFamily: PRET, fontSize: 11, color: '#ccc', textAlign: 'center', margin: '0 0 8px', lineHeight: 1.5 }}>
+        You'll need SOL in your wallet first to swap. Deposit SOL using the other tab.
+      </p>
+    </div>
+  )
+}
+
+// ─── Buttons ──────────────────────────────────────────────────────────────────
+
+function CopyBtn({ copied, onClick }: { copied: boolean; onClick: () => void }) {
   const [hov, setHov] = useState(false)
   return (
     <button
@@ -148,20 +350,24 @@ function CopyButton({ copied, onClick }: { copied: boolean; onClick: () => void 
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
       style={{
-        display: 'block', width: '100%', padding: '15px',
-        background: YELLOW, border: 'none',
-        borderRadius: '0 0 16px 16px',
-        fontSize: 15, fontWeight: 600, color: DARK,
-        cursor: 'pointer', fontFamily: KANIT,
-        opacity: hov ? 0.85 : 1, transition: 'opacity 0.15s',
+        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+        width: '100%', padding: '14px 20px',
+        background: copied ? 'rgba(34,197,94,0.1)' : hov ? T.limeDark : T.yellow,
+        border: copied ? '1.5px solid rgba(34,197,94,0.3)' : 'none',
+        borderRadius: 48.5,
+        fontFamily: KANIT, fontSize: 14, fontWeight: 700,
+        color: copied ? '#15803D' : T.text,
+        cursor: 'pointer', transition: 'all 0.2s',
+        boxShadow: copied ? 'none' : hov ? '0 6px 20px rgba(255,215,0,0.4)' : '0 3px 12px rgba(255,215,0,0.25)',
       }}
     >
-      {copied ? '✓ Copied!' : 'Copy address'}
+      {copied ? <CheckIcon /> : <CopyIcon />}
+      {copied ? 'Address Copied!' : 'Copy Address'}
     </button>
   )
 }
 
-function ConnectButton({ onClick }: { onClick: () => void }) {
+function ConnectBtn({ onClick }: { onClick: () => void }) {
   const [hov, setHov] = useState(false)
   return (
     <button
@@ -169,21 +375,33 @@ function ConnectButton({ onClick }: { onClick: () => void }) {
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
       style={{
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        gap: 10, width: '100%', padding: '14px 20px',
-        background: '#735DFF',
-        border: 'none', borderRadius: 48.5,
-        fontSize: 15, fontWeight: 600, color: '#fff',
-        cursor: 'pointer', fontFamily: KANIT,
-        opacity: hov ? 0.85 : 1, transition: 'opacity 0.15s',
+        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+        width: '100%', padding: '14px 20px',
+        background: T.text, border: 'none', borderRadius: 48.5,
+        fontFamily: KANIT, fontSize: 14, fontWeight: 700, color: T.yellow,
+        cursor: 'pointer', opacity: hov ? 0.85 : 1, transition: 'opacity 0.15s',
       }}
     >
-      <svg width="20" height="20" viewBox="0 0 128 128" fill="none">
-        <path d="M110.584 64.9142H99.142C99.142 41.7651 80.173 23 56.7724 23C33.6612 23 14.8716 41.3491 14.4308 64.1671C13.9728 87.8985 33.3299 108 57.151 108H60.6151C82.1958 108 110.584 89.2057 110.584 64.9142Z" fill="white" />
-        <ellipse cx="77" cy="63" rx="7" ry="7" fill="#AB9FF2" />
-        <ellipse cx="95" cy="63" rx="7" ry="7" fill="#AB9FF2" />
-      </svg>
-      Connect Phantom Wallet
+      Connect Wallet
     </button>
+  )
+}
+
+// ─── Icons ────────────────────────────────────────────────────────────────────
+
+function CopyIcon() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="9" y="9" width="13" height="13" rx="2" />
+      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+    </svg>
+  )
+}
+
+function CheckIcon() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#15803D" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="20 6 9 17 4 12" />
+    </svg>
   )
 }

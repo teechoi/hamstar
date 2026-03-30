@@ -1,5 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
+import { useWallet } from '@solana/wallet-adapter-react'
 import { LandingNav } from '@/components/landing/LandingNav'
 import { HeroSection } from '@/components/landing/HeroSection'
 import { AboutSection } from '@/components/landing/AboutSection'
@@ -24,10 +25,12 @@ interface HomeLandingProps {
 
 export function HomeLanding({ targetMs, isLive }: HomeLandingProps) {
   const [modal, setModal] = useState<Modal>(null)
-  const [authed, setAuthed] = useState(false)
-  const [walletAddress, setWalletAddress] = useState<string>('')
   const [balance, setBalance] = useState('0')
   const [content, setContent] = useState<SiteContent | null>(null)
+  const { connected, publicKey, disconnect } = useWallet()
+
+  const walletAddress = publicKey?.toString() ?? ''
+  const authed = connected
 
   useEffect(() => {
     const accepted = localStorage.getItem(TERMS_KEY)
@@ -75,15 +78,8 @@ export function HomeLanding({ targetMs, isLive }: HomeLandingProps) {
     setModal('login')
   }
 
-  const handleLogin = () => {
-    // TODO: wire up real auth (Google OAuth / Web3Auth / Phantom)
-    setAuthed(true)
-    setModal(null)
-  }
-
-  const handleDisconnect = () => {
-    setAuthed(false)
-    setWalletAddress('')
+  const handleDisconnect = async () => {
+    try { await disconnect() } catch { /* ignore */ }
     setBalance('0')
     setModal(null)
   }
@@ -146,7 +142,6 @@ export function HomeLanding({ targetMs, isLive }: HomeLandingProps) {
       {modal === 'login' && (
         <LoginModal
           onClose={() => setModal(null)}
-          onLogin={handleLogin}
           loginTitle={content?.loginTitle}
           loginSubtitle={content?.loginSubtitle}
         />
@@ -156,10 +151,7 @@ export function HomeLanding({ targetMs, isLive }: HomeLandingProps) {
         <DepositModal
           address={walletAddress}
           onClose={() => setModal(null)}
-          onConnectWallet={() => {
-            // TODO: trigger Phantom wallet connection
-            setModal(null)
-          }}
+          onConnectWallet={() => setModal('login')}
         />
       )}
 
@@ -170,10 +162,7 @@ export function HomeLanding({ targetMs, isLive }: HomeLandingProps) {
           onClose={() => setModal(null)}
           onDeposit={() => setModal('deposit')}
           onDisconnect={handleDisconnect}
-          onConnectWallet={() => {
-            // TODO: trigger Phantom wallet connection
-            setModal(null)
-          }}
+          onConnectWallet={() => setModal('login')}
         />
       )}
 

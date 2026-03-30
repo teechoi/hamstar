@@ -1,5 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
+import { useWallet } from '@solana/wallet-adapter-react'
 import { LandingNav } from '@/components/landing/LandingNav'
 import { LandingFooter } from '@/components/landing/LandingFooter'
 import { TermsModal } from '@/components/landing/TermsModal'
@@ -12,6 +13,7 @@ import { HighlightSection } from '@/components/arena/HighlightSection'
 import { PETS, SITE, type RaceResult } from '@/config/site'
 import type { RaceWindow } from '@/lib/race-scheduler'
 import { useIsMobile } from '@/components/ui/index'
+import { saveCheerEntry, updateCheerResult } from '@/lib/cheer-history'
 
 const KANIT = "var(--font-kanit), sans-serif"
 const PURPLE = '#735DFF'
@@ -49,11 +51,13 @@ function useCountdown(targetMs: number) {
 }
 
 export function ArenaClient({ race, lastResult }: ArenaClientProps) {
-  const [modal, setModal]         = useState<Modal>(null)
-  const [authed, setAuthed]       = useState(false)
-  const [walletAddress, setWalletAddress] = useState('')
+  const [modal, setModal]                 = useState<Modal>(null)
   const [cheeringFor, setCheeringFor]     = useState<string | null>(null)
   const isMobile = useIsMobile()
+  const { connected, publicKey, disconnect } = useWallet()
+
+  const authed = connected
+  const walletAddress = publicKey?.toString() ?? ''
 
   // Derive arena state:
   // - FINISHED: lastResult exists for this race round
@@ -84,13 +88,37 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
     if (!localStorage.getItem(TERMS_KEY)) setModal('terms')
   }, [])
 
-  const handleLogin      = () => { setAuthed(true); setModal(null) }
-  const handleDisconnect = () => { setAuthed(false); setWalletAddress('') }
+  const handleDisconnect = async () => {
+    try { await disconnect() } catch { /* ignore */ }
+    setModal(null)
+  }
 
   const handleCheer = (petId: string) => {
     if (!authed) { setModal('login'); return }
     setCheeringFor(petId)
+    // Persist cheer entry so account modal can show history
+    if (walletAddress) {
+      const pet = PETS.find(p => p.id === petId)
+      if (pet) {
+        saveCheerEntry(walletAddress, {
+          round: race.raceNumber,
+          petId: pet.id,
+          petName: pet.name,
+          petColor: pet.color,
+          petEmoji: pet.emoji,
+          won: null,
+          timestamp: Date.now(),
+        })
+      }
+    }
   }
+
+  // Update cheer result when race finishes
+  useEffect(() => {
+    if (isFinishedState && lastResult && walletAddress) {
+      updateCheerResult(walletAddress, lastResult.number, lastResult.positions[0])
+    }
+  }, [isFinishedState, lastResult, walletAddress])
 
   const statusLabel = isFinishedState ? 'Race Finished' : isLive ? 'Race In Progress' : 'Arena Open'
   const winnerPet   = isFinishedState && effectiveResult ? PETS.find(p => p.id === effectiveResult.positions[0]) : null
@@ -331,14 +359,15 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
       <LandingFooter />
 
       {modal === 'terms'      && <TermsModal onAccept={() => { localStorage.setItem(TERMS_KEY,'1'); setModal('login') }} />}
-      {modal === 'login'      && <LoginModal onClose={() => setModal(null)} onLogin={handleLogin} />}
-      {modal === 'deposit'    && <DepositModal address={walletAddress} onClose={() => setModal(null)} />}
+      {modal === 'login'      && <LoginModal onClose={() => setModal(null)} />}
+      {modal === 'deposit'    && <DepositModal address={walletAddress} onClose={() => setModal(null)} onConnectWallet={() => setModal('login')} />}
       {modal === 'account'    && (
         <AccountModal
           walletAddress={walletAddress || undefined}
           onClose={() => setModal(null)}
           onDeposit={() => setModal('deposit')}
           onDisconnect={handleDisconnect}
+          onConnectWallet={() => setModal('login')}
         />
       )}
       {modal === 'howitworks' && (

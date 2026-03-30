@@ -51,10 +51,19 @@ export function LoginModal({ onClose, loginTitle, loginSubtitle }: LoginModalPro
     }
   }, [connecting]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const detected = wallets.filter(
+  // Deduplicate by name — some wallets (e.g. MetaMask) register via both
+  // Wallet Standard and the legacy injected provider, showing up twice.
+  const seen = new Set<string>()
+  const uniqueWallets = wallets.filter(w => {
+    if (seen.has(w.adapter.name)) return false
+    seen.add(w.adapter.name)
+    return true
+  })
+
+  const detected = uniqueWallets.filter(
     w => w.readyState === WalletReadyState.Installed || w.readyState === WalletReadyState.Loadable
   )
-  const getable = wallets.filter(w => w.readyState === WalletReadyState.NotDetected)
+  const getable = uniqueWallets.filter(w => w.readyState === WalletReadyState.NotDetected)
 
   const handleSelect = (name: string) => {
     setErr('')

@@ -135,7 +135,7 @@ function ConnectedView({
       <div style={{
         background: T.yellow,
         borderRadius: '28px 28px 0 0',
-        padding: '32px 28px 0',
+        padding: '22px 28px 0',
         position: 'relative', overflow: 'hidden',
       }}>
         <img
@@ -149,12 +149,12 @@ function ConnectedView({
         />
 
         <div style={{ position: 'relative', zIndex: 1 }}>
-          <div style={{ display: 'flex', alignItems: 'flex-end', gap: 16, marginBottom: 20 }}>
+          <div style={{ display: 'flex', alignItems: 'flex-end', gap: 16, marginBottom: 14 }}>
 
             {/* Avatar — ring color driven by tier */}
             <div style={{ position: 'relative', flexShrink: 0 }}>
               <div style={{
-                width: 72, height: 72, borderRadius: '50%',
+                width: 62, height: 62, borderRadius: '50%',
                 padding: 3, background: tier.ringGradient,
                 boxShadow: '0 6px 20px rgba(0,0,0,0.15)',
               }}>
@@ -203,7 +203,7 @@ function ConnectedView({
               { label: 'Wins',         value: total > 0 ? `${wins}/${total}` : '—' },
             ].map((s, i) => (
               <div key={s.label} style={{
-                padding: '13px 0', textAlign: 'center',
+                padding: '9px 0', textAlign: 'center',
                 borderRight: i < 2 ? '1px solid rgba(0,0,0,0.08)' : 'none',
               }}>
                 <p style={{ fontFamily: KANIT, fontSize: 15, fontWeight: 800, color: T.text, margin: 0 }}>{s.value}</p>
@@ -215,7 +215,7 @@ function ConnectedView({
       </div>
 
       {/* ── Body ── */}
-      <div style={{ padding: '20px 24px 28px' }}>
+      <div style={{ padding: '14px 24px 20px' }}>
 
         {/* $HAMSTAR token card */}
         <HamstarTokenCard hamstarBalance={hamstarBalance} tier={tier} />
@@ -224,7 +224,7 @@ function ConnectedView({
         <div style={{
           background: T.bg, borderRadius: 16,
           border: `1px solid ${T.border}`,
-          marginBottom: 14, overflow: 'hidden',
+          marginBottom: 10, overflow: 'hidden',
         }}>
           <div style={{
             padding: '12px 16px',
@@ -274,7 +274,7 @@ function ConnectedView({
         <DepositBtn onClick={onDeposit} />
 
         {/* Cheering history */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', margin: '20px 0 10px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', margin: '12px 0 8px' }}>
           <p style={{ fontFamily: KANIT, fontSize: 10, fontWeight: 700, color: '#bbb', textTransform: 'uppercase', letterSpacing: 1, margin: 0 }}>
             Cheering History
           </p>
@@ -289,8 +289,8 @@ function ConnectedView({
           <div style={{
             background: 'rgba(255,231,144,0.1)',
             border: `1.5px dashed rgba(255,200,0,0.3)`,
-            borderRadius: 16, padding: '24px 20px',
-            textAlign: 'center', marginBottom: 20,
+            borderRadius: 16, padding: '16px 20px',
+            textAlign: 'center', marginBottom: 12,
           }}>
             <p style={{ fontSize: 28, margin: '0 0 8px' }}>🐹</p>
             <p style={{ fontFamily: KANIT, fontSize: 14, fontWeight: 700, color: T.text, margin: '0 0 3px' }}>
@@ -306,7 +306,7 @@ function ConnectedView({
           </div>
         )}
 
-        <div style={{ height: 1, background: T.border, marginBottom: 14 }} />
+        <div style={{ height: 1, background: T.border, marginBottom: 10 }} />
         <DisconnectBtn onClick={onDisconnect} />
       </div>
     </>
@@ -327,11 +327,11 @@ function HamstarTokenCard({
     <div style={{
       background: 'rgba(255,231,144,0.2)',
       border: '1.5px solid rgba(255,200,0,0.3)',
-      borderRadius: 18, padding: '16px 18px',
-      marginBottom: 14,
+      borderRadius: 18, padding: '12px 16px',
+      marginBottom: 10,
     }}>
       {/* Token balance row */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <div style={{
             width: 36, height: 36, borderRadius: 10,
@@ -366,7 +366,7 @@ function HamstarTokenCard({
 
       {/* Progress to next tier */}
       {nextTier ? (
-        <div style={{ marginBottom: 14 }}>
+        <div style={{ marginBottom: 10 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
             <span style={{ fontFamily: PRET, fontSize: 11, color: T.textMid }}>
               {formatHamstar(toNext)} more to {nextTier.emoji} {nextTier.label}
@@ -523,7 +523,7 @@ function DepositBtn({ onClick }: { onClick: () => void }) {
       onMouseLeave={() => setHov(false)}
       style={{
         display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-        width: '100%', padding: '14px 20px', marginBottom: 14,
+        width: '100%', padding: '14px 20px', marginBottom: 10,
         background: hov ? T.limeDark : T.yellow,
         border: 'none', borderRadius: 48.5,
         fontFamily: KANIT, fontSize: 14, fontWeight: 700, color: T.text,

@@ -91,7 +91,6 @@ export function HowItWorksModal({ onClose, onEnterArena, steps }: HowItWorksModa
           background: '#fff',
           borderRadius: 26,
           width: '100%', maxWidth: 480,
-          minHeight: 560,
           padding: 'clamp(20px, 5vw, 32px) clamp(20px, 6vw, 36px) clamp(24px, 5vw, 36px)',
           fontFamily: KANIT,
           position: 'relative',
@@ -103,14 +102,14 @@ export function HowItWorksModal({ onClose, onEnterArena, steps }: HowItWorksModa
         <div style={{
           position: 'relative',
           width: '100%',
-          height: 210,
+          height: 280,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           marginBottom: 20,
         }}>
           <img
             src={current.image}
             alt={current.title}
-            style={{ width: 'min(260px, 100%)', height: 200, objectFit: 'contain', objectPosition: 'center bottom' }}
+            style={{ width: 'min(340px, 100%)', height: 270, objectFit: 'contain', objectPosition: 'center bottom' }}
           />
           {current.badge && (
             <div style={{
@@ -162,7 +161,7 @@ export function HowItWorksModal({ onClose, onEnterArena, steps }: HowItWorksModa
         <p style={{
           fontSize: 16, color: '#8A8A8A', fontFamily: 'Pretendard, sans-serif', fontWeight: 500,
           textAlign: 'center', lineHeight: 1.6,
-          marginBottom: current.note ? 8 : 32,
+          marginBottom: current.note ? 8 : 20,
           whiteSpace: 'pre-line',
         }}>
           {current.body}
@@ -172,14 +171,14 @@ export function HowItWorksModal({ onClose, onEnterArena, steps }: HowItWorksModa
         {current.note && (
           <p style={{
             fontSize: 13, color: '#949494', fontWeight: 300,
-            textAlign: 'center', marginBottom: 32,
+            textAlign: 'center', marginBottom: 20,
           }}>
             {current.note}
           </p>
         )}
 
         {/* CTA — pushed to bottom so card height stays consistent */}
-        <div style={{ marginTop: 'auto', width: '100%' }}>
+        <div style={{ marginTop: 20, width: '100%' }}>
           <CtaButton label={current.cta} onClick={handleCta} />
         </div>
       </div>

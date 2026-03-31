@@ -92,7 +92,7 @@ export function LandingFooter({
 
   return (
     <footer id="footer" style={{ background: BG }}>
-      <div style={{ maxWidth: 1280, margin: '0 auto', padding: 'clamp(32px, 4vw, 56px) clamp(24px, 8vw, 200px) 0' }}>
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: 'clamp(32px, 4vw, 56px) clamp(24px, 4vw, 64px) 0' }}>
 
         {/* Brand row */}
         <div style={{ marginBottom: 28 }}>

@@ -8,22 +8,19 @@ interface Racer {
   tagline: string
   image: string
   featured?: boolean
-  imgW?: number
-  imgH?: number
-  imgLeft?: number
-  imgTop?: number
+  imgPosition?: string
+  imgFit?: 'cover' | 'contain'
 }
 
 const RACERS: Racer[] = [
-  { name: 'Dash',  tagline: 'The Speedster',    image: '/images/hamster-dash.png'  },
-  { name: 'Flash', tagline: 'The Sprinter',     image: '/images/hamster-flash.png', featured: true },
-  // Turbo's PNG has extra whitespace — scale up to match apparent size of Dash/Flash
-  { name: 'Turbo', tagline: 'The Chaos Runner', image: '/images/hamster-turbo.png', imgW: 210, imgH: 190, imgLeft: 27, imgTop: -21 },
+  { name: 'Dash',  tagline: 'The Speedster',    image: '/images/dash.png',        imgPosition: 'center 20%' },
+  { name: 'Flash', tagline: 'The Sprinter',     image: '/images/flash-crop.jpeg', featured: true },
+  { name: 'Turbo', tagline: 'The Chaos Runner', image: '/images/turbo-crop.png' },
 ]
 
 const KANIT = "var(--font-kanit), sans-serif"
 
-function RacerCard({ name, tagline, image, featured, imgW = 166, imgH = 149, imgLeft = 49, imgTop = 20 }: Racer) {
+function RacerCard({ name, tagline, image, featured, imgPosition = 'center center', imgFit = 'cover' }: Racer) {
   const [hov, setHov] = useState(false)
   const active = hov
   return (
@@ -64,10 +61,10 @@ function RacerCard({ name, tagline, image, featured, imgW = 166, imgH = 149, img
           alt={name}
           style={{
             position: 'absolute',
-            left: imgLeft, top: imgTop,
-            width: imgW, height: imgH,
-            objectFit: 'contain',
-            objectPosition: 'center bottom',
+            inset: 0,
+            width: '100%', height: '100%',
+            objectFit: imgFit,
+            objectPosition: imgPosition,
           }}
         />
         {/* Cheer Me! badge — top:10, left:10, 100×30, radius:22, bg:#725DFF */}
@@ -153,7 +150,8 @@ export function RacersSection({ racersTitle = 'Meet the Racers' }: { racersTitle
       background: '#F8F9FA',
       minHeight: '100vh',
       position: 'relative',       // anchors viewport-edge decos
-      display: 'flex', alignItems: 'center',
+      display: 'flex', alignItems: 'flex-start',
+      paddingTop: 'max(0px, calc((100vh - 684px) / 2))',
       overflow: 'hidden',
     }}>
       {/* Sunflower — viewport-edge anchored (section-relative).

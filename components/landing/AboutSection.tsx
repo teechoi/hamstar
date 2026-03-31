@@ -62,7 +62,8 @@ export function AboutSection({
     <section id="about" style={{
       background: '#F8F9FA',
       minHeight: '100vh',
-      display: 'flex', alignItems: 'center',
+      display: 'flex', alignItems: 'flex-start',
+      paddingTop: 'max(0px, calc((100vh - 526px) / 2))',
       overflow: 'hidden',
     }}>
       {/* 1280×526 canvas, vertically centered */}
@@ -76,26 +77,28 @@ export function AboutSection({
             Rectangle 22: 380×380, rot=-0.2019rad = -11.57°, cornerRadius 23
             image 13 (hamster wheel): at group-rel (62, 44), 218×291 — not rotated, sits on top
             image 25 (sunflower): at group-rel (257, 190), 137×172 — not rotated, sits on top */}
-        <div style={{ position: 'absolute', left: 167, top: 76, width: 414, height: 420 }}>
-          {/* Tilted white card */}
+        <div style={{ position: 'absolute', left: 167, top: 76, width: 394, height: 380 }}>
+          {/* Background card — 380×380 at (0,0), rotated -11.46deg (Figma: rot=-0.20rad) */}
           <div style={{
             position: 'absolute', left: 0, top: 0, width: 380, height: 380,
-            borderRadius: 23, background: '#FFFFFF',
-            boxShadow: '0 8px 32px rgba(0,0,0,0.10)',
-            transform: 'rotate(-11.57deg)',
+            borderRadius: 23,
+            overflow: 'hidden',
+            transform: 'rotate(-11.46deg)',
             transformOrigin: 'center center',
-          }} />
-          {/* Hamster wheel — on top of tilted card, not rotated */}
+          }}>
+            <img src="/images/about-bg.png" alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+          </div>
+          {/* Hamster wheel — Figma: (62,45) 219×291 */}
           <img
             src="/images/hamster-wheel.png"
             alt="Hamster on wheel"
-            style={{ position: 'absolute', left: 20, top: 0, width: 290, height: 380, objectFit: 'contain', zIndex: 1 }}
+            style={{ position: 'absolute', left: 62, top: 45, width: 219, height: 291, objectFit: 'contain', zIndex: 1 }}
           />
-          {/* Sunflower — on top, extends past card right edge */}
+          {/* Sunflower — Figma: (257,190) 137×172 */}
           <img
             src="/images/sunflower.png"
             alt=""
-            style={{ position: 'absolute', left: 235, top: 155, width: 185, height: 232, objectFit: 'contain', zIndex: 2 }}
+            style={{ position: 'absolute', left: 257, top: 190, width: 137, height: 172, objectFit: 'contain', zIndex: 2 }}
           />
         </div>
 

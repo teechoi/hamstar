@@ -46,21 +46,24 @@ export const DECOS = {
   'arena-oats': {
     src: '/images/arena-oats.png',
     label: 'Arena: Oats',
-    // Figma 25:675 — frame-relative left=1055, top=140, w=348; inside 1280px canvas div
-    style: { left: 1055, top: 140, width: 348 } as CSSProperties,
+    // Figma 25:636 — frame-relative left=1055, top=140, w=348×232; inside 1280px canvas div
+    // width uses vw so image scales proportionally with viewport (348/1280 = 27.2vw at reference)
+    style: { left: 1055, top: 140, width: 'clamp(200px, 27.2vw, 420px)' } as CSSProperties,
   },
   'arena-trophy': {
     src: '/images/arena-trophy-hamster.png',
     label: 'Arena: Trophy Hamster',
-    // Viewport-edge anchored at section level. left uses 50% of section (= viewport).
-    // top: canvas at 50vh - 342px; original Figma top=349 → section-relative = calc(50vh + 7px)
-    style: { left: 'min(calc(50% - 870px), -150px)', top: 'calc(50vh + 7px)', width: 448, height: 444, transform: 'rotate(17.63deg)', transformOrigin: '50% 50%' } as CSSProperties,
+    // Figma 25:636 — canvas-relative left=-152. Section-relative = calc(50% - 640px - 152px) = calc(50% - 792px).
+    // Capped at -150px so trophy consistently peeks ~300px on wide screens.
+    // top: canvas at 50vh - 342px; Figma top=349 → section-relative = calc(50vh + 7px)
+    style: { left: 'min(calc(50% - 792px), -150px)', top: 'calc(50vh + 7px)', width: 'clamp(260px, 35vw, 530px)', transform: 'rotate(17.63deg)', transformOrigin: '50% 50%' } as CSSProperties,
   },
   'arena-bridge': {
     src: '/images/arena-bridge.png',
     label: 'Arena: Bridge',
-    // Figma 25:434 — frame-relative left=819, top=495, w=404; inside 1280px canvas div
-    style: { left: 819, top: 495, width: 404 } as CSSProperties,
+    // Figma 25:636 — frame-relative left=819, top=495, w=404×269; inside 1280px canvas div
+    // width uses vw so image scales proportionally with viewport (404/1280 = 31.6vw at reference)
+    style: { left: 819, top: 495, width: 'clamp(240px, 31.6vw, 480px)' } as CSSProperties,
   },
 } satisfies Record<string, DecoConfig>
 

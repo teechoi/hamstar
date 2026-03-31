@@ -171,7 +171,8 @@ export function ArenaSection({
       background: '#F8F9FA',
       minHeight: '100vh',
       position: 'relative',
-      display: 'flex', alignItems: 'center',
+      display: 'flex', alignItems: 'flex-start',
+      paddingTop: 'max(0px, calc((100vh - 684px) / 2))',
       overflow: 'hidden',
     }}>
       {/* Trophy — viewport-edge anchored at section level.

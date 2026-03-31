@@ -152,25 +152,26 @@ export function RacersSection({ racersTitle = 'Meet the Racers' }: { racersTitle
     <section id="racers" style={{
       background: '#F8F9FA',
       minHeight: '100vh',
-      position: 'relative',
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      display: 'flex', alignItems: 'center',
     }}>
-      {/* Clip container for behind-card decorations */}
-      <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', zIndex: 0 }}>
-        <DecoImage id="racers-sunflower" className="section-deco" />
-        <DecoImage id="racers-oats" className="section-deco" />
-        <DecoImage id="racers-oats-2" className="section-deco" />
-      </div>
+      {/* 1280×684 canvas, vertically centered — all deco top values are relative to this */}
+      <div style={{ position: 'relative', width: 1280, height: 684, margin: '0 auto', flexShrink: 0 }}>
 
-      {/* Turbo pushup — above cards so it overlaps the Turbo card */}
-      <DecoImage id="racers-turbo" className="section-deco" />
+        {/* Clip container for behind-card decorations */}
+        <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', zIndex: 0 }}>
+          <DecoImage id="racers-sunflower" className="section-deco" />
+          <DecoImage id="racers-oats" className="section-deco" />
+          <DecoImage id="racers-oats-2" className="section-deco" />
+        </div>
 
-      {/* Content — vertically centered via flex parent */}
-      <div style={{ position: 'relative', zIndex: 60, width: '100%', padding: '80px 24px', boxSizing: 'border-box' }}>
-        {/* Title */}
+        {/* Turbo pushup — above cards so it overlaps the Turbo card */}
+        <DecoImage id="racers-turbo" className="section-deco" />
+
+        {/* Title — Figma y=94 */}
         <div style={{
+          position: 'absolute', top: 94, left: 0, right: 0,
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
-          marginBottom: 60,
+          zIndex: 60,
         }}>
           <img src="/images/sunflower-seed.png" alt="" style={{ width: 29, height: 43, objectFit: 'contain' }} />
           <h2 style={{
@@ -186,13 +187,17 @@ export function RacersSection({ racersTitle = 'Meet the Racers' }: { racersTitle
           <img src="/images/sunflower-seed.png" alt="" style={{ width: 29, height: 43, objectFit: 'contain' }} />
         </div>
 
-        {/* Cards */}
+        {/* Cards — Figma y=202, gap:20 */}
         <div style={{
+          position: 'absolute', top: 202, left: 0, right: 0,
           display: 'flex', justifyContent: 'center', gap: 20,
-          padding: '0 24px', boxSizing: 'border-box',
+          zIndex: 60,
+          padding: '0 24px',
+          boxSizing: 'border-box',
         }}>
           {RACERS.map(r => <RacerCard key={r.name} {...r} />)}
         </div>
+
       </div>
     </section>
   )

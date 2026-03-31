@@ -174,10 +174,7 @@ export function ArenaSection({
       display: 'flex', alignItems: 'center',
       overflow: 'hidden',
     }}>
-      {/* Trophy — section-level so calc() tracks viewport edge, not canvas */}
-      <DecoImage id="arena-trophy" className="section-deco" />
-
-      {/* 1280×684 canvas, vertically centered */}
+      {/* 1280×684 canvas, vertically centered — all deco top values are relative to this */}
       <div style={{
         position: 'relative',
         width: 1280,
@@ -186,6 +183,9 @@ export function ArenaSection({
         flexShrink: 0,
         zIndex: 60,
       }}>
+        {/* Trophy inside canvas so top:349 stays canvas-relative; left calc() works
+            identically whether relative to section or centered canvas at same width */}
+        <DecoImage id="arena-trophy" className="section-deco" />
         <DecoImage id="arena-oats" className="section-deco" />
         <DecoImage id="arena-bridge" className="section-deco" />
 

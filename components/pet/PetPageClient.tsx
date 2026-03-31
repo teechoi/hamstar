@@ -16,9 +16,9 @@ const TERMS_KEY = 'hamstar_terms_accepted'
 type Modal = 'terms' | 'login' | 'deposit' | 'account' | 'howitworks' | null
 
 const PET_IMAGES: Record<string, string> = {
-  dash:  '/images/hamster-dash.png',
-  flash: '/images/hamster-flash.png',
-  turbo: '/images/hamster-turbo.png',
+  dash:  '/images/dash.png',
+  flash: '/images/flash-crop.jpeg',
+  turbo: '/images/turbo-crop.png',
 }
 
 

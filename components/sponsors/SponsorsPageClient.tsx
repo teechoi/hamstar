@@ -22,9 +22,9 @@ type DbSponsor = {
 }
 
 const PET_IMAGES: Record<string, string> = {
-  dash:  '/images/hamster-dash.png',
-  flash: '/images/hamster-flash.png',
-  turbo: '/images/hamster-turbo.png',
+  dash:  '/images/dash.png',
+  flash: '/images/flash-crop.jpeg',
+  turbo: '/images/turbo-crop.png',
 }
 
 const TIER_LABEL: Record<string, string> = {

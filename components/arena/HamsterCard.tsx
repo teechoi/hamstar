@@ -20,9 +20,9 @@ export interface HamsterCardProps {
 }
 
 const PET_IMAGES: Record<string, string> = {
-  dash:  '/images/hamster-dash.png',
-  flash: '/images/hamster-arena-left.png',
-  turbo: '/images/hamster-turbo.png',
+  dash:  '/images/dash.png',
+  flash: '/images/flash-crop.jpeg',
+  turbo: '/images/turbo-crop.png',
 }
 
 // Turbo's image includes a platform prop that adds visual bulk — dial it down slightly

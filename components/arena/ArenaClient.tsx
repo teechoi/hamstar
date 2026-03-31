@@ -464,8 +464,8 @@ function WatchLiveBtn({ active, href }: { active: boolean; href: string }) {
       style={{
         flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
         gap: 12, padding: '16px 48px',
-        background: active ? YELLOW : '#e0e0e0',
-        border: active ? '2px solid #000' : '2px solid #ccc',
+        background: active ? YELLOW : '#e8e8e8',
+        border: 'none',
         borderRadius: 48.5, textDecoration: 'none',
         fontFamily: KANIT, fontSize: 'clamp(14px, 1.5vw, 17px)', fontWeight: 700,
         color: active ? DARK : '#aaa',
@@ -485,7 +485,7 @@ function GrayDisabledBtn({ label }: { label: string }) {
     <div style={{
       flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
       gap: 12, padding: '16px 48px',
-      background: '#e0e0e0', border: '2px solid #ccc', borderRadius: 48.5,
+      background: '#e8e8e8', border: 'none', borderRadius: 48.5,
       fontFamily: KANIT, fontSize: 'clamp(14px, 1.5vw, 17px)', fontWeight: 700,
       color: '#aaa', userSelect: 'none',
     }}>

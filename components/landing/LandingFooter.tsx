@@ -94,6 +94,7 @@ export function LandingFooter({
   }
 
   return (
+    <>
     <footer id="footer" style={{ background: BG }}>
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: 'clamp(32px, 4vw, 56px) clamp(24px, 4vw, 64px) 0' }}>
 
@@ -149,5 +150,6 @@ export function LandingFooter({
       </div>
     </footer>
     {legalModal && <LegalModal type={legalModal} onClose={() => setLegalModal(null)} />}
+    </>
   )
 }

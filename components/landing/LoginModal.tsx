@@ -84,26 +84,39 @@ export function LoginModal({ onClose, loginTitle, loginSubtitle }: LoginModalPro
     const found = uniqueWallets.find(w => w.adapter.name === name)
     if (!found) { clearConnecting(); return }
 
+    // Listen directly to the adapter's connect event as a reliable fallback.
+    // Some wallets (e.g. MetaMask via Wallet Standard) successfully connect but
+    // the Solana adapter context never updates `connected` to true, so the
+    // effect-based close never fires. This catches that case.
+    const onAdapterConnect = () => {
+      clearConnecting()
+      onCloseRef.current()
+    }
+    const onAdapterError = (e: Error) => {
+      found.adapter.off('connect', onAdapterConnect)
+      clearConnecting(e?.message ?? 'Could not connect. Please try again.')
+    }
+    found.adapter.once('connect', onAdapterConnect)
+    found.adapter.once('error', onAdapterError)
+
     try {
       if (wallet?.adapter.name === name) {
-        // Already selected — connect directly. DO NOT disconnect first: the
-        // async disconnect().then(connect) chain exits the browser's user-gesture
-        // window, causing Phantom (and others) to silently block the popup and
-        // leave the promise pending forever → infinite spinner.
         found.adapter.connect().catch((e: any) => {
+          found.adapter.off('connect', onAdapterConnect)
+          found.adapter.off('error', onAdapterError)
           clearConnecting(e?.message ?? 'Could not connect. Please try again.')
         })
       } else {
-        // Switch wallet then connect the adapter directly — MUST stay in this
-        // synchronous click handler so the browser allows the wallet popup.
-        // Calling connect() inside a useEffect delays it past the user gesture
-        // boundary and causes browsers to silently block the popup.
         select(name as any)
         found.adapter.connect().catch((e: any) => {
+          found.adapter.off('connect', onAdapterConnect)
+          found.adapter.off('error', onAdapterError)
           clearConnecting(e?.message ?? 'Could not connect. Please try again.')
         })
       }
     } catch (e: any) {
+      found.adapter.off('connect', onAdapterConnect)
+      found.adapter.off('error', onAdapterError)
       clearConnecting(e?.message ?? 'Could not open wallet. Please try again.')
     }
   }

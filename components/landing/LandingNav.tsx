@@ -299,38 +299,21 @@ function HowItWorksPill({ isDark, onClick }: { isDark: boolean; onClick: () => v
 }
 
 function UnauthSection({ isDark, onLoginClick }: { isDark: boolean; onLoginClick?: () => void }) {
-  const [loginHov, setLoginHov] = useState(false)
-  const [signupHov, setSignupHov] = useState(false)
+  const [hov, setHov] = useState(false)
   return (
-    <>
-      <button
-        onClick={onLoginClick}
-        onMouseEnter={() => setLoginHov(true)}
-        onMouseLeave={() => setLoginHov(false)}
-        style={{
-          background: 'none', border: 'none',
-          color: isDark ? '#fff' : DARK,
-          fontSize: 12, fontWeight: 500, cursor: 'pointer',
-          fontFamily: KANIT, padding: '7px 10px',
-          opacity: loginHov ? 0.6 : 1, transition: 'opacity 0.15s',
-        }}
-      >
-        Log In
-      </button>
-      <button
-        onClick={onLoginClick}
-        onMouseEnter={() => setSignupHov(true)}
-        onMouseLeave={() => setSignupHov(false)}
-        style={{
-          padding: '7px 20px', background: YELLOW, border: 'none',
-          borderRadius: 48.5, color: DARK, fontSize: 12, fontWeight: 600,
-          cursor: 'pointer', fontFamily: KANIT,
-          opacity: signupHov ? 0.85 : 1, transition: 'opacity 0.15s',
-        }}
-      >
-        Sign Up
-      </button>
-    </>
+    <button
+      onClick={onLoginClick}
+      onMouseEnter={() => setHov(true)}
+      onMouseLeave={() => setHov(false)}
+      style={{
+        padding: '7px 20px', background: YELLOW, border: 'none',
+        borderRadius: 48.5, color: DARK, fontSize: 12, fontWeight: 600,
+        cursor: 'pointer', fontFamily: KANIT,
+        opacity: hov ? 0.85 : 1, transition: 'opacity 0.15s',
+      }}
+    >
+      Connect Wallet
+    </button>
   )
 }
 

@@ -457,22 +457,21 @@ function WatchLiveBtn({ active, href }: { active: boolean; href: string }) {
   return (
     <a
       href={active ? href : undefined}
-      target="_blank"
+      target={active ? '_blank' : undefined}
       rel="noopener noreferrer"
-      onMouseEnter={() => { if (active) setHov(true) }}
+      onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
       style={{
         flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
         gap: 12, padding: '16px 48px',
-        background: active ? YELLOW : '#e8e8e8',
+        background: YELLOW,
         border: 'none',
         borderRadius: 48.5, textDecoration: 'none',
         fontFamily: KANIT, fontSize: 'clamp(14px, 1.5vw, 17px)', fontWeight: 700,
-        color: active ? DARK : '#aaa',
+        color: DARK,
         cursor: active ? 'pointer' : 'default',
-        opacity: hov ? 0.9 : 1, transition: 'opacity 0.15s',
-        boxShadow: active ? '0 20px 40px rgba(77,67,83,0.08)' : 'none',
-        pointerEvents: active ? 'auto' : 'none',
+        opacity: hov && active ? 0.9 : 1, transition: 'opacity 0.15s',
+        boxShadow: '0 4px 16px rgba(255,231,144,0.4)',
       }}
     >
       Watch Live Race <span style={{ fontSize: 16 }}>▶</span>

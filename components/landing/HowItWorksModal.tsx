@@ -151,7 +151,7 @@ export function HowItWorksModal({ onClose, onEnterArena, steps }: HowItWorksModa
 
         {/* Title */}
         <h2 style={{
-          fontSize: 'clamp(18px, 4vw, 24px)', fontWeight: 600, color: DARK,
+          fontFamily: KANIT, fontSize: 'clamp(18px, 4vw, 24px)', fontWeight: 600, color: DARK,
           marginBottom: 12, textAlign: 'center',
         }}>
           {current.num}. {current.title}
@@ -159,7 +159,7 @@ export function HowItWorksModal({ onClose, onEnterArena, steps }: HowItWorksModa
 
         {/* Body */}
         <p style={{
-          fontSize: 16, color: '#8A8A8A', fontFamily: 'Pretendard, sans-serif', fontWeight: 500,
+          fontSize: 16, color: '#8A8A8A', fontFamily: 'Pretendard, sans-serif', fontWeight: 400,
           textAlign: 'center', lineHeight: 1.6,
           marginBottom: current.note ? 8 : 20,
           whiteSpace: 'pre-line',
@@ -167,15 +167,16 @@ export function HowItWorksModal({ onClose, onEnterArena, steps }: HowItWorksModa
           {current.body}
         </p>
 
-        {/* Note */}
-        {current.note && (
-          <p style={{
-            fontSize: 13, color: '#949494', fontWeight: 300,
-            textAlign: 'center', marginBottom: 20,
-          }}>
-            {current.note}
-          </p>
-        )}
+        {/* Note — always rendered to keep card height consistent across steps */}
+        <p style={{
+          fontFamily: 'Pretendard, sans-serif',
+          fontSize: 13, color: current.note ? '#949494' : 'transparent',
+          fontWeight: 400,
+          textAlign: 'center', marginBottom: 20,
+          minHeight: 20,
+        }}>
+          {current.note ?? ' '}
+        </p>
 
         {/* CTA — pushed to bottom so card height stays consistent */}
         <div style={{ marginTop: 20, width: '100%' }}>

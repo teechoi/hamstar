@@ -14,49 +14,55 @@ interface HighlightSectionProps {
 }
 
 function TweetVideoCard({ tweetUrl, title }: { tweetUrl: string; title: string }) {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const cardRef = useRef<HTMLDivElement>(null)
+  const outerRef = useRef<HTMLDivElement>(null)   // cleared between embed attempts
+  const cardRef  = useRef<HTMLDivElement>(null)
   const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
     const tweetId = tweetUrl.match(/status\/(\d+)/)?.[1]
-    if (!tweetId || !containerRef.current) return
+    if (!tweetId || !outerRef.current) return
 
-    // cancelled flag prevents StrictMode's double-effect from double-embedding
-    let cancelled = false
+    // Each embed attempt gets its OWN fresh child element.
+    // Twitter's createTweet holds a reference to that element and inserts
+    // the iframe asynchronously. When cleanup removes the child from the outer
+    // div, the old createTweet still resolves — but inserts into a detached
+    // (invisible) node, so the duplicate never appears in the DOM.
+    const slot = document.createElement('div')
+    outerRef.current.innerHTML = ''
+    outerRef.current.appendChild(slot)
+
+    let active = true
 
     const embed = () => {
-      if (cancelled || !containerRef.current) return
-      containerRef.current.innerHTML = ''
-      // Width = card width so the iframe never overflows
+      if (!active) return
       const width = cardRef.current?.offsetWidth ?? 280
-      window.twttr.widgets.createTweet(tweetId, containerRef.current, {
+      window.twttr.widgets.createTweet(tweetId, slot, {
         theme: 'light',
         conversation: 'none',
         dnt: true,
         width,
-      }).then(() => { if (!cancelled) setLoaded(true) })
+      }).then(() => { if (active) setLoaded(true) })
     }
 
     if (window.twttr?.widgets) {
       embed()
     } else {
-      const existing = document.getElementById('twitter-widget-js')
-      if (!existing) {
-        const s = document.createElement('script')
-        s.id = 'twitter-widget-js'
-        s.src = 'https://platform.twitter.com/widgets.js'
-        s.async = true
-        s.onload = embed
-        document.head.appendChild(s)
-      } else {
-        existing.addEventListener('load', embed)
+      let script = document.getElementById('twitter-widget-js') as HTMLScriptElement | null
+      if (!script) {
+        script = document.createElement('script')
+        script.id = 'twitter-widget-js'
+        script.src = 'https://platform.twitter.com/widgets.js'
+        script.async = true
+        document.head.appendChild(script)
       }
+      script.addEventListener('load', embed, { once: true })
     }
 
     return () => {
-      cancelled = true
-      if (containerRef.current) containerRef.current.innerHTML = ''
+      active = false
+      // Detach the slot — any pending createTweet will insert into it but
+      // it is no longer in the DOM, so nothing visible happens.
+      if (outerRef.current) outerRef.current.innerHTML = ''
     }
   }, [tweetUrl])
 
@@ -80,7 +86,7 @@ function TweetVideoCard({ tweetUrl, title }: { tweetUrl: string; title: string }
         </div>
       )}
       <div
-        ref={containerRef}
+        ref={outerRef}
         style={{ width: '100%', overflow: 'hidden', minHeight: loaded ? undefined : 0 }}
       />
       <div style={{ padding: '12px 16px 16px' }}>

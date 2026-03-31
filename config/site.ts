@@ -110,7 +110,7 @@ export const PETS: Pet[] = [
     number: 3,
     emoji: '🐿️',
     team: 'Team Flash',
-    tagline: 'Flash is unpredictable. That is the point.',
+    tagline: 'Unpredictable. That\'s the point.',
     bio: "Nobody knows what Flash will do next — not even Flash. Last place one lap, podium the next. Built different. Wired wrong. The most entertaining racer on the wheel and the most dangerous bet you'll ever make.",
     color: '#FF00CC',
     speed: 83,

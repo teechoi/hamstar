@@ -202,7 +202,7 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
         <div style={{ position: 'relative', overflow: 'hidden' }}>
           {/* Left decorative hamster — desktop: tracks content center; mobile: peeks from left wall */}
           <img
-            src="/images/hamster-arena-left.png"
+            src="/images/hamster-racer.png"
             alt=""
             aria-hidden
             style={{

@@ -20,8 +20,10 @@ export const DECOS = {
   'racers-sunflower': {
     src: '/images/sunflower.png',
     label: 'Racers: Sunflower',
-    // Figma 25:404 — left=-147, top=48, w=387, rotation=0.4585rad (26.3°)
-    style: { left: -147, top: 48, width: 387, height: 399, transform: 'rotate(26.3deg)', transformOrigin: '50% 50%' } as CSSProperties,
+    // Viewport-edge anchored: left is section-relative (= viewport left edge).
+    // top: canvas sits at 50vh - 342px from section top; original Figma top was 48
+    // inside the 684px canvas → section-relative = calc(50vh - 342px + 48px) = calc(50vh - 294px)
+    style: { left: -147, top: 'calc(50vh - 294px)', width: 387, height: 399, transform: 'rotate(26.3deg)', transformOrigin: '50% 50%' } as CSSProperties,
   },
   'racers-oats': {
     src: '/images/oats-pile-a.png',
@@ -50,8 +52,9 @@ export const DECOS = {
   'arena-trophy': {
     src: '/images/arena-trophy-hamster.png',
     label: 'Arena: Trophy Hamster',
-    // Figma 25:410 — left=-152 at 1280px frame; min() caps at -150px so it stays at left edge on wide monitors
-    style: { left: 'min(calc(50% - 870px), -150px)', top: 349, width: 448, height: 444, transform: 'rotate(17.63deg)', transformOrigin: '50% 50%' } as CSSProperties,
+    // Viewport-edge anchored at section level. left uses 50% of section (= viewport).
+    // top: canvas at 50vh - 342px; original Figma top=349 → section-relative = calc(50vh + 7px)
+    style: { left: 'min(calc(50% - 870px), -150px)', top: 'calc(50vh + 7px)', width: 448, height: 444, transform: 'rotate(17.63deg)', transformOrigin: '50% 50%' } as CSSProperties,
   },
   'arena-bridge': {
     src: '/images/arena-bridge.png',

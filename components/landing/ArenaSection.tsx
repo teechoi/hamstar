@@ -174,7 +174,11 @@ export function ArenaSection({
       display: 'flex', alignItems: 'center',
       overflow: 'hidden',
     }}>
-      {/* 1280×684 canvas, vertically centered — all deco top values are relative to this */}
+      {/* Trophy — viewport-edge anchored at section level.
+          left uses 50% of section (= viewport). top tracks canvas vertical center. */}
+      {isMobile === false && <DecoImage id="arena-trophy" className="section-deco" />}
+
+      {/* 1280×684 canvas, vertically centered — oats + bridge coords are canvas-relative */}
       <div style={{
         position: 'relative',
         width: 1280,
@@ -183,11 +187,8 @@ export function ArenaSection({
         flexShrink: 0,
         zIndex: 60,
       }}>
-        {/* Trophy inside canvas so top:349 stays canvas-relative; left calc() works
-            identically whether relative to section or centered canvas at same width */}
-        <DecoImage id="arena-trophy" className="section-deco" />
-        <DecoImage id="arena-oats" className="section-deco" />
-        <DecoImage id="arena-bridge" className="section-deco" />
+        {isMobile === false && <DecoImage id="arena-oats" className="section-deco" />}
+        {isMobile === false && <DecoImage id="arena-bridge" className="section-deco" />}
 
         {/* Title block — x=225, y=82, w=830, h=119, flex VERTICAL align:CENTER gap:20 pad:10 */}
         <div style={{

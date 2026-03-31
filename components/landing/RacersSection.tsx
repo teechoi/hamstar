@@ -152,20 +152,26 @@ export function RacersSection({ racersTitle = 'Meet the Racers' }: { racersTitle
     <section id="racers" style={{
       background: '#F8F9FA',
       minHeight: '100vh',
+      position: 'relative',       // anchors viewport-edge decos
       display: 'flex', alignItems: 'center',
+      overflow: 'hidden',
     }}>
-      {/* 1280×684 canvas, vertically centered — all deco top values are relative to this */}
+      {/* Sunflower — viewport-edge anchored (section-relative).
+          left:-147 peeks from the left viewport edge at every screen width.
+          top is calculated from section level so it tracks the canvas vertical center. */}
+      {isMobile === false && <DecoImage id="racers-sunflower" className="section-deco" />}
+
+      {/* 1280×684 canvas, vertically centered — oats + turbo coords are canvas-relative */}
       <div style={{ position: 'relative', width: 1280, height: 684, margin: '0 auto', flexShrink: 0 }}>
 
         {/* Clip container for behind-card decorations */}
         <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', zIndex: 0 }}>
-          <DecoImage id="racers-sunflower" className="section-deco" />
-          <DecoImage id="racers-oats" className="section-deco" />
-          <DecoImage id="racers-oats-2" className="section-deco" />
+          {isMobile === false && <DecoImage id="racers-oats" className="section-deco" />}
+          {isMobile === false && <DecoImage id="racers-oats-2" className="section-deco" />}
         </div>
 
         {/* Turbo pushup — above cards so it overlaps the Turbo card */}
-        <DecoImage id="racers-turbo" className="section-deco" />
+        {isMobile === false && <DecoImage id="racers-turbo" className="section-deco" />}
 
         {/* Title — Figma y=94 */}
         <div style={{

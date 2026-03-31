@@ -23,31 +23,12 @@ export function AboutSection({
         display: 'flex', flexDirection: 'column', justifyContent: 'center',
         padding: '120px 24px',
       }}>
-        {/* Image area — matches desktop composition, scaled to ~76% */}
-        <div style={{ position: 'relative', width: 'min(300px, 84vw)', height: 'min(300px, 84vw)', margin: '0 auto 40px', flexShrink: 0 }}>
-          {/* Rotated bg card */}
-          <div style={{
-            position: 'absolute', left: '-4%', top: '-4%', width: '108%', height: '108%',
-            borderRadius: 20,
-            overflow: 'hidden',
-            transform: 'rotate(-11.46deg)',
-            transformOrigin: 'center center',
-          }}>
-            <img src="/images/about-bg.png" alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-          </div>
-          {/* Hamster wheel */}
-          <img
-            src="/images/hamster-wheel.png"
-            alt="Hamster on wheel"
-            style={{ position: 'absolute', left: '5%', top: '2%', width: '68%', height: '93%', objectFit: 'contain', zIndex: 1 }}
-          />
-          {/* Sunflower */}
-          <img
-            src="/images/sunflower.png"
-            alt=""
-            style={{ position: 'absolute', right: '2%', bottom: '4%', width: '37%', objectFit: 'contain', zIndex: 2 }}
-          />
-        </div>
+        {/* Image area — pre-composed image */}
+        <img
+          src="/images/about-hamstar.png"
+          alt="Hamster on wheel"
+          style={{ width: 'min(300px, 84vw)', height: 'min(300px, 84vw)', objectFit: 'contain', display: 'block', margin: '0 auto 40px' }}
+        />
 
         {/* Text */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -80,35 +61,12 @@ export function AboutSection({
         margin: '0 auto',
         flexShrink: 0,
       }}>
-        {/* Left group — Figma: Group 36 at x=167, y=76
-            Rectangle 22: 380×380, rot=-0.2019rad = -11.57°, cornerRadius 23
-            image 13 (hamster wheel): at group-rel (62, 44), 218×291 — not rotated, sits on top
-            image 25 (sunflower): at group-rel (257, 190), 137×172 — not rotated, sits on top */}
-        <div style={{ position: 'absolute', left: 167, top: 76, width: 394, height: 380 }}>
-          {/* Background card — slightly larger than 380×380 (offset -20 each side) so
-              objectFit:cover crops less, giving a zoomed-out look. Visual center stays at (190,190). */}
-          <div style={{
-            position: 'absolute', left: -20, top: -20, width: 420, height: 420,
-            borderRadius: 26,
-            overflow: 'hidden',
-            transform: 'rotate(-11.46deg)',
-            transformOrigin: 'center center',
-          }}>
-            <img src="/images/about-bg.png" alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-          </div>
-          {/* Hamster wheel */}
-          <img
-            src="/images/hamster-wheel.png"
-            alt="Hamster on wheel"
-            style={{ position: 'absolute', left: 30, top: 15, width: 280, height: 375, objectFit: 'contain', zIndex: 1 }}
-          />
-          {/* Sunflower */}
-          <img
-            src="/images/sunflower.png"
-            alt=""
-            style={{ position: 'absolute', left: 268, top: 195, width: 162, height: 205, objectFit: 'contain', zIndex: 2 }}
-          />
-        </div>
+        {/* Left group — pre-composed image (Group 36 (1).png) */}
+        <img
+          src="/images/about-hamstar.png"
+          alt="Hamster on wheel"
+          style={{ position: 'absolute', left: 147, top: 56, width: 430, height: 430, objectFit: 'contain' }}
+        />
 
         {/* Right frame — x=640, y=56, 566×368, Figma AutoLayout flex-start gap=10 padding=20/10/20/10 */}
         <div style={{

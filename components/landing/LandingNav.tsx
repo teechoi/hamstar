@@ -85,7 +85,7 @@ export function LandingNav({
         display: 'flex', alignItems: 'center',
         padding: isMobile ? '10px 16px' : '20px 20px',
         justifyContent: isMobile ? undefined : 'center',
-        gap: isMobile ? 12 : 90,
+        gap: isMobile ? 12 : 0,
       }}>
         {isMobile ? (
           <>
@@ -145,7 +145,7 @@ export function LandingNav({
             </button>
           </>
         ) : (
-          <>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: 'min(80vw, 1050px)' }}>
             {/* Left group: nav pills — Figma Frame 2: gap:10 */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
               {NAV_LINKS.map(({ label, id, href }) => (
@@ -173,7 +173,7 @@ export function LandingNav({
                 <UnauthSection isDark={isDark} onLoginClick={onLoginClick} />
               )}
             </div>
-          </>
+          </div>
         )}
       </div>
 

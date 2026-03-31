@@ -17,7 +17,12 @@ export function AboutSection({
 
   if (isMobile) {
     return (
-      <section id="about" style={{ background: '#F8F9FA', padding: '48px 24px 56px' }}>
+      <section id="about" style={{
+        background: '#F8F9FA',
+        minHeight: '100vh',
+        display: 'flex', flexDirection: 'column', justifyContent: 'center',
+        padding: '80px 24px',
+      }}>
         {/* Image area — stacked on top, centered */}
         <div style={{ position: 'relative', width: 'min(280px, 80vw)', height: 'min(260px, 74vw)', margin: '0 auto 36px' }}>
           <div style={{
@@ -56,15 +61,16 @@ export function AboutSection({
   return (
     <section id="about" style={{
       background: '#F8F9FA',
-      height: 526,
-      position: 'relative',
+      minHeight: '100vh',
+      display: 'flex', alignItems: 'center',
       overflow: 'hidden',
     }}>
-      {/* 1280×526 canvas, centered */}
+      {/* 1280×526 canvas, vertically centered */}
       <div style={{
-        position: 'absolute',
+        position: 'relative',
         width: 1280, height: 526,
-        left: '50%', transform: 'translateX(-50%)',
+        margin: '0 auto',
+        flexShrink: 0,
       }}>
         {/* Left group — Figma: Group 36 at x=167, y=76
             Rectangle 22: 380×380, rot=-0.2019rad = -11.57°, cornerRadius 23

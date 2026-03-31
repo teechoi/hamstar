@@ -145,7 +145,12 @@ export function ArenaSection({
 
   if (isMobile) {
     return (
-      <section id="arena" style={{ background: '#F8F9FA', padding: '48px 24px 56px' }}>
+      <section id="arena" style={{
+        background: '#F8F9FA',
+        minHeight: '100vh',
+        display: 'flex', flexDirection: 'column', justifyContent: 'center',
+        padding: '80px 24px',
+      }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 8 }}>
           <img src="/images/sunflower-seed.png" alt="" style={{ width: 22, height: 33, objectFit: 'contain' }} />
           <h2 style={{ fontFamily: KANIT, fontWeight: 700, fontSize: 32, color: '#000000', lineHeight: '40px', margin: 0 }}>
@@ -164,20 +169,21 @@ export function ArenaSection({
   return (
     <section id="arena" style={{
       background: '#F8F9FA',
-      height: 684,
+      minHeight: '100vh',
       position: 'relative',
+      display: 'flex', alignItems: 'center',
       overflow: 'hidden',
     }}>
       {/* Trophy — section-level so calc() tracks viewport edge, not canvas */}
       <DecoImage id="arena-trophy" className="section-deco" />
 
-      {/* 1280×684 canvas, centered — oats/bridge use frame-relative Figma coords */}
+      {/* 1280×684 canvas, vertically centered */}
       <div style={{
-        position: 'absolute',
+        position: 'relative',
         width: 1280,
         height: 684,
-        left: '50%',
-        transform: 'translateX(-50%)',
+        margin: '0 auto',
+        flexShrink: 0,
         zIndex: 60,
       }}>
         <DecoImage id="arena-oats" className="section-deco" />

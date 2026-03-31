@@ -126,7 +126,12 @@ export function RacersSection({ racersTitle = 'Meet the Racers' }: { racersTitle
 
   if (isMobile) {
     return (
-      <section id="racers" style={{ background: '#F8F9FA', padding: '48px 0 56px' }}>
+      <section id="racers" style={{
+        background: '#F8F9FA',
+        minHeight: '100vh',
+        display: 'flex', flexDirection: 'column', justifyContent: 'center',
+        padding: '80px 0',
+      }}>
         {/* Title */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 32, padding: '0 24px' }}>
           <img src="/images/sunflower-seed.png" alt="" style={{ width: 22, height: 33, objectFit: 'contain' }} />
@@ -146,8 +151,9 @@ export function RacersSection({ racersTitle = 'Meet the Racers' }: { racersTitle
   return (
     <section id="racers" style={{
       background: '#F8F9FA',
-      height: 684,
+      minHeight: '100vh',
       position: 'relative',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
     }}>
       {/* Clip container for behind-card decorations */}
       <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', zIndex: 0 }}>
@@ -159,35 +165,34 @@ export function RacersSection({ racersTitle = 'Meet the Racers' }: { racersTitle
       {/* Turbo pushup — above cards so it overlaps the Turbo card */}
       <DecoImage id="racers-turbo" className="section-deco" />
 
-      {/* Title — centered, Figma y=94 */}
-      <div style={{
-        position: 'absolute', top: 94, left: 0, right: 0,
-        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
-        zIndex: 60,
-      }}>
-        <img src="/images/sunflower-seed.png" alt="" style={{ width: 29, height: 43, objectFit: 'contain' }} />
-        <h2 style={{
-          fontFamily: KANIT,
-          fontWeight: 700, fontSize: 40,
-          color: '#000000',
-          lineHeight: '48px',
-          margin: 0,
-          whiteSpace: 'nowrap',
+      {/* Content — vertically centered via flex parent */}
+      <div style={{ position: 'relative', zIndex: 60, width: '100%', padding: '80px 24px', boxSizing: 'border-box' }}>
+        {/* Title */}
+        <div style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+          marginBottom: 60,
         }}>
-          {racersTitle}
-        </h2>
-        <img src="/images/sunflower-seed.png" alt="" style={{ width: 29, height: 43, objectFit: 'contain' }} />
-      </div>
+          <img src="/images/sunflower-seed.png" alt="" style={{ width: 29, height: 43, objectFit: 'contain' }} />
+          <h2 style={{
+            fontFamily: KANIT,
+            fontWeight: 700, fontSize: 40,
+            color: '#000000',
+            lineHeight: '48px',
+            margin: 0,
+            whiteSpace: 'nowrap',
+          }}>
+            {racersTitle}
+          </h2>
+          <img src="/images/sunflower-seed.png" alt="" style={{ width: 29, height: 43, objectFit: 'contain' }} />
+        </div>
 
-      {/* Cards — centered, Figma y=202, gap:20 */}
-      <div style={{
-        position: 'absolute', top: 202, left: 0, right: 0,
-        display: 'flex', justifyContent: 'center', gap: 20,
-        zIndex: 60,
-        padding: '0 24px',
-        boxSizing: 'border-box',
-      }}>
-        {RACERS.map(r => <RacerCard key={r.name} {...r} />)}
+        {/* Cards */}
+        <div style={{
+          display: 'flex', justifyContent: 'center', gap: 20,
+          padding: '0 24px', boxSizing: 'border-box',
+        }}>
+          {RACERS.map(r => <RacerCard key={r.name} {...r} />)}
+        </div>
       </div>
     </section>
   )

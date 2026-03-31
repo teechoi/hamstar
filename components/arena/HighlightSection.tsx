@@ -1,12 +1,95 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { PETS, type RaceResult } from '@/config/site'
 import { useIsMobile } from '@/components/ui/index'
 
 const KANIT = "var(--font-kanit), sans-serif"
 
+declare global {
+  interface Window { twttr: any }
+}
+
 interface HighlightSectionProps {
   lastResult?: RaceResult
+}
+
+function TweetVideoCard({ tweetUrl, title }: { tweetUrl: string; title: string }) {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const cardRef = useRef<HTMLDivElement>(null)
+  const [loaded, setLoaded] = useState(false)
+
+  useEffect(() => {
+    const tweetId = tweetUrl.match(/status\/(\d+)/)?.[1]
+    if (!tweetId || !containerRef.current) return
+
+    // cancelled flag prevents StrictMode's double-effect from double-embedding
+    let cancelled = false
+
+    const embed = () => {
+      if (cancelled || !containerRef.current) return
+      containerRef.current.innerHTML = ''
+      // Width = card width so the iframe never overflows
+      const width = cardRef.current?.offsetWidth ?? 280
+      window.twttr.widgets.createTweet(tweetId, containerRef.current, {
+        theme: 'light',
+        conversation: 'none',
+        dnt: true,
+        width,
+      }).then(() => { if (!cancelled) setLoaded(true) })
+    }
+
+    if (window.twttr?.widgets) {
+      embed()
+    } else {
+      const existing = document.getElementById('twitter-widget-js')
+      if (!existing) {
+        const s = document.createElement('script')
+        s.id = 'twitter-widget-js'
+        s.src = 'https://platform.twitter.com/widgets.js'
+        s.async = true
+        s.onload = embed
+        document.head.appendChild(s)
+      } else {
+        existing.addEventListener('load', embed)
+      }
+    }
+
+    return () => {
+      cancelled = true
+      if (containerRef.current) containerRef.current.innerHTML = ''
+    }
+  }, [tweetUrl])
+
+  return (
+    <div ref={cardRef} style={{
+      flex: '1 1 200px',
+      minWidth: 0,
+      borderRadius: 20,
+      overflow: 'hidden',
+      background: '#fff',
+      boxShadow: '0 4px 16px rgba(0,0,0,0.07)',
+    }}>
+      {/* Loading placeholder until widget renders */}
+      {!loaded && (
+        <div style={{
+          width: '100%', height: 220,
+          background: '#D5D5D5',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}>
+          <img src="/images/play-button.png" alt="Play" style={{ width: 40, height: 40, opacity: 0.5 }} />
+        </div>
+      )}
+      <div
+        ref={containerRef}
+        style={{ width: '100%', overflow: 'hidden', minHeight: loaded ? undefined : 0 }}
+      />
+      <div style={{ padding: '12px 16px 16px' }}>
+        <p style={{ fontFamily: KANIT, fontSize: 14, fontWeight: 600, color: '#000000' }}>
+          {title}
+        </p>
+      </div>
+    </div>
+  )
 }
 
 function VideoCard({ title, index }: { title: string; index: number }) {
@@ -26,7 +109,6 @@ function VideoCard({ title, index }: { title: string; index: number }) {
         cursor: 'pointer',
       }}
     >
-      {/* Thumbnail — gray placeholder with centered play icon */}
       <div style={{
         width: '100%', height: 220,
         background: '#D5D5D5',
@@ -44,7 +126,6 @@ function VideoCard({ title, index }: { title: string; index: number }) {
           }}
         />
       </div>
-      {/* Caption */}
       <div style={{ padding: '12px 16px 16px' }}>
         <p style={{ fontFamily: KANIT, fontSize: 14, fontWeight: 600, color: '#000000' }}>
           {title}
@@ -142,8 +223,9 @@ export function HighlightSection({ lastResult }: HighlightSectionProps) {
 
         {/* Video cards */}
         <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
-          {clips.map((title, i) => (
-            <VideoCard key={i} title={title} index={i} />
+          <TweetVideoCard tweetUrl="https://x.com/hamstarkun/status/2038862948261880002" title={clips[0]} />
+          {clips.slice(1).map((title, i) => (
+            <VideoCard key={i} title={title} index={i + 1} />
           ))}
         </div>
       </div>

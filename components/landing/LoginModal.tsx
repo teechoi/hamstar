@@ -24,16 +24,25 @@ export function LoginModal({ onClose, loginTitle, loginSubtitle }: LoginModalPro
   const onCloseRef = useRef(onClose)
   useEffect(() => { onCloseRef.current = onClose }, [onClose])
 
+  // Timeout ref — clears spinner if wallet never resolves/rejects (e.g. Phantom popup blocked)
+  const connectingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const clearConnecting = (errMsg?: string) => {
+    if (connectingTimerRef.current) { clearTimeout(connectingTimerRef.current); connectingTimerRef.current = null }
+    setConnectingName(null)
+    if (errMsg) setErr(errMsg)
+  }
+  useEffect(() => () => { if (connectingTimerRef.current) clearTimeout(connectingTimerRef.current) }, [])
+
   // Only close when we NEWLY connect — ignore if already connected when modal opens
   const alreadyConnected = useRef(connected)
   useEffect(() => {
-    if (connected && !alreadyConnected.current) onCloseRef.current()
-  }, [connected])
+    if (connected && !alreadyConnected.current) { clearConnecting(); onCloseRef.current() }
+  }, [connected]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Reset spinner if wallet popup was dismissed without connecting
   useEffect(() => {
     if (!connecting && connectingName && !connected) {
-      setConnectingName(null)
+      clearConnecting()
     }
   }, [connecting]) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -58,23 +67,23 @@ export function LoginModal({ onClose, loginTitle, loginSubtitle }: LoginModalPro
     setErr('')
     setConnectingName(name)
 
+    // Safety net — if the wallet promise never settles (e.g. Phantom popup blocked by browser),
+    // clear the spinner after 30 s so the user can try again.
+    if (connectingTimerRef.current) clearTimeout(connectingTimerRef.current)
+    connectingTimerRef.current = setTimeout(() => clearConnecting(), 30_000)
+
     const found = uniqueWallets.find(w => w.adapter.name === name)
-    if (!found) { setConnectingName(null); return }
+    if (!found) { clearConnecting(); return }
 
     try {
       if (wallet?.adapter.name === name) {
-        // Already selected — disconnect first to clear any stuck autoConnect state
-        // (e.g. Solflare gets stuck mid-connecting after page load with autoConnect=true).
-        // Then immediately reconnect — both happen within the browser's user gesture
-        // window so the popup is allowed. The WalletProvider picks up the reconnect
-        // via its event listeners on the adapter.
-        found.adapter.disconnect()
-          .catch(() => {})
-          .then(() => found.adapter.connect())
-          .catch((e: any) => {
-            setConnectingName(null)
-            setErr(e?.message ?? 'Could not connect. Please try again.')
-          })
+        // Already selected — connect directly. DO NOT disconnect first: the
+        // async disconnect().then(connect) chain exits the browser's user-gesture
+        // window, causing Phantom (and others) to silently block the popup and
+        // leave the promise pending forever → infinite spinner.
+        found.adapter.connect().catch((e: any) => {
+          clearConnecting(e?.message ?? 'Could not connect. Please try again.')
+        })
       } else {
         // Switch wallet then connect the adapter directly — MUST stay in this
         // synchronous click handler so the browser allows the wallet popup.
@@ -82,13 +91,11 @@ export function LoginModal({ onClose, loginTitle, loginSubtitle }: LoginModalPro
         // boundary and causes browsers to silently block the popup.
         select(name as any)
         found.adapter.connect().catch((e: any) => {
-          setConnectingName(null)
-          setErr(e?.message ?? 'Could not connect. Please try again.')
+          clearConnecting(e?.message ?? 'Could not connect. Please try again.')
         })
       }
     } catch (e: any) {
-      setConnectingName(null)
-      setErr(e?.message ?? 'Could not open wallet. Please try again.')
+      clearConnecting(e?.message ?? 'Could not open wallet. Please try again.')
     }
   }
 

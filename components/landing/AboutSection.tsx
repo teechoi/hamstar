@@ -21,7 +21,7 @@ export function AboutSection({
         background: '#F8F9FA',
         minHeight: '100vh',
         display: 'flex', flexDirection: 'column', justifyContent: 'center',
-        padding: '80px 24px',
+        padding: '120px 24px',
       }}>
         {/* Image area — matches desktop composition, scaled to ~76% */}
         <div style={{ position: 'relative', width: 'min(300px, 84vw)', height: 'min(300px, 84vw)', margin: '0 auto 40px', flexShrink: 0 }}>
@@ -70,7 +70,7 @@ export function AboutSection({
       background: '#F8F9FA',
       minHeight: '100vh',
       display: 'flex', alignItems: 'flex-start',
-      paddingTop: 'max(80px, calc((100vh - 526px) / 2 - 48px))',
+      paddingTop: 'max(120px, calc((100vh - 526px) / 2 - 48px))',
       overflow: 'hidden',
     }}>
       {/* 1280×526 canvas, vertically centered */}

@@ -52,7 +52,7 @@ export function LimeButton({ children, onClick, small, fullWidth }: { children: 
   const [hov, setHov] = useState(false)
   return (
     <button onClick={onClick} onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
-      style={{ padding: small ? '8px 16px' : '13px 26px', background: hov ? T.limeDark : T.lime, border: 'none', borderRadius: 48.5, color: T.limeText, fontWeight: 900, fontSize: small ? 12 : 14, cursor: 'pointer', letterSpacing: 0.3, transform: hov ? 'scale(1.02)' : 'scale(1)', transition: 'all 0.15s ease-out', fontFamily: 'inherit', width: fullWidth ? '100%' : undefined }}>
+      style={{ padding: small ? '8px 16px' : '13px 26px', background: hov ? T.limeDark : T.lime, border: 'none', borderRadius: 48.5, color: T.limeText, fontWeight: 900, fontSize: small ? 12 : 14, cursor: 'pointer', letterSpacing: 0.3, transform: hov ? 'scale(1.02)' : 'scale(1)', transition: 'all 0.15s ease-out', fontFamily: "var(--font-kanit), sans-serif", width: fullWidth ? '100%' : undefined }}>
       {children}
     </button>
   )
@@ -63,7 +63,7 @@ export function OutlineButton({ children, color, onClick, small, fullWidth }: { 
   const c = color ?? T.blue
   return (
     <button onClick={onClick} onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
-      style={{ padding: small ? '7px 14px' : '12px 22px', background: hov ? c : 'transparent', border: `2px solid ${c}`, borderRadius: 48.5, color: hov ? '#fff' : c, fontWeight: 800, fontSize: small ? 12 : 13, cursor: 'pointer', letterSpacing: 0.3, transform: hov ? 'scale(1.02)' : 'scale(1)', transition: 'all 0.15s ease-out', fontFamily: 'inherit', width: fullWidth ? '100%' : undefined }}>
+      style={{ padding: small ? '7px 14px' : '12px 22px', background: hov ? c : 'transparent', border: `2px solid ${c}`, borderRadius: 48.5, color: hov ? '#fff' : c, fontWeight: 800, fontSize: small ? 12 : 13, cursor: 'pointer', letterSpacing: 0.3, transform: hov ? 'scale(1.02)' : 'scale(1)', transition: 'all 0.15s ease-out', fontFamily: "var(--font-kanit), sans-serif", width: fullWidth ? '100%' : undefined }}>
       {children}
     </button>
   )

@@ -185,7 +185,7 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
             Welcome to Hamstar Arena
           </h1>
           <p style={{
-            fontFamily: KANIT,
+            fontFamily: 'Pretendard, sans-serif',
             fontSize: 'clamp(14px, 1.5vw, 16px)',
             fontWeight: 400,
             color: '#000',
@@ -200,23 +200,22 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
         </div>
 
         <div style={{ position: 'relative', overflow: 'hidden' }}>
-          {/* Left decorative hamster — tracks content left edge (maxWidth 707 → half=353.5px) with 30px gap */}
-          {!isMobile && (
-            <img
-              src="/images/hamster-flash-flex.png"
-              alt=""
-              aria-hidden
-              style={{
-                position: 'absolute',
-                left: 'calc(50% - 760px)',
-                top: 290,
-                width: 'clamp(220px, 22vw, 320px)',
-                height: 'auto',
-                pointerEvents: 'none',
-                zIndex: 0,
-              }}
-            />
-          )}
+          {/* Left decorative hamster — desktop: tracks content center; mobile: peeks from left wall */}
+          <img
+            src="/images/hamster-flash-flex.png"
+            alt=""
+            aria-hidden
+            style={{
+              position: 'absolute',
+              left: isMobile ? -30 : 'calc(50% - 760px)',
+              top: isMobile ? undefined : 290,
+              bottom: isMobile ? 80 : undefined,
+              width: isMobile ? 'clamp(100px, 22vw, 140px)' : 'clamp(220px, 22vw, 320px)',
+              height: 'auto',
+              pointerEvents: 'none',
+              zIndex: 0,
+            }}
+          />
         <div style={{ maxWidth: 900, margin: '0 auto', padding: isMobile ? '0 16px' : '0 24px', position: 'relative', zIndex: 1 }}>
 
           {/* Status card — labels left, values right */}

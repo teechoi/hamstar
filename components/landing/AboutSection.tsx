@@ -21,7 +21,7 @@ export function AboutSection({
         background: '#F8F9FA',
         minHeight: '100vh',
         display: 'flex', flexDirection: 'column', justifyContent: 'center',
-        padding: '80px 24px',
+        padding: '60px 24px',
       }}>
         {/* Image area — matches desktop composition, scaled to ~76% */}
         <div style={{ position: 'relative', width: 'min(300px, 84vw)', height: 'min(300px, 84vw)', margin: '0 auto 40px', flexShrink: 0 }}>
@@ -57,7 +57,7 @@ export function AboutSection({
               {aboutTitle}
             </h2>
           </div>
-          <p style={{ fontFamily: KANIT, fontWeight: 400, fontSize: 16, color: '#000000', lineHeight: '24px', margin: 0, whiteSpace: 'pre-line' }}>
+          <p style={{ fontFamily: 'Pretendard, sans-serif', fontWeight: 400, fontSize: 16, color: '#000000', lineHeight: '24px', margin: 0, whiteSpace: 'pre-line' }}>
             {bodyText}
           </p>
         </div>
@@ -70,7 +70,7 @@ export function AboutSection({
       background: '#F8F9FA',
       minHeight: '100vh',
       display: 'flex', alignItems: 'flex-start',
-      paddingTop: 'max(0px, calc((100vh - 526px) / 2))',
+      paddingTop: 'max(0px, calc((100vh - 526px) / 2 - 48px))',
       overflow: 'hidden',
     }}>
       {/* 1280×526 canvas, vertically centered */}

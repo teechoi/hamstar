@@ -113,7 +113,7 @@ export function HeroSection({
             onMouseLeave={() => setHov(false)}
             style={{
               display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-              gap: 8, padding: '13px 28px',
+              gap: 8, padding: isMobile ? '14px 28px' : '13px 28px',
               background: '#735DFF', color: '#F8F9FA',
               border: 'none', borderRadius: 48.5,
               fontFamily: KANIT, fontSize: 16, fontWeight: 500,

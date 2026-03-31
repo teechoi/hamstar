@@ -130,7 +130,7 @@ export function DepositModal({ address = '', onClose, onConnectWallet }: Deposit
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap', gap: '4px 0', padding: '0 28px 24px' }}>
           {['Terms of Use', 'Risk Disclosure', 'Privacy Policy'].map((link, i, arr) => (
             <span key={link} style={{ display: 'flex', alignItems: 'center' }}>
-              <a href="#" style={{ fontSize: 13, color: '#8A8A8A', textDecoration: 'none', fontFamily: KANIT }}>
+              <a href="#" style={{ fontSize: 13, color: '#8A8A8A', textDecoration: 'none', fontFamily: PRET }}>
                 {link}
               </a>
               {i < arr.length - 1 && <span style={{ margin: '0 10px', color: '#D5D5D5', fontSize: 13 }}>·</span>}

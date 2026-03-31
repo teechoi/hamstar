@@ -33,10 +33,19 @@ export function LoginModal({ onClose, loginTitle, loginSubtitle }: LoginModalPro
   }
   useEffect(() => () => { if (connectingTimerRef.current) clearTimeout(connectingTimerRef.current) }, [])
 
-  // Only close when we NEWLY connect — ignore if already connected when modal opens
+  // Only close when we NEWLY connect — ignore if already connected when modal opens.
+  // Reset the guard whenever connected goes false so that wallet switches (which
+  // briefly disconnect before reconnecting) still trigger the close on the next
+  // successful connection.
   const alreadyConnected = useRef(connected)
   useEffect(() => {
-    if (connected && !alreadyConnected.current) { clearConnecting(); onCloseRef.current() }
+    if (connected && !alreadyConnected.current) {
+      clearConnecting()
+      onCloseRef.current()
+    }
+    if (!connected) {
+      alreadyConnected.current = false
+    }
   }, [connected]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Reset spinner if wallet popup was dismissed without connecting

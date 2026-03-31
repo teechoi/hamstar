@@ -127,7 +127,7 @@ export function RacersSection({ racersTitle = 'Meet the Racers' }: { racersTitle
         background: '#F8F9FA',
         minHeight: '100vh',
         display: 'flex', flexDirection: 'column', justifyContent: 'center',
-        padding: '80px 0',
+        padding: '60px 0',
       }}>
         {/* Title */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 48, padding: '0 24px' }}>
@@ -138,8 +138,22 @@ export function RacersSection({ racersTitle = 'Meet the Racers' }: { racersTitle
           <img src="/images/sunflower-seed.png" alt="" style={{ width: 22, height: 33, objectFit: 'contain' }} />
         </div>
         {/* Horizontally scrollable cards */}
-        <div style={{ overflowX: 'auto', scrollbarWidth: 'none', display: 'flex', gap: 16, padding: '0 24px 8px' }}>
-          {RACERS.map(r => <RacerCard key={r.name} {...r} />)}
+        <div style={{
+          overflowX: 'auto',
+          scrollbarWidth: 'none',
+          scrollSnapType: 'x mandatory',
+          display: 'flex',
+          gap: 16,
+          paddingLeft: 24,
+          paddingBottom: 8,
+        }}>
+          {RACERS.map(r => (
+            <div key={r.name} style={{ scrollSnapAlign: 'start', flexShrink: 0 }}>
+              <RacerCard {...r} />
+            </div>
+          ))}
+          {/* Trailing spacer so last card's right gap is preserved in overflow scroll */}
+          <div style={{ minWidth: 24, flexShrink: 0 }} />
         </div>
       </section>
     )
@@ -151,7 +165,7 @@ export function RacersSection({ racersTitle = 'Meet the Racers' }: { racersTitle
       minHeight: '100vh',
       position: 'relative',       // anchors viewport-edge decos
       display: 'flex', alignItems: 'flex-start',
-      paddingTop: 'max(0px, calc((100vh - 684px) / 2))',
+      paddingTop: 'max(0px, calc((100vh - 684px) / 2 - 48px))',
       overflow: 'hidden',
     }}>
       {/* Sunflower — viewport-edge anchored (section-relative).

@@ -33,6 +33,7 @@ function styleLabel(chaos: number): string {
 export function PetPageClient() {
   const [modal, setModal] = useState<Modal>(null)
   const [selectedId, setSelectedId] = useState(PETS[0].id)
+  const [hovTabId, setHovTabId] = useState<string | null>(null)
   const isMobile = useIsMobile()
   const { connected, publicKey, disconnect } = useWallet()
 
@@ -71,8 +72,12 @@ export function PetPageClient() {
         <div style={{ position: 'absolute', bottom: 0, left: 0, width: 700, height: 700, borderRadius: '50%', background: 'rgba(252,212,0,0.22)', filter: 'blur(100px)', pointerEvents: 'none', zIndex: 0 }} />
         <div style={{ position: 'absolute', top: 200, right: 0, width: 600, height: 600, borderRadius: '50%', background: 'rgba(115,93,255,0.14)', filter: 'blur(100px)', pointerEvents: 'none', zIndex: 0 }} />
 
-        {/* Right decorative hamster */}
-        {!isMobile && (
+        {/* Right decorative hamster — desktop: tracks content center; mobile: peeks from right */}
+        {isMobile ? (
+          <div style={{ position: 'absolute', top: 360, right: 0, width: 'clamp(90px, 24vw, 130px)', overflow: 'hidden', pointerEvents: 'none', zIndex: 0 }}>
+            <img src="/images/hamster-pet-right.png" alt="" aria-hidden style={{ width: '100%', height: 'auto', display: 'block' }} />
+          </div>
+        ) : (
           <img
             src="/images/hamster-pet-right.png"
             alt=""
@@ -109,7 +114,7 @@ export function PetPageClient() {
               Hamster Profile
             </h1>
             <p style={{
-              fontFamily: KANIT,
+              fontFamily: 'Pretendard, sans-serif',
               fontSize: 'clamp(14px, 1.6vw, 17px)',
               fontWeight: 400,
               color: '#000',
@@ -132,6 +137,8 @@ export function PetPageClient() {
                 <button
                   key={pet.id}
                   onClick={() => setSelectedId(pet.id)}
+                  onMouseEnter={() => setHovTabId(pet.id)}
+                  onMouseLeave={() => setHovTabId(null)}
                   style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -140,9 +147,10 @@ export function PetPageClient() {
                     background: '#fff',
                     border: isActive ? '2px solid #735DFF' : '2px solid transparent',
                     borderRadius: 16,
-                    boxShadow: '0 4px 16px rgba(0,0,0,0.06)',
+                    boxShadow: hovTabId === pet.id && !isActive ? '0 4px 20px rgba(0,0,0,0.1)' : '0 4px 16px rgba(0,0,0,0.06)',
                     cursor: 'pointer',
-                    transition: 'border-color 0.15s',
+                    transition: 'border-color 0.15s, box-shadow 0.15s',
+                    opacity: hovTabId === pet.id && !isActive ? 0.9 : 1,
                   }}
                 >
                   <div style={{
@@ -224,7 +232,7 @@ export function PetPageClient() {
                 About {selected.name}
               </p>
               <p style={{
-                fontFamily: KANIT,
+                fontFamily: 'Pretendard, sans-serif',
                 fontSize: 'clamp(13px, 1.4vw, 15px)',
                 fontWeight: 400,
                 color: '#9F9F9F',
@@ -246,7 +254,7 @@ export function PetPageClient() {
                   { label: 'Style',       value: styleLabel(selected.chaos) },
                   { label: 'Chaos',       value: `${selected.chaos}%` },
                 ].map(({ label, value }) => (
-                  <p key={label} style={{ fontFamily: KANIT, fontSize: 'clamp(13px, 1.4vw, 15px)', fontWeight: 400, color: '#000', margin: 0 }}>
+                  <p key={label} style={{ fontFamily: 'Pretendard, sans-serif', fontSize: 'clamp(13px, 1.4vw, 15px)', fontWeight: 400, color: '#000', margin: 0 }}>
                     {label}: {value}
                   </p>
                 ))}
@@ -255,8 +263,12 @@ export function PetPageClient() {
           </div>
         </div>
 
-        {/* Bottom-left decorative — cheese hideout */}
-        {!isMobile && (
+        {/* Bottom-left decorative — desktop: peeks from left; mobile: smaller peek */}
+        {isMobile ? (
+          <div style={{ position: 'absolute', bottom: 0, left: 0, width: 'clamp(80px, 22vw, 110px)', overflow: 'hidden', pointerEvents: 'none', zIndex: 0 }}>
+            <img src="/images/cheese-hideout.png" alt="" aria-hidden style={{ width: '100%', height: 'auto', display: 'block' }} />
+          </div>
+        ) : (
           <img
             src="/images/cheese-hideout.png"
             alt=""

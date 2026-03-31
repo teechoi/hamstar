@@ -66,7 +66,7 @@ function VideoCard({ title, index }: { title: string; index: number }) {
         <p style={{ fontFamily: KANIT, fontSize: 15, fontWeight: 600, color: '#000000', marginBottom: 4 }}>
           {title}
         </p>
-        <p style={{ fontFamily: KANIT, fontSize: 12, color: '#999' }}>
+        <p style={{ fontFamily: 'Pretendard, sans-serif', fontSize: 12, color: '#999' }}>
           Hamstar Racing · Pump.fun
         </p>
       </div>
@@ -95,12 +95,12 @@ function RoundResultRow({ result }: { result: RaceResult }) {
       </span>
       <div style={{ display: 'flex', gap: 20, alignItems: 'center', flexWrap: 'wrap' }}>
         {positions.map((pet, i) => (
-          <span key={i} style={{ fontFamily: KANIT, fontSize: 14, color: '#8A8A8A' }}>
+          <span key={i} style={{ fontFamily: 'Pretendard, sans-serif', fontSize: 14, color: '#8A8A8A' }}>
             {medals[i]} {pet?.name ?? result.positions[i]}
           </span>
         ))}
       </div>
-      <span style={{ fontFamily: KANIT, fontSize: 12, color: '#8A8A8A' }}>
+      <span style={{ fontFamily: 'Pretendard, sans-serif', fontSize: 12, color: '#8A8A8A' }}>
         {result.date}
       </span>
     </div>
@@ -151,41 +151,37 @@ export function HighlightPageClient({ raceHistory }: HighlightPageClientProps) {
       }}>
 
         {/* Decorative: hamster wheel top-left */}
-        {!isMobile && (
-          <img
-            src="/images/hamster-wheel-empty.png"
-            alt=""
-            aria-hidden
-            style={{
-              position: 'absolute',
-              top: 80,
-              left: -20,
-              width: 180,
-              height: 'auto',
-              opacity: 0.85,
-              pointerEvents: 'none',
-              zIndex: 0,
-            }}
-          />
-        )}
+        <img
+          src="/images/hamster-wheel-empty.png"
+          alt=""
+          aria-hidden
+          style={{
+            position: 'absolute',
+            top: isMobile ? 60 : 80,
+            left: -20,
+            width: isMobile ? 100 : 180,
+            height: 'auto',
+            opacity: 0.85,
+            pointerEvents: 'none',
+            zIndex: 0,
+          }}
+        />
 
         {/* Decorative: hamster headset bottom-right */}
-        {!isMobile && (
-          <img
-            src="/images/hamster-headset.png"
-            alt=""
-            aria-hidden
-            style={{
-              position: 'absolute',
-              bottom: 120,
-              right: 0,
-              width: 200,
-              height: 'auto',
-              pointerEvents: 'none',
-              zIndex: 0,
-            }}
-          />
-        )}
+        <img
+          src="/images/hamster-headset.png"
+          alt=""
+          aria-hidden
+          style={{
+            position: 'absolute',
+            bottom: isMobile ? 80 : 120,
+            right: 0,
+            width: isMobile ? 120 : 200,
+            height: 'auto',
+            pointerEvents: 'none',
+            zIndex: 0,
+          }}
+        />
 
         <div style={{ maxWidth: 1100, margin: '0 auto', padding: `0 clamp(16px, 4vw, 48px) 0`, position: 'relative', zIndex: 1 }}>
 
@@ -228,7 +224,7 @@ export function HighlightPageClient({ raceHistory }: HighlightPageClientProps) {
             marginBottom: 32,
           }}>
             <div>
-              <p style={{ fontFamily: KANIT, fontSize: 13, color: '#8A8A8A', marginBottom: 4 }}>
+              <p style={{ fontFamily: 'Pretendard, sans-serif', fontSize: 13, color: '#8A8A8A', marginBottom: 4 }}>
                 Most Recent Champion
               </p>
               <p style={{
@@ -241,7 +237,7 @@ export function HighlightPageClient({ raceHistory }: HighlightPageClientProps) {
               </p>
             </div>
             <div style={{ textAlign: isMobile ? 'left' : 'right' }}>
-              <p style={{ fontFamily: KANIT, fontSize: 13, color: '#8A8A8A', marginBottom: 4 }}>
+              <p style={{ fontFamily: 'Pretendard, sans-serif', fontSize: 13, color: '#8A8A8A', marginBottom: 4 }}>
                 Race Round
               </p>
               <p style={{
@@ -302,7 +298,7 @@ export function HighlightPageClient({ raceHistory }: HighlightPageClientProps) {
               <p style={{ fontFamily: KANIT, fontSize: 18, fontWeight: 600, color: '#000000', marginBottom: 8 }}>
                 No races yet
               </p>
-              <p style={{ fontFamily: KANIT, fontSize: 14, color: '#999' }}>
+              <p style={{ fontFamily: 'Pretendard, sans-serif', fontSize: 14, color: '#999' }}>
                 Highlights will appear here after the first race.
               </p>
             </div>

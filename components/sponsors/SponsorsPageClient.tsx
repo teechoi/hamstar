@@ -82,7 +82,7 @@ function RealSponsorCard({ sponsor }: { sponsor: DbSponsor }) {
       </p>
 
       {sponsor.pet && (
-        <p style={{ fontFamily: KANIT, fontSize: 13, color: '#a0a0a0', marginBottom: 20 }}>
+        <p style={{ fontFamily: 'Pretendard, sans-serif', fontSize: 13, color: '#a0a0a0', marginBottom: 20 }}>
           Supporting {sponsor.pet.name}
         </p>
       )}
@@ -127,7 +127,7 @@ function PlaceholderCard({ pet }: { pet: Pet }) {
       <p style={{ fontFamily: KANIT, fontSize: 'clamp(18px, 2vw, 26px)', fontWeight: 700, color: '#000000', marginBottom: 4 }}>
         Title Sponsor
       </p>
-      <p style={{ fontFamily: KANIT, fontSize: 13, color: '#a0a0a0', marginBottom: 16 }}>
+      <p style={{ fontFamily: 'Pretendard, sans-serif', fontSize: 13, color: '#a0a0a0', marginBottom: 16 }}>
         Available — Supporting {pet.name}
       </p>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 5, marginBottom: 20 }}>
@@ -136,7 +136,7 @@ function PlaceholderCard({ pet }: { pet: Pet }) {
           { label: 'Style', value: pet.chaos >= 70 ? 'Chaotic' : pet.chaos >= 45 ? 'Aggressive' : 'Steady' },
           { label: 'Wins', value: `${pet.wins}` },
         ].map(({ label, value }) => (
-          <p key={label} style={{ fontFamily: KANIT, fontSize: 'clamp(12px, 1.2vw, 14px)', color: '#8A8A8A' }}>
+          <p key={label} style={{ fontFamily: 'Pretendard, sans-serif', fontSize: 'clamp(12px, 1.2vw, 14px)', color: '#8A8A8A' }}>
             <span style={{ color: '#a0a0a0' }}>{label}:</span> {value}
           </p>
         ))}

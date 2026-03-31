@@ -38,6 +38,7 @@ export function LandingNav({
 }: LandingNavProps) {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [mobileNavBtnHov, setMobileNavBtnHov] = useState(false)
   const isMobile = useIsMobile()
 
   useEffect(() => {
@@ -93,7 +94,7 @@ export function LandingNav({
             </span>
             {connecting ? (
               <span style={{
-                padding: '9px 16px', background: 'rgba(255,231,144,0.25)', border: 'none',
+                padding: '12px 16px', background: 'rgba(255,231,144,0.25)', border: 'none',
                 borderRadius: 48.5, color: DARK, fontSize: 13, fontWeight: 600,
                 fontFamily: KANIT, opacity: 0.7,
               }}>
@@ -102,10 +103,13 @@ export function LandingNav({
             ) : authed ? (
               <button
                 onClick={onDepositClick}
+                onMouseEnter={() => setMobileNavBtnHov(true)}
+                onMouseLeave={() => setMobileNavBtnHov(false)}
                 style={{
-                  padding: '9px 16px', background: YELLOW, border: 'none',
+                  padding: '12px 16px', background: YELLOW, border: 'none',
                   borderRadius: 48.5, color: DARK, fontSize: 13, fontWeight: 600,
                   cursor: 'pointer', fontFamily: KANIT,
+                  opacity: mobileNavBtnHov ? 0.85 : 1, transition: 'opacity 0.15s',
                 }}
               >
                 Deposit
@@ -113,10 +117,13 @@ export function LandingNav({
             ) : (
               <button
                 onClick={onLoginClick}
+                onMouseEnter={() => setMobileNavBtnHov(true)}
+                onMouseLeave={() => setMobileNavBtnHov(false)}
                 style={{
-                  padding: '9px 18px', background: YELLOW, border: 'none',
+                  padding: '12px 18px', background: YELLOW, border: 'none',
                   borderRadius: 48.5, color: DARK, fontSize: 13, fontWeight: 600,
                   cursor: 'pointer', fontFamily: KANIT,
+                  opacity: mobileNavBtnHov ? 0.85 : 1, transition: 'opacity 0.15s',
                 }}
               >
                 Sign Up
@@ -126,7 +133,7 @@ export function LandingNav({
               onClick={() => setMenuOpen(o => !o)}
               style={{
                 background: 'none', border: 'none', cursor: 'pointer',
-                padding: 8, lineHeight: 1,
+                padding: '11px 10px', lineHeight: 1,
                 display: 'flex', flexDirection: 'column', gap: 5,
               }}
               aria-label="Menu"

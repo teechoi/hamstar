@@ -267,6 +267,7 @@ function ConnectedView({
                 fontFamily: KANIT, fontSize: 11, fontWeight: 700, color: T.purple,
                 textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4,
                 padding: '5px 12px', background: T.blueSoft, borderRadius: 8,
+                cursor: 'pointer',
               }}
             >Explorer ↗</a>
           </div>
@@ -451,15 +452,7 @@ function NoWalletView({ onConnect }: { onConnect: () => void }) {
         </div>
       </div>
       <div style={{ padding: '24px 28px 28px' }}>
-        <button
-          onClick={onConnect}
-          style={{
-            width: '100%', padding: '15px 20px',
-            background: T.text, border: 'none', borderRadius: 48.5,
-            fontFamily: KANIT, fontSize: 15, fontWeight: 700, color: T.yellow,
-            cursor: 'pointer',
-          }}
-        >Connect Wallet</button>
+        <ConnectWalletBtn onClick={onConnect} />
       </div>
     </>
   )
@@ -556,6 +549,24 @@ function DisconnectBtn({ onClick }: { onClick: () => void }) {
     >
       <span style={{ fontSize: 14 }}>↩</span> Disconnect
     </button>
+  )
+}
+
+function ConnectWalletBtn({ onClick }: { onClick: () => void }) {
+  const [hov, setHov] = useState(false)
+  return (
+    <button
+      onClick={onClick}
+      onMouseEnter={() => setHov(true)}
+      onMouseLeave={() => setHov(false)}
+      style={{
+        width: '100%', padding: '15px 20px',
+        background: hov ? '#222' : T.text,
+        border: 'none', borderRadius: 48.5,
+        fontFamily: KANIT, fontSize: 15, fontWeight: 700, color: T.yellow,
+        cursor: 'pointer', transition: 'background 0.15s',
+      }}
+    >Connect Wallet</button>
   )
 }
 

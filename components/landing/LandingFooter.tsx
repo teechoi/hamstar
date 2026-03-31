@@ -1,5 +1,7 @@
 'use client'
+import { useState } from 'react'
 import { useIsMobile } from '@/components/ui/index'
+import { LegalModal, LEGAL_LINKS, type LegalModalType } from './LegalModal'
 
 // Figma 36:210 — 1280×350, bg:#FFE790
 const BG    = '#FFE790'
@@ -34,6 +36,7 @@ export function LandingFooter({
   sponsorEmail = '',
 }: LandingFooterProps) {
   const isMobile = useIsMobile()
+  const [legalModal, setLegalModal] = useState<LegalModalType | null>(null)
 
   const socials: [string, string | null | undefined][] = [
     ['X', twitterUrl],
@@ -79,9 +82,9 @@ export function LandingFooter({
 
         {/* Legal */}
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px 0' }}>
-          {['Terms of Use', 'Risk Disclosure', 'Privacy Policy', 'Animal Welfare'].map((label, i, arr) => (
-            <span key={label} style={{ display: 'flex', alignItems: 'center' }}>
-              <a href="#" style={{ fontFamily: PRET, fontWeight: 500, fontSize: 13, color: MUTED, textDecoration: 'none' }}>{label}</a>
+          {LEGAL_LINKS.map(({ type, label }, i, arr) => (
+            <span key={type} style={{ display: 'flex', alignItems: 'center' }}>
+              <button onClick={() => setLegalModal(type)} style={{ fontFamily: PRET, fontWeight: 500, fontSize: 13, color: MUTED, textDecoration: 'none', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>{label}</button>
               {i < arr.length - 1 && <span style={{ margin: '0 10px', color: MUTED, opacity: 0.4, fontSize: 13 }}>·</span>}
             </span>
           ))}
@@ -136,14 +139,15 @@ export function LandingFooter({
 
         {/* Legal */}
         <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', alignItems: 'center', gap: '6px 0', paddingBottom: 24 }}>
-          {['Terms of Use', 'Risk Disclosure', 'Privacy Policy', 'Animal Welfare'].map((label, i, arr) => (
-            <span key={label} style={{ display: 'flex', alignItems: 'center' }}>
-              <a href="#" style={{ fontFamily: PRET, fontWeight: 500, fontSize: 13, color: MUTED, lineHeight: '20px', textDecoration: 'none' }}>{label}</a>
+          {LEGAL_LINKS.map(({ type, label }, i, arr) => (
+            <span key={type} style={{ display: 'flex', alignItems: 'center' }}>
+              <button onClick={() => setLegalModal(type)} style={{ fontFamily: PRET, fontWeight: 500, fontSize: 13, color: MUTED, lineHeight: '20px', textDecoration: 'none', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>{label}</button>
               {i < arr.length - 1 && <span style={{ margin: '0 12px', color: MUTED, opacity: 0.4, fontSize: 13 }}>·</span>}
             </span>
           ))}
         </div>
       </div>
     </footer>
+    {legalModal && <LegalModal type={legalModal} onClose={() => setLegalModal(null)} />}
   )
 }

@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react'
+import { useWallet } from '@solana/wallet-adapter-react'
 import { LandingNav } from '@/components/landing/LandingNav'
 import { LandingFooter } from '@/components/landing/LandingFooter'
 import { LoginModal } from '@/components/landing/LoginModal'
@@ -174,12 +175,13 @@ export function SponsorsPageClient({
   const sponsorEmail = emailProp ?? SITE.sponsorEmail
 
   const [modal, setModal] = useState<Modal>(null)
-  const [authed, setAuthed] = useState(false)
-  const [walletAddress, setWalletAddress] = useState('')
   const [ctaHov, setCtaHov] = useState(false)
+  const { connected, publicKey, disconnect } = useWallet()
 
-  const handleLogin      = () => { setAuthed(true); setModal(null) }
-  const handleDisconnect = () => { setAuthed(false); setWalletAddress('') }
+  const authed = connected
+  const walletAddress = publicKey?.toString() ?? ''
+
+  const handleDisconnect = () => { disconnect().catch(() => {}) }
 
   return (
     <>

@@ -23,22 +23,29 @@ export function AboutSection({
         display: 'flex', flexDirection: 'column', justifyContent: 'center',
         padding: '80px 24px',
       }}>
-        {/* Image area — stacked on top, centered */}
-        <div style={{ position: 'relative', width: 'min(280px, 80vw)', height: 'min(260px, 74vw)', margin: '0 auto 36px' }}>
+        {/* Image area — matches desktop composition, scaled to ~76% */}
+        <div style={{ position: 'relative', width: 'min(300px, 84vw)', height: 'min(300px, 84vw)', margin: '0 auto 40px', flexShrink: 0 }}>
+          {/* Rotated bg card */}
           <div style={{
-            position: 'absolute', left: 0, top: 0, width: 260, height: 260,
-            borderRadius: 23, background: '#FFFFFF',
-            boxShadow: '0 4px 24px rgba(0,0,0,0.08)',
-          }} />
+            position: 'absolute', left: '-4%', top: '-4%', width: '108%', height: '108%',
+            borderRadius: 20,
+            overflow: 'hidden',
+            transform: 'rotate(-11.46deg)',
+            transformOrigin: 'center center',
+          }}>
+            <img src="/images/about-bg.png" alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+          </div>
+          {/* Hamster wheel */}
           <img
             src="/images/hamster-wheel.png"
             alt="Hamster on wheel"
-            style={{ position: 'absolute', left: '10%', top: '8%', width: '55%', height: '75%', objectFit: 'contain' }}
+            style={{ position: 'absolute', left: '5%', top: '2%', width: '68%', height: '93%', objectFit: 'contain', zIndex: 1 }}
           />
+          {/* Sunflower */}
           <img
             src="/images/sunflower.png"
             alt=""
-            style={{ position: 'absolute', right: 0, bottom: '-5%', width: '33%', objectFit: 'contain' }}
+            style={{ position: 'absolute', right: '2%', bottom: '4%', width: '37%', objectFit: 'contain', zIndex: 2 }}
           />
         </div>
 
@@ -50,7 +57,7 @@ export function AboutSection({
               {aboutTitle}
             </h2>
           </div>
-          <p style={{ fontFamily: 'Pretendard, sans-serif', fontWeight: 400, fontSize: 16, color: '#000000', lineHeight: '24px', margin: 0, whiteSpace: 'pre-line' }}>
+          <p style={{ fontFamily: KANIT, fontWeight: 400, fontSize: 16, color: '#000000', lineHeight: '24px', margin: 0, whiteSpace: 'pre-line' }}>
             {bodyText}
           </p>
         </div>
@@ -78,27 +85,28 @@ export function AboutSection({
             image 13 (hamster wheel): at group-rel (62, 44), 218×291 — not rotated, sits on top
             image 25 (sunflower): at group-rel (257, 190), 137×172 — not rotated, sits on top */}
         <div style={{ position: 'absolute', left: 167, top: 76, width: 394, height: 380 }}>
-          {/* Background card — 380×380 at (0,0), rotated -11.46deg (Figma: rot=-0.20rad) */}
+          {/* Background card — slightly larger than 380×380 (offset -20 each side) so
+              objectFit:cover crops less, giving a zoomed-out look. Visual center stays at (190,190). */}
           <div style={{
-            position: 'absolute', left: 0, top: 0, width: 380, height: 380,
-            borderRadius: 23,
+            position: 'absolute', left: -20, top: -20, width: 420, height: 420,
+            borderRadius: 26,
             overflow: 'hidden',
             transform: 'rotate(-11.46deg)',
             transformOrigin: 'center center',
           }}>
             <img src="/images/about-bg.png" alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
           </div>
-          {/* Hamster wheel — Figma: (62,45) 219×291 */}
+          {/* Hamster wheel */}
           <img
             src="/images/hamster-wheel.png"
             alt="Hamster on wheel"
-            style={{ position: 'absolute', left: 62, top: 45, width: 219, height: 291, objectFit: 'contain', zIndex: 1 }}
+            style={{ position: 'absolute', left: 30, top: 15, width: 280, height: 375, objectFit: 'contain', zIndex: 1 }}
           />
-          {/* Sunflower — Figma: (257,190) 137×172 */}
+          {/* Sunflower */}
           <img
             src="/images/sunflower.png"
             alt=""
-            style={{ position: 'absolute', left: 257, top: 190, width: 137, height: 172, objectFit: 'contain', zIndex: 2 }}
+            style={{ position: 'absolute', left: 268, top: 195, width: 162, height: 205, objectFit: 'contain', zIndex: 2 }}
           />
         </div>
 

@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react'
+import { useWallet } from '@solana/wallet-adapter-react'
 import { LandingNav } from '@/components/landing/LandingNav'
 import { LandingFooter } from '@/components/landing/LandingFooter'
 import { LoginModal } from '@/components/landing/LoginModal'
@@ -31,15 +32,16 @@ function styleLabel(chaos: number): string {
 
 export function PetPageClient() {
   const [modal, setModal] = useState<Modal>(null)
-  const [authed, setAuthed] = useState(false)
-  const [walletAddress, setWalletAddress] = useState('')
   const [selectedId, setSelectedId] = useState(PETS[0].id)
   const isMobile = useIsMobile()
+  const { connected, publicKey, disconnect } = useWallet()
+
+  const authed = connected
+  const walletAddress = publicKey?.toString() ?? ''
 
   const selected = PETS.find(p => p.id === selectedId) ?? PETS[0]
 
-  const handleLogin = () => { setAuthed(true); setModal(null) }
-  const handleDisconnect = () => { setAuthed(false); setWalletAddress('') }
+  const handleDisconnect = () => { disconnect().catch(() => {}) }
 
   return (
     <>
@@ -107,9 +109,9 @@ export function PetPageClient() {
               Hamster Profile
             </h1>
             <p style={{
-              fontFamily: 'Pretendard, sans-serif',
+              fontFamily: KANIT,
               fontSize: 'clamp(14px, 1.6vw, 17px)',
-              fontWeight: 500,
+              fontWeight: 400,
               color: '#000',
             }}>
               Race highlights, real hamsters, and behind-the-scenes content.
@@ -224,7 +226,7 @@ export function PetPageClient() {
               <p style={{
                 fontFamily: KANIT,
                 fontSize: 'clamp(13px, 1.4vw, 15px)',
-                fontWeight: 300,
+                fontWeight: 400,
                 color: '#9F9F9F',
                 lineHeight: 1.7,
                 marginBottom: 28,

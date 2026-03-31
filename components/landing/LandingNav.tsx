@@ -145,7 +145,7 @@ export function LandingNav({
             </button>
           </>
         ) : (
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: 'min(80vw, 1050px)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: 'clamp(700px, 66vw, 1000px)' }}>
             {/* Left group: nav pills — Figma Frame 2: gap:10 */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
               {NAV_LINKS.map(({ label, id, href }) => (

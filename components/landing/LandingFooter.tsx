@@ -89,7 +89,7 @@ export function LandingFooter({
             </span>
           ))}
         </div>
-      {showHowItWorks && <HowItWorksModal onClose={() => setShowHowItWorks(false)} onEnterArena={() => { setShowHowItWorks(false); window.location.href = '/arena' }} />}
+      {showHowItWorks && <HowItWorksModal onClose={() => setShowHowItWorks(false)} onEnterArena={() => setShowHowItWorks(false)} />}
     </footer>
     )
   }
@@ -149,7 +149,7 @@ export function LandingFooter({
       </div>
     </footer>
     {legalModal && <LegalModal type={legalModal} onClose={() => setLegalModal(null)} />}
-    {showHowItWorks && <HowItWorksModal onClose={() => setShowHowItWorks(false)} onEnterArena={() => { setShowHowItWorks(false); window.location.href = '/arena' }} />}
+    {showHowItWorks && <HowItWorksModal onClose={() => setShowHowItWorks(false)} onEnterArena={() => setShowHowItWorks(false)} />}
     </>
   )
 }

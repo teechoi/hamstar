@@ -130,7 +130,7 @@ export function RacersSection({ racersTitle = 'Meet the Racers' }: { racersTitle
         padding: '80px 0',
       }}>
         {/* Title */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 32, padding: '0 24px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 48, padding: '0 24px' }}>
           <img src="/images/sunflower-seed.png" alt="" style={{ width: 22, height: 33, objectFit: 'contain' }} />
           <h2 style={{ fontFamily: KANIT, fontWeight: 700, fontSize: 32, color: '#000000', lineHeight: '40px', margin: 0 }}>
             {racersTitle}
@@ -191,9 +191,9 @@ export function RacersSection({ racersTitle = 'Meet the Racers' }: { racersTitle
           <img src="/images/sunflower-seed.png" alt="" style={{ width: 29, height: 43, objectFit: 'contain' }} />
         </div>
 
-        {/* Cards — Figma y=202, gap:20 */}
+        {/* Cards */}
         <div style={{
-          position: 'absolute', top: 202, left: 0, right: 0,
+          position: 'absolute', top: 240, left: 0, right: 0,
           display: 'flex', justifyContent: 'center', gap: 20,
           zIndex: 60,
           padding: '0 24px',

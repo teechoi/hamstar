@@ -126,7 +126,7 @@ export function LandingFooter({
 
           {/* Right: tagline + contact */}
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 16 }}>
-            <p style={{ fontFamily: KANIT, fontWeight: 700, fontSize: 'clamp(18px, 1.8vw, 24px)', color: BLACK, lineHeight: '32px', margin: 0, textAlign: 'right', whiteSpace: 'pre-line' }}>
+            <p style={{ fontFamily: KANIT, fontWeight: 500, fontSize: 'clamp(18px, 1.8vw, 24px)', color: BLACK, lineHeight: '32px', margin: 0, textAlign: 'right', whiteSpace: 'pre-line' }}>
               {footerTaglineRight}
             </p>
             {sponsorEmail && (

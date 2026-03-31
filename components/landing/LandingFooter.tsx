@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { useIsMobile } from '@/components/ui/index'
 import { LegalModal, LEGAL_LINKS, type LegalModalType } from './LegalModal'
+import { HowItWorksModal } from './HowItWorksModal'
 
 // Figma 36:210 — 1280×350, bg:#FFE790
 const BG    = '#FFE790'
@@ -37,6 +38,7 @@ export function LandingFooter({
 }: LandingFooterProps) {
   const isMobile = useIsMobile()
   const [legalModal, setLegalModal] = useState<LegalModalType | null>(null)
+  const [showHowItWorks, setShowHowItWorks] = useState(false)
 
   const socials: [string, string | null | undefined][] = [
     ['X', twitterUrl],
@@ -64,7 +66,7 @@ export function LandingFooter({
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             <p style={{ fontFamily: PRET, fontWeight: 600, fontSize: 16, color: MUTED, margin: 0 }}>Learn</p>
-            <a href="#about" onClick={e => { e.preventDefault(); document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' }) }} style={link}>How Hamstar Works</a>
+            <button onClick={() => setShowHowItWorks(true)} style={{ ...link, background: 'none', border: 'none', cursor: 'pointer', padding: 0, textAlign: 'left' }}>How Hamstar Works</button>
             <a href="#" style={link}>Race Rules</a>
           </div>
         </div>
@@ -73,9 +75,7 @@ export function LandingFooter({
         <p style={{ fontFamily: KANIT, fontWeight: 500, fontSize: 20, color: BLACK, lineHeight: '26px', margin: '0 0 12px', whiteSpace: 'pre-line' }}>
           {footerTaglineRight}
         </p>
-        {sponsorEmail && (
-          <a href={`mailto:${sponsorEmail}`} style={{ ...link, display: 'block', marginBottom: 24 }}>Contact us</a>
-        )}
+        <a href={sponsorEmail ? `mailto:${sponsorEmail}` : '#'} style={{ ...link, display: 'block', marginBottom: 24 }}>Contact us</a>
 
         {/* Divider */}
         <div style={{ height: 1, background: 'rgba(80,63,0,0.3)', marginBottom: 16 }} />
@@ -89,7 +89,8 @@ export function LandingFooter({
             </span>
           ))}
         </div>
-      </footer>
+      {showHowItWorks && <HowItWorksModal onClose={() => setShowHowItWorks(false)} onEnterArena={() => { setShowHowItWorks(false); window.location.href = '/arena' }} />}
+    </footer>
     )
   }
 
@@ -119,7 +120,7 @@ export function LandingFooter({
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               <p style={{ fontFamily: PRET, fontWeight: 600, fontSize: 18, color: MUTED, lineHeight: '27px', margin: 0 }}>Learn</p>
-              <a href="#about" onClick={e => { e.preventDefault(); document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' }) }} style={link}>How Hamstar Works</a>
+              <button onClick={() => setShowHowItWorks(true)} style={{ ...link, background: 'none', border: 'none', cursor: 'pointer', padding: 0, textAlign: 'left' }}>How Hamstar Works</button>
               <a href="#" style={link}>Race Rules</a>
             </div>
           </div>
@@ -129,9 +130,7 @@ export function LandingFooter({
             <p style={{ fontFamily: KANIT, fontWeight: 500, fontSize: 'clamp(18px, 1.8vw, 24px)', color: BLACK, lineHeight: '32px', margin: 0, textAlign: 'right', whiteSpace: 'pre-line' }}>
               {footerTaglineRight}
             </p>
-            {sponsorEmail && (
-              <a href={`mailto:${sponsorEmail}`} style={link}>Contact us</a>
-            )}
+            <a href={sponsorEmail ? `mailto:${sponsorEmail}` : '#'} style={link}>Contact us</a>
           </div>
         </div>
 
@@ -150,6 +149,7 @@ export function LandingFooter({
       </div>
     </footer>
     {legalModal && <LegalModal type={legalModal} onClose={() => setLegalModal(null)} />}
+    {showHowItWorks && <HowItWorksModal onClose={() => setShowHowItWorks(false)} onEnterArena={() => { setShowHowItWorks(false); window.location.href = '/arena' }} />}
     </>
   )
 }

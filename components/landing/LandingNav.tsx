@@ -13,6 +13,7 @@ function scrollTo(id: string) {
 
 export interface LandingNavProps {
   authed?: boolean
+  connecting?: boolean  // wallet adapter autoConnect in progress
   balance?: string
   walletAddress?: string
   lightBg?: boolean   // true on Arena / Highlights (white bg pages)
@@ -25,6 +26,7 @@ export interface LandingNavProps {
 
 export function LandingNav({
   authed = false,
+  connecting = false,
   balance,
   walletAddress,
   lightBg = false,
@@ -89,7 +91,15 @@ export function LandingNav({
             <span style={{ color: isDark ? YELLOW : DARK, fontFamily: KANIT, fontWeight: 700, fontSize: 16, flex: 1 }}>
               🐹 Hamstar
             </span>
-            {authed ? (
+            {connecting ? (
+              <span style={{
+                padding: '9px 16px', background: 'rgba(255,231,144,0.25)', border: 'none',
+                borderRadius: 48.5, color: DARK, fontSize: 13, fontWeight: 600,
+                fontFamily: KANIT, opacity: 0.7,
+              }}>
+                Connecting…
+              </span>
+            ) : authed ? (
               <button
                 onClick={onDepositClick}
                 style={{
@@ -142,7 +152,9 @@ export function LandingNav({
                 isDark={isDark}
                 onClick={onHowItWorksClick ?? (() => scrollTo('about'))}
               />
-              {authed ? (
+              {connecting ? (
+                <ConnectingPill isDark={isDark} />
+              ) : authed ? (
                 <AuthedSection
                   balance={balance}
                   walletAddress={walletAddress}
@@ -214,6 +226,23 @@ export function LandingNav({
 }
 
 // ─── Sub-components ─────────────────────────────────────────────────────────────
+
+function ConnectingPill({ isDark }: { isDark: boolean }) {
+  return (
+    <div style={{
+      padding: '7px 18px',
+      background: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.06)',
+      borderRadius: 48.5,
+      fontFamily: KANIT, fontSize: 12, fontWeight: 500,
+      color: isDark ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.4)',
+      display: 'flex', alignItems: 'center', gap: 6,
+      userSelect: 'none',
+    }}>
+      <span style={{ width: 7, height: 7, borderRadius: '50%', background: YELLOW, display: 'inline-block', animation: 'pulse 1.2s ease-in-out infinite' }} />
+      Connecting…
+    </div>
+  )
+}
 
 function NavPill({ label, onClick }: { label: string; onClick: () => void }) {
   const [hov, setHov] = useState(false)

@@ -14,7 +14,7 @@ const ENDPOINT =
 
 // Cast to resolve React 18.3 / wallet-adapter type mismatch
 const Conn   = ConnectionProvider as React.FC<{ endpoint: string; children: React.ReactNode }>
-const Wallet = WalletProvider as React.FC<{ wallets: any[]; autoConnect: boolean; children: React.ReactNode }>
+const Wallet = WalletProvider as React.FC<{ wallets: any[]; autoConnect: boolean; onError?: (err: Error) => void; children: React.ReactNode }>
 
 export function SolanaWalletProvider({ children }: { children: React.ReactNode }) {
   const wallets = useMemo(() => [
@@ -40,7 +40,7 @@ export function SolanaWalletProvider({ children }: { children: React.ReactNode }
 
   return (
     <Conn endpoint={ENDPOINT}>
-      <Wallet wallets={wallets} autoConnect>
+      <Wallet wallets={wallets} autoConnect onError={() => {}}>
         {children}
       </Wallet>
     </Conn>

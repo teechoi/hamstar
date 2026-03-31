@@ -54,7 +54,7 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
   const [modal, setModal]                 = useState<Modal>(null)
   const [cheeringFor, setCheeringFor]     = useState<string | null>(null)
   const isMobile = useIsMobile()
-  const { connected, publicKey, disconnect } = useWallet()
+  const { connected, connecting, publicKey, disconnect } = useWallet()
 
   const authed = connected
   const walletAddress = publicKey?.toString() ?? ''
@@ -87,6 +87,11 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
   useEffect(() => {
     if (!localStorage.getItem(TERMS_KEY)) setModal('terms')
   }, [])
+
+  // Clear cheer selection when wallet changes (disconnect / switch wallet)
+  useEffect(() => {
+    setCheeringFor(null)
+  }, [walletAddress])
 
   const handleDisconnect = async () => {
     try { await disconnect() } catch { /* ignore */ }
@@ -157,6 +162,7 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
       <LandingNav
         lightBg
         authed={authed}
+        connecting={!authed && connecting}
         walletAddress={walletAddress || undefined}
         onLoginClick={() => setModal('login')}
         onDepositClick={() => setModal('deposit')}

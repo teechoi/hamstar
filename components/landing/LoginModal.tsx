@@ -52,6 +52,9 @@ export function LoginModal({ onClose, loginTitle, loginSubtitle }: LoginModalPro
   const getable = uniqueWallets.filter(w => w.readyState === WalletReadyState.NotDetected)
 
   const handleSelect = (name: string) => {
+    // Don't interfere if wallet adapter is already connecting (e.g. autoConnect on page load)
+    if (connecting && !connectingName) return
+
     setErr('')
     setConnectingName(name)
 
@@ -167,7 +170,8 @@ export function LoginModal({ onClose, loginTitle, loginSubtitle }: LoginModalPro
                     key={w.adapter.name}
                     name={w.adapter.name}
                     icon={w.adapter.icon}
-                    loading={connecting && connectingName === w.adapter.name}
+                    loading={connectingName === w.adapter.name}
+                    disabled={connectingName !== null || (connecting && !connectingName)}
                     onClick={() => handleSelect(w.adapter.name)}
                   />
                 ))}
@@ -224,23 +228,24 @@ export function LoginModal({ onClose, loginTitle, loginSubtitle }: LoginModalPro
 
 // ─── Wallet list items ─────────────────────────────────────────────────────────
 
-function WalletRow({ name, icon, loading, onClick }: {
-  name: string; icon: string; loading?: boolean; onClick: () => void
+function WalletRow({ name, icon, loading, disabled, onClick }: {
+  name: string; icon: string; loading?: boolean; disabled?: boolean; onClick: () => void
 }) {
   const [hov, setHov] = useState(false)
   return (
     <button
       onClick={onClick}
-      onMouseEnter={() => setHov(true)}
+      onMouseEnter={() => { if (!disabled) setHov(true) }}
       onMouseLeave={() => setHov(false)}
-      disabled={loading}
+      disabled={disabled}
       style={{
         display: 'flex', alignItems: 'center', gap: 14,
         padding: '13px 16px',
         background: hov ? 'rgba(255,231,144,0.12)' : '#fff',
         border: `1.5px solid ${hov ? 'rgba(255,231,144,0.5)' : T.border}`,
         borderRadius: 16,
-        cursor: loading ? 'wait' : 'pointer',
+        cursor: loading ? 'wait' : disabled ? 'default' : 'pointer',
+        opacity: disabled && !loading ? 0.5 : 1,
         transition: 'all 0.15s',
         width: '100%', textAlign: 'left',
       }}

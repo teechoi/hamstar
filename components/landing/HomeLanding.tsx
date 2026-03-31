@@ -27,7 +27,7 @@ export function HomeLanding({ targetMs, isLive }: HomeLandingProps) {
   const [modal, setModal] = useState<Modal>(null)
   const [balance, setBalance] = useState('0')
   const [content, setContent] = useState<SiteContent | null>(null)
-  const { connected, publicKey, disconnect } = useWallet()
+  const { connected, connecting, publicKey, disconnect } = useWallet()
 
   const walletAddress = publicKey?.toString() ?? ''
   const authed = connected
@@ -98,6 +98,7 @@ export function HomeLanding({ targetMs, isLive }: HomeLandingProps) {
     <>
       <LandingNav
         authed={authed}
+        connecting={!authed && connecting}
         balance={authed && balance !== '0' ? balance : undefined}
         walletAddress={walletAddress || undefined}
         navTagline={content?.navTagline}

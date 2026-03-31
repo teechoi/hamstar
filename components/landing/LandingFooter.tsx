@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useIsMobile } from '@/components/ui/index'
 import { LegalModal, LEGAL_LINKS, type LegalModalType } from './LegalModal'
 import { HowItWorksModal } from './HowItWorksModal'
+import { SITE } from '@/config/site'
 
 // Figma 36:210 — 1280×350, bg:#FFE790
 const BG    = '#FFE790'
@@ -34,7 +35,7 @@ export function LandingFooter({
   tiktokUrl,
   instagramUrl,
   youtubeUrl,
-  sponsorEmail = '',
+  sponsorEmail = SITE.sponsorEmail,
 }: LandingFooterProps) {
   const isMobile = useIsMobile()
   const [legalModal, setLegalModal] = useState<LegalModalType | null>(null)

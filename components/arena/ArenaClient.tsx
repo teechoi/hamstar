@@ -288,7 +288,7 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
             display: 'grid',
             gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
             gap: 12,
-            marginBottom: 20,
+            marginBottom: 32,
           }}>
             {PETS.map(pet => {
               const support = MOCK_SUPPORT[pet.id] ?? { pct: 33, supporters: 5, sol: 1.0 }
@@ -337,12 +337,10 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
               <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: 12 }}>
                 <YellowBtn
                   label="Watch Previous Race"
-                  suffix="▼"
                   onClick={() => document.getElementById('highlight')?.scrollIntoView({ behavior: 'smooth' })}
                 />
                 <YellowBtn
                   label="View Full Result"
-                  suffix="▶"
                   onClick={() => document.getElementById('result-section')?.scrollIntoView({ behavior: 'smooth' })}
                 />
               </div>
@@ -430,7 +428,7 @@ function CheeringCard({ petId, supportPct, isMobile }: { petId: string; supportP
   )
 }
 
-function YellowBtn({ label, suffix, onClick }: { label: string; suffix: string; onClick: () => void }) {
+function YellowBtn({ label, onClick }: { label: string; onClick: () => void }) {
   const [hov, setHov] = useState(false)
   return (
     <button
@@ -447,7 +445,7 @@ function YellowBtn({ label, suffix, onClick }: { label: string; suffix: string; 
         boxShadow: '0 20px 40px rgba(77,67,83,0.08)',
       }}
     >
-      {label} <span style={{ fontSize: 16 }}>{suffix}</span>
+      {label}
     </button>
   )
 }
@@ -474,7 +472,7 @@ function WatchLiveBtn({ active, href }: { active: boolean; href: string }) {
         boxShadow: '0 4px 16px rgba(255,231,144,0.4)',
       }}
     >
-      Watch Live Race <span style={{ fontSize: 16 }}>▶</span>
+      Watch Live Race
     </a>
   )
 }
@@ -488,7 +486,7 @@ function GrayDisabledBtn({ label }: { label: string }) {
       fontFamily: KANIT, fontSize: 'clamp(14px, 1.5vw, 17px)', fontWeight: 700,
       color: '#aaa', userSelect: 'none',
     }}>
-      {label} <span style={{ fontSize: 16 }}>▶</span>
+      {label}
     </div>
   )
 }

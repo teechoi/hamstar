@@ -24,6 +24,11 @@ export function LoginModal({ onClose, loginTitle, loginSubtitle }: LoginModalPro
   const onCloseRef = useRef(onClose)
   useEffect(() => { onCloseRef.current = onClose }, [onClose])
 
+  // Always-current connect ref — updated after every render so setTimeout callbacks
+  // use the version that has the newly selected adapter in its closure.
+  const connectRef = useRef(connect)
+  useEffect(() => { connectRef.current = connect }, [connect])
+
   // Timeout ref — clears spinner if wallet never resolves/rejects (e.g. Phantom popup blocked)
   const connectingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const clearConnecting = (errMsg?: string) => {
@@ -76,18 +81,15 @@ export function LoginModal({ onClose, loginTitle, loginSubtitle }: LoginModalPro
     setErr('')
     setConnectingName(name)
 
-    // Safety net — if the wallet promise never settles (e.g. Phantom popup blocked by browser),
-    // clear the spinner after 30 s so the user can try again.
+    // Safety net — clear spinner after 30s if wallet never resolves
     if (connectingTimerRef.current) clearTimeout(connectingTimerRef.current)
     connectingTimerRef.current = setTimeout(() => clearConnecting(), 30_000)
 
     const found = uniqueWallets.find(w => w.adapter.name === name)
     if (!found) { clearConnecting(); return }
 
-    // Listen directly to the adapter's connect event as a reliable fallback.
-    // Some wallets (e.g. MetaMask via Wallet Standard) successfully connect but
-    // the Solana adapter context never updates `connected` to true, so the
-    // effect-based close never fires. This catches that case.
+    // Register adapter listeners BEFORE select() so we catch the connect event
+    // even if it fires before the context's useEffect re-runs.
     const onAdapterConnect = () => {
       clearConnecting()
       onCloseRef.current()
@@ -99,26 +101,21 @@ export function LoginModal({ onClose, loginTitle, loginSubtitle }: LoginModalPro
     found.adapter.once('connect', onAdapterConnect)
     found.adapter.once('error', onAdapterError)
 
-    try {
-      if (wallet?.adapter.name === name) {
-        found.adapter.connect().catch((e: any) => {
-          found.adapter.off('connect', onAdapterConnect)
-          found.adapter.off('error', onAdapterError)
-          clearConnecting(e?.message ?? 'Could not connect. Please try again.')
-        })
-      } else {
-        select(name as any)
-        found.adapter.connect().catch((e: any) => {
-          found.adapter.off('connect', onAdapterConnect)
-          found.adapter.off('error', onAdapterError)
-          clearConnecting(e?.message ?? 'Could not connect. Please try again.')
-        })
-      }
-    } catch (e: any) {
-      found.adapter.off('connect', onAdapterConnect)
-      found.adapter.off('error', onAdapterError)
-      clearConnecting(e?.message ?? 'Could not open wallet. Please try again.')
+    // select() sets the wallet in context. We then defer the connect() call via
+    // setTimeout(0) so React has time to re-render and update the context's adapter
+    // event listeners (adapter.on('connect', handleConnect)) before the wallet emits
+    // its 'connect' event. Without this deferral the context misses the event and
+    // `connected` never flips to true, so the nav never shows the connected state.
+    if (wallet?.adapter.name !== name) {
+      select(name as any)
     }
+    setTimeout(() => {
+      connectRef.current().catch((e: any) => {
+        found.adapter.off('connect', onAdapterConnect)
+        found.adapter.off('error', onAdapterError)
+        clearConnecting(e?.message ?? 'Could not connect. Please try again.')
+      })
+    }, 0)
   }
 
   return (

@@ -193,10 +193,11 @@ export function PetPageClient() {
                 src={PET_IMAGES[selected.id]}
                 alt={selected.name}
                 style={{
-                  height: 260,
-                  width: 'auto',
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  objectPosition: 'center center',
                   display: 'block',
-                  flexShrink: 0,
                 }}
               />
             </div>

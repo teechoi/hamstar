@@ -25,10 +25,6 @@ const PET_IMAGES: Record<string, string> = {
   turbo: '/images/turbo-crop.png',
 }
 
-// Turbo's image includes a platform prop that adds visual bulk — dial it down slightly
-const PET_IMG_HEIGHT: Record<string, number> = {
-  turbo: 130,
-}
 
 export function HamsterCard({
   id, name, tagline, arenaState,
@@ -38,7 +34,6 @@ export function HamsterCard({
 }: HamsterCardProps) {
   const [hov, setHov] = useState(false)
   const img = PET_IMAGES[id] ?? PET_IMAGES['dash']
-  const imgHeight = PET_IMG_HEIGHT[id] ?? 145
 
   const isOpen     = arenaState === 'OPEN'
   const isLive     = arenaState === 'LIVE'
@@ -73,7 +68,7 @@ export function HamsterCard({
         <img
           src={img}
           alt={name}
-          style={{ height: imgHeight, width: 'auto', objectFit: 'contain', display: 'block' }}
+          style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center center', display: 'block', position: 'absolute', inset: 0 }}
         />
         {isLive && (
           <div style={{

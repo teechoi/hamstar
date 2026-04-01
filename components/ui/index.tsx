@@ -5,7 +5,7 @@ import { T } from '@/lib/theme'
 export { T, globalStyles } from '@/lib/theme'
 
 export function useIsMobile(breakpoint = 768) {
-  const [isMobile, setIsMobile] = useState<boolean | null>(null)
+  const [isMobile, setIsMobile] = useState(false)
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < breakpoint)
     check()

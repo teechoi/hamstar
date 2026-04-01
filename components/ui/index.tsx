@@ -1,6 +1,6 @@
 // components/ui/index.tsx
 'use client'
-import { useSyncExternalStore } from 'react'
+import { useSyncExternalStore, useState } from 'react'
 import { T } from '@/lib/theme'
 export { T, globalStyles } from '@/lib/theme'
 

@@ -5,6 +5,7 @@ import { useIsMobile } from '@/components/ui/index'
 // useFundWallet from @privy-io/react-auth/solana requires @solana/kit peer deps not yet installed
 import { T } from '@/lib/theme'
 import { HAMSTAR_SYMBOL, HAMSTAR_JUPITER_URL, HAMSTAR_MINT } from '@/lib/hamstar-token'
+import { LegalModal, LEGAL_LINKS, type LegalModalType } from './LegalModal'
 
 const KANIT = "var(--font-kanit), sans-serif"
 const PRET  = 'Pretendard, sans-serif'
@@ -18,8 +19,9 @@ interface DepositModalProps {
 
 export function DepositModal({ address = '', onClose, onConnectWallet }: DepositModalProps) {
   const isMobile = useIsMobile()
-  const [copied, setCopied] = useState(false)
-  const [tab, setTab]       = useState<'sol' | 'hamstar'>('sol')
+  const [copied, setCopied]       = useState(false)
+  const [tab, setTab]             = useState<'sol' | 'hamstar'>('sol')
+  const [legalModal, setLegalModal] = useState<LegalModalType | null>(null)
   const hasAddress = address.length > 0
 
   const copyAddress = async () => {
@@ -128,16 +130,18 @@ export function DepositModal({ address = '', onClose, onConnectWallet }: Deposit
 
         {/* Footer */}
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap', gap: '4px 0', padding: '0 28px 24px' }}>
-          {['Terms of Use', 'Risk Disclosure', 'Privacy Policy'].map((link, i, arr) => (
-            <span key={link} style={{ display: 'flex', alignItems: 'center' }}>
-              <a href="#" style={{ fontSize: 13, color: '#8A8A8A', textDecoration: 'none', fontFamily: PRET }}>
-                {link}
-              </a>
+          {LEGAL_LINKS.filter(l => l.type !== 'welfare').map(({ type, label }, i, arr) => (
+            <span key={type} style={{ display: 'flex', alignItems: 'center' }}>
+              <button
+                onClick={() => setLegalModal(type)}
+                style={{ fontFamily: PRET, fontWeight: 500, fontSize: 13, color: '#8A8A8A', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+              >{label}</button>
               {i < arr.length - 1 && <span style={{ margin: '0 10px', color: '#D5D5D5', fontSize: 13 }}>·</span>}
             </span>
           ))}
         </div>
       </div>
+      {legalModal && <LegalModal type={legalModal} onClose={() => setLegalModal(null)} />}
     </div>
   )
 }

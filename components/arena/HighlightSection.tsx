@@ -200,8 +200,8 @@ export function HighlightSection({ lastResult }: HighlightSectionProps) {
           </h2>
           <p style={{
             fontFamily: 'Pretendard, sans-serif',
-            fontWeight: 500,
-            fontSize: 16,
+            fontWeight: 400,
+            fontSize: 'clamp(14px, 1.6vw, 17px)',
             color: '#8A8A8A',
           }}>
             Catch the best moments from recent races.

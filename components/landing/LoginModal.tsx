@@ -122,12 +122,26 @@ export function LoginModal({ onClose, loginTitle, loginSubtitle }: LoginModalPro
     if (wallet?.adapter.name !== name) {
       select(name as any)
     }
-    setTimeout(() => {
-      connectRef.current().catch((e: any) => {
+    setTimeout(async () => {
+      try {
+        await connectRef.current()
+        // connect() resolved without throwing — check if we're actually connected.
+        // Some wallets (e.g. MetaMask) resolve the promise without emitting 'connect'
+        // when Solana isn't configured, leaving the adapter in a disconnected state.
+        if (!found.adapter.connected) {
+          found.adapter.off('connect', onAdapterConnect)
+          found.adapter.off('error', onAdapterError)
+          clearConnecting(
+            name === 'MetaMask'
+              ? 'MetaMask did not connect. Make sure Solana is enabled inside MetaMask (Portfolio → Solana).'
+              : 'Connection was cancelled or the wallet did not respond. Please try again.'
+          )
+        }
+      } catch (e: any) {
         found.adapter.off('connect', onAdapterConnect)
         found.adapter.off('error', onAdapterError)
         clearConnecting(e?.message ?? 'Could not connect. Please try again.')
-      })
+      }
     }, 0)
   }
 

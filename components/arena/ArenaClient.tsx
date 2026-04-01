@@ -188,7 +188,7 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
             fontFamily: 'Pretendard, sans-serif',
             fontSize: 'clamp(14px, 1.5vw, 16px)',
             fontWeight: 400,
-            color: '#000',
+            color: '#8A8A8A',
             maxWidth: 473, margin: '0 auto',
           }}>
             {isPre
@@ -229,7 +229,7 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 {statusRows.map(r => (
-                  <p key={r.label} style={{ fontFamily: KANIT, fontWeight: 400, fontSize: 14, color: r.purple ? PURPLE : '#8A8A8A', margin: 0 }}>
+                  <p key={r.label} style={{ fontFamily: 'Pretendard, sans-serif', fontWeight: 400, fontSize: 14, color: r.purple ? PURPLE : '#8A8A8A', margin: 0 }}>
                     {r.label}
                   </p>
                 ))}
@@ -247,8 +247,8 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
           {/* Pool description */}
           {showPoolBar && (
             <p style={{
-              fontFamily: KANIT, fontWeight: 400, fontSize: 14,
-              color: '#000', textAlign: 'center', marginBottom: 12,
+              fontFamily: 'Pretendard, sans-serif', fontWeight: 400, fontSize: 14,
+              color: '#8A8A8A', textAlign: 'center', marginBottom: 12,
             }}>
               Supporters of the winning racer share this pool.
             </p>
@@ -277,7 +277,7 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
                   transition: 'width 0.5s',
                 }} />
               </div>
-              <p style={{ fontFamily: KANIT, fontSize: 12, color: '#aaa', marginTop: 6 }}>
+              <p style={{ fontFamily: 'Pretendard, sans-serif', fontSize: 12, color: '#8A8A8A', marginTop: 6 }}>
                 {MOCK_TOTAL_SOL} / {MOCK_POOL_TARGET} SOL target
               </p>
             </div>
@@ -324,8 +324,8 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
           {/* LIVE: reminder to return for result */}
           {isLive && (
             <p style={{
-              fontFamily: KANIT, fontWeight: 400, fontSize: 14,
-              color: '#000', textAlign: 'center', marginBottom: 16,
+              fontFamily: 'Pretendard, sans-serif', fontWeight: 400, fontSize: 14,
+              color: '#8A8A8A', textAlign: 'center', marginBottom: 16,
             }}>
               Return here after the race to see the winner.
             </p>
@@ -409,7 +409,7 @@ function CheeringCard({ petId, supportPct, isMobile }: { petId: string; supportP
       boxShadow: '0 8px 24px rgba(77,67,83,0.05)',
       border: `1.5px solid ${PURPLE}20`,
     }}>
-      <p style={{ fontFamily: KANIT, fontSize: 13, color: '#888', marginBottom: 14 }}>
+      <p style={{ fontFamily: 'Pretendard, sans-serif', fontSize: 13, color: '#8A8A8A', marginBottom: 14 }}>
         You&apos;re cheering for
       </p>
       <div style={{ display: 'flex', gap: isMobile ? 20 : 40, flexWrap: 'wrap' }}>
@@ -419,7 +419,7 @@ function CheeringCard({ petId, supportPct, isMobile }: { petId: string; supportP
           { label: 'Share of Pool', value: `${supportPct}%` },
         ].map(({ label, value }) => (
           <div key={label}>
-            <p style={{ fontFamily: KANIT, fontSize: 11, color: '#aaa', marginBottom: 2 }}>{label}</p>
+            <p style={{ fontFamily: 'Pretendard, sans-serif', fontSize: 11, color: '#8A8A8A', marginBottom: 2 }}>{label}</p>
             <p style={{ fontFamily: KANIT, fontSize: 18, fontWeight: 600, color: DARK }}>{value}</p>
           </div>
         ))}
@@ -506,7 +506,7 @@ function ResultSection({
 
   const row = (label: string, value: string) => (
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-      <p style={{ fontFamily: KANIT, fontWeight: 400, fontSize: 14, color: '#8A8A8A', margin: 0 }}>{label}</p>
+      <p style={{ fontFamily: 'Pretendard, sans-serif', fontWeight: 400, fontSize: 14, color: '#8A8A8A', margin: 0 }}>{label}</p>
       <p style={{ fontFamily: KANIT, fontWeight: 500, fontSize: 14, color: '#000', margin: 0 }}>{value}</p>
     </div>
   )
@@ -519,7 +519,7 @@ function ResultSection({
     }}>
       {/* Final Result header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 16 }}>
-        <p style={{ fontFamily: KANIT, fontWeight: 400, fontSize: 14, color: '#000', margin: 0 }}>Final Result</p>
+        <p style={{ fontFamily: 'Pretendard, sans-serif', fontWeight: 400, fontSize: 14, color: '#8A8A8A', margin: 0 }}>Final Result</p>
         <p style={{ fontFamily: KANIT, fontWeight: 500, fontSize: 14, color: '#000', margin: 0 }}>Round {result.number}</p>
       </div>
 
@@ -530,7 +530,7 @@ function ResultSection({
           if (!pet) return null
           return (
             <div key={petId} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-              <p style={{ fontFamily: KANIT, fontWeight: 400, fontSize: 14, color: '#8A8A8A', margin: 0 }}>{places[i]}</p>
+              <p style={{ fontFamily: 'Pretendard, sans-serif', fontWeight: 400, fontSize: 14, color: '#8A8A8A', margin: 0 }}>{places[i]}</p>
               <p style={{ fontFamily: KANIT, fontWeight: 500, fontSize: 14, color: '#000', margin: 0 }}>
                 {pet.name} {medals[i]}
               </p>
@@ -550,7 +550,7 @@ function ResultSection({
 
       {/* Win message */}
       {cheeringFor && userWon && (
-        <p style={{ fontFamily: KANIT, fontWeight: 400, fontSize: 14, color: PURPLE, marginTop: 6 }}>
+        <p style={{ fontFamily: 'Pretendard, sans-serif', fontWeight: 500, fontSize: 14, color: PURPLE, marginTop: 6 }}>
           You are part of the winning supporters!
         </p>
       )}

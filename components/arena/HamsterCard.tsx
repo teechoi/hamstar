@@ -110,7 +110,7 @@ export function HamsterCard({
         {/* Support bar */}
         {showBar && (
           <div style={{ marginBottom: 16, textAlign: 'left' }}>
-            <p style={{ fontFamily: KANIT, fontSize: 13, color: '#8D8D8D', marginBottom: 6 }}>
+            <p style={{ fontFamily: 'Pretendard, sans-serif', fontSize: 13, color: '#8A8A8A', marginBottom: 6 }}>
               {supportPct}% of total support
             </p>
             <div style={{
@@ -124,10 +124,10 @@ export function HamsterCard({
               }} />
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ fontFamily: KANIT, fontSize: 14, color: '#000' }}>
+              <span style={{ fontFamily: 'Pretendard, sans-serif', fontSize: 14, color: '#000' }}>
                 Supporters: {supporters}
               </span>
-              <span style={{ fontFamily: KANIT, fontSize: 14, color: '#000' }}>
+              <span style={{ fontFamily: 'Pretendard, sans-serif', fontSize: 14, color: '#000' }}>
                 {supportPool} SOL
               </span>
             </div>
@@ -172,13 +172,13 @@ export function HamsterCard({
         )}
 
         {arenaState === 'PREPARING' && (
-          <p style={{ fontFamily: KANIT, fontWeight: 500, fontSize: 12, color: '#8D8D8D', textAlign: 'center', margin: '8px 0 0' }}>
+          <p style={{ fontFamily: 'Pretendard, sans-serif', fontWeight: 500, fontSize: 12, color: '#8A8A8A', textAlign: 'center', margin: '8px 0 0' }}>
             No data yet
           </p>
         )}
 
         {isCheering && (
-          <p style={{ fontFamily: KANIT, fontSize: 12, color: PURPLE, marginTop: 10, fontWeight: 600 }}>
+          <p style={{ fontFamily: 'Pretendard, sans-serif', fontSize: 12, color: PURPLE, marginTop: 10, fontWeight: 600 }}>
             ✓ You&apos;re cheering for {name}
           </p>
         )}

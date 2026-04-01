@@ -53,11 +53,24 @@ export function LoginModal({ onClose, loginTitle, loginSubtitle }: LoginModalPro
     }
   }, [connected]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Reset spinner if wallet popup was dismissed without connecting
+  // Reset spinner if wallet popup was dismissed without connecting.
+  // Guard with a small timeout so a transient state flicker (e.g. select() briefly
+  // cycling connecting=false→true) doesn't fire this prematurely.
   useEffect(() => {
-    if (!connecting && connectingName && !connected) {
-      clearConnecting()
-    }
+    if (connecting || !connectingName || connected) return
+    const nameAtEffect = connectingName
+    const t = setTimeout(() => {
+      setConnectingName(prev => {
+        if (!prev) return prev // already cleared by success path
+        setErr(
+          nameAtEffect === 'MetaMask'
+            ? 'MetaMask did not connect. Make sure Solana is enabled inside MetaMask (Portfolio → Solana).'
+            : 'Connection was cancelled or the wallet did not respond. Please try again.'
+        )
+        return null
+      })
+    }, 300)
+    return () => clearTimeout(t)
   }, [connecting]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Deduplicate by name — some wallets (e.g. MetaMask) register via both

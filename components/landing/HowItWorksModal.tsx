@@ -161,7 +161,7 @@ export function HowItWorksModal({ onClose, onEnterArena, steps }: HowItWorksModa
         <p style={{
           fontSize: 16, color: '#8A8A8A', fontFamily: 'Pretendard, sans-serif', fontWeight: 400,
           textAlign: 'center', lineHeight: 1.6,
-          marginBottom: current.note ? 8 : 20,
+          marginBottom: current.note ? 6 : 10,
           whiteSpace: 'pre-line',
         }}>
           {current.body}
@@ -172,14 +172,14 @@ export function HowItWorksModal({ onClose, onEnterArena, steps }: HowItWorksModa
           fontFamily: 'Pretendard, sans-serif',
           fontSize: 13, color: current.note ? '#949494' : 'transparent',
           fontWeight: 400,
-          textAlign: 'center', marginBottom: 20,
+          textAlign: 'center', marginBottom: 10,
           minHeight: 20,
         }}>
           {current.note ?? ' '}
         </p>
 
         {/* CTA — pushed to bottom so card height stays consistent */}
-        <div style={{ marginTop: 20, width: '100%' }}>
+        <div style={{ width: '100%' }}>
           <CtaButton label={current.cta} onClick={handleCta} />
         </div>
       </div>

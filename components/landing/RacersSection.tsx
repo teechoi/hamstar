@@ -125,7 +125,6 @@ export function RacersSection({ racersTitle = 'Meet the Racers' }: { racersTitle
     return (
       <section id="racers" style={{
         background: '#F8F9FA',
-        minHeight: '100vh',
         display: 'flex', flexDirection: 'column', justifyContent: 'center',
         padding: '60px 0',
       }}>
@@ -162,10 +161,10 @@ export function RacersSection({ racersTitle = 'Meet the Racers' }: { racersTitle
   return (
     <section id="racers" style={{
       background: '#F8F9FA',
-      minHeight: '100vh',
-      position: 'relative',       // anchors viewport-edge decos
+      position: 'relative',
       display: 'flex', alignItems: 'flex-start',
-      paddingTop: 'max(0px, calc((100vh - 684px) / 2 - 48px))',
+      paddingTop: 80,
+      paddingBottom: 80,
       overflow: 'hidden',
     }}>
       {/* Sunflower — viewport-edge anchored (section-relative).

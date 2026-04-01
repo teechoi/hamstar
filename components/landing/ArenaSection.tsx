@@ -147,9 +147,8 @@ export function ArenaSection({
     return (
       <section id="arena" style={{
         background: '#F8F9FA',
-        minHeight: '100vh',
         display: 'flex', flexDirection: 'column', justifyContent: 'center',
-        padding: '80px 24px',
+        padding: '60px 24px',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 8 }}>
           <img src="/images/sunflower-seed.png" alt="" style={{ width: 22, height: 33, objectFit: 'contain' }} />
@@ -169,10 +168,10 @@ export function ArenaSection({
   return (
     <section id="arena" style={{
       background: '#F8F9FA',
-      minHeight: '100vh',
       position: 'relative',
       display: 'flex', alignItems: 'flex-start',
-      paddingTop: 'max(0px, calc((100vh - 684px) / 2))',
+      paddingTop: 80,
+      paddingBottom: 80,
       overflow: 'hidden',
     }}>
       {/* Trophy — viewport-edge anchored at section level.

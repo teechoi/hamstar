@@ -279,7 +279,6 @@ export const LEGAL_LINKS: { type: LegalModalType; label: string }[] = [
 
 export function LegalModal({ type, onClose }: { type: LegalModalType; onClose: () => void }) {
   const isMobile = useIsMobile()
-  const [xHov, setXHov] = useState(false)
   const [closeHov, setCloseHov] = useState(false)
   const doc = DOCS[type]
 
@@ -315,24 +314,7 @@ export function LegalModal({ type, onClose }: { type: LegalModalType; onClose: (
           flexShrink: 0,
           position: 'relative',
         }}>
-          {/* X close */}
-          <button
-            onClick={onClose}
-            onMouseEnter={() => setXHov(true)}
-            onMouseLeave={() => setXHov(false)}
-            style={{
-              position: 'absolute', top: isMobile ? 16 : 20, right: isMobile ? 16 : 20,
-              width: 32, height: 32, borderRadius: '50%', border: 'none',
-              background: xHov ? T.border : T.bg,
-              cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: 18, color: T.textMid, lineHeight: 1,
-              transition: 'background 0.15s',
-            }}
-          >
-            ×
-          </button>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14, paddingRight: 44 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
             <div style={{
               width: 48, height: 48, borderRadius: 14, flexShrink: 0,
               background: T.yellow,

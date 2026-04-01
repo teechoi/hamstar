@@ -19,9 +19,8 @@ export function AboutSection({
     return (
       <section id="about" style={{
         background: '#F8F9FA',
-        minHeight: '100vh',
         display: 'flex', flexDirection: 'column', justifyContent: 'center',
-        padding: '120px 24px',
+        padding: '80px 24px',
       }}>
         {/* Image area — pre-composed image */}
         <img
@@ -49,9 +48,9 @@ export function AboutSection({
   return (
     <section id="about" style={{
       background: '#F8F9FA',
-      minHeight: '100vh',
       display: 'flex', alignItems: 'flex-start',
-      paddingTop: 'max(120px, calc((100vh - 526px) / 2 - 48px))',
+      paddingTop: 80,
+      paddingBottom: 80,
       overflow: 'hidden',
     }}>
       {/* 1280×526 canvas, vertically centered */}

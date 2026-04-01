@@ -4,7 +4,7 @@ import { QRCodeSVG } from 'qrcode.react'
 import { useIsMobile } from '@/components/ui/index'
 // useFundWallet from @privy-io/react-auth/solana requires @solana/kit peer deps not yet installed
 import { T } from '@/lib/theme'
-import { HAMSTAR_SYMBOL, HAMSTAR_JUPITER_URL, HAMSTAR_MINT, FAN_TIERS } from '@/lib/hamstar-token'
+import { HAMSTAR_SYMBOL, HAMSTAR_JUPITER_URL, HAMSTAR_MINT } from '@/lib/hamstar-token'
 
 const KANIT = "var(--font-kanit), sans-serif"
 const PRET  = 'Pretendard, sans-serif'
@@ -269,43 +269,27 @@ function GetHamstarTab() {
       <div style={{
         background: 'rgba(255,231,144,0.2)',
         border: '1.5px solid rgba(255,200,0,0.3)',
-        borderRadius: 18, padding: '18px',
+        borderRadius: 18, padding: '16px 18px',
         marginBottom: 14,
+        display: 'flex', alignItems: 'center', gap: 14,
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
-          <div style={{
-            width: 46, height: 46, borderRadius: 13,
-            background: T.yellow,
-            border: '1.5px solid rgba(255,200,0,0.4)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 22,
-          }}>🐹</div>
-          <div>
-            <p style={{ fontFamily: KANIT, fontSize: 11, color: T.textMid, margin: 0, letterSpacing: 0.5 }}>
-              HAMSTAR TOKEN
-            </p>
-            <p style={{ fontFamily: KANIT, fontSize: 22, fontWeight: 800, color: T.text, margin: 0 }}>
-              {HAMSTAR_SYMBOL}
-            </p>
-          </div>
-        </div>
-        <p style={{ fontFamily: PRET, fontSize: 13, color: T.textMid, margin: '0 0 14px', lineHeight: 1.5 }}>
-          Hold {HAMSTAR_SYMBOL} to unlock fan tiers, exclusive badges, and future rewards.
-        </p>
-        {/* Tier ladder */}
-        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-          {FAN_TIERS.map(t => (
-            <div key={t.label} style={{
-              background: 'rgba(0,0,0,0.07)', borderRadius: 6,
-              padding: '3px 8px',
-              display: 'flex', alignItems: 'center', gap: 3,
-            }}>
-              <span style={{ fontSize: 11 }}>{t.emoji}</span>
-              <span style={{ fontFamily: KANIT, fontSize: 9, fontWeight: 700, color: T.sub2, letterSpacing: 0.3 }}>
-                {t.minTokens >= 1000 ? `${t.minTokens / 1000}K` : t.minTokens === 0 ? '0' : t.minTokens}+
-              </span>
-            </div>
-          ))}
+        <div style={{
+          width: 46, height: 46, borderRadius: 13, flexShrink: 0,
+          background: T.yellow,
+          border: '1.5px solid rgba(255,200,0,0.4)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontSize: 22,
+        }}>🐹</div>
+        <div>
+          <p style={{ fontFamily: KANIT, fontSize: 11, color: T.textMid, margin: '0 0 2px', letterSpacing: 0.5 }}>
+            HAMSTAR TOKEN
+          </p>
+          <p style={{ fontFamily: KANIT, fontSize: 20, fontWeight: 800, color: T.text, margin: '0 0 4px' }}>
+            {HAMSTAR_SYMBOL}
+          </p>
+          <p style={{ fontFamily: PRET, fontSize: 12, color: T.textMid, margin: 0, lineHeight: 1.4 }}>
+            Hold {HAMSTAR_SYMBOL} to unlock fan tiers and future rewards.
+          </p>
         </div>
       </div>
 
@@ -361,34 +345,6 @@ function GetHamstarTab() {
         🪐 Buy {HAMSTAR_SYMBOL} on Jupiter ↗
       </a>
 
-      {/* How to get started steps */}
-      <div style={{
-        background: T.bg, border: `1px solid ${T.border}`,
-        borderRadius: 14, overflow: 'hidden', marginBottom: 10,
-      }}>
-        {[
-          { step: '1', icon: '◎', title: 'Deposit SOL', desc: 'Use the Deposit SOL tab to fund your wallet.' },
-          { step: '2', icon: '🪐', title: 'Swap on Jupiter', desc: 'Swap SOL for $HAMSTAR using the button above.' },
-          { step: '3', icon: '🏆', title: 'Hold & earn tiers', desc: 'Hold tokens to unlock fan badges and rewards.' },
-        ].map((s, i, arr) => (
-          <div key={s.step} style={{
-            display: 'flex', alignItems: 'center', gap: 12,
-            padding: '11px 14px',
-            borderBottom: i < arr.length - 1 ? `1px solid ${T.border}` : 'none',
-          }}>
-            <div style={{
-              width: 32, height: 32, borderRadius: '50%', flexShrink: 0,
-              background: T.yellow, border: '1.5px solid rgba(255,200,0,0.4)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: 14,
-            }}>{s.icon}</div>
-            <div>
-              <p style={{ fontFamily: KANIT, fontSize: 12, fontWeight: 700, color: T.text, margin: 0 }}>{s.title}</p>
-              <p style={{ fontFamily: PRET, fontSize: 11, color: T.textMid, margin: 0 }}>{s.desc}</p>
-            </div>
-          </div>
-        ))}
-      </div>
     </div>
   )
 }

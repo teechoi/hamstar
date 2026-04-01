@@ -7,7 +7,7 @@ import { T } from '@/lib/theme'
 import { getCheerHistory, type CheerEntry } from '@/lib/cheer-history'
 import {
   getHamstarBalance, getFanTier, formatHamstar,
-  HAMSTAR_SYMBOL, HAMSTAR_JUPITER_URL, FAN_TIERS,
+  HAMSTAR_SYMBOL,
 } from '@/lib/hamstar-token'
 
 const KANIT = "var(--font-kanit), sans-serif"
@@ -219,35 +219,30 @@ function ConnectedView({
       {/* ── Body ── */}
       <div style={{ padding: isMobile ? '12px 16px 16px' : '14px 24px 20px' }}>
 
-        {/* $HAMSTAR token card */}
-        <HamstarTokenCard hamstarBalance={hamstarBalance} tier={tier} />
-
         {/* Wallet address card */}
         <div style={{
           background: T.bg, borderRadius: 16,
           border: `1px solid ${T.border}`,
           marginBottom: 10, overflow: 'hidden',
+          padding: '12px 16px',
+          display: 'flex', alignItems: 'center', gap: 12,
         }}>
-          <div style={{
-            padding: '12px 16px',
-            display: 'flex', alignItems: 'center', gap: 12,
-            borderBottom: `1px solid ${T.border}`,
-          }}>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <p style={{ fontFamily: KANIT, fontSize: 10, fontWeight: 700, color: '#bbb', textTransform: 'uppercase', letterSpacing: 1, margin: '0 0 3px' }}>
-                Wallet Address
-              </p>
-              <p style={{ fontFamily: MONO, fontSize: 11, color: T.text, margin: 0, wordBreak: 'break-all', lineHeight: 1.5 }}>
-                {walletAddress}
-              </p>
-            </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <p style={{ fontFamily: KANIT, fontSize: 10, fontWeight: 700, color: '#bbb', textTransform: 'uppercase', letterSpacing: 1, margin: '0 0 3px' }}>
+              Wallet Address
+            </p>
+            <p style={{ fontFamily: MONO, fontSize: 11, color: T.text, margin: 0, wordBreak: 'break-all', lineHeight: 1.5 }}>
+              {walletAddress}
+            </p>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, flexShrink: 0 }}>
             <button
               onClick={onCopy}
               style={{
                 background: copied ? 'rgba(34,197,94,0.1)' : '#fff',
                 border: `1.5px solid ${copied ? '#22C55E' : T.border}`,
                 borderRadius: 10, padding: '7px 12px',
-                cursor: 'pointer', flexShrink: 0,
+                cursor: 'pointer',
                 display: 'flex', alignItems: 'center', gap: 5,
                 transition: 'all 0.15s',
               }}
@@ -257,15 +252,12 @@ function ConnectedView({
                 {copied ? 'Copied!' : 'Copy'}
               </span>
             </button>
-          </div>
-          <div style={{ padding: '10px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <p style={{ fontFamily: PRET, fontSize: 12, color: T.textMid, margin: 0 }}>View on Solana Explorer</p>
             <a
               href={`https://explorer.solana.com/address/${walletAddress}`}
               target="_blank" rel="noopener noreferrer"
               style={{
                 fontFamily: KANIT, fontSize: 11, fontWeight: 700, color: T.purple,
-                textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4,
+                textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4,
                 padding: '5px 12px', background: T.blueSoft, borderRadius: 8,
                 cursor: 'pointer',
               }}
@@ -313,106 +305,6 @@ function ConnectedView({
         <DisconnectBtn onClick={onDisconnect} />
       </div>
     </>
-  )
-}
-
-// ─── $HAMSTAR token card ──────────────────────────────────────────────────────
-
-function HamstarTokenCard({
-  hamstarBalance, tier,
-}: { hamstarBalance: number; tier: ReturnType<typeof getFanTier> }) {
-  const [hov, setHov] = useState(false)
-  const currentIndex = FAN_TIERS.findIndex(t => t.label === tier.label)
-  const nextTier     = FAN_TIERS[currentIndex + 1] ?? null
-  const toNext       = nextTier ? nextTier.minTokens - hamstarBalance : 0
-
-  return (
-    <div style={{
-      background: 'rgba(255,231,144,0.2)',
-      border: '1.5px solid rgba(255,200,0,0.3)',
-      borderRadius: 18, padding: '12px 16px',
-      marginBottom: 10,
-    }}>
-      {/* Token balance row */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{
-            width: 36, height: 36, borderRadius: 10,
-            background: T.yellow,
-            border: '1.5px solid rgba(255,200,0,0.4)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 18,
-          }}>🐹</div>
-          <div>
-            <p style={{ fontFamily: KANIT, fontSize: 11, fontWeight: 600, color: T.textMid, margin: 0, letterSpacing: 0.3 }}>
-              {HAMSTAR_SYMBOL} Token
-            </p>
-            <p style={{ fontFamily: KANIT, fontSize: 20, fontWeight: 800, color: T.text, margin: 0, lineHeight: 1.1 }}>
-              {formatHamstar(hamstarBalance)}
-              <span style={{ fontSize: 11, fontWeight: 500, color: T.textMid, marginLeft: 5 }}>tokens</span>
-            </p>
-          </div>
-        </div>
-
-        {/* Tier badge */}
-        <div style={{
-          background: 'rgba(0,0,0,0.07)', borderRadius: 8,
-          padding: '4px 10px',
-          display: 'flex', alignItems: 'center', gap: 4,
-        }}>
-          <span style={{ fontSize: 13 }}>{tier.emoji}</span>
-          <span style={{ fontFamily: KANIT, fontSize: 10, fontWeight: 700, color: T.sub2, letterSpacing: 0.3 }}>
-            {tier.label.toUpperCase()}
-          </span>
-        </div>
-      </div>
-
-      {/* Progress to next tier */}
-      {nextTier ? (
-        <div style={{ marginBottom: 10 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
-            <span style={{ fontFamily: PRET, fontSize: 11, color: T.textMid }}>
-              {formatHamstar(toNext)} more to {nextTier.emoji} {nextTier.label}
-            </span>
-            <span style={{ fontFamily: KANIT, fontSize: 10, color: T.textMid }}>
-              {nextTier.minTokens.toLocaleString()}
-            </span>
-          </div>
-          <div style={{ height: 5, background: 'rgba(0,0,0,0.1)', borderRadius: 99, overflow: 'hidden' }}>
-            <div style={{
-              height: '100%',
-              width: `${Math.min(100, (hamstarBalance / nextTier.minTokens) * 100)}%`,
-              background: 'linear-gradient(90deg, #F5D850, #FFE790)',
-              borderRadius: 99,
-            }} />
-          </div>
-        </div>
-      ) : (
-        <p style={{ fontFamily: KANIT, fontSize: 11, color: T.sub2, margin: '0 0 14px', letterSpacing: 0.3 }}>
-          👑 Maximum tier reached — you are a Legend!
-        </p>
-      )}
-
-      {/* Buy CTA */}
-      <a
-        href={HAMSTAR_JUPITER_URL}
-        target="_blank" rel="noopener noreferrer"
-        onMouseEnter={() => setHov(true)}
-        onMouseLeave={() => setHov(false)}
-        style={{
-          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-          width: '100%', padding: '10px 16px',
-          background: hov ? T.limeDark : T.yellow,
-          border: '1.5px solid rgba(255,200,0,0.4)',
-          borderRadius: 48.5,
-          fontFamily: KANIT, fontSize: 13, fontWeight: 700, color: T.text,
-          textDecoration: 'none', transition: 'background 0.15s',
-          boxShadow: hov ? '0 4px 14px rgba(255,215,0,0.3)' : 'none',
-        }}
-      >
-        🐹 Get {HAMSTAR_SYMBOL} on Jupiter ↗
-      </a>
-    </div>
   )
 }
 

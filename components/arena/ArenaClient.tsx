@@ -226,21 +226,17 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
             backdropFilter: 'blur(20px)',
             marginBottom: 20,
           }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                {statusRows.map(r => (
-                  <p key={r.label} style={{ fontFamily: 'Pretendard, sans-serif', fontWeight: 400, fontSize: 14, color: r.purple ? PURPLE : '#8A8A8A', margin: 0 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {statusRows.map(r => (
+                <div key={r.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 16 }}>
+                  <p style={{ fontFamily: 'Pretendard, sans-serif', fontWeight: 400, fontSize: 14, color: r.purple ? PURPLE : '#8A8A8A', margin: 0 }}>
                     {r.label}
                   </p>
-                ))}
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10, alignItems: 'flex-end' }}>
-                {statusRows.map(r => (
-                  <p key={r.label} style={{ fontFamily: KANIT, fontWeight: 500, fontSize: 14, color: r.purple ? PURPLE : '#000', margin: 0, fontVariantNumeric: 'tabular-nums' }}>
+                  <p style={{ fontFamily: KANIT, fontWeight: 500, fontSize: 14, color: r.purple ? PURPLE : '#000', margin: 0, fontVariantNumeric: 'tabular-nums', flexShrink: 0 }}>
                     {r.value}
                   </p>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
           </div>
 

@@ -226,7 +226,7 @@ function ConnectedDeposit({ address, copied, onCopy }: { address: string; copied
       }}>
         <span style={{ fontSize: 14, flexShrink: 0 }}>⚠️</span>
         <p style={{ fontFamily: PRET, fontSize: 12, color: T.sub2, margin: 0, lineHeight: 1.5 }}>
-          Send only <strong>SOL</strong> to this address on Solana mainnet. Other tokens may be lost.
+          Send only <strong>SOL tokens</strong> to this address on Solana mainnet. Other tokens may be lost.
         </p>
       </div>
     </div>

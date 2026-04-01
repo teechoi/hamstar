@@ -17,7 +17,7 @@ const DEFAULT_STEPS: HowItWorksStep[] = [
   {
     num: 1,
     title: 'Pick Your Hamster',
-    body: 'Choose the racer you believe will win.\nEach race features three hamsters.',
+    body: 'Choose your favourite racer to cheer for.\nEach race features three unique hamsters.',
     image: '/images/carousel-pick-hamster.png',
     badge: { text: 'Support me!', color: PURPLE },
     note: null,
@@ -25,8 +25,8 @@ const DEFAULT_STEPS: HowItWorksStep[] = [
   },
   {
     num: 2,
-    title: 'Join The Race Round',
-    body: 'Join the race round before the countdown ends.\nEach hamster gathers supporters into their pool.',
+    title: 'Join the Round',
+    body: 'Cheer for your hamster before the countdown ends.\nEach hamster gathers supporters into their pool.',
     image: '/images/carousel-join-race.png',
     badge: null,
     note: null,

@@ -117,7 +117,7 @@ export function PetPageClient() {
               fontFamily: 'Pretendard, sans-serif',
               fontSize: 'clamp(14px, 1.6vw, 17px)',
               fontWeight: 400,
-              color: '#000',
+              color: '#8A8A8A',
             }}>
               Race highlights, real hamsters, and behind-the-scenes content.
             </p>
@@ -215,7 +215,7 @@ export function PetPageClient() {
             {/* Info panel */}
             <div style={{ flex: 1, padding: isMobile ? '28px 20px' : '36px 40px' }}>
 
-              <p style={{ fontFamily: KANIT, fontSize: 13, fontWeight: 400, color: '#9F9F9F', marginBottom: 4 }}>
+              <p style={{ fontFamily: 'Pretendard, sans-serif', fontSize: 13, fontWeight: 400, color: '#8A8A8A', marginBottom: 4 }}>
                 Name
               </p>
               <h2 style={{
@@ -228,7 +228,7 @@ export function PetPageClient() {
                 {selected.name}
               </h2>
 
-              <p style={{ fontFamily: KANIT, fontSize: 13, fontWeight: 400, color: '#9F9F9F', marginBottom: 6 }}>
+              <p style={{ fontFamily: 'Pretendard, sans-serif', fontSize: 13, fontWeight: 400, color: '#8A8A8A', marginBottom: 6 }}>
                 About {selected.name}
               </p>
               <p style={{

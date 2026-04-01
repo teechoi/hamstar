@@ -1,18 +1,24 @@
 // components/ui/index.tsx
 'use client'
-import { useState, useEffect } from 'react'
+import { useSyncExternalStore } from 'react'
 import { T } from '@/lib/theme'
 export { T, globalStyles } from '@/lib/theme'
 
+// useSyncExternalStore runs its client snapshot synchronously during React 18
+// hydration — before any browser paint — so the correct mobile/desktop layout
+// is committed in the same tick. Eliminates the useEffect two-pass flash where
+// the desktop canvas briefly renders on mobile while JS loads.
+function subscribe(cb: () => void) {
+  window.addEventListener('resize', cb)
+  return () => window.removeEventListener('resize', cb)
+}
+
 export function useIsMobile(breakpoint = 768) {
-  const [isMobile, setIsMobile] = useState(false)
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < breakpoint)
-    check()
-    window.addEventListener('resize', check)
-    return () => window.removeEventListener('resize', check)
-  }, [breakpoint])
-  return isMobile
+  return useSyncExternalStore(
+    subscribe,
+    () => window.innerWidth < breakpoint, // client snapshot — runs synchronously
+    () => false,                           // server snapshot
+  )
 }
 
 // ─── COMPONENTS ───────────────────────────────────────────────────────────────

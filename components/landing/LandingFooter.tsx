@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useIsMobile } from '@/components/ui/index'
 import { LegalModal, LEGAL_LINKS, type LegalModalType } from './LegalModal'
 import { HowItWorksModal } from './HowItWorksModal'
+import { RaceRulesModal } from './RaceRulesModal'
 import { SITE } from '@/config/site'
 
 // Figma 36:210 — 1280×350, bg:#FFE790
@@ -40,6 +41,7 @@ export function LandingFooter({
   const isMobile = useIsMobile()
   const [legalModal, setLegalModal] = useState<LegalModalType | null>(null)
   const [showHowItWorks, setShowHowItWorks] = useState(false)
+  const [showRaceRules, setShowRaceRules] = useState(false)
 
   const socials: [string, string | null | undefined][] = [
     ['X', twitterUrl],
@@ -68,7 +70,7 @@ export function LandingFooter({
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             <p style={{ fontFamily: PRET, fontWeight: 600, fontSize: 16, color: MUTED, margin: 0 }}>Learn</p>
             <button onClick={() => setShowHowItWorks(true)} style={{ ...link, background: 'none', border: 'none', cursor: 'pointer', padding: 0, textAlign: 'left' }}>How Hamstar Works</button>
-            <a href="#" style={link}>Race Rules</a>
+            <button onClick={() => setShowRaceRules(true)} style={{ ...link, background: 'none', border: 'none', cursor: 'pointer', padding: 0, textAlign: 'left' }}>Race Rules</button>
           </div>
         </div>
 
@@ -91,6 +93,7 @@ export function LandingFooter({
           ))}
         </div>
       {showHowItWorks && <HowItWorksModal onClose={() => setShowHowItWorks(false)} onEnterArena={() => setShowHowItWorks(false)} />}
+      {showRaceRules && <RaceRulesModal onClose={() => setShowRaceRules(false)} />}
     </footer>
     )
   }
@@ -122,7 +125,7 @@ export function LandingFooter({
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               <p style={{ fontFamily: PRET, fontWeight: 600, fontSize: 18, color: MUTED, lineHeight: '27px', margin: 0 }}>Learn</p>
               <button onClick={() => setShowHowItWorks(true)} style={{ ...link, background: 'none', border: 'none', cursor: 'pointer', padding: 0, textAlign: 'left' }}>How Hamstar Works</button>
-              <a href="#" style={link}>Race Rules</a>
+              <button onClick={() => setShowRaceRules(true)} style={{ ...link, background: 'none', border: 'none', cursor: 'pointer', padding: 0, textAlign: 'left' }}>Race Rules</button>
             </div>
           </div>
 
@@ -151,6 +154,7 @@ export function LandingFooter({
     </footer>
     {legalModal && <LegalModal type={legalModal} onClose={() => setLegalModal(null)} />}
     {showHowItWorks && <HowItWorksModal onClose={() => setShowHowItWorks(false)} onEnterArena={() => setShowHowItWorks(false)} />}
+    {showRaceRules && <RaceRulesModal onClose={() => setShowRaceRules(false)} />}
     </>
   )
 }

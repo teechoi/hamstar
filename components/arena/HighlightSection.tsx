@@ -231,7 +231,7 @@ export function HighlightSection({ lastResult }: HighlightSectionProps) {
         <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
           <TweetVideoCard tweetUrl="https://x.com/hamstarkun/status/2038862948261880002" title={clips[0]} />
           <TweetVideoCard tweetUrl="https://x.com/hamstarkun/status/2039588429126832246" title={clips[1]} />
-          <VideoCard title={clips[2]} index={2} />
+          <TweetVideoCard tweetUrl="https://x.com/hamstarkun/status/2039606648860479943" title={clips[2]} />
         </div>
       </div>
 

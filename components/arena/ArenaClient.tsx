@@ -9,6 +9,7 @@ import { DepositModal } from '@/components/landing/DepositModal'
 import { AccountModal } from '@/components/landing/AccountModal'
 import { HowItWorksModal } from '@/components/landing/HowItWorksModal'
 import { HamsterCard } from '@/components/arena/HamsterCard'
+import { CheerModal } from '@/components/arena/CheerModal'
 import { HighlightSection } from '@/components/arena/HighlightSection'
 import { PETS, SITE, type RaceResult } from '@/config/site'
 import type { RaceWindow } from '@/lib/race-scheduler'
@@ -57,6 +58,7 @@ function useCountdown(targetMs: number) {
 export function ArenaClient({ race, lastResult }: ArenaClientProps) {
   const [modal, setModal]                 = useState<Modal>(null)
   const [cheeringFor, setCheeringFor]     = useState<string | null>(null)
+  const [cheerModal, setCheerModal]       = useState<{ petId: string; multiplier: number } | null>(null)
   const isMobile = useIsMobile()
   const { connected, connecting, publicKey, disconnect } = useWallet()
 
@@ -105,11 +107,16 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
 
   const handleCheer = (petId: string) => {
     if (!authed) { setModal('login'); return }
+    const support = MOCK_SUPPORT[petId] ?? { sol: 1 }
+    const multiplier = MOCK_TOTAL_SOL / support.sol
+    setCheerModal({ petId, multiplier })
+  }
+
+  const handleCheerConfirm = (petId: string, _amountSol: number) => {
     setCheeringFor(petId)
     if (walletAddress) {
       const pet = PETS.find(p => p.id === petId)
       if (pet) {
-        // Write to localStorage for instant local feedback
         saveCheerEntry(walletAddress, {
           round: race.raceNumber,
           petId: pet.id,
@@ -119,7 +126,6 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
           won: null,
           timestamp: Date.now(),
         })
-        // Persist to DB (fire-and-forget)
         fetch('/api/user/cheer', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -127,6 +133,7 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
         }).catch(() => { /* non-critical */ })
       }
     }
+    // TODO: wire _amountSol into SystemProgram.transfer when on-chain cheering is ready
   }
 
   // Update cheer result when race finishes
@@ -397,6 +404,15 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
           onDeposit={() => setModal('deposit')}
           onDisconnect={handleDisconnect}
           onConnectWallet={() => setModal('login')}
+        />
+      )}
+      {cheerModal && (
+        <CheerModal
+          petId={cheerModal.petId}
+          petName={PETS.find(p => p.id === cheerModal.petId)?.name ?? cheerModal.petId}
+          multiplier={cheerModal.multiplier}
+          onClose={() => setCheerModal(null)}
+          onConfirm={(petId, amount) => { handleCheerConfirm(petId, amount) }}
         />
       )}
       {modal === 'howitworks' && (

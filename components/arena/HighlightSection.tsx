@@ -87,7 +87,7 @@ function TweetVideoCard({ tweetUrl, title }: { tweetUrl: string; title: string }
       )}
       <div
         ref={outerRef}
-        style={{ width: '100%', overflow: 'hidden', minHeight: loaded ? undefined : 0 }}
+        style={{ width: '100%', height: loaded ? 480 : 0, overflow: 'hidden' }}
       />
       <div style={{ padding: '12px 16px 16px' }}>
         <p style={{ fontFamily: KANIT, fontSize: 14, fontWeight: 600, color: '#000000' }}>
@@ -148,9 +148,9 @@ export function HighlightSection({ lastResult }: HighlightSectionProps) {
     : null
 
   const clips = [
-    `Round ${lastResult?.number ?? 1} — Race Start`,
-    `Round ${lastResult?.number ?? 1} — Final Lap`,
-    `Round ${lastResult?.number ?? 1} — Victory Lap`,
+    'Introduction — Dash',
+    'Introduction — Turbo',
+    'Introduction — Flash',
   ]
 
   return (

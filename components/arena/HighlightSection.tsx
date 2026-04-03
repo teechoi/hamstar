@@ -14,7 +14,7 @@ interface HighlightSectionProps {
 }
 
 function TweetVideoCard({ tweetUrl, title }: { tweetUrl: string; title: string }) {
-  const outerRef = useRef<HTMLDivElement>(null)   // cleared between embed attempts
+  const outerRef = useRef<HTMLDivElement>(null)
   const cardRef  = useRef<HTMLDivElement>(null)
   const [loaded, setLoaded] = useState(false)
 
@@ -22,16 +22,12 @@ function TweetVideoCard({ tweetUrl, title }: { tweetUrl: string; title: string }
     const tweetId = tweetUrl.match(/status\/(\d+)/)?.[1]
     if (!tweetId || !outerRef.current) return
 
-    // Each embed attempt gets its OWN fresh child element.
-    // Twitter's createTweet holds a reference to that element and inserts
-    // the iframe asynchronously. When cleanup removes the child from the outer
-    // div, the old createTweet still resolves — but inserts into a detached
-    // (invisible) node, so the duplicate never appears in the DOM.
     const slot = document.createElement('div')
     outerRef.current.innerHTML = ''
     outerRef.current.appendChild(slot)
 
     let active = true
+    let pollInterval: ReturnType<typeof setInterval> | null = null
 
     const embed = () => {
       if (!active) return
@@ -44,24 +40,34 @@ function TweetVideoCard({ tweetUrl, title }: { tweetUrl: string; title: string }
       }).then(() => { if (active) setLoaded(true) })
     }
 
+    const waitForWidget = () => {
+      // Poll until twttr.widgets is ready — handles cached scripts where
+      // the 'load' event never fires on a second visit.
+      pollInterval = setInterval(() => {
+        if (window.twttr?.widgets) {
+          clearInterval(pollInterval!)
+          pollInterval = null
+          embed()
+        }
+      }, 100)
+    }
+
     if (window.twttr?.widgets) {
       embed()
     } else {
-      let script = document.getElementById('twitter-widget-js') as HTMLScriptElement | null
-      if (!script) {
-        script = document.createElement('script')
+      if (!document.getElementById('twitter-widget-js')) {
+        const script = document.createElement('script')
         script.id = 'twitter-widget-js'
         script.src = 'https://platform.twitter.com/widgets.js'
         script.async = true
         document.head.appendChild(script)
       }
-      script.addEventListener('load', embed, { once: true })
+      waitForWidget()
     }
 
     return () => {
       active = false
-      // Detach the slot — any pending createTweet will insert into it but
-      // it is no longer in the DOM, so nothing visible happens.
+      if (pollInterval) clearInterval(pollInterval)
       if (outerRef.current) outerRef.current.innerHTML = ''
     }
   }, [tweetUrl])
@@ -74,21 +80,22 @@ function TweetVideoCard({ tweetUrl, title }: { tweetUrl: string; title: string }
       overflow: 'hidden',
       background: '#fff',
       boxShadow: '0 4px 16px rgba(0,0,0,0.07)',
+      display: 'flex',
+      flexDirection: 'column',
     }}>
-      {/* Loading placeholder until widget renders */}
-      {!loaded && (
-        <div style={{
-          width: '100%', height: 220,
-          background: '#D5D5D5',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-        }}>
-          <img src="/images/play-button.png" alt="Play" style={{ width: 40, height: 40, opacity: 0.5 }} />
-        </div>
-      )}
-      <div
-        ref={outerRef}
-        style={{ width: '100%', height: loaded ? 480 : 0, overflow: 'hidden' }}
-      />
+      {/* Fixed-height embed area — clips iframe to uniform height */}
+      <div style={{ height: 460, flexShrink: 0, position: 'relative', overflow: 'hidden' }}>
+        {!loaded && (
+          <div style={{
+            position: 'absolute', inset: 0,
+            background: '#D5D5D5',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            <img src="/images/play-button.png" alt="Play" style={{ width: 40, height: 40, opacity: 0.5 }} />
+          </div>
+        )}
+        <div ref={outerRef} style={{ width: '100%' }} />
+      </div>
       <div style={{ padding: '12px 16px 16px' }}>
         <p style={{ fontFamily: KANIT, fontSize: 14, fontWeight: 600, color: '#000000' }}>
           {title}
@@ -228,7 +235,7 @@ export function HighlightSection({ lastResult }: HighlightSectionProps) {
         </div>
 
         {/* Video cards */}
-        <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'stretch' }}>
           <TweetVideoCard tweetUrl="https://x.com/hamstarkun/status/2038862948261880002" title={clips[0]} />
           <TweetVideoCard tweetUrl="https://x.com/hamstarkun/status/2039588429126832246" title={clips[1]} />
           <TweetVideoCard tweetUrl="https://x.com/hamstarkun/status/2039606648860479943" title={clips[2]} />

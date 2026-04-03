@@ -19,6 +19,7 @@ const KANIT = "var(--font-kanit), sans-serif"
 const PURPLE = '#735DFF'
 const YELLOW = '#FFE790'
 const DARK   = '#000000'
+const CORAL  = '#FF3B5C'
 const TERMS_KEY = 'hamstar_terms_accepted'
 
 type Modal = 'terms' | 'login' | 'deposit' | 'account' | 'howitworks' | null
@@ -47,7 +48,10 @@ function useCountdown(targetMs: number) {
   const h = Math.floor(timeLeft / 3600000)
   const m = Math.floor((timeLeft % 3600000) / 60000)
   const s = Math.floor((timeLeft % 60000) / 1000)
-  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`
+  return {
+    display: `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`,
+    msLeft: timeLeft,
+  }
 }
 
 export function ArenaClient({ race, lastResult }: ArenaClientProps) {
@@ -83,6 +87,7 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
 
   const countdownTarget = race.status === 'LIVE' ? race.endsAt.getTime() : race.startsAt.getTime()
   const countdown = useCountdown(countdownTarget)
+  const isFrenzy = isPre && countdown.msLeft > 0 && countdown.msLeft < 60000
 
   useEffect(() => {
     if (!localStorage.getItem(TERMS_KEY)) setModal('terms')
@@ -143,11 +148,12 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
 
   const showPoolBar = true // always visible across all states
 
-  const statusRows: { label: string; value: string; purple?: boolean }[] = [
+  const statusRows: { label: string; value: string; purple?: boolean; coral?: boolean }[] = [
     { label: 'Arena Status',       value: statusLabel },
     { label: 'Current Race Round', value: `Round ${race.raceNumber}` },
     { label: isLive || isFinishedState ? 'Cheering' : 'Cheering Closes In',
-      value: isLive || isFinishedState ? 'Closed' : countdown },
+      value: isLive || isFinishedState ? 'Closed' : countdown.display,
+      coral: isFrenzy },
     ...(isFinishedState ? [{ label: 'Champion', value: winnerPet ? `${winnerPet.name} 🏆` : '—', purple: true }] : []),
   ]
 
@@ -157,6 +163,8 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
         * { box-sizing: border-box; margin: 0; padding: 0; }
         html { scroll-behavior: smooth; }
         @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.8)} }
+        @keyframes slideDown { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes frenzyGlow { 0%,100%{box-shadow:0 4px 20px rgba(77,67,83,0.08),0 0 0 2px #FF3B5C} 50%{box-shadow:0 4px 20px rgba(255,59,92,0.18),0 0 0 2px rgba(255,59,92,0.35)} }
       `}</style>
 
       <LandingNav
@@ -188,11 +196,14 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
             fontFamily: 'Pretendard, sans-serif',
             fontSize: 'clamp(14px, 1.5vw, 16px)',
             fontWeight: 400,
-            color: '#8A8A8A',
+            color: isFrenzy ? CORAL : '#8A8A8A',
             maxWidth: 473, margin: '0 auto',
+            transition: 'color 0.3s',
           }}>
             {isPre
-              ? 'Cheer for your favourite racer before the countdown ends.'
+              ? isFrenzy
+                ? 'Final seconds — lock in your pick now!'
+                : 'Cheer for your favourite racer before the countdown ends.'
               : isLive
                 ? 'The race is live. Watch live and see who takes the wheel.'
                 : 'The race has finished. Here\'s the result.'}
@@ -222,17 +233,20 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
           <div style={{
             background: '#fff', borderRadius: 20,
             padding: isMobile ? '16px 20px' : '20px 30px',
-            boxShadow: '0 4px 20px rgba(77,67,83,0.08)',
+            boxShadow: isFrenzy
+              ? '0 4px 20px rgba(77,67,83,0.08), 0 0 0 2px #FF3B5C'
+              : '0 4px 20px rgba(77,67,83,0.08)',
             backdropFilter: 'blur(20px)',
             marginBottom: 20,
+            animation: isFrenzy ? 'frenzyGlow 1.2s ease-in-out infinite' : 'none',
           }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {statusRows.map(r => (
                 <div key={r.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 16 }}>
-                  <p style={{ fontFamily: 'Pretendard, sans-serif', fontWeight: 400, fontSize: 14, color: r.purple ? PURPLE : '#8A8A8A', margin: 0 }}>
+                  <p style={{ fontFamily: 'Pretendard, sans-serif', fontWeight: 400, fontSize: 14, color: r.purple ? PURPLE : r.coral ? CORAL : '#8A8A8A', margin: 0 }}>
                     {r.label}
                   </p>
-                  <p style={{ fontFamily: KANIT, fontWeight: 500, fontSize: 14, color: r.purple ? PURPLE : '#000', margin: 0, fontVariantNumeric: 'tabular-nums', flexShrink: 0 }}>
+                  <p style={{ fontFamily: KANIT, fontWeight: 500, fontSize: 14, color: r.purple ? PURPLE : r.coral ? CORAL : '#000', margin: 0, fontVariantNumeric: 'tabular-nums', flexShrink: 0, animation: r.coral ? 'pulse 1s ease-in-out infinite' : 'none' }}>
                     {r.value}
                   </p>
                 </div>
@@ -300,6 +314,7 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
                   supportPct={support.pct}
                   supporters={support.supporters}
                   supportPool={support.sol}
+                  totalPool={MOCK_TOTAL_SOL}
                   isWinner={isFinishedState && effectiveResult?.positions[0] === pet.id}
                   isCheering={cheeringFor === pet.id}
                   onCheer={() => handleCheer(pet.id)}
@@ -307,6 +322,9 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
               )
             })}
           </div>
+
+          {/* Live cheer feed — only during pick window */}
+          {isPre && <CheerFeed isMobile={!!isMobile} />}
 
           {/* "You're cheering for" summary card */}
           {authed && cheeringFor && (isPre || isLive) && (
@@ -393,6 +411,97 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
 }
 
 // ─── Sub-components ─────────────────────────────────────────────────────────
+
+// ─── Cheer Feed ─────────────────────────────────────────────────────────────
+
+interface CheerEntry {
+  id: string
+  wallet: string
+  amountSol: number
+  petName: string
+}
+
+const BIG_CHEER_SOL = 1.0
+
+const MOCK_WALLETS = ['7xK3...f3mP', '2mPa...K7r2', '9rLb...N5t4', '4qZn...a8Bx', 'Ew3k...p9Qm', 'Rj7c...c2Lm', 'Xb9m...t6Wr']
+const MOCK_AMOUNTS = [0.05, 0.08, 0.1, 0.15, 0.25, 0.5, 1.0, 2.0, 0.3]
+
+function CheerFeed({ isMobile }: { isMobile: boolean }) {
+  const [entries, setEntries] = useState<CheerEntry[]>([])
+
+  useEffect(() => {
+    const petNames = PETS.map(p => p.name)
+
+    const addEntry = () => {
+      const wallet = MOCK_WALLETS[Math.floor(Math.random() * MOCK_WALLETS.length)]
+      const amount = MOCK_AMOUNTS[Math.floor(Math.random() * MOCK_AMOUNTS.length)]
+      const petName = petNames[Math.floor(Math.random() * petNames.length)]
+      setEntries(prev => [
+        { id: `${Date.now()}-${Math.random()}`, wallet, amountSol: amount, petName },
+        ...prev,
+      ].slice(0, 20))
+    }
+
+    // Seed with a few initial entries
+    addEntry(); addEntry(); addEntry()
+
+    // Trickle in new entries at random intervals (4–12s)
+    // TODO: replace with supabase.subscribeToDonations(raceId, ...) when real raceId is available
+    let timer: ReturnType<typeof setTimeout>
+    const schedule = () => {
+      timer = setTimeout(() => { addEntry(); schedule() }, Math.random() * 8000 + 4000)
+    }
+    schedule()
+    return () => clearTimeout(timer)
+  }, [])
+
+  return (
+    <div style={{
+      background: '#fff',
+      borderRadius: 20,
+      boxShadow: '0 4px 20px rgba(77,67,83,0.08)',
+      padding: isMobile ? '16px 20px' : '20px 30px',
+      marginBottom: 20,
+    }}>
+      <p style={{ fontFamily: KANIT, fontWeight: 500, fontSize: 14, color: DARK, marginBottom: 12 }}>
+        Live Cheers
+      </p>
+      <div style={{ display: 'flex', flexDirection: 'column', maxHeight: isMobile ? 160 : 200, overflowY: 'auto' }}>
+        {entries.length === 0 && (
+          <p style={{ fontFamily: 'Pretendard, sans-serif', fontWeight: 500, fontSize: 13, color: '#8A8A8A' }}>
+            Waiting for cheers...
+          </p>
+        )}
+        {entries.map((e, i) => {
+          const isBig = e.amountSol >= BIG_CHEER_SOL
+          return (
+            <div key={e.id} style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              padding: '7px 10px',
+              borderRadius: 10,
+              background: isBig ? 'rgba(115,93,255,0.08)' : 'transparent',
+              animation: i === 0 ? 'slideDown 0.25s ease-out' : 'none',
+            }}>
+              <span style={{ fontFamily: 'Pretendard, sans-serif', fontWeight: 500, fontSize: 13, color: '#8A8A8A' }}>
+                {e.wallet}
+              </span>
+              <span style={{ fontFamily: KANIT, fontWeight: 500, fontSize: 13, color: DARK, display: 'flex', alignItems: 'center', gap: 6 }}>
+                {e.amountSol} SOL → {e.petName}
+                {isBig && (
+                  <span style={{ fontFamily: 'Pretendard, sans-serif', fontWeight: 500, fontSize: 11, color: PURPLE }}>
+                    ← BIG
+                  </span>
+                )}
+              </span>
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
 
 function CheeringCard({ petId, supportPct, isMobile }: { petId: string; supportPct: number; isMobile: boolean }) {
   const pet = PETS.find(p => p.id === petId)

@@ -14,6 +14,7 @@ export interface HamsterCardProps {
   supportPct?: number     // 0–100, share of total support
   supporters?: number
   supportPool?: number    // SOL in pool for this pet
+  totalPool?: number      // total SOL across all hamsters (for multiplier calc)
   isWinner?: boolean      // FINISHED: this pet won
   isCheering?: boolean    // user is cheering this pet
   onCheer?: () => void
@@ -28,7 +29,7 @@ const PET_IMAGES: Record<string, string> = {
 
 export function HamsterCard({
   id, name, tagline, arenaState,
-  supportPct = 0, supporters = 0, supportPool = 0,
+  supportPct = 0, supporters = 0, supportPool = 0, totalPool = 0,
   isWinner = false, isCheering = false,
   onCheer,
 }: HamsterCardProps) {
@@ -131,6 +132,18 @@ export function HamsterCard({
                 {supportPool} SOL
               </span>
             </div>
+
+            {/* Implied payout multiplier */}
+            {totalPool > 0 && supportPool > 0 && (
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: 10 }}>
+                <span style={{ fontFamily: KANIT, fontWeight: 500, fontSize: 15, color: PURPLE }}>
+                  {(totalPool / supportPool).toFixed(1)}x payout
+                </span>
+                <span style={{ fontFamily: 'Pretendard, sans-serif', fontWeight: 500, fontSize: 12, color: '#8A8A8A' }}>
+                  if {name} wins
+                </span>
+              </div>
+            )}
           </div>
         )}
 

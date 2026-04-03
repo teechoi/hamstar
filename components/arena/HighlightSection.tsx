@@ -230,9 +230,8 @@ export function HighlightSection({ lastResult }: HighlightSectionProps) {
         {/* Video cards */}
         <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
           <TweetVideoCard tweetUrl="https://x.com/hamstarkun/status/2038862948261880002" title={clips[0]} />
-          {clips.slice(1).map((title, i) => (
-            <VideoCard key={i} title={title} index={i + 1} />
-          ))}
+          <TweetVideoCard tweetUrl="https://x.com/hamstarkun/status/2039588429126832246" title={clips[1]} />
+          <VideoCard title={clips[2]} index={2} />
         </div>
       </div>
 

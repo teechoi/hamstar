@@ -41,6 +41,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={kanit.variable}>
       <head>
+        <style>{`* { cursor: url('/images/sunflower-seed-cursor.png') 16 24, auto !important; }`}</style>
         <link rel="preconnect" href="https://cdn.jsdelivr.net" crossOrigin="anonymous" />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@latest/dist/web/static/pretendard.css" />
         <meta name="theme-color" content="#FFE790" />

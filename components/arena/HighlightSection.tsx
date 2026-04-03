@@ -154,8 +154,8 @@ export function HighlightSection({ lastResult }: HighlightSectionProps) {
     : null
 
   const clips = [
-    'Introduction — Dash',
     'Introduction — Turbo',
+    'Introduction — Dash',
     'Introduction — Flash',
   ]
 
@@ -235,8 +235,8 @@ export function HighlightSection({ lastResult }: HighlightSectionProps) {
 
         {/* Video cards */}
         <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'flex-start' }}>
-          <TweetVideoCard tweetUrl="https://x.com/hamstarkun/status/2038862948261880002" title={clips[0]} />
-          <TweetVideoCard tweetUrl="https://x.com/hamstarkun/status/2039588429126832246" title={clips[1]} />
+          <TweetVideoCard tweetUrl="https://x.com/hamstarkun/status/2039588429126832246" title={clips[0]} />
+          <TweetVideoCard tweetUrl="https://x.com/hamstarkun/status/2038862948261880002" title={clips[1]} />
           <TweetVideoCard tweetUrl="https://x.com/hamstarkun/status/2039606648860479943" title={clips[2]} />
         </div>
       </div>

@@ -46,7 +46,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="theme-color" content="#FFE790" />
         <meta name="mobile-web-app-capable" content="yes" />
       </head>
-      <body style={{ margin: 0, padding: 0, fontFamily: "'Pretendard', sans-serif", cursor: "url('/images/sunflower-seed.png') 16 16, auto" }}>
+      <body style={{ margin: 0, padding: 0, fontFamily: "'Pretendard', sans-serif", cursor: "url('/images/sunflower-seed-cursor.png') 16 24, auto" }}>
         <AppProviders>
           {children}
         </AppProviders>

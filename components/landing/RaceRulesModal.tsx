@@ -121,10 +121,75 @@ export function RaceRulesModal({ onClose }: { onClose: () => void }) {
                 Each Hamstar race is a live-streamed event where real hamsters compete on a physical track. Races are broadcast in real-time via the Hamstar platform, ensuring full transparency. No race outcomes are pre-determined — every result is organic and driven entirely by the hamsters themselves.
               </p>
 
-              {/* Track Specs */}
-              <p style={{ fontFamily: KANIT, fontSize: 13, fontWeight: 700, color: T.text, margin: '0 0 8px' }}>
+              {/* Track Specifications */}
+              <p style={{ fontFamily: KANIT, fontSize: 13, fontWeight: 700, color: T.text, margin: '0 0 10px' }}>
                 Track Specifications
               </p>
+
+              {/* Track Diagram */}
+              <div style={{ marginBottom: 8 }}>
+                <div style={{
+                  background: '#2A4A1A', borderRadius: 10, padding: '14px 0',
+                  position: 'relative', overflow: 'hidden',
+                }}>
+                  {/* START label + line */}
+                  <div style={{ position: 'absolute', top: 6, left: 22, fontFamily: KANIT, fontSize: 9, fontWeight: 700, color: 'rgba(255,255,255,0.7)', letterSpacing: 1 }}>START</div>
+                  <div style={{ position: 'absolute', top: 0, bottom: 0, left: 44, width: 1.5, background: 'rgba(255,255,255,0.5)' }} />
+                  {/* FINISH label + line */}
+                  <div style={{ position: 'absolute', top: 6, right: 18, fontFamily: KANIT, fontSize: 9, fontWeight: 700, color: 'rgba(255,255,255,0.7)', letterSpacing: 1 }}>FINISH</div>
+                  <div style={{ position: 'absolute', top: 0, bottom: 0, right: 44, width: 1.5, background: 'rgba(255,255,255,0.5)' }} />
+
+                  {/* Lane dividers (dashed) */}
+                  {[0, 1].map(i => (
+                    <div key={i} style={{
+                      position: 'absolute',
+                      left: 48, right: 48,
+                      top: `${33 + i * 33}%`,
+                      borderTop: '1.5px dashed rgba(255,255,255,0.25)',
+                    }} />
+                  ))}
+
+                  {/* Lanes with hamster circles */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+                    {/* Lane 3 — top */}
+                    <div style={{ height: 44, display: 'flex', alignItems: 'center', paddingLeft: '18%' }}>
+                      <div style={{
+                        width: 28, height: 28, borderRadius: '50%',
+                        background: '#A8D060', border: '2px solid rgba(255,255,255,0.3)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        fontFamily: KANIT, fontSize: 11, fontWeight: 800, color: '#1A3A08',
+                      }}>#3</div>
+                    </div>
+                    {/* Lane 2 — middle */}
+                    <div style={{ height: 44, display: 'flex', alignItems: 'center', paddingLeft: '38%', gap: 10 }}>
+                      <div style={{
+                        width: 28, height: 28, borderRadius: '50%',
+                        background: '#4ECDC4', border: '2px solid rgba(255,255,255,0.3)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        fontFamily: KANIT, fontSize: 11, fontWeight: 800, color: '#0A2A28',
+                      }}>#2</div>
+                      {/* Arrow */}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+                        <div style={{ width: 28, height: 2, background: '#FFD700' }} />
+                        <div style={{ width: 0, height: 0, borderTop: '5px solid transparent', borderBottom: '5px solid transparent', borderLeft: '7px solid #FFD700' }} />
+                      </div>
+                    </div>
+                    {/* Lane 1 — bottom */}
+                    <div style={{ height: 44, display: 'flex', alignItems: 'center', paddingLeft: '58%' }}>
+                      <div style={{
+                        width: 28, height: 28, borderRadius: '50%',
+                        background: '#FF6B6B', border: '2px solid rgba(255,255,255,0.3)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        fontFamily: KANIT, fontSize: 11, fontWeight: 800, color: '#3A0808',
+                      }}>#1</div>
+                    </div>
+                  </div>
+                </div>
+                <p style={{ fontFamily: PRET, fontSize: 11, color: T.textMid, textAlign: 'center', margin: '6px 0 16px' }}>
+                  Standard 3-lane race track (not to scale)
+                </p>
+              </div>
+
               <div style={{ borderRadius: 12, overflow: 'hidden', border: `1px solid ${T.border}`, marginBottom: 18 }}>
                 {TRACK_SPECS.map((row, i) => (
                   <div key={row.param} style={{

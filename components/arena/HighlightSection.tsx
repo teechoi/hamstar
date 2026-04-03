@@ -83,11 +83,11 @@ function TweetVideoCard({ tweetUrl, title }: { tweetUrl: string; title: string }
       display: 'flex',
       flexDirection: 'column',
     }}>
-      {/* Fixed-height embed area — clips iframe to uniform height */}
-      <div style={{ height: 460, flexShrink: 0, position: 'relative', overflow: 'hidden' }}>
+      {/* Embed area — grows to fill card height so all titles pin to bottom */}
+      <div style={{ flex: 1, position: 'relative' }}>
         {!loaded && (
           <div style={{
-            position: 'absolute', inset: 0,
+            width: '100%', height: 220,
             background: '#D5D5D5',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>

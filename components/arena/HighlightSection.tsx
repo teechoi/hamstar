@@ -83,8 +83,7 @@ function TweetVideoCard({ tweetUrl, title }: { tweetUrl: string; title: string }
       display: 'flex',
       flexDirection: 'column',
     }}>
-      {/* Embed area — grows to fill card height so all titles pin to bottom */}
-      <div style={{ flex: 1, position: 'relative' }}>
+      <div style={{ position: 'relative' }}>
         {!loaded && (
           <div style={{
             width: '100%', height: 220,
@@ -235,7 +234,7 @@ export function HighlightSection({ lastResult }: HighlightSectionProps) {
         </div>
 
         {/* Video cards */}
-        <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'stretch' }}>
+        <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'flex-start' }}>
           <TweetVideoCard tweetUrl="https://x.com/hamstarkun/status/2038862948261880002" title={clips[0]} />
           <TweetVideoCard tweetUrl="https://x.com/hamstarkun/status/2039588429126832246" title={clips[1]} />
           <TweetVideoCard tweetUrl="https://x.com/hamstarkun/status/2039606648860479943" title={clips[2]} />

@@ -164,7 +164,7 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
         html { scroll-behavior: smooth; }
         @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.8)} }
         @keyframes slideDown { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
-        @keyframes frenzyGlow { 0%,100%{box-shadow:0 4px 20px rgba(77,67,83,0.08),0 0 0 2px #FF3B5C} 50%{box-shadow:0 4px 20px rgba(255,59,92,0.18),0 0 0 2px rgba(255,59,92,0.35)} }
+        @keyframes frenzyGlow { 0%,100%{border-color:#FF3B5C} 50%{border-color:rgba(255,59,92,0.3)} }
       `}</style>
 
       <LandingNav
@@ -233,9 +233,8 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
           <div style={{
             background: '#fff', borderRadius: 20,
             padding: isMobile ? '16px 20px' : '20px 30px',
-            boxShadow: isFrenzy
-              ? '0 4px 20px rgba(77,67,83,0.08), 0 0 0 2px #FF3B5C'
-              : '0 4px 20px rgba(77,67,83,0.08)',
+            boxShadow: '0 4px 20px rgba(77,67,83,0.08)',
+            border: isFrenzy ? '2px solid #FF3B5C' : '2px solid transparent',
             backdropFilter: 'blur(20px)',
             marginBottom: 20,
             animation: isFrenzy ? 'frenzyGlow 1.2s ease-in-out infinite' : 'none',

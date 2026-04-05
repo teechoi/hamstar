@@ -60,6 +60,8 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
   const [cheeringFor, setCheeringFor]     = useState<string | null>(null)
   const [cheerModal, setCheerModal]       = useState<{ petId: string; multiplier: number } | null>(null)
   const [petForms, setPetForms]           = useState<Record<string, PetForm | null>>({})
+  // TODO: fetch real streak from on-chain StreakAccount once program is deployed
+  const userStreak = 0
   const isMobile = useIsMobile()
   const { connected, connecting, publicKey, disconnect } = useWallet()
 
@@ -430,6 +432,7 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
           petId={cheerModal.petId}
           petName={PETS.find(p => p.id === cheerModal.petId)?.name ?? cheerModal.petId}
           multiplier={cheerModal.multiplier}
+          streakCount={userStreak}
           onClose={() => setCheerModal(null)}
           onConfirm={(petId, amount) => { handleCheerConfirm(petId, amount) }}
         />

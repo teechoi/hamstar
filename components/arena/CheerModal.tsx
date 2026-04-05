@@ -9,19 +9,21 @@ interface CheerModalProps {
   petId: string
   petName: string
   multiplier: number
+  streakCount?: number  // user's current consecutive win streak (0 = none)
   onClose: () => void
   onConfirm: (petId: string, amountSol: number) => void
 }
 
-export function CheerModal({ petId, petName, multiplier, onClose, onConfirm }: CheerModalProps) {
+export function CheerModal({ petId, petName, multiplier, streakCount = 0, onClose, onConfirm }: CheerModalProps) {
   const [amount, setAmount]         = useState('0.5')
   const [step, setStep]             = useState<'input' | 'confirmed'>('input')
   const [hovConfirm, setHovConfirm] = useState(false)
 
-  const amountNum = parseFloat(amount) || 0
-  const payout    = (amountNum * multiplier).toFixed(3)
-  const profit    = ((amountNum * multiplier) - amountNum).toFixed(3)
-  const canSubmit = amountNum > 0
+  const amountNum   = parseFloat(amount) || 0
+  const streakBonus = streakCount >= 3 ? 0.4 : streakCount === 2 ? 0.2 : 0
+  const payout      = (amountNum * multiplier).toFixed(3)
+  const profit      = ((amountNum * multiplier) - amountNum).toFixed(3)
+  const canSubmit   = amountNum > 0
 
   const handleConfirm = () => {
     onConfirm(petId, amountNum)
@@ -89,6 +91,22 @@ export function CheerModal({ petId, petName, multiplier, onClose, onConfirm }: C
         {/* ── Input step ── */}
         {step === 'input' && (
           <div style={{ padding: '24px 28px 28px' }}>
+
+            {/* Streak badge */}
+            {streakCount >= 2 && (
+              <div style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                background: 'rgba(115,93,255,0.08)', border: '1.5px solid rgba(115,93,255,0.2)',
+                borderRadius: 14, padding: '10px 18px', marginBottom: 12,
+              }}>
+                <span style={{ fontFamily: PRET, fontWeight: 600, fontSize: 13, color: T.purple }}>
+                  {streakCount >= 3 ? '🔥' : '🔥'} {streakCount}-race win streak
+                </span>
+                <span style={{ fontFamily: KANIT, fontWeight: 700, fontSize: 14, color: T.purple }}>
+                  +{streakBonus}x weight bonus
+                </span>
+              </div>
+            )}
 
             {/* Odds */}
             <div style={{

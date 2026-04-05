@@ -40,7 +40,7 @@ export const SITE = {
   //   'LIVE'      → gray "Closed" buttons, race in progress
   //   'FINISHED'  → gold winner glow, champion row, View Full Result enabled
   demo: {
-    arenaState: 'OPEN' as 'PREPARING' | 'OPEN' | 'LIVE' | 'FINISHED' | null,
+    arenaState: null as 'PREPARING' | 'OPEN' | 'LIVE' | 'FINISHED' | null,
   },
 }
 

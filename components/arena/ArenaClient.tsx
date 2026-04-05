@@ -88,7 +88,7 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
 
   const countdownTarget = race.status === 'LIVE' ? race.endsAt.getTime() : race.startsAt.getTime()
   const countdown = useCountdown(countdownTarget)
-  const isFrenzy = isPre // DEV: always on — change back to: isPre && countdown.msLeft > 0 && countdown.msLeft < 60000
+  const isFrenzy = isPre && countdown.msLeft > 0 && countdown.msLeft < 60000
 
   useEffect(() => {
     if (!localStorage.getItem(TERMS_KEY)) setModal('terms')

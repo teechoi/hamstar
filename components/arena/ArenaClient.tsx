@@ -388,7 +388,10 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
             ) : (
               <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: 12 }}>
                 <WatchLiveBtn active={isLive} href={SITE.stream.url} />
-                <GrayDisabledBtn label="View Full Result" />
+                <YellowBtn
+                  label="View Highlights"
+                  onClick={() => document.getElementById('highlight')?.scrollIntoView({ behavior: 'smooth' })}
+                />
               </div>
             )}
           </div>
@@ -596,40 +599,26 @@ function WatchLiveBtn({ active, href }: { active: boolean; href: string }) {
   const [hov, setHov] = useState(false)
   return (
     <a
-      href={active ? href : undefined}
-      target={active ? '_blank' : undefined}
+      href={href}
+      target="_blank"
       rel="noopener noreferrer"
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
       style={{
         flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
         gap: 12, padding: '16px 48px',
-        background: YELLOW,
-        border: 'none',
+        background: active ? YELLOW : '#F0F0F0',
+        border: active ? '2px solid #000' : 'none',
         borderRadius: 48.5, textDecoration: 'none',
         fontFamily: KANIT, fontSize: 'clamp(14px, 1.5vw, 17px)', fontWeight: 700,
-        color: DARK,
-        cursor: active ? 'pointer' : 'default',
-        opacity: hov && active ? 0.9 : 1, transition: 'opacity 0.15s',
-        boxShadow: '0 4px 16px rgba(255,231,144,0.4)',
+        color: active ? DARK : '#888',
+        cursor: 'pointer',
+        opacity: hov ? 0.85 : 1, transition: 'opacity 0.15s',
+        boxShadow: active ? '0 4px 16px rgba(255,231,144,0.4)' : 'none',
       }}
     >
-      Watch Live Race
+      {active ? 'Watch Live Race' : 'View Stream'}
     </a>
-  )
-}
-
-function GrayDisabledBtn({ label }: { label: string }) {
-  return (
-    <div style={{
-      flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
-      gap: 12, padding: '16px 48px',
-      background: '#e8e8e8', border: 'none', borderRadius: 48.5,
-      fontFamily: KANIT, fontSize: 'clamp(14px, 1.5vw, 17px)', fontWeight: 700,
-      color: '#aaa', userSelect: 'none',
-    }}>
-      {label}
-    </div>
   )
 }
 

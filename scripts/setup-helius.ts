@@ -32,7 +32,7 @@ async function main() {
 
   if (pets.some((p) => p.walletAddress.includes('PLACEHOLDER'))) {
     console.error('❌ Pet wallet addresses still have PLACEHOLDER values.')
-    console.error('   Update HAMMY_WALLET, WHISKERS_WALLET, NUGGET_WALLET in .env and re-run seed.')
+    console.error('   Update pet wallet addresses in .env and re-run seed.')
     process.exit(1)
   }
 

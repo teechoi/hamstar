@@ -47,7 +47,7 @@ export const SITE = {
 // ─── PETS ─────────────────────────────────────────────────────────────────────
 // Edit these to update racer profiles.
 //
-// For 'image': put a photo file in /public/pets/ and reference as '/pets/hammy.jpg'
+// For 'image': put a photo file in /public/pets/ and reference as '/pets/dash.jpg'
 // Or use any external image URL (Cloudinary, etc.)
 // Leave image as '' to show the emoji instead.
 // ─────────────────────────────────────────────────────────────────────────────
@@ -177,7 +177,7 @@ export const MEDIA: MediaItem[] = [
   //   id: 'race1-highlight',
   //   type: 'VIDEO',
   //   title: 'Race #1 Highlights',
-  //   description: 'The moment Hammy took the lead in the final stretch.',
+  //   description: 'The moment Dash took the lead in the final stretch.',
   //   url: 'https://youtube.com/watch?v=YOUR_VIDEO_ID',
   //   thumbnail: 'https://img.youtube.com/vi/YOUR_VIDEO_ID/maxresdefault.jpg',
   //   duration: '2:14',
@@ -186,10 +186,10 @@ export const MEDIA: MediaItem[] = [
   // },
   // Photo example:
   // {
-  //   id: 'nugget-cage',
+  //   id: 'turbo-cage',
   //   type: 'PHOTO',
-  //   title: "Nugget in the new deluxe cage",
-  //   url: '/media/nugget-cage.jpg', // put file at /public/media/nugget-cage.jpg
+  //   title: "Turbo in the new deluxe cage",
+  //   url: '/media/turbo-cage.jpg', // put file at /public/media/turbo-cage.jpg
   //   featured: false,
   //   publishedAt: '2025-03-01',
   // },

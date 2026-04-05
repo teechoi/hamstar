@@ -14,7 +14,7 @@ datasource db {
 // ─── PETS ─────────────────────────────────────────────────────────────────────
 model Pet {
   id            String  @id @default(cuid())
-  slug          String  @unique         // "hammy" | "whiskers" | "nugget"
+  slug          String  @unique         // "dash" | "flash" | "turbo"
   name          String
   number        String                  // "07" | "03" | "99"
   emoji         String

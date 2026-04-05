@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { LandingNav } from '@/components/landing/LandingNav'
 import { LandingFooter } from '@/components/landing/LandingFooter'
@@ -30,10 +30,13 @@ function styleLabel(chaos: number): string {
   return 'Steady'
 }
 
+interface PetStats { wins: number; races: number; winRate: number }
+
 export function PetPageClient() {
   const [modal, setModal] = useState<Modal>(null)
   const [selectedId, setSelectedId] = useState(PETS[0].id)
   const [hovTabId, setHovTabId] = useState<string | null>(null)
+  const [petStats, setPetStats] = useState<Record<string, PetStats>>({})
   const isMobile = useIsMobile()
   const { connected, publicKey, disconnect } = useWallet()
 
@@ -41,6 +44,21 @@ export function PetPageClient() {
   const walletAddress = publicKey?.toString() ?? ''
 
   const selected = PETS.find(p => p.id === selectedId) ?? PETS[0]
+
+  useEffect(() => {
+    Promise.all(
+      PETS.map(pet =>
+        fetch(`/api/pets/${pet.id}/stats`)
+          .then(r => r.json() as Promise<PetStats>)
+          .then(data => ({ id: pet.id, data }))
+          .catch(() => ({ id: pet.id, data: { wins: 0, races: 0, winRate: 0 } }))
+      )
+    ).then(results => {
+      const map: Record<string, PetStats> = {}
+      results.forEach(({ id, data }) => { map[id] = data })
+      setPetStats(map)
+    })
+  }, [])
 
   const handleDisconnect = () => { disconnect().catch(() => {}) }
 
@@ -243,22 +261,27 @@ export function PetPageClient() {
               </p>
 
               {/* Stats — 2 column grid */}
-              <div style={{
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
-                gap: '10px 32px',
-              }}>
-                {[
-                  { label: 'Performance', value: `${selected.speed}%` },
-                  { label: 'Win Rate',    value: `${selected.wins} wins` },
-                  { label: 'Style',       value: styleLabel(selected.chaos) },
-                  { label: 'Chaos',       value: `${selected.chaos}%` },
-                ].map(({ label, value }) => (
-                  <p key={label} style={{ fontFamily: 'Pretendard, sans-serif', fontSize: 'clamp(13px, 1.4vw, 15px)', fontWeight: 400, color: '#000', margin: 0 }}>
-                    {label}: {value}
-                  </p>
-                ))}
-              </div>
+              {(() => {
+                const stats = petStats[selected.id]
+                return (
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: '1fr 1fr',
+                    gap: '10px 32px',
+                  }}>
+                    {[
+                      { label: 'Performance', value: `${selected.speed}%` },
+                      { label: 'Win Rate',    value: stats ? `${stats.winRate}%` : `${selected.wins} wins` },
+                      { label: 'Style',       value: styleLabel(selected.chaos) },
+                      { label: 'Races',       value: stats ? `${stats.races} races` : '—' },
+                    ].map(({ label, value }) => (
+                      <p key={label} style={{ fontFamily: 'Pretendard, sans-serif', fontSize: 'clamp(13px, 1.4vw, 15px)', fontWeight: 400, color: '#000', margin: 0 }}>
+                        {label}: {value}
+                      </p>
+                    ))}
+                  </div>
+                )
+              })()}
             </div>
           </div>
         </div>

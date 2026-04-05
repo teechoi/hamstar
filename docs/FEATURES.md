@@ -143,37 +143,6 @@ DASH    W W L W W    60% win rate    2-race streak
 
 ---
 
-## 7. Multi-Race Parlay ← on-chain, highest retention mechanic
-
-**What:** Correctly pick winners of 2 or 3 consecutive races for a massive bonus multiplier. Stored on-chain as a separate parlay account. Parlay reserve funded by 1% of each race fee.
-
-```
-Single race win:    normal payout
-2-race parlay win:  normal payout × 3x bonus
-3-race parlay win:  normal payout × 8x bonus
-```
-
-**Complexity:** On-chain + significant UI surface. Biggest build, biggest retention impact.
-
-**Contract:**
-- PDA: `[wallet_pubkey, "parlay"]` → stores `{ legs_completed: u8, race_ids: [u64; 3], picks: [u8; 3] }`
-- On each race settlement: check parlay account, advance or reset
-- Bonus paid from `parlay_reserve` account on 2 or 3-leg completion
-
-**UI — new `ParlayCard` component:**
-- During pick window: show "Start a Parlay" CTA if no active parlay, or "Parlay Leg 2/3" if mid-streak
-- Shows projected bonus multiplier
-- Post-race: "Parlay alive! 1/3 complete — 3x if you go 3-for-3"
-- Separate parlay history tab in AccountModal
-
-**Files to touch:**
-- Solana program (contract) — parlay PDA + reserve logic
-- `components/arena/ParlayCard.tsx` — new file
-- `components/arena/ArenaClient.tsx` — render ParlayCard during pick window
-- `components/wallet/AccountModal.tsx` — parlay history tab
-
----
-
 ## Build Order Summary
 
 | # | Feature | Effort | Requires Contract? |
@@ -184,9 +153,7 @@ Single race win:    normal payout
 | 4 | Hamstar form cards | Medium | No (DB only) |
 | 5 | Dark horse bonus | High | Yes |
 | 6 | Hot streak multiplier | High | Yes |
-| 7 | Multi-race parlay | Very High | Yes |
 
 **Phase 1 (ship together):** Features 1 + 2 + 3 — all frontend, immediate arena energy lift  
 **Phase 2:** Feature 4 — needs real race history data in DB  
 **Phase 3:** Features 5 + 6 — contract additions, can be batched  
-**Phase 4:** Feature 7 — parlay system, own milestone  

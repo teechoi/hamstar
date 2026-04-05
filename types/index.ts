@@ -61,10 +61,11 @@ export interface Race {
 }
 
 export interface RaceEntry {
-  petId:    string
-  pet:      RacePet
-  position: number | null
-  totalSol: number
+  petId:      string
+  pet:        RacePet
+  position:   number | null
+  totalSol:   number
+  supporters: number
 }
 
 export interface RacePet {

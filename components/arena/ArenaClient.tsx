@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { useWallet } from '@solana/wallet-adapter-react'
+import { useWallet, useConnection } from '@solana/wallet-adapter-react'
+import { PublicKey } from '@solana/web3.js'
 import { LandingNav } from '@/components/landing/LandingNav'
 import { LandingFooter } from '@/components/landing/LandingFooter'
 import { TermsModal } from '@/components/landing/TermsModal'
@@ -15,6 +16,7 @@ import { PETS, SITE, type RaceResult } from '@/config/site'
 import type { RaceWindow } from '@/lib/race-scheduler'
 import { useIsMobile } from '@/components/ui/index'
 import { saveCheerEntry, updateCheerResult } from '@/lib/cheer-history'
+import { useRace } from '@/lib/hooks/useRace'
 
 const KANIT = "var(--font-kanit), sans-serif"
 const PURPLE = '#735DFF'
@@ -22,18 +24,11 @@ const YELLOW = '#FFE790'
 const DARK   = '#000000'
 const CORAL  = '#FF3B5C'
 const TERMS_KEY = 'hamstar_terms_accepted'
+const PROGRAM_ID = new PublicKey('7VumdroGjCGoY8skLuATZY6U7uMJeiE6fRaewdXLSVwQ')
 
 type Modal = 'terms' | 'login' | 'deposit' | 'account' | 'howitworks' | null
 type ArenaState = 'PREPARING' | 'OPEN' | 'LIVE' | 'FINISHED'
-
-// Mock support data — replace with real API data when backend is ready
-const MOCK_SUPPORT: Record<string, { pct: number; supporters: number; sol: number }> = {
-  dash:  { pct: 42, supporters: 12, sol: 4.1 },
-  flash: { pct: 31, supporters: 9,  sol: 3.0 },
-  turbo: { pct: 27, supporters: 7,  sol: 2.6 },
-}
-const MOCK_TOTAL_SOL = 9.7
-const MOCK_POOL_TARGET = 20
+const POOL_TARGET = 20 // SOL target for pool progress bar
 
 interface ArenaClientProps {
   race: RaceWindow
@@ -60,10 +55,11 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
   const [cheeringFor, setCheeringFor]     = useState<string | null>(null)
   const [cheerModal, setCheerModal]       = useState<{ petId: string; multiplier: number } | null>(null)
   const [petForms, setPetForms]           = useState<Record<string, PetForm | null>>({})
-  // TODO: fetch real streak from on-chain StreakAccount once program is deployed
-  const userStreak = 0
+  const [userStreak, setUserStreak]       = useState(0)
   const isMobile = useIsMobile()
   const { connected, connecting, publicKey, disconnect } = useWallet()
+  const { connection } = useConnection()
+  const { currentRace: raceData, totalSol: liveTotalSol } = useRace()
 
   const authed = connected
   const walletAddress = publicKey?.toString() ?? ''
@@ -98,6 +94,26 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
     if (!localStorage.getItem(TERMS_KEY)) setModal('terms')
   }, [])
 
+  // Fetch on-chain streak for connected wallet
+  useEffect(() => {
+    if (!publicKey) { setUserStreak(0); return }
+    const fetch = async () => {
+      try {
+        const [streakPDA] = PublicKey.findProgramAddressSync(
+          [Buffer.from('streak'), publicKey.toBytes()],
+          PROGRAM_ID
+        )
+        const info = await connection.getAccountInfo(streakPDA)
+        if (!info) { setUserStreak(0); return }
+        // Layout: 8 disc + 32 user pubkey = offset 40 is streak u8
+        setUserStreak(info.data[40] ?? 0)
+      } catch {
+        setUserStreak(0)
+      }
+    }
+    fetch()
+  }, [publicKey, connection])
+
   useEffect(() => {
     Promise.all(
       PETS.map(pet =>
@@ -123,10 +139,22 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
     setModal(null)
   }
 
+  // Real support data from useRace, with fallback to equal split
+  const totalPool = liveTotalSol || raceData?.entries.reduce((s, e) => s + e.totalSol, 0) || 0
+  const getSupport = (petId: string) => {
+    const entry = raceData?.entries.find(e => e.petId === petId)
+    if (!entry || totalPool === 0) return { pct: 33, supporters: 0, sol: 0 }
+    return {
+      pct: Math.round((entry.totalSol / totalPool) * 100),
+      supporters: entry.supporters ?? 0,
+      sol: entry.totalSol,
+    }
+  }
+
   const handleCheer = (petId: string) => {
     if (!authed) { setModal('login'); return }
-    const support = MOCK_SUPPORT[petId] ?? { sol: 1 }
-    const multiplier = MOCK_TOTAL_SOL / support.sol
+    const support = getSupport(petId)
+    const multiplier = support.sol > 0 ? totalPool / support.sol : 1
     setCheerModal({ petId, multiplier })
   }
 
@@ -301,18 +329,18 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
                   Total Arena Pool
                 </p>
                 <p style={{ fontFamily: KANIT, fontSize: 16, fontWeight: 700, color: PURPLE }}>
-                  {MOCK_TOTAL_SOL} SOL
+                  {totalPool.toFixed(2)} SOL
                 </p>
               </div>
               <div style={{ width: '100%', height: 12, background: '#E9E9E9', borderRadius: 6, overflow: 'hidden' }}>
                 <div style={{
-                  width: `${Math.min(100, (MOCK_TOTAL_SOL / MOCK_POOL_TARGET) * 100)}%`,
+                  width: `${Math.min(100, (totalPool / POOL_TARGET) * 100)}%`,
                   height: '100%', background: PURPLE, borderRadius: 6,
                   transition: 'width 0.5s',
                 }} />
               </div>
               <p style={{ fontFamily: 'Pretendard, sans-serif', fontSize: 12, color: '#8A8A8A', marginTop: 6 }}>
-                {MOCK_TOTAL_SOL} / {MOCK_POOL_TARGET} SOL target
+                {totalPool.toFixed(2)} / {POOL_TARGET} SOL target
               </p>
             </div>
           )}
@@ -325,7 +353,7 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
             marginBottom: 32,
           }}>
             {PETS.map(pet => {
-              const support = MOCK_SUPPORT[pet.id] ?? { pct: 33, supporters: 5, sol: 1.0 }
+              const support = getSupport(pet.id)
               const isDarkHorse = support.pct < 20
               return (
                 <HamsterCard
@@ -339,7 +367,7 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
                   supportPct={support.pct}
                   supporters={support.supporters}
                   supportPool={support.sol}
-                  totalPool={MOCK_TOTAL_SOL}
+                  totalPool={totalPool}
                   isWinner={isFinishedState && effectiveResult?.positions[0] === pet.id}
                   isCheering={cheeringFor === pet.id}
                   isDarkHorse={isDarkHorse}
@@ -357,7 +385,7 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
           {authed && cheeringFor && (isPre || isLive) && (
             <CheeringCard
               petId={cheeringFor}
-              supportPct={MOCK_SUPPORT[cheeringFor]?.pct ?? 33}
+              supportPct={getSupport(cheeringFor).pct}
               isMobile={!!isMobile}
             />
           )}

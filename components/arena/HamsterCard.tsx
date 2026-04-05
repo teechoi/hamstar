@@ -24,6 +24,7 @@ export interface HamsterCardProps {
   totalPool?: number      // total SOL across all hamsters (for multiplier calc)
   isWinner?: boolean      // FINISHED: this pet won
   isCheering?: boolean    // user is cheering this pet
+  isDarkHorse?: boolean   // pool share < 20% — show badge + upset bonus if winner
   form?: PetForm | null
   onCheer?: () => void
 }
@@ -38,7 +39,7 @@ const PET_IMAGES: Record<string, string> = {
 export function HamsterCard({
   id, name, tagline, arenaState,
   supportPct = 0, supporters = 0, supportPool = 0, totalPool = 0,
-  isWinner = false, isCheering = false,
+  isWinner = false, isCheering = false, isDarkHorse = false,
   form,
   onCheer,
 }: HamsterCardProps) {
@@ -104,6 +105,30 @@ export function HamsterCard({
             fontSize: 11, fontWeight: 700, fontFamily: KANIT,
           }}>
             🏆 WINNER
+          </div>
+        )}
+        {/* Dark horse badge — show during open/live when pool share is low */}
+        {isDarkHorse && (isOpen || isLive) && (
+          <div style={{
+            position: 'absolute', top: 12, left: 12,
+            background: 'rgba(0,0,0,0.72)', color: '#FFE790',
+            borderRadius: 20, padding: '3px 10px',
+            fontSize: 11, fontWeight: 700, fontFamily: KANIT,
+            backdropFilter: 'blur(4px)',
+          }}>
+            DARK HORSE
+          </div>
+        )}
+        {/* Upset bonus badge — show on the winning dark horse after a race */}
+        {isDarkHorse && goldGlow && (
+          <div style={{
+            position: 'absolute', bottom: 12, left: '50%', transform: 'translateX(-50%)',
+            background: '#735DFF', color: '#fff',
+            borderRadius: 20, padding: '4px 14px',
+            fontSize: 11, fontWeight: 700, fontFamily: KANIT,
+            whiteSpace: 'nowrap',
+          }}>
+            UPSET BONUS 1.5x
           </div>
         )}
       </div>

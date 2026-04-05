@@ -324,6 +324,7 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
           }}>
             {PETS.map(pet => {
               const support = MOCK_SUPPORT[pet.id] ?? { pct: 33, supporters: 5, sol: 1.0 }
+              const isDarkHorse = support.pct < 20
               return (
                 <HamsterCard
                   key={pet.id}
@@ -339,6 +340,7 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
                   totalPool={MOCK_TOTAL_SOL}
                   isWinner={isFinishedState && effectiveResult?.positions[0] === pet.id}
                   isCheering={cheeringFor === pet.id}
+                  isDarkHorse={isDarkHorse}
                   form={petForms[pet.id] ?? null}
                   onCheer={() => handleCheer(pet.id)}
                 />

@@ -8,7 +8,7 @@ import { LoginModal } from '@/components/landing/LoginModal'
 import { DepositModal } from '@/components/landing/DepositModal'
 import { AccountModal } from '@/components/landing/AccountModal'
 import { HowItWorksModal } from '@/components/landing/HowItWorksModal'
-import { HamsterCard } from '@/components/arena/HamsterCard'
+import { HamsterCard, type PetForm } from '@/components/arena/HamsterCard'
 import { CheerModal } from '@/components/arena/CheerModal'
 import { HighlightSection } from '@/components/arena/HighlightSection'
 import { PETS, SITE, type RaceResult } from '@/config/site'
@@ -59,6 +59,7 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
   const [modal, setModal]                 = useState<Modal>(null)
   const [cheeringFor, setCheeringFor]     = useState<string | null>(null)
   const [cheerModal, setCheerModal]       = useState<{ petId: string; multiplier: number } | null>(null)
+  const [petForms, setPetForms]           = useState<Record<string, PetForm | null>>({})
   const isMobile = useIsMobile()
   const { connected, connecting, publicKey, disconnect } = useWallet()
 
@@ -93,6 +94,21 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
 
   useEffect(() => {
     if (!localStorage.getItem(TERMS_KEY)) setModal('terms')
+  }, [])
+
+  useEffect(() => {
+    Promise.all(
+      PETS.map(pet =>
+        fetch(`/api/pets/${pet.id}/form`)
+          .then(r => r.json())
+          .then((data: PetForm) => ({ id: pet.id, data }))
+          .catch(() => ({ id: pet.id, data: null }))
+      )
+    ).then(results => {
+      const map: Record<string, PetForm | null> = {}
+      results.forEach(({ id, data }) => { map[id] = data })
+      setPetForms(map)
+    })
   }, [])
 
   // Clear cheer selection when wallet changes (disconnect / switch wallet)
@@ -323,6 +339,7 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
                   totalPool={MOCK_TOTAL_SOL}
                   isWinner={isFinishedState && effectiveResult?.positions[0] === pet.id}
                   isCheering={cheeringFor === pet.id}
+                  form={petForms[pet.id] ?? null}
                   onCheer={() => handleCheer(pet.id)}
                 />
               )

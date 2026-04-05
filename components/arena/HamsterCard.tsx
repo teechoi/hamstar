@@ -4,6 +4,13 @@ import { useState } from 'react'
 const KANIT = "var(--font-kanit), sans-serif"
 const PURPLE = '#735DFF'
 
+export interface PetForm {
+  results: ('W' | 'L')[]
+  winRate: number
+  streak: number
+  streakType: 'W' | 'L'
+}
+
 export interface HamsterCardProps {
   id: string
   name: string
@@ -17,6 +24,7 @@ export interface HamsterCardProps {
   totalPool?: number      // total SOL across all hamsters (for multiplier calc)
   isWinner?: boolean      // FINISHED: this pet won
   isCheering?: boolean    // user is cheering this pet
+  form?: PetForm | null
   onCheer?: () => void
 }
 
@@ -31,6 +39,7 @@ export function HamsterCard({
   id, name, tagline, arenaState,
   supportPct = 0, supporters = 0, supportPool = 0, totalPool = 0,
   isWinner = false, isCheering = false,
+  form,
   onCheer,
 }: HamsterCardProps) {
   const [hov, setHov] = useState(false)
@@ -104,9 +113,55 @@ export function HamsterCard({
         <h3 style={{ fontFamily: KANIT, fontSize: 'clamp(16px, 1.8vw, 20px)', fontWeight: 500, color: '#000000', marginBottom: 4 }}>
           I&apos;m {name}
         </h3>
-        <p style={{ fontFamily: 'Pretendard, sans-serif', fontSize: 14, fontWeight: 400, color: '#8A8A8A', marginBottom: showBar ? 14 : 16, whiteSpace: 'nowrap' }}>
+        <p style={{ fontFamily: 'Pretendard, sans-serif', fontSize: 14, fontWeight: 400, color: '#8A8A8A', marginBottom: 12, whiteSpace: 'nowrap' }}>
           {tagline}
         </p>
+
+        {/* Form row */}
+        <div style={{ marginBottom: showBar ? 14 : 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4, marginBottom: 6 }}>
+            {form && form.results.length > 0 ? (
+              form.results.map((r, i) => (
+                <span key={i} style={{
+                  width: 26, height: 26, borderRadius: '50%',
+                  background: r === 'W' ? '#22C55E' : '#FF3B5C',
+                  color: '#fff',
+                  fontSize: 11, fontWeight: 700, fontFamily: KANIT,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}>
+                  {r}
+                </span>
+              ))
+            ) : (
+              Array.from({ length: 5 }).map((_, i) => (
+                <span key={i} style={{
+                  width: 26, height: 26, borderRadius: '50%',
+                  background: '#E9E9E9',
+                  fontSize: 11, fontWeight: 700, fontFamily: KANIT,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  color: '#ccc',
+                }}>
+                  –
+                </span>
+              ))
+            )}
+          </div>
+          {form && form.results.length > 0 && (
+            <div style={{ display: 'flex', justifyContent: 'center', gap: 10 }}>
+              <span style={{ fontFamily: 'Pretendard, sans-serif', fontSize: 12, color: '#8A8A8A' }}>
+                {form.winRate}% win rate
+              </span>
+              {form.streak > 1 && (
+                <span style={{
+                  fontFamily: 'Pretendard, sans-serif', fontSize: 12, fontWeight: 600,
+                  color: form.streakType === 'W' ? '#22C55E' : '#FF3B5C',
+                }}>
+                  {form.streak}{form.streakType} streak
+                </span>
+              )}
+            </div>
+          )}
+        </div>
 
         {/* Support bar */}
         {showBar && (

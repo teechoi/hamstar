@@ -21,6 +21,13 @@ interface DashData {
   }[]
 }
 
+const QUICK_LINKS = [
+  { href: '/admin/race',    label: 'Race Control',  icon: '🏁', desc: 'Create or manage active race' },
+  { href: '/admin/wallet',  label: 'Wallet',        icon: '💎', desc: 'View SOL balances & addresses' },
+  { href: '/admin/users',   label: 'Users',         icon: '👥', desc: 'Browse supporters & win rates'  },
+  { href: '/admin/history', label: 'Race History',  icon: '📜', desc: 'Past results & recaps'          },
+]
+
 function StatCard({ label, value, sub, accent }: { label: string; value: string; sub?: string; accent?: string }) {
   return (
     <div style={{
@@ -71,6 +78,24 @@ export default function DashboardPage() {
           {err}
         </div>
       )}
+
+      {/* Quick links */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 12, marginBottom: 28 }}>
+        {QUICK_LINKS.map(({ href, label, icon, desc }) => (
+          <a key={href} href={href} style={{
+            display: 'block', padding: '16px 18px', background: A.card,
+            borderRadius: 14, border: `1.5px solid ${A.border}`,
+            textDecoration: 'none', transition: 'border-color 0.15s, box-shadow 0.15s',
+          }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = A.purple; (e.currentTarget as HTMLElement).style.boxShadow = `0 4px 12px rgba(115,93,255,0.12)` }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = A.border; (e.currentTarget as HTMLElement).style.boxShadow = 'none' }}
+          >
+            <span style={{ fontSize: 22 }}>{icon}</span>
+            <p style={{ fontFamily: KANIT, fontSize: 14, fontWeight: 700, color: A.text, marginTop: 8, marginBottom: 3 }}>{label}</p>
+            <p style={{ fontSize: 12, color: A.textMuted }}>{desc}</p>
+          </a>
+        ))}
+      </div>
 
       {/* Stat cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 16, marginBottom: 32 }}>

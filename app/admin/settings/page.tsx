@@ -182,6 +182,84 @@ export default function SettingsPage() {
           </Field>
         ))}
       </Section>
+
+      <SolanaSection />
+    </div>
+  )
+}
+
+function SolanaSection() {
+  const PROGRAM_ID   = process.env.NEXT_PUBLIC_PROGRAM_ID ?? '7VumdroGjCGoY8skLuATZY6U7uMJeiE6fRaewdXLSVwQ'
+  const [copied, setCopied] = useState<string | null>(null)
+
+  const copy = (val: string, key: string) => {
+    navigator.clipboard.writeText(val)
+    setCopied(key)
+    setTimeout(() => setCopied(null), 1500)
+  }
+
+  function ReadonlyField({ label, value, hint }: { label: string; value: string; hint?: string }) {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+        <label style={{ fontSize: 12, fontWeight: 700, color: '#555555', textTransform: 'uppercase', letterSpacing: 0.6 }}>{label}</label>
+        {hint && <p style={{ fontSize: 12, color: '#9A9A9A' }}>{hint}</p>}
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          <span style={{ flex: 1, padding: '10px 14px', borderRadius: 10, border: '1.5px solid #E0E0E0', fontSize: 13, color: '#0D0D14', background: '#F8F9FA', fontFamily: 'monospace', wordBreak: 'break-all' }}>
+            {value || '—'}
+          </span>
+          {value && (
+            <button onClick={() => copy(value, label)} style={{
+              padding: '8px 14px', borderRadius: 8, border: '1.5px solid #E0E0E0',
+              background: copied === label ? 'rgba(0,197,102,0.10)' : '#fff',
+              cursor: 'pointer', fontSize: 12, fontWeight: 700,
+              color: copied === label ? '#00C566' : '#9A9A9A', flexShrink: 0,
+            }}>
+              {copied === label ? 'Copied!' : 'Copy'}
+            </button>
+          )}
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div style={{ background: '#ffffff', borderRadius: 16, border: '1.5px solid #F0F0F0', marginBottom: 24, overflow: 'hidden' }}>
+      <div style={{ padding: '18px 24px', borderBottom: '1px solid #F0F0F0', background: '#F8F9FA', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <h2 style={{ fontFamily: "var(--font-kanit), sans-serif", fontSize: 15, fontWeight: 700, color: '#0D0D14' }}>Solana & Program Config</h2>
+        <span style={{ fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: 99, background: 'rgba(115,93,255,0.08)', color: '#735DFF' }}>READ-ONLY</span>
+      </div>
+      <div style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 18 }}>
+        <p style={{ fontSize: 13, color: '#9A9A9A', marginBottom: 4 }}>
+          These values are set via environment variables at deploy time. To change them, update your env vars and redeploy.
+        </p>
+        <ReadonlyField
+          label="Program ID"
+          value={PROGRAM_ID}
+          hint="The deployed Anchor program address on Solana"
+        />
+        <ReadonlyField
+          label="HAMSTAR Token Mint"
+          value={process.env.NEXT_PUBLIC_HAMSTAR_MINT ?? ''}
+          hint="SPL token mint address for HAMSTAR (set NEXT_PUBLIC_HAMSTAR_MINT)"
+        />
+        <ReadonlyField
+          label="Treasury Wallet"
+          value={process.env.NEXT_PUBLIC_TREASURY_WALLET ?? ''}
+          hint="Platform treasury wallet (set NEXT_PUBLIC_TREASURY_WALLET)"
+        />
+        <ReadonlyField
+          label="RPC Endpoint"
+          value={process.env.NEXT_PUBLIC_SOLANA_RPC_URL ?? 'Using Helius (server-side only)'}
+          hint="Solana RPC URL used for on-chain reads"
+        />
+        <div style={{ padding: '14px 16px', borderRadius: 10, background: 'rgba(255,231,144,0.20)', border: '1px solid rgba(255,231,144,0.6)' }}>
+          <p style={{ fontSize: 12, fontWeight: 700, color: '#8a6a00', marginBottom: 4 }}>Upset Reserve PDA</p>
+          <p style={{ fontSize: 12, color: '#8a6a00' }}>
+            Derived from seeds: <code style={{ background: 'rgba(0,0,0,0.06)', padding: '1px 6px', borderRadius: 4 }}>[&quot;upset_reserve&quot;]</code> + Program ID.
+            View live balance in the <a href="/admin/wallet" style={{ color: '#735DFF', fontWeight: 700, textDecoration: 'none' }}>Wallet page</a>.
+          </p>
+        </div>
+      </div>
     </div>
   )
 }

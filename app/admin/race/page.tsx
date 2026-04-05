@@ -9,158 +9,395 @@ const SLUGS = ['dash', 'flash', 'turbo']
 
 interface Race {
   id: string; number: number; status: string
-  startsAt: string; endsAt: string
-  entries: { id: string; pet: { id: string; name: string; slug: string }; totalSol: string }[]
+  startsAt: string; endsAt: string; recap: string | null
+  entries: { id: string; pet: { id: string; name: string; slug: string; emoji: string }; totalSol: string }[]
 }
 
-interface Settings { raceNumber: number; isLive: boolean; streamUrl: string }
-
-function Badge({ status }: { status: string }) {
-  const colors: Record<string, [string, string]> = {
-    UPCOMING: [A.yellowSoft, A.yellowDark],
+function StatusBadge({ status }: { status: string }) {
+  const map: Record<string, [string, string]> = {
+    UPCOMING: [A.yellowSoft, '#8a6a00'],
     LIVE:     [A.redSoft,    A.red],
     FINISHED: [A.greenSoft,  A.green],
   }
-  const [bg, fg] = colors[status] ?? [A.border, A.textMuted]
+  const [bg, fg] = map[status] ?? [A.border, A.textMuted]
   return (
-    <span style={{ fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: 99, background: bg, color: fg, textTransform: 'uppercase', letterSpacing: 0.6 }}>
-      {status}
+    <span style={{ fontSize: 11, fontWeight: 700, padding: '4px 12px', borderRadius: 99, background: bg, color: fg, textTransform: 'uppercase', letterSpacing: 0.8 }}>
+      {status === 'LIVE' ? '● LIVE' : status}
     </span>
   )
 }
 
-export default function RacePage() {
-  const [race, setRace] = useState<Race | null>(null)
-  const [settings, setSettings] = useState<Settings | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [positions, setPositions] = useState<string[]>([SLUGS[0], SLUGS[1], SLUGS[2]])
-  const [finishing, setFinishing] = useState(false)
-  const [savingLive, setSavingLive] = useState(false)
-  const [msg, setMsg] = useState('')
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div style={{ background: A.card, borderRadius: 16, border: `1.5px solid ${A.border}`, marginBottom: 20, overflow: 'hidden' }}>
+      <div style={{ padding: '16px 24px', borderBottom: `1px solid ${A.border}`, background: A.pageBg }}>
+        <h2 style={{ fontFamily: KANIT, fontSize: 15, fontWeight: 700, color: A.text }}>{title}</h2>
+      </div>
+      <div style={{ padding: 24 }}>{children}</div>
+    </div>
+  )
+}
 
-  useEffect(() => {
-    Promise.all([
+function Btn({ children, onClick, disabled, color = A.purple, small }: {
+  children: React.ReactNode; onClick: () => void; disabled?: boolean; color?: string; small?: boolean
+}) {
+  return (
+    <button onClick={onClick} disabled={disabled} style={{
+      padding: small ? '8px 18px' : '10px 24px',
+      borderRadius: 48.5, border: 'none',
+      background: disabled ? A.border : color,
+      fontFamily: KANIT, fontSize: small ? 13 : 14, fontWeight: 700,
+      color: disabled ? A.textMuted : '#fff',
+      cursor: disabled ? 'not-allowed' : 'pointer',
+      opacity: disabled ? 0.7 : 1,
+      transition: 'opacity 0.15s',
+    }}>
+      {children}
+    </button>
+  )
+}
+
+export default function RacePage() {
+  const [race,      setRace]      = useState<Race | null>(null)
+  const [isLive,    setIsLive]    = useState(false)
+  const [loading,   setLoading]   = useState(true)
+  const [busy,      setBusy]      = useState(false)
+  const [msg,       setMsg]       = useState<{ text: string; ok: boolean } | null>(null)
+
+  // Create form
+  const [showCreate, setShowCreate] = useState(false)
+  const [createForm, setCreateForm] = useState({ startsAt: '', endsAt: '' })
+
+  // Finish form
+  const [positions, setPositions] = useState<string[]>([SLUGS[0], SLUGS[1], SLUGS[2]])
+
+  // Recap editor
+  const [recap,     setRecap]     = useState('')
+  const [savingRecap, setSavingRecap] = useState(false)
+
+  const flash = (text: string, ok = true) => {
+    setMsg({ text, ok })
+    setTimeout(() => setMsg(null), 3500)
+  }
+
+  const load = async () => {
+    setLoading(true)
+    const [raceRes, settingsRes] = await Promise.all([
       fetch('/api/admin/race/current').then(r => r.json()),
       fetch('/api/admin/settings').then(r => r.json()),
-    ]).then(([r, s]) => {
-      setRace(r && !r.error ? r : null)
-      setSettings(s)
-    }).finally(() => setLoading(false))
-  }, [])
+    ])
+    setRace(raceRes && !raceRes.error ? raceRes : null)
+    setIsLive(settingsRes.isLive ?? false)
+    setRecap(raceRes?.recap ?? '')
+    setLoading(false)
+  }
 
-  const flash = (m: string) => { setMsg(m); setTimeout(() => setMsg(''), 3000) }
+  useEffect(() => { load() }, [])
+
+  // ── Actions ────────────────────────────────────────────────────────────────
 
   const toggleLive = async () => {
-    if (!settings) return
-    setSavingLive(true)
+    setBusy(true)
     await fetch('/api/admin/settings', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ isLive: !settings.isLive }),
+      body: JSON.stringify({ isLive: !isLive }),
     })
-    setSettings(s => s ? { ...s, isLive: !s.isLive } : s)
-    setSavingLive(false)
-    flash(settings.isLive ? 'Marked as not live' : 'Marked as LIVE')
+    setIsLive(v => !v)
+    setBusy(false)
+    flash(isLive ? 'Marked as not live' : 'Marked LIVE')
+  }
+
+  const createRace = async () => {
+    if (!createForm.startsAt || !createForm.endsAt) { flash('Set start and end times', false); return }
+    setBusy(true)
+    const res = await fetch('/api/admin/race/create', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(createForm),
+    })
+    const data = await res.json()
+    setBusy(false)
+    if (res.ok) {
+      flash(`Race #${data.race.number} created`)
+      setShowCreate(false)
+      setCreateForm({ startsAt: '', endsAt: '' })
+      load()
+    } else {
+      flash(data.error ?? 'Failed to create race', false)
+    }
+  }
+
+  const changeStatus = async (status: string) => {
+    if (!race) return
+    setBusy(true)
+    const res = await fetch('/api/admin/race/status', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ raceId: race.id, status }),
+    })
+    setBusy(false)
+    if (res.ok) {
+      flash(`Race set to ${status}`)
+      setIsLive(status === 'LIVE')
+      load()
+    } else {
+      flash('Failed to update status', false)
+    }
   }
 
   const finishRace = async () => {
     if (!race) return
-    setFinishing(true)
+    setBusy(true)
     const res = await fetch('/api/admin/race/finish', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ raceId: race.id, positions }),
     })
-    setFinishing(false)
+    setBusy(false)
     if (res.ok) {
-      flash('Race finished!')
-      setRace(null)
+      flash('Race finished — winner recorded')
+      load()
     } else {
-      flash('Error finishing race')
+      flash('Error finishing race', false)
     }
   }
 
+  const saveRecap = async () => {
+    if (!race) return
+    setSavingRecap(true)
+    await fetch('/api/admin/history', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ raceId: race.id, recap }),
+    })
+    setSavingRecap(false)
+    flash('Recap saved')
+  }
+
+  // ── Render ─────────────────────────────────────────────────────────────────
+
   return (
     <div className="admin-page">
-      <h1 style={{ fontFamily: KANIT, fontSize: 26, fontWeight: 700, color: A.text, marginBottom: 28 }}>Race Control</h1>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 28, flexWrap: 'wrap', gap: 12 }}>
+        <h1 style={{ fontFamily: KANIT, fontSize: 26, fontWeight: 700, color: A.text }}>Race Control</h1>
+        {!loading && !race && (
+          <Btn onClick={() => setShowCreate(v => !v)} color={A.green}>
+            {showCreate ? 'Cancel' : '+ Create New Race'}
+          </Btn>
+        )}
+      </div>
 
-      {msg && <div style={{ padding: '12px 16px', background: A.greenSoft, border: `1px solid ${A.green}`, borderRadius: 10, color: A.green, fontSize: 14, marginBottom: 20, fontWeight: 600 }}>{msg}</div>}
+      {msg && (
+        <div style={{ padding: '12px 16px', background: msg.ok ? A.greenSoft : A.redSoft, border: `1px solid ${msg.ok ? A.green : A.red}`, borderRadius: 10, color: msg.ok ? A.green : A.red, fontSize: 14, marginBottom: 20, fontWeight: 600 }}>
+          {msg.text}
+        </div>
+      )}
 
       {loading ? (
-        <div style={{ background: A.card, borderRadius: 16, border: `1.5px solid ${A.border}`, height: 200, animation: 'pulse 1.4s ease-in-out infinite' }} />
+        <div style={{ background: A.card, borderRadius: 16, border: `1.5px solid ${A.border}`, height: 220, animation: 'pulse 1.4s ease-in-out infinite' }} />
       ) : (<>
 
-        {/* Live toggle */}
-        <div style={{ background: A.card, borderRadius: 16, border: `1.5px solid ${A.border}`, padding: 24, marginBottom: 20 }}>
+        {/* ── Live Indicator Toggle ─────────────────────────────────────── */}
+        <Section title="Live Indicator">
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
             <div>
-              <h2 style={{ fontFamily: KANIT, fontSize: 16, fontWeight: 700, color: A.text, marginBottom: 4 }}>Live Status</h2>
-              <p style={{ fontSize: 13, color: A.textMuted }}>Controls the "LIVE NOW" indicator across the site</p>
+              <p style={{ fontSize: 14, color: A.text, fontWeight: 600, marginBottom: 4 }}>
+                Site-wide "LIVE NOW" badge is currently{' '}
+                <span style={{ color: isLive ? A.red : A.textMuted }}>{isLive ? 'ON' : 'OFF'}</span>
+              </p>
+              <p style={{ fontSize: 13, color: A.textMuted }}>
+                Automatically synced when you transition race status. Override here if needed.
+              </p>
             </div>
-            <button onClick={toggleLive} disabled={savingLive} style={{
-              padding: '10px 24px', borderRadius: 48.5, border: 'none',
-              background: settings?.isLive ? A.red : A.green,
-              fontFamily: KANIT, fontSize: 14, fontWeight: 700, color: '#fff',
-              cursor: savingLive ? 'not-allowed' : 'pointer', opacity: savingLive ? 0.7 : 1,
-            }}>
-              {settings?.isLive ? '⏹ Mark Not Live' : '▶ Mark LIVE'}
-            </button>
+            <Btn onClick={toggleLive} disabled={busy} color={isLive ? A.red : A.green}>
+              {isLive ? '⏹ Turn Off Live' : '▶ Turn On Live'}
+            </Btn>
           </div>
-        </div>
+        </Section>
 
-        {/* Current race */}
-        <div style={{ background: A.card, borderRadius: 16, border: `1.5px solid ${A.border}`, padding: 24, marginBottom: 20 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
-            <h2 style={{ fontFamily: KANIT, fontSize: 16, fontWeight: 700, color: A.text }}>
-              {race ? `Race #${race.number}` : 'No active race'}
-            </h2>
-            {race && <Badge status={race.status} />}
-          </div>
+        {/* ── Create Race Form ─────────────────────────────────────────── */}
+        {showCreate && (
+          <Section title="Create New Race">
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>
+              <div>
+                <label style={{ fontSize: 12, fontWeight: 700, color: A.textMid, textTransform: 'uppercase', letterSpacing: 0.6, display: 'block', marginBottom: 6 }}>
+                  Start Date & Time
+                </label>
+                <input
+                  type="datetime-local"
+                  value={createForm.startsAt}
+                  onChange={e => setCreateForm(f => ({ ...f, startsAt: e.target.value }))}
+                  style={{ width: '100%', padding: '10px 14px', borderRadius: 10, border: `1.5px solid ${A.borderMid}`, fontSize: 14, color: A.text }}
+                />
+              </div>
+              <div>
+                <label style={{ fontSize: 12, fontWeight: 700, color: A.textMid, textTransform: 'uppercase', letterSpacing: 0.6, display: 'block', marginBottom: 6 }}>
+                  End Date & Time
+                </label>
+                <input
+                  type="datetime-local"
+                  value={createForm.endsAt}
+                  onChange={e => setCreateForm(f => ({ ...f, endsAt: e.target.value }))}
+                  style={{ width: '100%', padding: '10px 14px', borderRadius: 10, border: `1.5px solid ${A.borderMid}`, fontSize: 14, color: A.text }}
+                />
+              </div>
+            </div>
+            <p style={{ fontSize: 12, color: A.textMuted, marginBottom: 16 }}>
+              Race entries will be created automatically for all active hamsters. Race number auto-increments.
+            </p>
+            <Btn onClick={createRace} disabled={busy} color={A.green}>
+              {busy ? 'Creating…' : 'Create Race'}
+            </Btn>
+          </Section>
+        )}
 
-          {race ? (<>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 12, marginBottom: 20 }}>
+        {/* ── Active Race ──────────────────────────────────────────────── */}
+        {race ? (<>
+
+          {/* Race header */}
+          <Section title={`Race #${race.number}`}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16, marginBottom: 20 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <StatusBadge status={race.status} />
+                <span style={{ fontSize: 13, color: A.textMuted }}>
+                  {new Date(race.startsAt).toLocaleString()} → {new Date(race.endsAt).toLocaleString()}
+                </span>
+              </div>
+              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                {race.status === 'UPCOMING' && (
+                  <Btn onClick={() => changeStatus('LIVE')} disabled={busy} color={A.red}>
+                    ▶ Mark LIVE
+                  </Btn>
+                )}
+                {race.status === 'LIVE' && (
+                  <Btn onClick={() => changeStatus('UPCOMING')} disabled={busy} color={A.textMuted} small>
+                    Revert to Upcoming
+                  </Btn>
+                )}
+              </div>
+            </div>
+
+            {/* Entry pool cards */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 12 }}>
               {race.entries.map(e => (
-                <div key={e.id} style={{ background: A.pageBg, borderRadius: 10, padding: '12px 16px' }}>
+                <div key={e.id} style={{ background: A.pageBg, borderRadius: 10, padding: '14px 16px' }}>
+                  <p style={{ fontSize: 16, marginBottom: 4 }}>{e.pet.emoji}</p>
                   <p style={{ fontSize: 13, fontWeight: 700, color: A.text }}>{e.pet.name}</p>
-                  <p style={{ fontSize: 12, color: A.purple }}>◎ {Number(e.totalSol).toFixed(4)}</p>
+                  <p style={{ fontSize: 13, color: A.purple, fontWeight: 700, marginTop: 4 }}>◎ {Number(e.totalSol).toFixed(4)}</p>
                 </div>
               ))}
             </div>
+          </Section>
 
-            {race.status !== 'FINISHED' && (
-              <div>
-                <h3 style={{ fontFamily: KANIT, fontSize: 14, fontWeight: 700, color: A.text, marginBottom: 12 }}>Finish Race — Set Positions</h3>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 16 }}>
-                  {[0, 1, 2].map(i => (
-                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                      <span style={{ fontSize: 13, fontWeight: 700, color: A.textMuted, width: 40 }}>{i + 1}{i === 0 ? 'st' : i === 1 ? 'nd' : 'rd'}</span>
-                      <select
-                        value={positions[i]}
-                        onChange={e => {
-                          const next = [...positions]
-                          next[i] = e.target.value
-                          setPositions(next)
-                        }}
-                        style={{ flex: 1, padding: '10px 12px', borderRadius: 10, border: `1.5px solid ${A.borderMid}`, fontSize: 14, color: A.text, background: '#fff' }}
-                      >
-                        {SLUGS.map(s => <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</option>)}
-                      </select>
-                    </div>
-                  ))}
-                </div>
-                <button onClick={finishRace} disabled={finishing} style={{
-                  padding: '12px 28px', borderRadius: 48.5, background: A.purple, border: 'none',
-                  fontFamily: KANIT, fontSize: 14, fontWeight: 700, color: '#fff',
-                  cursor: finishing ? 'not-allowed' : 'pointer', opacity: finishing ? 0.7 : 1,
-                }}>
-                  {finishing ? 'Finishing…' : 'Finish Race'}
-                </button>
+          {/* Finish race controls */}
+          {race.status !== 'FINISHED' && (
+            <Section title="Finish Race — Set Final Positions">
+              <p style={{ fontSize: 13, color: A.textMuted, marginBottom: 20 }}>
+                Record the official race result. This marks the race as FINISHED, awards the win, and turns off the live indicator.
+              </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 24, maxWidth: 400 }}>
+                {([['1st', 0], ['2nd', 1], ['3rd', 2]] as [string, number][]).map(([label, idx]) => (
+                  <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                    <span style={{ fontSize: 14, fontWeight: 700, color: idx === 0 ? '#B8860B' : A.textMuted, width: 36 }}>{label}</span>
+                    <select
+                      value={positions[idx]}
+                      onChange={e => {
+                        const next = [...positions]
+                        next[idx] = e.target.value
+                        setPositions(next)
+                      }}
+                      style={{ flex: 1, padding: '10px 14px', borderRadius: 10, border: `1.5px solid ${A.borderMid}`, fontSize: 14, color: A.text, background: '#fff' }}
+                    >
+                      {race.entries.map(e => (
+                        <option key={e.pet.slug} value={e.pet.slug}>
+                          {e.pet.emoji} {e.pet.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                ))}
               </div>
-            )}
-          </>) : (
-            <p style={{ fontSize: 14, color: A.textMuted }}>No active or upcoming race found.</p>
+              <Btn onClick={finishRace} disabled={busy} color={A.purple}>
+                {busy ? 'Saving…' : 'Finish Race'}
+              </Btn>
+            </Section>
           )}
-        </div>
+
+          {/* Recap editor */}
+          <Section title="Race Recap">
+            <p style={{ fontSize: 13, color: A.textMuted, marginBottom: 12 }}>
+              Optional post-race summary shown in highlights and race history.
+            </p>
+            <textarea
+              value={recap}
+              onChange={e => setRecap(e.target.value)}
+              placeholder="e.g. Flash took an early lead and never looked back…"
+              rows={4}
+              style={{ width: '100%', padding: '12px 14px', borderRadius: 10, border: `1.5px solid ${A.borderMid}`, fontSize: 14, color: A.text, resize: 'vertical', fontFamily: 'Pretendard, sans-serif', outline: 'none' }}
+            />
+            <div style={{ marginTop: 12 }}>
+              <Btn onClick={saveRecap} disabled={savingRecap} small>
+                {savingRecap ? 'Saving…' : 'Save Recap'}
+              </Btn>
+            </div>
+          </Section>
+
+          {/* Create next race (only after current is finished) */}
+          {race.status === 'FINISHED' && !showCreate && (
+            <div style={{ textAlign: 'center', paddingTop: 8 }}>
+              <Btn onClick={() => setShowCreate(true)} color={A.green}>
+                + Create Next Race
+              </Btn>
+            </div>
+          )}
+
+          {race.status === 'FINISHED' && showCreate && (
+            <Section title="Create Next Race">
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>
+                <div>
+                  <label style={{ fontSize: 12, fontWeight: 700, color: A.textMid, textTransform: 'uppercase', letterSpacing: 0.6, display: 'block', marginBottom: 6 }}>
+                    Start Date & Time
+                  </label>
+                  <input
+                    type="datetime-local"
+                    value={createForm.startsAt}
+                    onChange={e => setCreateForm(f => ({ ...f, startsAt: e.target.value }))}
+                    style={{ width: '100%', padding: '10px 14px', borderRadius: 10, border: `1.5px solid ${A.borderMid}`, fontSize: 14, color: A.text }}
+                  />
+                </div>
+                <div>
+                  <label style={{ fontSize: 12, fontWeight: 700, color: A.textMid, textTransform: 'uppercase', letterSpacing: 0.6, display: 'block', marginBottom: 6 }}>
+                    End Date & Time
+                  </label>
+                  <input
+                    type="datetime-local"
+                    value={createForm.endsAt}
+                    onChange={e => setCreateForm(f => ({ ...f, endsAt: e.target.value }))}
+                    style={{ width: '100%', padding: '10px 14px', borderRadius: 10, border: `1.5px solid ${A.borderMid}`, fontSize: 14, color: A.text }}
+                  />
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: 10 }}>
+                <Btn onClick={createRace} disabled={busy} color={A.green}>
+                  {busy ? 'Creating…' : 'Create Race'}
+                </Btn>
+                <Btn onClick={() => setShowCreate(false)} disabled={busy} color={A.textMuted} small>
+                  Cancel
+                </Btn>
+              </div>
+            </Section>
+          )}
+
+        </>) : !showCreate && (
+          <div style={{ background: A.card, borderRadius: 16, border: `1.5px solid ${A.border}`, padding: '48px 24px', textAlign: 'center' }}>
+            <p style={{ fontSize: 32, marginBottom: 12 }}>🏁</p>
+            <p style={{ fontFamily: KANIT, fontSize: 18, fontWeight: 700, color: A.text, marginBottom: 8 }}>No active race</p>
+            <p style={{ fontSize: 14, color: A.textMuted, marginBottom: 24 }}>Create a race to get started. Entries for all active hamsters are created automatically.</p>
+            <Btn onClick={() => setShowCreate(true)} color={A.green}>+ Create New Race</Btn>
+          </div>
+        )}
+
       </>)}
     </div>
   )

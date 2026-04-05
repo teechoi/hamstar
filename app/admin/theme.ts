@@ -24,6 +24,10 @@ export const A = {
   red:         '#FF3B5C',
   redSoft:     'rgba(255,59,92,0.08)',
 
+  medalGold:   '#B8860B',
+  medalSilver: '#888888',
+  medalBronze: '#A0522D',
+
   sidebarText:   '#ffffff',
   sidebarMuted:  'rgba(255,255,255,0.45)',
   sidebarBorder: 'rgba(255,255,255,0.08)',

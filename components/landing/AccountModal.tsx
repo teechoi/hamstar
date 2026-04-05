@@ -170,7 +170,7 @@ function ConnectedView({
               <div style={{
                 position: 'absolute', bottom: 2, right: 2,
                 width: 14, height: 14, borderRadius: '50%',
-                background: '#22C55E', border: '2.5px solid #FFE790',
+                background: T.win, border: `2.5px solid ${T.yellow}`,
               }} />
             </div>
 
@@ -239,8 +239,8 @@ function ConnectedView({
             <button
               onClick={onCopy}
               style={{
-                background: copied ? 'rgba(34,197,94,0.1)' : '#fff',
-                border: `1.5px solid ${copied ? '#22C55E' : T.border}`,
+                background: copied ? T.winSoft : '#fff',
+                border: `1.5px solid ${copied ? T.win : T.border}`,
                 borderRadius: 10, padding: '7px 12px',
                 cursor: 'pointer',
                 display: 'flex', alignItems: 'center', gap: 5,
@@ -248,7 +248,7 @@ function ConnectedView({
               }}
             >
               {copied ? <CheckIcon /> : <CopyIcon />}
-              <span style={{ fontFamily: KANIT, fontSize: 11, fontWeight: 700, color: copied ? '#22C55E' : T.textMid }}>
+              <span style={{ fontFamily: KANIT, fontSize: 11, fontWeight: 700, color: copied ? T.win : T.textMid }}>
                 {copied ? 'Copied!' : 'Copy'}
               </span>
             </button>
@@ -475,7 +475,7 @@ function CopyIcon() {
 
 function CheckIcon() {
   return (
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#22C55E" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={T.win} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
       <polyline points="20 6 9 17 4 12" />
     </svg>
   )

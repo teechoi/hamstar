@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { SITE } from '@/config/site'
 import { useIsMobile } from '@/components/ui/index'
+import { T } from '@/lib/theme'
 
 const KANIT = "var(--font-kanit), sans-serif"
 
@@ -89,7 +90,7 @@ export function HeroSection({
           <p style={{
             fontFamily: 'Pretendard, sans-serif',
             fontSize: isMobile ? 'clamp(13px, 4vw, 17px)' : 'clamp(17px, 1.6vw, 26px)',
-            color: '#FFE790',
+            color: T.yellow,
             fontWeight: 500,
             lineHeight: isMobile ? '22px' : '30px',
             margin: isMobile ? '8px 0 0' : 0,
@@ -114,7 +115,7 @@ export function HeroSection({
             style={{
               display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
               gap: 8, padding: isMobile ? '14px 28px' : '13px 28px',
-              background: '#735DFF', color: '#F8F9FA',
+              background: T.purple, color: T.bg,
               border: 'none', borderRadius: 48.5,
               fontFamily: KANIT, fontSize: 16, fontWeight: 500,
               textDecoration: 'none',

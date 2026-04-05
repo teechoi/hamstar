@@ -3,8 +3,9 @@ import { useCountdown } from '@/lib/hooks/useCountdown'
 import { DecoImage } from '@/components/editor/DecoImage'
 import { SITE } from '@/config/site'
 import { useIsMobile } from '@/components/ui/index'
+import { T } from '@/lib/theme'
 
-const YELLOW = '#FFE790'
+const YELLOW = T.yellow
 const KANIT = "var(--font-kanit), sans-serif"
 
 function CountdownCard({ targetMs, isLive, streamNote }: { streamUrl: string; targetMs: number; isLive: boolean; streamNote: string }) {
@@ -44,7 +45,7 @@ function CountdownCard({ targetMs, isLive, streamNote }: { streamUrl: string; ta
         }}>
           <span style={{
             width: 15, height: 15, borderRadius: '50%',
-            background: isLive ? '#ff4444' : '#FFFFFF',
+            background: isLive ? T.live : '#FFFFFF',
             display: 'inline-block',
             animation: 'pulse 1.5s ease-in-out infinite',
             flexShrink: 0,
@@ -107,7 +108,7 @@ function MobileCountdownCard({ targetMs, isLive, streamNote }: { targetMs: numbe
       <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.50)' }} />
       <div style={{ position: 'relative', zIndex: 1, padding: '28px 20px 24px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, textAlign: 'center' }}>
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '0 16px', height: 26, borderRadius: 22, background: '#735DFF' }}>
-          <span style={{ width: 10, height: 10, borderRadius: '50%', background: isLive ? '#ff4444' : '#FFFFFF', display: 'inline-block', animation: 'pulse 1.5s ease-in-out infinite', flexShrink: 0 }} />
+          <span style={{ width: 10, height: 10, borderRadius: '50%', background: isLive ? T.live : '#FFFFFF', display: 'inline-block', animation: 'pulse 1.5s ease-in-out infinite', flexShrink: 0 }} />
           <span style={{ fontFamily: KANIT, fontWeight: 500, fontSize: 12, color: '#FFFFFF', lineHeight: '14px' }}>
             {isLive ? 'LIVE NOW' : 'LIVE COUNTDOWN'}
           </span>

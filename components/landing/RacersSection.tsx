@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { DecoImage } from '@/components/editor/DecoImage'
 import { useIsMobile } from '@/components/ui/index'
+import { T } from '@/lib/theme'
 
 interface Racer {
   name: string
@@ -50,7 +51,7 @@ function RacerCard({ name, tagline, image, featured, imgPosition = 'center cente
         width: 265,
         height: 187,
         borderRadius: '20px 20px 0 0',
-        background: '#DDDDDD',
+        background: T.borderDark,
         position: 'relative',
         overflow: 'hidden',
         flexShrink: 0,
@@ -73,13 +74,13 @@ function RacerCard({ name, tagline, image, featured, imgPosition = 'center cente
             position: 'absolute', top: 10, left: 10,
             width: 100, height: 30,
             borderRadius: 22,
-            background: '#735DFF',
+            background: T.purple,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
             <span style={{
               fontFamily: KANIT,
               fontWeight: 500, fontSize: 14,
-              color: '#FFFFFF',
+              color: T.purpleText,
               lineHeight: '17px',
             }}>
               Cheer Me!

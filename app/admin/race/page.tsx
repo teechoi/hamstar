@@ -299,7 +299,7 @@ export default function RacePage() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 24, maxWidth: 400 }}>
                 {([['1st', 0], ['2nd', 1], ['3rd', 2]] as [string, number][]).map(([label, idx]) => (
                   <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-                    <span style={{ fontSize: 14, fontWeight: 700, color: idx === 0 ? '#B8860B' : A.textMuted, width: 36 }}>{label}</span>
+                    <span style={{ fontSize: 14, fontWeight: 700, color: idx === 0 ? A.medalGold : A.textMuted, width: 36 }}>{label}</span>
                     <select
                       value={positions[idx]}
                       onChange={e => {

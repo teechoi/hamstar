@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { A } from '../theme'
 
 const KANIT = "var(--font-kanit), sans-serif"
@@ -57,6 +57,12 @@ function MediaCard({ item, onDelete, onToggleFeatured }: { item: MediaItem; onDe
       </div>
       <div style={{ padding: '14px 16px' }}>
         <p style={{ fontFamily: KANIT, fontSize: 14, fontWeight: 700, color: A.text, marginBottom: 4, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.title}</p>
+        {item.url && (
+          <a href={item.url} target="_blank" rel="noopener noreferrer"
+            style={{ display: 'block', fontSize: 11, color: A.purple, marginBottom: 8, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            {item.url}
+          </a>
+        )}
         <p style={{ fontSize: 12, color: A.textMuted, marginBottom: 12 }}>{new Date(item.publishedAt).toLocaleDateString()}</p>
         <div style={{ display: 'flex', gap: 8 }}>
           <button onClick={toggleFeatured} style={{
@@ -78,15 +84,18 @@ function MediaCard({ item, onDelete, onToggleFeatured }: { item: MediaItem; onDe
   )
 }
 
-const EMPTY = { type: 'VIDEO' as const, title: '', url: '', thumbnail: '', description: '', duration: '', featured: false }
+type FormState = { type: 'VIDEO' | 'PHOTO'; title: string; url: string; thumbnail: string; description: string; duration: string; featured: boolean }
+const EMPTY: FormState = { type: 'VIDEO', title: '', url: '', thumbnail: '', description: '', duration: '', featured: false }
 
 export default function MediaPage() {
-  const [items, setItems] = useState<MediaItem[]>([])
+  const [items, setItems]   = useState<MediaItem[]>([])
   const [loading, setLoading] = useState(true)
-  const [adding, setAdding] = useState(false)
-  const [form, setForm] = useState({ ...EMPTY })
-  const [saving, setSaving] = useState(false)
-  const [err, setErr] = useState('')
+  const [adding, setAdding]   = useState(false)
+  const [form, setForm]       = useState({ ...EMPTY })
+  const [saving, setSaving]   = useState(false)
+  const [err, setErr]         = useState('')
+  const [uploadProgress, setUploadProgress] = useState<string | null>(null)
+  const fileRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     fetch('/api/admin/media')
@@ -96,6 +105,40 @@ export default function MediaPage() {
   }, [])
 
   const set = (k: keyof typeof form) => (v: string | boolean) => setForm(f => ({ ...f, [k]: v }))
+
+  const uploadFile = async (file: File) => {
+    setUploadProgress('Signing upload…')
+    const sigRes = await fetch('/api/admin/media/upload', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ folder: 'hamstar' }),
+    })
+    if (!sigRes.ok) {
+      const e = await sigRes.json()
+      setErr(e.error ?? 'Upload signing failed')
+      setUploadProgress(null)
+      return
+    }
+    const { cloudName, apiKey, timestamp, signature, folder } = await sigRes.json()
+    setUploadProgress('Uploading to Cloudinary…')
+    const fd = new FormData()
+    fd.append('file', file)
+    fd.append('api_key', apiKey)
+    fd.append('timestamp', timestamp)
+    fd.append('signature', signature)
+    fd.append('folder', folder)
+    const uploadRes = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`, { method: 'POST', body: fd })
+    if (!uploadRes.ok) { setErr('Cloudinary upload failed'); setUploadProgress(null); return }
+    const data = await uploadRes.json()
+    setForm(f => ({
+      ...f,
+      url: data.secure_url,
+      thumbnail: data.resource_type === 'video' ? data.secure_url.replace('/upload/', '/upload/so_auto,c_thumb,w_480/').replace(/\.[^.]+$/, '.jpg') : data.secure_url,
+      type: data.resource_type === 'video' ? 'VIDEO' as const : 'PHOTO' as const,
+      duration: data.duration ? `${Math.floor(data.duration / 60)}:${String(Math.floor(data.duration % 60)).padStart(2, '0')}` : '',
+    }))
+    setUploadProgress(null)
+  }
 
   const save = async () => {
     setSaving(true)
@@ -117,9 +160,9 @@ export default function MediaPage() {
 
   return (
     <div className="admin-page">
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 28, gap: 12 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8, gap: 12 }}>
         <h1 style={{ fontFamily: KANIT, fontSize: 26, fontWeight: 700, color: A.text }}>Media</h1>
-        <button onClick={() => setAdding(a => !a)} style={{
+        <button onClick={() => { setAdding(a => !a); setErr('') }} style={{
           padding: '10px 20px', borderRadius: 48.5, background: A.yellow, border: 'none',
           fontFamily: KANIT, fontSize: 14, fontWeight: 700, color: A.yellowText, cursor: 'pointer',
         }}>
@@ -127,12 +170,53 @@ export default function MediaPage() {
         </button>
       </div>
 
+      <p style={{ fontSize: 13, color: A.textMuted, marginBottom: 28 }}>
+        Media items appear in the Highlights page. Upload videos or photos via Cloudinary, or paste a URL directly.
+      </p>
+
       {err && <div style={{ padding: '12px 16px', background: A.redSoft, border: `1px solid ${A.red}`, borderRadius: 10, color: A.red, fontSize: 14, marginBottom: 20 }}>{err}</div>}
 
       {adding && (
         <div style={{ background: A.card, borderRadius: 16, border: `1.5px solid ${A.border}`, padding: 24, marginBottom: 24 }}>
           <h2 style={{ fontFamily: KANIT, fontSize: 16, fontWeight: 700, color: A.text, marginBottom: 20 }}>New Media Item</h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+
+            {/* Upload area */}
+            <div>
+              <label style={{ fontSize: 12, fontWeight: 700, color: A.textMid, textTransform: 'uppercase', letterSpacing: 0.6, display: 'block', marginBottom: 8 }}>
+                Upload File
+              </label>
+              <div
+                onClick={() => fileRef.current?.click()}
+                style={{
+                  border: `2px dashed ${A.borderMid}`, borderRadius: 12, padding: '24px 16px',
+                  textAlign: 'center', cursor: 'pointer', background: A.pageBg,
+                  transition: 'border-color 0.15s',
+                }}
+              >
+                <input
+                  ref={fileRef} type="file" accept="video/*,image/*"
+                  style={{ display: 'none' }}
+                  onChange={e => { const f = e.target.files?.[0]; if (f) uploadFile(f) }}
+                />
+                {uploadProgress ? (
+                  <p style={{ fontSize: 13, color: A.purple, fontWeight: 600 }}>{uploadProgress}</p>
+                ) : (
+                  <>
+                    <p style={{ fontSize: 22, marginBottom: 6 }}>📁</p>
+                    <p style={{ fontSize: 13, color: A.textMid }}>Click to upload video or image</p>
+                    <p style={{ fontSize: 11, color: A.textMuted, marginTop: 4 }}>Requires Cloudinary env vars to be set</p>
+                  </>
+                )}
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div style={{ flex: 1, height: 1, background: A.border }} />
+              <span style={{ fontSize: 11, color: A.textMuted, textTransform: 'uppercase', letterSpacing: 1 }}>or enter URL</span>
+              <div style={{ flex: 1, height: 1, background: A.border }} />
+            </div>
+
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
               <label style={{ fontSize: 12, fontWeight: 700, color: A.textMid, textTransform: 'uppercase', letterSpacing: 0.6 }}>Type</label>
               <select value={form.type} onChange={e => set('type')(e.target.value)}
@@ -146,12 +230,12 @@ export default function MediaPage() {
               <Input label="Duration (e.g. 1:24)" value={form.duration} onChange={set('duration')} />
             </div>
             <Input label="URL" value={form.url} onChange={set('url')} placeholder="https://..." />
-            <Input label="Thumbnail URL" value={form.thumbnail} onChange={set('thumbnail')} placeholder="https://..." />
+            <Input label="Thumbnail URL" value={form.thumbnail} onChange={set('thumbnail')} placeholder="https://... (auto-filled on upload)" />
             <Input label="Description" value={form.description} onChange={set('description')} />
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
               <input type="checkbox" id="featured" checked={form.featured} onChange={e => set('featured')(e.target.checked)}
                 style={{ width: 16, height: 16, accentColor: A.purple }} />
-              <label htmlFor="featured" style={{ fontSize: 14, color: A.text, cursor: 'pointer' }}>Featured</label>
+              <label htmlFor="featured" style={{ fontSize: 14, color: A.text, cursor: 'pointer' }}>Mark as Featured (shows first on Highlights)</label>
             </div>
             <button onClick={save} disabled={saving || !form.title || !form.url} style={{
               alignSelf: 'flex-start', padding: '10px 24px', borderRadius: 48.5, background: A.purple, border: 'none',
@@ -169,7 +253,11 @@ export default function MediaPage() {
           {[1,2,3,4,5,6].map(i => <div key={i} style={{ height: 260, borderRadius: 16, background: A.border, animation: 'pulse 1.4s ease-in-out infinite' }} />)}
         </div>
       ) : items.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '60px 0', color: A.textMuted, fontSize: 14 }}>No media yet. Add your first item above.</div>
+        <div style={{ textAlign: 'center', padding: '60px 24px', background: A.card, borderRadius: 16, border: `1.5px solid ${A.border}` }}>
+          <p style={{ fontSize: 32, marginBottom: 12 }}>🎥</p>
+          <p style={{ fontFamily: KANIT, fontSize: 16, fontWeight: 700, color: A.text, marginBottom: 8 }}>No media yet</p>
+          <p style={{ fontSize: 13, color: A.textMuted }}>Add your first video or photo — it will appear on the Highlights page.</p>
+        </div>
       ) : (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 16 }}>
           {items.map(item => (

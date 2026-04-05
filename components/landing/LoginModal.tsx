@@ -316,7 +316,7 @@ function WalletRow({ name, icon, loading, disabled, onClick }: {
           display: 'flex', alignItems: 'center', gap: 5,
           flexShrink: 0,
         }}>
-          <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#22C55E', display: 'inline-block' }} />
+          <span style={{ width: 6, height: 6, borderRadius: '50%', background: T.win, display: 'inline-block' }} />
           Connect
         </span>
       )}

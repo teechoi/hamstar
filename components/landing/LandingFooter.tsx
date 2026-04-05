@@ -60,7 +60,7 @@ export function LandingFooter({
         </p>
 
         {/* Columns */}
-        <div style={{ display: 'flex', gap: 48, marginBottom: 28 }}>
+        <div style={{ display: 'flex', gap: 32, marginBottom: 28 }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             <p style={{ fontFamily: PRET, fontWeight: 600, fontSize: 16, color: MUTED, margin: 0 }}>Social</p>
             {socials.map(([label, href]) => (

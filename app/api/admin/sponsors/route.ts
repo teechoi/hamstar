@@ -29,6 +29,7 @@ export async function POST(req: Request) {
         websiteUrl: body.websiteUrl ?? null,
         active: body.active ?? true,
       },
+      include: { pet: { select: { id: true, name: true } } },
     })
     return NextResponse.json(sponsor)
   } catch (e) {

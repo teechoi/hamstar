@@ -9,6 +9,7 @@ import { DepositModal } from '@/components/landing/DepositModal'
 import { AccountModal } from '@/components/landing/AccountModal'
 import { HowItWorksModal } from '@/components/landing/HowItWorksModal'
 import { useIsMobile } from '@/components/ui/index'
+import { T } from '@/lib/theme'
 
 const KANIT = "var(--font-kanit), sans-serif"
 const TERMS_KEY = 'hamstar_terms_accepted'
@@ -26,7 +27,7 @@ interface MediaItem {
 }
 
 const MEDALS = ['🥇', '🥈', '🥉']
-const MEDAL_COLORS = ['#B8860B', '#888', '#A0522D']
+const MEDAL_COLORS = [T.medalGold, T.medalSilver, T.medalBronze]
 
 function MediaCard({ item }: { item: MediaItem }) {
   const [hov, setHov] = useState(false)

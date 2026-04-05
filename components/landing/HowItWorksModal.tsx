@@ -91,7 +91,9 @@ export function HowItWorksModal({ onClose, onEnterArena, steps }: HowItWorksModa
           background: '#fff',
           borderRadius: 26,
           width: '100%', maxWidth: 480,
-          padding: 'clamp(20px, 5vw, 32px) clamp(20px, 6vw, 36px) clamp(24px, 5vw, 36px)',
+          maxHeight: '92vh',
+          overflowY: 'auto',
+          padding: 'clamp(16px, 4vw, 32px) clamp(16px, 5vw, 36px) clamp(20px, 4vw, 36px)',
           fontFamily: KANIT,
           position: 'relative',
           display: 'flex', flexDirection: 'column', alignItems: 'center',
@@ -102,14 +104,14 @@ export function HowItWorksModal({ onClose, onEnterArena, steps }: HowItWorksModa
         <div style={{
           position: 'relative',
           width: '100%',
-          height: 280,
+          height: 'clamp(160px, 40vw, 280px)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          marginBottom: 20,
+          marginBottom: 16,
         }}>
           <img
             src={current.image}
             alt={current.title}
-            style={{ width: 'min(340px, 100%)', height: 270, objectFit: 'contain', objectPosition: 'center bottom' }}
+            style={{ width: 'min(340px, 100%)', height: '100%', objectFit: 'contain', objectPosition: 'center bottom' }}
           />
           {current.badge && (
             <div style={{

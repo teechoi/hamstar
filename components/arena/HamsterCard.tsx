@@ -1,8 +1,9 @@
 'use client'
 import { useState } from 'react'
+import { T } from '@/lib/theme'
 
 const KANIT = "var(--font-kanit), sans-serif"
-const PURPLE = '#735DFF'
+const PURPLE = T.purple
 
 export interface PetForm {
   results: ('W' | 'L')[]
@@ -84,7 +85,7 @@ export function HamsterCard({
         {isLive && (
           <div style={{
             position: 'absolute', top: 12, right: 12,
-            background: '#FF3B5C', color: '#fff',
+            background: T.live, color: '#fff',
             borderRadius: 20, padding: '3px 10px',
             fontSize: 11, fontWeight: 700, fontFamily: KANIT,
             display: 'flex', alignItems: 'center', gap: 5,
@@ -100,7 +101,7 @@ export function HamsterCard({
         {goldGlow && (
           <div style={{
             position: 'absolute', top: 12, right: 12,
-            background: '#FFE790', color: '#503F00',
+            background: T.yellow, color: T.sub2,
             borderRadius: 20, padding: '3px 10px',
             fontSize: 11, fontWeight: 700, fontFamily: KANIT,
           }}>
@@ -123,7 +124,7 @@ export function HamsterCard({
         {isDarkHorse && goldGlow && (
           <div style={{
             position: 'absolute', bottom: 12, left: '50%', transform: 'translateX(-50%)',
-            background: '#735DFF', color: '#fff',
+            background: T.purple, color: T.purpleText,
             borderRadius: 20, padding: '4px 14px',
             fontSize: 11, fontWeight: 700, fontFamily: KANIT,
             whiteSpace: 'nowrap',
@@ -149,7 +150,7 @@ export function HamsterCard({
               form.results.map((r, i) => (
                 <span key={i} style={{
                   width: 26, height: 26, borderRadius: '50%',
-                  background: r === 'W' ? '#22C55E' : '#FF3B5C',
+                  background: r === 'W' ? T.win : T.coral,
                   color: '#fff',
                   fontSize: 11, fontWeight: 700, fontFamily: KANIT,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -179,7 +180,7 @@ export function HamsterCard({
               {form.streak > 1 && (
                 <span style={{
                   fontFamily: 'Pretendard, sans-serif', fontSize: 12, fontWeight: 600,
-                  color: form.streakType === 'W' ? '#22C55E' : '#FF3B5C',
+                  color: form.streakType === 'W' ? T.win : T.coral,
                 }}>
                   {form.streak}{form.streakType} streak
                 </span>

@@ -22,28 +22,53 @@ export const globalStyles = `
 `
 export const T = {
   // Base
-  bg: '#F8F9FA',
-  card: '#FFFFFF',
-  cardAlt: '#F8F9FA',
-  text: '#000000',
-  textMid: '#8A8A8A',
-  textMuted: '#8A8A8A',
-  border: '#E9E9E9',
-  borderDark: '#D5D5D5',
+  bg:          '#F8F9FA',
+  card:        '#FFFFFF',
+  cardAlt:     '#F8F9FA',
+  text:        '#000000',
+  textMid:     '#8A8A8A',
+  textMuted:   '#8A8A8A',
+  border:      '#E9E9E9',
+  borderDark:  '#D5D5D5',
+  borderMid:   '#E0E0E0',
+
   // Brand
-  yellow: '#FFE790',
-  purple: '#735DFF',
-  sub2: '#503F00',
-  // Semantic aliases (used by existing components)
-  lime: '#FFE790',
-  limeDark: '#F5D850',
-  limeText: '#000000',
-  blue: '#735DFF',
-  blueSoft: 'rgba(115,93,255,0.08)',
-  coral: '#FF3B5C',
-  coralSoft: '#FFF0F3',
-  violet: '#735DFF',
-  violetSoft: 'rgba(115,93,255,0.08)',
-  green: '#735DFF',
-  greenSoft: 'rgba(115,93,255,0.1)',
+  yellow:      '#FFE790',
+  yellowDark:  '#F5D850',
+  yellowSoft:  'rgba(255,231,144,0.18)',
+  yellowText:  '#000000',
+  sub2:        '#503F00',      // text on yellow backgrounds
+  sub2Soft:    'rgba(80,63,0,0.3)',
+
+  purple:      '#735DFF',
+  purpleSoft:  'rgba(115,93,255,0.08)',
+  purpleText:  '#ffffff',
+
+  // Semantic
+  coral:       '#FF3B5C',
+  coralSoft:   '#FFF0F3',
+
+  win:         '#00C566',      // W pill / success green
+  winSoft:     'rgba(0,197,102,0.10)',
+
+  live:        '#FF3B5C',      // LIVE dot / frenzy red
+
+  // Medal colours (race podium)
+  medalGold:   '#B8860B',
+  medalSilver: '#888888',
+  medalBronze: '#A0522D',
+
+  // Nav overlay
+  navDark:     'rgba(13,13,20,0.95)',
+
+  // Aliases kept for backwards-compat
+  lime:        '#FFE790',
+  limeDark:    '#F5D850',
+  limeText:    '#000000',
+  blue:        '#735DFF',
+  blueSoft:    'rgba(115,93,255,0.08)',
+  violet:      '#735DFF',
+  violetSoft:  'rgba(115,93,255,0.08)',
+  green:       '#735DFF',
+  greenSoft:   'rgba(115,93,255,0.1)',
 }

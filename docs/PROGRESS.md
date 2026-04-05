@@ -129,10 +129,10 @@ Full Anchor program — PDA-based escrow, dark horse bonus, hot streak multiplie
 ### 🔴 Launch Blockers
 
 - [ ] **Deploy Anchor program to devnet** — run `anchor deploy` with updated `InitializeParams` (streak + dark horse fields), call `create_upset_reserve` once
-- [ ] **Real pet wallet addresses** — replace `DASH/FLASH/TURBO_WALLET` placeholders in `.env` + update pet records in DB via admin
-- [ ] **Helius webhook** — set `HELIUS_API_KEY` + `HELIUS_WEBHOOK_SECRET` in Vercel env, run `npm run setup-helius` to register watchers on pet wallets
+- [x] **Real pet wallet addresses** — Dash/Flash/Turbo wallet addresses set in DB and `.env.local`
+- [x] **Helius webhook** — API key + secret configured in Vercel env; wallets registered manually in Helius dashboard
 - [ ] **Real stream URL** — set stream URL in admin Settings → Race → Stream URL
-- [ ] **Re-enable admin auth** — restore middleware.ts auth check before going public
+- [x] **Admin auth** — JWT session auth re-enabled in `middleware.ts`; login page working at `/admin/login`
 
 ### 🟡 On-Chain Integration
 

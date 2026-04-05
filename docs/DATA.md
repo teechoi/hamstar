@@ -55,7 +55,7 @@ Managed via Prisma ORM. Schema: `prisma/schema.prisma`.
 
 | Table | Contents | Notes |
 |---|---|---|
-| `Pet` | name, emoji, color, walletAddress, snackLevel, cageLevel, lifetimeSol | 3 pets (Hammy, Whiskers, Nugget) |
+| `Pet` | name, emoji, color, walletAddress, snackLevel, cageLevel, lifetimeSol | 3 pets (Dash, Flash, Turbo) |
 | `Race` | status (UPCOMING/OPEN/LIVE/FINISHED), round number, startTime, endTime | One active race at a time |
 | `RaceEntry` | petId, raceId, totalSol, supporterCount, position | One row per pet per race |
 | `Donation` | walletAddress, alias, amountSol, txSignature, petId, raceId, confirmedAt | Written by Helius webhook |

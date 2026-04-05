@@ -7,144 +7,146 @@
 ## Completed
 
 ### Landing Page
-- [x] Hero section — title, subtitle, CTA button (all configurable)
-- [x] Meet the Racers section — configurable title
+- [x] Hero section — title, subtitle, CTA button (all configurable via admin)
+- [x] Meet the Racers section — Dash, Flash, Turbo cards with hover animation
 - [x] About Hamstar section — configurable title + body text
-- [x] Hamstar Arena section — countdown, live status, configurable content
-- [x] Footer — brand description, tagline, social links (all configurable)
-- [x] Nav — tagline strip, auth state, mobile hamburger menu
-- [x] LegalModal — terms of service
-- [x] HowItWorksModal — step-by-step explainer
+- [x] Hamstar Arena section — countdown timer, live status badge, configurable content
+- [x] Footer — brand desc, tagline, social links, legal modals, contact email
+- [x] Nav — tagline strip, auth state (connected/disconnected), mobile hamburger menu
+- [x] LegalModal — Terms, Privacy, Cookie Policy, Disclaimer
+- [x] HowItWorksModal — 4-step carousel (configurable via admin content page)
 - [x] Custom sunflower seed cursor site-wide
 
 ### Arena Page
 - [x] Hamster cards — support bar, cheer button, pet names/images
 - [x] Race status card — Preparing / Open / Live / Finished states
-- [x] Pool bar — SOL totals, supporter counts
+- [x] Pool bar — real-time SOL totals, supporter counts (from DB via useRace hook)
 - [x] Result section — winner display, positions
-- [x] Highlight section — 3 tweet/video embeds, winner bar, oats decoration
+- [x] Highlight section — past race result rows, oats decoration
 - [x] Live countdown timer
-- [x] **Live implied odds** — per-hamster payout multiplier + pool share % updates in real time
-- [x] **Live cheer feed** — real-time scrolling ticker of incoming cheers with "big move" highlighting
-- [x] **Frenzy mode** — final 60s countdown goes red + pulses, copy changes to lock-in urgency
-- [x] **Form cards** — last 5 race results (W/L pills), win rate %, streak label on each HamsterCard
-- [x] **Dark horse badge** — DARK HORSE label on any hamster with < 20% of the pool during open/live
-- [x] **Upset bonus badge** — UPSET BONUS 1.5x displayed on winning dark horse card in result state
-- [x] **Streak bonus display** — CheerModal shows 🔥 N-race streak badge + +0.2x / +0.4x weight bonus label
+- [x] Live implied odds — per-hamster payout multiplier + pool share % (real data)
+- [x] Frenzy mode — final 60s countdown pulses red, copy changes to lock-in urgency
+- [x] Form cards — last 5 race W/L pills, win rate %, streak label on each HamsterCard (real DB data)
+- [x] Dark horse badge — DARK HORSE label on any hamster < 20% of pool (open/live)
+- [x] Upset bonus badge — UPSET BONUS 1.5x on winning dark horse card in result state
+- [x] Streak bonus display — CheerModal shows 🔥 N-race streak + +0.2x/+0.4x weight bonus label
+- [x] Demo mode disabled — arena uses real race scheduler (set `demo.arenaState: null` in config/site.ts)
+
+### Highlights Page
+- [x] Fetches real finished races from DB via `/api/highlights`
+- [x] Expandable race rows — click to reveal recap text
+- [x] Media section — shows DB media items (videos/photos) when uploaded via admin; hidden if none
+- [x] Latest champion banner — real DB data
+- [x] Empty state when no races have finished
+- [x] Proper useWallet() integration
+
+### Pet Page
+- [x] Hamster profile selector tabs (Dash, Flash, Turbo)
+- [x] Real stats from DB — win rate, race count via `/api/pets/[id]/stats`
+- [x] Style label from chaos stat
+- [x] Bio and performance metrics
 
 ### Wallet / Auth / Onboarding
-- [x] All Solana wallets via Wallet Standard auto-discovery (Phantom, Backpack, Solflare, OKX, Coinbase, Magic Eden, etc.)
-- [x] Mobile Wallet Adapter (MWA 2.0) — Android wallet chooser, Seeker phone support
-- [x] **Privy embedded wallets** — email, Google, Apple sign-in active (`NEXT_PUBLIC_PRIVY_APP_ID` configured)
-  - `next.config.js`: `serverComponentsExternalPackages` fix resolves CJS/ESM webpack conflict
-  - `PrivyProvider` wraps `SolanaWalletProvider` in `Providers.tsx`
-  - Embedded Solana wallet created on login for all users (no seed phrase)
-- [x] App identity configured ("Hamstar" appears in wallet signing prompts)
-- [x] LoginModal — fully branded: yellow 🐹 icon, HAMSTAR badge, yellow Connect badges, Privy social buttons wired
-- [x] AccountModal — fan tier system, SOL + $HAMSTAR balance display, cheering history, deposit routing
-- [x] DepositModal — tabbed (Deposit SOL / Get $HAMSTAR), QR code, address copy, contract address
-- [x] Auto-close modal when wallet connects
-- [x] Disconnect flow
-- [x] Cheering history tracked locally (`lib/cheer-history.ts`)
-- [x] CheerModal — amount input, quick-pick buttons, live payout preview, confirmed state
+- [x] All Solana wallets via Wallet Standard auto-discovery (Phantom, Backpack, Solflare, OKX, etc.)
+- [x] Mobile Wallet Adapter (MWA 2.0) — Android wallet chooser
+- [x] Privy embedded wallets — email, Google, Apple sign-in (`NEXT_PUBLIC_PRIVY_APP_ID` configured)
+- [x] LoginModal — branded, wallet list, social login via Privy
+- [x] AccountModal — SOL + $HAMSTAR balance, cheer history, fan tier system
+- [x] DepositModal — tabbed (Deposit SOL / Get $HAMSTAR), QR code, address copy
+- [x] CheerModal — amount input, quick-picks, streak bonus preview, confirmed state
+- [x] Cheer history tracked locally (`lib/cheer-history.ts`) + synced to DB
+- [x] Auto-close modal on wallet connect, disconnect flow
 
 ### $HAMSTAR Token
-- [x] `lib/hamstar-token.ts` — token config, fan tier definitions, balance fetch, formatters
-- [x] Fan tier system: 🌱 Fan (0) → 🥉 Bronze (100) → 🥈 Silver (1K) → 🥇 Gold (10K) → 👑 Legend (100K)
-- [x] Token balance fetched via `getParsedTokenAccountsByOwner` — placeholder guard until mint goes live
-- [x] Tier drives avatar ring gradient, badge color, and token card styling in AccountModal
-- [x] Jupiter swap CTA in AccountModal + DepositModal Get $HAMSTAR tab
-- [x] Contract address display with copy button (shows "Coming soon" while mint is placeholder)
+- [x] `lib/hamstar-token.ts` — token config, fan tier definitions, balance fetch
+- [x] Fan tier system: 🌱 Fan → 🥉 Bronze → 🥈 Silver → 🥇 Gold → 👑 Legend
+- [x] Token balance fetch via `getParsedTokenAccountsByOwner` (placeholder guard until mint is live)
+- [x] Jupiter swap CTA in AccountModal + DepositModal
 
 ### Solana Smart Contract (`hamstar-program`)
-Full Anchor program — PDA-based escrow, 2-of-3 settler consensus, SPL token cheering.
+Full Anchor program — PDA-based escrow, dark horse bonus, hot streak multiplier.
 
-**Core mechanics:**
-- [x] `initialize` — deploy global `ProgramConfig` (fee splits, settler pubkeys, mint, caps)
-- [x] `create_race` — admin opens a race with pick window timestamps + PDA escrow
-- [x] `place_cheer` — user stakes HAMSTAR tokens on a hamster; time-weight decays linearly over window
-- [x] `lock_race` — permissionless lock once `pick_window_close` passes
-- [x] `propose_settlement` / `confirm_settlement` — 2-of-3 settler consensus to declare winner
-- [x] `push_reward` — admin pushes payout to each winner (primary path)
-- [x] `claim_reward` — user self-claims if admin push fails (fallback)
-- [x] `cancel_race` / `claim_refund` — admin cancels → full refunds enabled
-
-**Feature 5 — Dark Horse Bonus:**
-- [x] `create_upset_reserve` — one-time admin instruction to initialize PDA reserve token account
-- [x] `push_reward` / `claim_reward`: always divert `upset_reserve_bps` (1%) from each payout to reserve
-- [x] If winner had < `dark_horse_threshold_bps` (20%) of pool: additionally pay `dark_horse_bonus_bps` (50%) from reserve → 1.5x total
+- [x] `initialize` — global `ProgramConfig` with fee splits, streak/bonus params
+- [x] `create_race` — admin opens race with pick window + PDA escrow
+- [x] `place_cheer` — user stakes HAMSTAR; time-weighted, streak bonus applied
+- [x] `lock_race` — permissionless lock after pick window closes
+- [x] `propose_settlement` / `confirm_settlement` — 2-of-3 settler consensus
+- [x] `push_reward` / `claim_reward` — payout with dark horse bonus logic
+- [x] `cancel_race` / `claim_refund` — admin cancel → full refund path
+- [x] `create_upset_reserve` — one-time PDA reserve account init
+- [x] `StreakAccount` PDA per wallet — streak increments on win, expires naturally on loss
+- [x] Dark horse threshold: < 20% pool → 1.5x upset bonus from reserve
 - [x] Fee split: 3% total → 1.5% treasury / 1% upset reserve / 0.5% burn
 
-**Feature 6 — Hot Streak Multiplier:**
-- [x] `StreakAccount` PDA per wallet: `{ streak: u8, last_win_race_id: u64 }`
-- [x] `place_cheer`: if `last_win_race_id == race_id - 1`, applies streak bonus to time-weight (2-streak: +0.2x, 3+: +0.4x)
-- [x] `push_reward` / `claim_reward`: increments winner's streak; losers' streaks expire naturally (no update needed)
+### Admin Panel
+- [x] Login — password-protected (bcrypt), JWT session cookie, proper form (no infinite redirect loop)
+- [x] Dashboard — stat cards, quick-action links, recent donations table
+- [x] Race Control — full lifecycle: create race (datetime pickers), UPCOMING→LIVE→FINISHED, recap editor, isLive auto-sync
+- [x] Race History — all finished races, podium, pool SOL, supporter count, inline recap editor
+- [x] Wallet & Treasury — SOL balances for all wallets (treasury, hamster wallets, upset reserve PDA), Solscan links
+- [x] Users — paginated table, cheer stats, win rate, fav hamster, wallet search
+- [x] Hamsters — edit all pet fields (name, bio, stats, image, color)
+- [x] Sponsors — CRUD sponsor entries with tiers
+- [x] Media — upload/manage videos and photos (used by highlights page)
+- [x] Content — all page copy editable (hero, about, arena, footer, modals, carousel steps)
+- [x] Settings — race config, social links, site identity, Solana config display, button labels
+- [x] Admin auth disabled for current build (re-enable in `middleware.ts` when ready)
 
-### Admin Dashboard
-- [x] Content page — all text configurable (nav, hero, about, arena, footer, login modal, terms, how-it-works steps)
-- [x] Media upload (Cloudinary)
-- [x] Settings API (`/api/admin/settings` GET/PATCH)
-- [x] Public settings API (`/api/settings`)
-- [x] Decoration layer editor
-- [x] Sponsors management
+### API Routes
+- [x] `GET /api/races` — current race + past 5, real supporter counts, total SOL
+- [x] `GET /api/pets/[id]/form` — W/L history from DB, falls back to static config
+- [x] `GET /api/pets/[id]/stats` — live wins/races/winRate from DB
+- [x] `GET /api/highlights` — finished races + media for highlights page
+- [x] `GET /api/settings` — public site settings from DB with config fallback
+- [x] `POST /api/admin/race/create` — create new race + entries for all active pets
+- [x] `PATCH /api/admin/race/status` — transition race status (syncs isLive)
+- [x] `POST /api/admin/race/finish` — record positions, award win, turn off live
+- [x] `GET /api/admin/wallet` — SOL balances for all tracked addresses via RPC
+- [x] `GET /api/admin/users` — paginated user list with cheer stats
+- [x] `GET/PATCH /api/admin/history` — race history + recap editing
 
 ### Infrastructure
-- [x] Prisma schema + `SiteSettings` singleton
-- [x] Supabase realtime + 30s polling fallback
-- [x] Helius webhook → SOL donation tracking
+- [x] Prisma schema — all models (Pet, Race, RaceEntry, Donation, Sponsor, Media, User, Cheer, SiteSettings)
+- [x] Supabase realtime + 30s polling fallback for live pool updates
+- [x] Helius webhook receiver (`/api/webhook`) — SOL donation tracking
 - [x] Deterministic 48h race schedule (`race-scheduler.ts`)
-- [x] JWT session auth (`auth.ts`)
-- [x] Admin password protection
-- [x] PWA manifest (`/public/manifest.json`) + meta tags → homescreen installability on Seeker + iOS
-- [x] Monorepo: `hamstarhub/` (Next.js) + `hamstar-program/` (Anchor) at repo root
+- [x] Admin auth: JWT session (jose), bcrypt password hash
+- [x] PWA manifest + meta tags → homescreen installability
 - [x] `tsconfig.json` excludes `hamstar-program/` from Next.js type-checking
-
-### Form Data API
-- [x] `/api/pets/[id]/form` — returns last 5 W/L results, win rate %, and current streak derived from `RACE_HISTORY`
+- [x] Deployed to Vercel — live at hamstar.io
 
 ### Design System
 - [x] Inline `React.CSSProperties` — no Tailwind, no CSS modules
-- [x] Design tokens (`/lib/theme.ts`) — all modals use `T.*` tokens, no hardcoded hex
-- [x] Kanit (headings) + Pretendard (body) fonts
-- [x] `useIsMobile()` hook — single 768px breakpoint
+- [x] Design tokens (`/lib/theme.ts`) — `T.*` tokens
+- [x] Kanit (headings) + Pretendard (body)
+- [x] `useIsMobile()` — single 768px breakpoint
 - [x] Component library (`/components/ui/index.tsx`)
-- [x] Modal design language — yellow header, white body, cheese-hideout.png decoration, pill buttons at `borderRadius: 48.5`
-
-### Documentation
-- [x] `CLAUDE.md` — full design system + codebase rules
-- [x] `docs/FEATURES.md` — feature roadmap (Phases 1–3 complete, parlay cut)
-- [x] `docs/SEEKER.md` — Solana Seeker phone + SMS integration guide
 
 ---
 
-## In Progress / Pending
+## Pending / What's Left
 
-### Contract — Deployment
-- [ ] Deploy `hamstar-program` to devnet with updated `InitializeParams` (streak + dark horse fields)
-- [ ] Call `create_upset_reserve` once after deploy
-- [ ] Fetch real `StreakAccount` on-chain and pass `userStreak` to `CheerModal` (currently hardcoded 0)
+### 🔴 Launch Blockers
 
-### Arena — Real Data
-- [ ] Replace `MOCK_SUPPORT` with real Supabase queries (pool totals per hamster)
-- [ ] Wire Cheer button → actual `place_cheer` instruction via `@coral-xyz/anchor` client
-- [ ] Replace `RACE_HISTORY` form source with real `races` DB query once races are being recorded
+- [ ] **Deploy Anchor program to devnet** — run `anchor deploy` with updated `InitializeParams` (streak + dark horse fields), call `create_upset_reserve` once
+- [ ] **Real pet wallet addresses** — replace `DASH/FLASH/TURBO_WALLET` placeholders in `.env` + update pet records in DB via admin
+- [ ] **Helius webhook** — set `HELIUS_API_KEY` + `HELIUS_WEBHOOK_SECRET` in Vercel env, run `npm run setup-helius` to register watchers on pet wallets
+- [ ] **Real stream URL** — set stream URL in admin Settings → Race → Stream URL
+- [ ] **Re-enable admin auth** — restore middleware.ts auth check before going public
 
-### Wallet — Phase 3
-- [ ] Cheer button → real SOL / HAMSTAR transfer (`SystemProgram.transfer` / SPL token CPI)
-- [ ] Watch Live Race button → live stream URL
+### 🟡 On-Chain Integration
 
-### $HAMSTAR Token — Launch
-- [ ] Replace `HAMSTAR_MINT` placeholder with real SPL mint address
-- [ ] Replace `HAMSTAR_JUPITER_URL` with real Jupiter pool URL once liquidity is seeded
+- [ ] **Wire Cheer button → `place_cheer` instruction** — currently records locally + DB only; needs `@coral-xyz/anchor` client + deployed IDL
+- [ ] **Real HAMSTAR mint address** — replace placeholder in `lib/hamstar-token.ts` with actual SPL mint
+- [ ] **Real Jupiter pool URL** — update once liquidity is seeded
+- [ ] **On-chain streak fetch** — `ArenaClient` has the fetch logic wired; works once program is deployed
 
-### Pet Page
-- [ ] Pet stats from real race history (win rate, race count from DB)
+### 🟢 Nice to Have
 
----
-
-## Known Issues / Tech Debt
-- `effectiveResult` in `ArenaClient.tsx` — same value in both branches; clean up when result logic is finalized.
-- `userStreak` in `ArenaClient.tsx` hardcoded to 0; wire to on-chain `StreakAccount` after program deployment.
+- [ ] **Watch Live Race button** — set real stream URL in admin so the button links somewhere
+- [ ] **Race replay URL** — admin Settings → Replay URL for post-race "Watch Replay" CTA
+- [ ] **Sponsor page** — removed; if sponsors come in, can re-add as a simple page
+- [ ] **`effectiveResult` cleanup** — dead ternary in ArenaClient.tsx line 87 (same value both branches)
 
 ---
 
@@ -157,9 +159,10 @@ Full Anchor program — PDA-based escrow, 2-of-3 settler consensus, SPL token ch
 | Realtime | Supabase Realtime |
 | Solana | `@solana/wallet-adapter-react` 0.15.39 |
 | Mobile | `@solana-mobile/wallet-adapter-mobile` (MWA 2.0) |
-| Auth | Privy (`@privy-io/react-auth`) — email, Google, Apple + embedded wallets |
-| Smart Contract | Anchor 0.30 — `hamstar-program` (SPL token escrow, PDA-based) |
+| Auth | Privy — email, Google, Apple + embedded wallets |
+| Smart Contract | Anchor 0.30 — `hamstar-program` |
 | Media | Cloudinary |
-| Session | JWT (`jose`) |
+| Session | JWT (jose) — currently bypassed |
 | Styling | Inline `React.CSSProperties` |
 | Fonts | Kanit (Google) + Pretendard (CDN) |
+| Hosting | Vercel (hamstar.io) |

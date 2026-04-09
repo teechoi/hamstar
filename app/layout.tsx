@@ -41,13 +41,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={kanit.variable}>
       <head>
-        <style>{`* { cursor: url('/images/sunflower-seed-cursor.png') 16 24, auto !important; }`}</style>
+        <style>{`*, *:hover, *:active, *:focus { cursor: url('/images/sunflower-seed-cursor.png') 8 12, auto !important; }`}</style>
         <link rel="preconnect" href="https://cdn.jsdelivr.net" crossOrigin="anonymous" />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@latest/dist/web/static/pretendard.css" />
         <meta name="theme-color" content="#FFE790" />
         <meta name="mobile-web-app-capable" content="yes" />
       </head>
-      <body style={{ margin: 0, padding: 0, fontFamily: "'Pretendard', sans-serif", cursor: "url('/images/sunflower-seed-cursor.png') 16 24, auto" }}>
+      <body style={{ margin: 0, padding: 0, fontFamily: "'Pretendard', sans-serif", cursor: "url('/images/sunflower-seed-cursor.png') 8 12, auto" }}>
         <AppProviders>
           {children}
         </AppProviders>

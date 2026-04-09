@@ -137,7 +137,10 @@ export function HamsterCard({
       {/* Info */}
       <div style={{ padding: '14px 20px 20px', width: '100%' }}>
 
-        {/* Tagline */}
+        {/* Name + Tagline */}
+        <h3 style={{ fontFamily: KANIT, fontSize: 'clamp(16px, 1.8vw, 20px)', fontWeight: 500, color: '#000000', marginBottom: 4, textAlign: 'center' }}>
+          I&apos;m {name}
+        </h3>
         <p style={{ fontFamily: 'Pretendard, sans-serif', fontSize: 13, fontWeight: 400, color: '#8A8A8A', marginBottom: 10, textAlign: 'center' }}>
           {tagline}
         </p>

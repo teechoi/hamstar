@@ -152,7 +152,7 @@ export function HamsterCard({
               width: '100%', padding: '14px',
               background: PURPLE,
               border: 'none', borderRadius: 48.5,
-              fontSize: 16, fontWeight: 700,
+              fontSize: 14, fontWeight: 500,
               color: '#fff', cursor: 'pointer',
               fontFamily: KANIT,
               transform: hov ? 'scale(1.02)' : 'scale(1)',
@@ -166,7 +166,7 @@ export function HamsterCard({
           <div style={{
             width: '100%', padding: '14px',
             background: '#e3e3e3', borderRadius: 48.5,
-            fontSize: 16, fontWeight: 700,
+            fontSize: 14, fontWeight: 500,
             color: '#aaa', fontFamily: KANIT, textAlign: 'center',
             marginBottom: 16,
           }}>
@@ -176,7 +176,7 @@ export function HamsterCard({
           <div style={{
             width: '100%', padding: '14px',
             background: '#d5d5d5', borderRadius: 48.5,
-            fontSize: 16, fontWeight: 700,
+            fontSize: 14, fontWeight: 500,
             color: '#fff', fontFamily: KANIT, textAlign: 'center',
             marginBottom: 16,
           }}>

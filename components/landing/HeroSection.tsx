@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { SITE } from '@/config/site'
 import { useIsMobile } from '@/components/ui/index'
 import { T } from '@/lib/theme'
@@ -22,7 +22,15 @@ export function HeroSection({
   streamUrl,
 }: HeroSectionProps) {
   const [hov, setHov] = useState(false)
+  const [muted, setMuted] = useState(true)
+  const videoRef = useRef<HTMLVideoElement>(null)
   const isMobile = useIsMobile()
+
+  function toggleSound() {
+    if (!videoRef.current) return
+    videoRef.current.muted = !videoRef.current.muted
+    setMuted(videoRef.current.muted)
+  }
 
   return (
     <section id="hero" style={{
@@ -40,9 +48,13 @@ export function HeroSection({
         left: '8.4%',
         right: '8.5%',
       }}>
-        <img
-          src="/images/hero-hamsters.png"
-          alt="Three hamsters ready to race"
+        <video
+          ref={videoRef}
+          src="/videos/hero.mp4"
+          autoPlay
+          loop
+          muted
+          playsInline
           style={{
             width: '100%',
             height: '100%',
@@ -51,6 +63,29 @@ export function HeroSection({
             display: 'block',
           }}
         />
+        {/* Sound toggle */}
+        <button
+          onClick={toggleSound}
+          style={{
+            position: 'absolute',
+            bottom: 16,
+            right: 16,
+            zIndex: 10,
+            background: 'rgba(0,0,0,0.5)',
+            border: '1px solid rgba(255,255,255,0.2)',
+            borderRadius: '50%',
+            width: 36,
+            height: 36,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: 16,
+            color: '#fff',
+            backdropFilter: 'blur(4px)',
+          }}
+        >
+          {muted ? '🔇' : '🔊'}
+        </button>
         {/* Gradient fades — Figma: left 14.7%, right 11.7%, top 21.7%, bottom 26.3% of image */}
         <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
           <div style={{ position: 'absolute', top: 0, left: 0,    width: '14.7%', height: '100%', background: 'linear-gradient(to right, #000, transparent)' }} />

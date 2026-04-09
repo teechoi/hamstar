@@ -26,7 +26,7 @@ interface MediaItem {
   url: string; thumbnail: string | null; duration: string | null; featured: boolean
 }
 
-const MEDALS = ['🥇', '🥈', '🥉']
+const MEDALS = ['1st', '2nd', '3rd']
 const MEDAL_COLORS = [T.medalGold, T.medalSilver, T.medalBronze]
 
 function MediaCard({ item }: { item: MediaItem }) {
@@ -229,7 +229,7 @@ export function HighlightPageClient() {
               <div>
                 <p style={{ fontFamily: 'Pretendard, sans-serif', fontSize: 13, color: '#8A8A8A', marginBottom: 4 }}>Most Recent Champion</p>
                 <p style={{ fontFamily: KANIT, fontSize: 'clamp(20px, 2.5vw, 32px)', fontWeight: 700, color: '#000' }}>
-                  {champion ? `🏆 ${champion.emoji} ${champion.name}` : '—'}
+                  {champion ? champion.name : '—'}
                 </p>
               </div>
               <div style={{ textAlign: isMobile ? 'left' : 'right' }}>
@@ -273,7 +273,7 @@ export function HighlightPageClient() {
             </>
           ) : (
             <div style={{ textAlign: 'center', padding: '48px 24px', background: '#fff', borderRadius: 24, boxShadow: '0 4px 20px rgba(0,0,0,0.05)', marginBottom: 40 }}>
-              <p style={{ fontFamily: KANIT, fontSize: 40, marginBottom: 16 }}>🐹</p>
+              <img src="/images/hamster-flash-flex.png" alt="" style={{ width: 64, height: 64, objectFit: 'contain', marginBottom: 16 }} />
               <p style={{ fontFamily: KANIT, fontSize: 18, fontWeight: 600, color: '#000', marginBottom: 8 }}>No races yet</p>
               <p style={{ fontFamily: 'Pretendard, sans-serif', fontSize: 14, color: '#999' }}>Highlights will appear here after the first race.</p>
             </div>

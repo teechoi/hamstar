@@ -207,7 +207,7 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
     { label: isLive || isFinishedState ? 'Cheering' : 'Cheering Closes In',
       value: isLive || isFinishedState ? 'Closed' : countdown.display,
       coral: isFrenzy },
-    ...(isFinishedState ? [{ label: 'Champion', value: winnerPet ? `${winnerPet.name} 🏆` : '—', purple: true }] : []),
+    ...(isFinishedState ? [{ label: 'Champion', value: winnerPet ? winnerPet.name : '—', purple: true }] : []),
   ]
 
   return (
@@ -658,7 +658,6 @@ function ResultSection({
   isMobile: boolean
 }) {
   const places = ['1st', '2nd', '3rd']
-  const medals = ['🥇', '🥈', '🥉']
   const userWon = !!(cheeringFor && result.positions[0] === cheeringFor)
 
   const row = (label: string, value: string) => (
@@ -689,7 +688,7 @@ function ResultSection({
             <div key={petId} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
               <p style={{ fontFamily: 'Pretendard, sans-serif', fontWeight: 400, fontSize: 14, color: '#8A8A8A', margin: 0 }}>{places[i]}</p>
               <p style={{ fontFamily: KANIT, fontWeight: 500, fontSize: 14, color: '#000', margin: 0 }}>
-                {pet.name} {medals[i]}
+                {pet.name}
               </p>
             </div>
           )

@@ -100,7 +100,7 @@ export function DepositModal({ address = '', onClose, onConnectWallet }: Deposit
             borderBottom: `1px solid ${T.border}`,
             background: '#fff',
           }}>
-            {([['sol', '◎ Deposit SOL'], ['hamstar', `🐹 Get ${HAMSTAR_SYMBOL}`]] as const).map(([id, label]) => (
+            {([['sol', '◎ Deposit SOL'], ['hamstar', `Get ${HAMSTAR_SYMBOL}`]] as const).map(([id, label]) => (
               <button
                 key={id}
                 onClick={() => setTab(id)}
@@ -244,7 +244,7 @@ function NoWalletDeposit({ onConnect }: { onConnect: () => void }) {
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         fontSize: 36, margin: '0 auto 16px',
         boxShadow: '0 6px 20px rgba(115,93,255,0.3)',
-      }}>🐹</div>
+      }}><img src="/images/hamster-flash-flex.png" alt="" style={{ width: '60%', height: '60%', objectFit: 'contain' }} /></div>
       <p style={{ fontFamily: PRET, fontSize: 14, color: T.textMid, marginBottom: 24, lineHeight: 1.6 }}>
         Connect your Solana wallet to get<br />your personal deposit address.
       </p>
@@ -283,7 +283,7 @@ function GetHamstarTab() {
           border: '1.5px solid rgba(255,200,0,0.4)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           fontSize: 22,
-        }}>🐹</div>
+        }}><img src="/images/hamster-flash-flex.png" alt="" style={{ width: '80%', height: '80%', objectFit: 'contain' }} /></div>
         <div>
           <p style={{ fontFamily: KANIT, fontSize: 11, color: T.textMid, margin: '0 0 2px', letterSpacing: 0.5 }}>
             HAMSTAR TOKEN

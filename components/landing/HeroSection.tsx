@@ -84,7 +84,7 @@ export function HeroSection({
             backdropFilter: 'blur(4px)',
           }}
         >
-          {muted ? '🔇' : '🔊'}
+          {muted ? 'Muted' : 'Sound'}
         </button>
         {/* Gradient fades — Figma: left 14.7%, right 11.7%, top 21.7%, bottom 26.3% of image */}
         <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>

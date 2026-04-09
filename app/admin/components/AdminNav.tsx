@@ -5,16 +5,16 @@ import { useIsMobile } from '@/components/ui'
 import { A } from '../theme'
 
 const NAV = [
-  { href: '/admin/dashboard', label: 'Dashboard',    icon: '📊' },
-  { href: '/admin/race',      label: 'Race Control', icon: '🏁' },
-  { href: '/admin/history',   label: 'History',      icon: '📜' },
-  { href: '/admin/wallet',    label: 'Wallet',       icon: '💎' },
-  { href: '/admin/users',     label: 'Users',        icon: '👥' },
-  { href: '/admin/pets',      label: 'Hamsters',     icon: '🐹' },
-  { href: '/admin/sponsors',  label: 'Sponsors',     icon: '🏆' },
-  { href: '/admin/media',     label: 'Media',        icon: '🎥' },
-  { href: '/admin/content',   label: 'Content',      icon: '✏️'  },
-  { href: '/admin/settings',  label: 'Settings',     icon: '⚙️'  },
+  { href: '/admin/dashboard', label: 'Dashboard',    icon: '—' },
+  { href: '/admin/race',      label: 'Race Control', icon: '—' },
+  { href: '/admin/history',   label: 'History',      icon: '—' },
+  { href: '/admin/wallet',    label: 'Wallet',       icon: '—' },
+  { href: '/admin/users',     label: 'Users',        icon: '—' },
+  { href: '/admin/pets',      label: 'Hamsters',     icon: '—' },
+  { href: '/admin/sponsors',  label: 'Sponsors',     icon: '—' },
+  { href: '/admin/media',     label: 'Media',        icon: '—' },
+  { href: '/admin/content',   label: 'Content',      icon: '—' },
+  { href: '/admin/settings',  label: 'Settings',     icon: '—' },
 ]
 
 export function AdminNav() {
@@ -64,7 +64,7 @@ export function AdminNav() {
     }}>
       <div style={{ padding: '28px 24px 22px', borderBottom: `1px solid ${A.sidebarBorder}` }}>
         <div style={{ fontSize: 20, fontWeight: 900, color: A.yellow, letterSpacing: -0.5, fontFamily: 'var(--font-kanit), sans-serif' }}>
-          🐹 Hamstar
+          Hamstar
         </div>
         <div style={{ fontSize: 11, color: A.sidebarMuted, marginTop: 3, letterSpacing: 1, textTransform: 'uppercase', fontFamily: 'Pretendard, sans-serif' }}>
           Admin Panel

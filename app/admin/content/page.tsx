@@ -274,7 +274,7 @@ export default function ContentPage() {
 
       <Section title="Login Modal">
         <Field label="Title">
-          <Input value={form.loginTitle} onChange={set('loginTitle')} placeholder="Welcome to Hamstar Arena 🐹" />
+          <Input value={form.loginTitle} onChange={set('loginTitle')} placeholder="Welcome to Hamstar Arena" />
         </Field>
         <Field label="Subtitle">
           <Input value={form.loginSubtitle} onChange={set('loginSubtitle')} placeholder="A live-streamed blockchain-based entertainment experience" />

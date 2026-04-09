@@ -165,7 +165,7 @@ function ConnectedView({
                   background: 'linear-gradient(135deg, #735DFF 0%, #AB9FF2 100%)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: 30,
-                }}>🐹</div>
+                }}><img src="/images/hamster-flash-flex.png" alt="" style={{ width: '75%', height: '75%', objectFit: 'contain' }} /></div>
               </div>
               <div style={{
                 position: 'absolute', bottom: 2, right: 2,
@@ -287,7 +287,7 @@ function ConnectedView({
             borderRadius: 16, padding: '16px 20px',
             textAlign: 'center', marginBottom: 12,
           }}>
-            <p style={{ fontSize: 28, margin: '0 0 8px' }}>🐹</p>
+            <img src="/images/hamster-flash-flex.png" alt="" style={{ width: 48, height: 48, objectFit: 'contain', marginBottom: 8 }} />
             <p style={{ fontFamily: KANIT, fontSize: 14, fontWeight: 700, color: T.text, margin: '0 0 3px' }}>
               No races cheered yet
             </p>
@@ -334,7 +334,7 @@ function NoWalletView({ onConnect }: { onConnect: () => void }) {
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             fontSize: 30, margin: '0 auto 16px',
             boxShadow: '0 6px 20px rgba(115,93,255,0.3)',
-          }}>🐹</div>
+          }}><img src="/images/hamster-flash-flex.png" alt="" style={{ width: '75%', height: '75%', objectFit: 'contain' }} /></div>
           <h2 style={{ fontFamily: KANIT, fontSize: 22, fontWeight: 800, color: T.text, margin: '0 0 8px' }}>
             No Wallet Connected
           </h2>
@@ -391,7 +391,7 @@ function ResultBadge({ won }: { won: boolean | null }) {
   )
   if (won) return (
     <span style={{ fontFamily: KANIT, fontSize: 10, fontWeight: 700, color: T.sub2, background: T.yellow, padding: '4px 10px', borderRadius: 48.5, display: 'flex', alignItems: 'center', gap: 4 }}>
-      🏆 Won
+      Won
     </span>
   )
   return (

@@ -41,7 +41,7 @@ export default function LoginPage() {
         boxShadow: '0 32px 80px rgba(0,0,0,0.4)',
       }}>
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
-          <div style={{ fontSize: 36, marginBottom: 8 }}>🐹</div>
+          <div style={{ marginBottom: 8 }}><img src="/images/hamster-flash-flex.png" alt="" style={{ width: 48, height: 48, objectFit: 'contain' }} /></div>
           <h1 style={{ fontFamily: KANIT, fontSize: 22, fontWeight: 700, color: '#000', margin: '0 0 4px' }}>
             Hamstar Admin
           </h1>

@@ -74,7 +74,7 @@ export function CheerModal({ petId, petName, multiplier, streakCount = 0, onClos
               padding: '3px 10px', marginBottom: 8,
             }}>
               <span style={{ fontFamily: KANIT, fontSize: 11, fontWeight: 700, color: T.sub2, letterSpacing: 0.5 }}>
-                🐹 HAMSTAR ARENA
+                HAMSTAR ARENA
               </span>
             </div>
             <h2 style={{ fontFamily: KANIT, fontSize: 22, fontWeight: 800, color: T.text, margin: '0 0 4px' }}>
@@ -242,7 +242,7 @@ export function CheerModal({ petId, petName, multiplier, streakCount = 0, onClos
               fontSize: 36, margin: '0 auto 16px',
               boxShadow: '0 6px 20px rgba(255,231,144,0.6)',
             }}>
-              🎉
+              <img src="/images/hamster-champion.png" alt="" style={{ width: '70%', height: '70%', objectFit: 'contain' }} />
             </div>
             <h3 style={{ fontFamily: KANIT, fontSize: 22, fontWeight: 700, color: T.text, margin: '0 0 8px' }}>
               Cheer locked in!

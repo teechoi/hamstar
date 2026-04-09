@@ -79,7 +79,7 @@ export function TermsModal({ onAccept, termsButtonText = 'I Understand & Enter A
         {/* ── Header ── */}
         <div style={{ padding: isMobile ? '24px 20px 16px' : '28px 32px 20px', borderBottom: `1px solid ${T.border}`, flexShrink: 0 }}>
           <h2 style={{ fontFamily: KANIT, fontSize: isMobile ? 20 : 22, fontWeight: 700, color: T.text, margin: '0 0 4px', textAlign: 'center' }}>
-            Welcome to Hamstar Arena 🐹
+            Welcome to Hamstar Arena
           </h2>
           <p style={{ fontFamily: KANIT, fontSize: 14, fontWeight: 500, color: T.textMid, margin: '0 0 6px', textAlign: 'center' }}>
             A live-streamed Solana-based entertainment experience

@@ -147,7 +147,7 @@ export default function SponsorsPage() {
         [1,2,3].map(i => <div key={i} style={{ height: 80, borderRadius: 16, background: A.border, marginBottom: 12, animation: 'pulse 1.4s ease-in-out infinite' }} />)
       ) : sponsors.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '60px 24px', background: A.card, borderRadius: 16, border: `1.5px solid ${A.border}` }}>
-          <p style={{ fontSize: 32, marginBottom: 12 }}>🏆</p>
+          <p style={{ fontSize: 32, marginBottom: 12 }}>—</p>
           <p style={{ fontFamily: KANIT, fontSize: 16, fontWeight: 700, color: A.text, marginBottom: 8 }}>No sponsors yet</p>
           <p style={{ fontSize: 13, color: A.textMuted }}>Add sponsors to track them for internal reporting and future public display.</p>
         </div>

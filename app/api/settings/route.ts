@@ -41,7 +41,7 @@ export async function GET() {
           footerBrandDesc: 'Live hamster racing powered by community participation',
           footerTaglineRight: 'Real hamsters.\nReal races.\nOne tiny champion.',
           footerLinks: [],
-          loginTitle: 'Welcome to Hamstar Arena 🐹',
+          loginTitle: 'Welcome to Hamstar Arena',
           loginSubtitle: 'A live-streamed blockchain-based entertainment experience',
           termsButtonText: 'I Understand & Enter Arena',
           howitWorksSteps: [],

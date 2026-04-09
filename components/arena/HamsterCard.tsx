@@ -105,7 +105,7 @@ export function HamsterCard({
             borderRadius: 20, padding: '3px 10px',
             fontSize: 11, fontWeight: 700, fontFamily: KANIT,
           }}>
-            🏆 WINNER
+            WINNER
           </div>
         )}
         {/* Dark horse badge — show during open/live when pool share is low */}
@@ -243,7 +243,7 @@ export function HamsterCard({
               fontFamily: KANIT, opacity: hov ? 0.85 : 1, transition: 'opacity 0.15s',
             }}
           >
-            Cheer {name} 🎉
+            Cheer {name}
           </button>
         ) : (isLive || isFinished) ? (
           <div style={{

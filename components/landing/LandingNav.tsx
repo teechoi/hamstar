@@ -90,7 +90,7 @@ export function LandingNav({
         {isMobile ? (
           <>
             <span style={{ color: isDark ? YELLOW : DARK, fontFamily: KANIT, fontWeight: 700, fontSize: 16, flex: 1 }}>
-              🐹 Hamstar
+              Hamstar
             </span>
             {connecting ? (
               <span style={{

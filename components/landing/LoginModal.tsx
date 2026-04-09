@@ -179,7 +179,7 @@ export function LoginModal({ onClose, loginTitle, loginSubtitle }: LoginModalPro
               fontSize: 26,
               boxShadow: '0 4px 14px rgba(255,215,0,0.3)',
             }}>
-              🐹
+              <img src="/images/hamster-flash-flex.png" alt="" style={{ width: '70%', height: '70%', objectFit: 'contain' }} />
             </div>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>

@@ -574,26 +574,23 @@ function CheerFeed({ isMobile }: { isMobile: boolean }) {
 function CheeringCard({ petId, supportPct, isMobile }: { petId: string; supportPct: number; isMobile: boolean }) {
   const pet = PETS.find(p => p.id === petId)
   if (!pet) return null
+  const rows = [
+    { label: 'You\'re cheering for', value: pet.name },
+    { label: 'Your Support',         value: '0.5 SOL' },
+    { label: 'Share of Pool',        value: `${supportPct}%` },
+  ]
   return (
     <div style={{
-      background: '#fff', borderRadius: 24,
-      padding: isMobile ? '20px' : '24px 32px',
+      background: '#fff', borderRadius: 20,
+      padding: isMobile ? '16px 20px' : '20px 30px',
       marginBottom: 20,
-      boxShadow: '0 8px 24px rgba(77,67,83,0.05)',
-      border: `1.5px solid ${PURPLE}20`,
+      boxShadow: '0 4px 20px rgba(77,67,83,0.08)',
     }}>
-      <p style={{ fontFamily: 'Pretendard, sans-serif', fontSize: 13, color: '#8A8A8A', marginBottom: 14 }}>
-        You&apos;re cheering for
-      </p>
-      <div style={{ display: 'flex', gap: isMobile ? 20 : 40, flexWrap: 'wrap' }}>
-        {[
-          { label: 'Racer',         value: pet.name   },
-          { label: 'Your Support',  value: '0.5 SOL'  },
-          { label: 'Share of Pool', value: `${supportPct}%` },
-        ].map(({ label, value }) => (
-          <div key={label}>
-            <p style={{ fontFamily: 'Pretendard, sans-serif', fontSize: 11, color: '#8A8A8A', marginBottom: 2 }}>{label}</p>
-            <p style={{ fontFamily: KANIT, fontSize: 18, fontWeight: 600, color: DARK }}>{value}</p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+        {rows.map(({ label, value }) => (
+          <div key={label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 16 }}>
+            <p style={{ fontFamily: 'Pretendard, sans-serif', fontWeight: 400, fontSize: 14, color: '#8A8A8A', margin: 0 }}>{label}</p>
+            <p style={{ fontFamily: KANIT, fontWeight: 700, fontSize: 14, color: DARK, margin: 0 }}>{value}</p>
           </div>
         ))}
       </div>

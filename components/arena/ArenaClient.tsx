@@ -611,11 +611,10 @@ function YellowBtn({ label, onClick }: { label: string; onClick: () => void }) {
       style={{
         flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
         gap: 12, padding: '16px 48px',
-        background: YELLOW, border: '2px solid #000', borderRadius: 48.5,
+        background: hov ? '#F5D850' : YELLOW, border: 'none', borderRadius: 48.5,
         fontFamily: KANIT, fontSize: 'clamp(14px, 1.5vw, 17px)', fontWeight: 700,
         color: DARK, cursor: 'pointer',
-        opacity: hov ? 0.9 : 1, transition: 'opacity 0.15s',
-        boxShadow: '0 20px 40px rgba(77,67,83,0.08)',
+        transform: hov ? 'scale(1.02)' : 'scale(1)', transition: 'all 0.15s ease-out',
       }}
     >
       {label}
@@ -635,14 +634,13 @@ function WatchLiveBtn({ active, href }: { active: boolean; href: string }) {
       style={{
         flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
         gap: 12, padding: '16px 48px',
-        background: active ? YELLOW : '#F0F0F0',
-        border: active ? '2px solid #000' : 'none',
+        background: active ? (hov ? '#F5D850' : YELLOW) : (hov ? PURPLE : 'transparent'),
+        border: active ? 'none' : `2px solid ${PURPLE}`,
         borderRadius: 48.5, textDecoration: 'none',
         fontFamily: KANIT, fontSize: 'clamp(14px, 1.5vw, 17px)', fontWeight: 700,
-        color: active ? DARK : '#888',
+        color: active ? DARK : (hov ? '#fff' : PURPLE),
         cursor: 'pointer',
-        opacity: hov ? 0.85 : 1, transition: 'opacity 0.15s',
-        boxShadow: active ? '0 4px 16px rgba(255,231,144,0.4)' : 'none',
+        transform: hov ? 'scale(1.02)' : 'scale(1)', transition: 'all 0.15s ease-out',
       }}
     >
       {active ? 'Watch Live Race' : 'View Stream'}

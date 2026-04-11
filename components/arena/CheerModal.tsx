@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { PublicKey } from '@solana/web3.js'
 import { useWallet, useConnection } from '@solana/wallet-adapter-react'
 import { T } from '@/lib/theme'
-import { HAMSTAR_MINT, HAMSTAR_SYMBOL, HAMSTAR_DECIMALS, buildCheerTransaction } from '@/lib/hamstar-token'
+import { HAMSTAR_MINT, HAMSTAR_SYMBOL, buildCheerTransaction } from '@/lib/hamstar-token'
 import { SwapWidget } from '@/components/landing/SwapWidget'
 
 const KANIT  = "var(--font-kanit), sans-serif"
@@ -11,7 +11,6 @@ const PRET   = 'Pretendard, sans-serif'
 const SYMBOL = HAMSTAR_SYMBOL.replace('$', '')
 
 const QUICK_PICKS = [100, 500, 1000, 5000]
-const TOKEN_LAUNCHED = !HAMSTAR_MINT.includes('xxx')
 
 interface CheerModalProps {
   petId:        string
@@ -43,7 +42,7 @@ export function CheerModal({ petId, petName, multiplier, streakCount = 0, onClos
 
   // ── Balance fetch ──────────────────────────────────────────────────────────
   const refreshBalance = useCallback(async () => {
-    if (!publicKey || !TOKEN_LAUNCHED) { setHamstarBalance(null); return }
+    if (!publicKey) { setHamstarBalance(null); return }
     setFetchingBalance(true)
     try {
       const accounts = await connection.getTokenAccountsByOwner(publicKey, {
@@ -93,13 +92,10 @@ export function CheerModal({ petId, petName, multiplier, streakCount = 0, onClos
   }
 
   // ── Determine view ─────────────────────────────────────────────────────────
-  // launching  — token not yet deployed
-  // get-token  — connected but no HAMSTAR balance
-  // cheer      — has balance, can place cheer
-  const view: 'launching' | 'get-token' | 'cheer' =
-    !TOKEN_LAUNCHED         ? 'launching' :
-    connected && hamstarBalance === 0 ? 'get-token' :
-    'cheer'
+  // get-token  — connected but zero HAMSTAR balance
+  // cheer      — has balance (or not connected), can place cheer
+  const view: 'get-token' | 'cheer' =
+    connected && hamstarBalance !== null && hamstarBalance === 0 ? 'get-token' : 'cheer'
 
   const balanceFmt = hamstarBalance !== null
     ? hamstarBalance.toLocaleString(undefined, { maximumFractionDigits: 0 })
@@ -120,7 +116,7 @@ export function CheerModal({ petId, petName, multiplier, streakCount = 0, onClos
         onClick={e => e.stopPropagation()}
         style={{
           background: '#fff', borderRadius: 28,
-          width: '100%', maxWidth: 400,
+          width: '100%', maxWidth: view === 'get-token' ? 460 : 400,
           position: 'relative',
           boxShadow: '0 8px 32px rgba(0,0,0,0.1), 0 40px 80px rgba(77,67,83,0.18)',
           overflow: 'hidden',
@@ -157,62 +153,54 @@ export function CheerModal({ petId, petName, multiplier, streakCount = 0, onClos
               {step === 'confirmed' ? 'Cheer locked in!' : `Cheer for ${petName}`}
             </h2>
             <p style={{ fontFamily: PRET, fontWeight: 500, fontSize: 13, color: 'rgba(0,0,0,0.5)', margin: 0 }}>
-              {step === 'confirmed'   ? 'Your cheer has been recorded!'
-               : view === 'launching' ? `${SYMBOL} token is launching soon.`
-               : view === 'get-token' ? `You need ${SYMBOL} to cheer.`
-               : 'Pick your amount and lock in your support.'}
+              {step === 'confirmed'
+                ? 'Your cheer has been recorded!'
+                : view === 'get-token'
+                  ? `Swap SOL or USDC for ${SYMBOL} to cheer.`
+                  : 'Pick your amount and lock in your support.'}
             </p>
           </div>
         </div>
 
-        {/* ── Launching soon ── */}
-        {step === 'input' && view === 'launching' && (
-          <div style={{ padding: '32px 28px 28px', textAlign: 'center' }}>
-            <HamstarLogo size={64} />
-            <h3 style={{ fontFamily: KANIT, fontSize: 18, fontWeight: 800, color: T.text, margin: '16px 0 8px', letterSpacing: '-0.01em' }}>
-              Cheering opens at launch
-            </h3>
-            <p style={{ fontFamily: PRET, fontWeight: 500, fontSize: 13, color: T.textMid, marginBottom: 24, lineHeight: 1.6 }}>
-              Once ${SYMBOL} launches you&apos;ll be able to cheer<br />your hamstar to victory.
-            </p>
-            <button
-              onClick={onClose}
-              style={{
-                width: '100%', padding: '15px 20px',
-                background: T.yellow, border: 'none', borderRadius: 48.5,
-                fontFamily: KANIT, fontSize: 15, fontWeight: 800, letterSpacing: '-0.01em', color: T.text,
-                cursor: 'pointer', boxShadow: '0 4px 18px rgba(255,215,0,0.28)',
-              }}
-            >
-              Got it
-            </button>
-          </div>
-        )}
-
         {/* ── Get $HAMSTAR first ── */}
         {step === 'input' && view === 'get-token' && (
-          <div style={{ padding: '20px 24px 16px' }}>
+          <div style={{ padding: '20px 24px 24px' }}>
+
+            {/* SOL context banner */}
             <div style={{
-              background: T.yellowSoft, border: `1.5px solid rgba(255,200,0,0.3)`,
-              borderRadius: 14, padding: '12px 16px', marginBottom: 16,
-              display: 'flex', alignItems: 'center', gap: 10,
+              background: 'linear-gradient(135deg, rgba(115,93,255,0.07) 0%, rgba(115,93,255,0.04) 100%)',
+              border: `1.5px solid rgba(115,93,255,0.15)`,
+              borderRadius: 14, padding: '14px 18px', marginBottom: 18,
+              display: 'flex', alignItems: 'flex-start', gap: 12,
             }}>
-              <HamstarLogo size={28} />
-              <p style={{ fontFamily: PRET, fontWeight: 500, fontSize: 13, color: T.sub2, margin: 0 }}>
-                Swap SOL for <strong style={{ fontWeight: 700 }}>${SYMBOL}</strong> to place your cheer.
-              </p>
+              <div style={{
+                width: 36, height: 36, borderRadius: 10, flexShrink: 0,
+                background: 'rgba(115,93,255,0.1)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: 18,
+              }}>◎</div>
+              <div>
+                <p style={{ fontFamily: KANIT, fontWeight: 700, fontSize: 13, color: T.text, margin: '0 0 3px', letterSpacing: '-0.01em' }}>
+                  This runs on Solana
+                </p>
+                <p style={{ fontFamily: PRET, fontWeight: 500, fontSize: 12, color: T.textMid, margin: 0, lineHeight: 1.5 }}>
+                  Swap your SOL or USDC for <strong style={{ fontWeight: 700, color: T.text }}>${SYMBOL}</strong> below. Fast, cheap, non-custodial.
+                </p>
+              </div>
             </div>
+
             <SwapWidget onSwapComplete={refreshBalance} />
+
             <button
               onClick={onClose}
               style={{
-                width: '100%', padding: '11px', marginTop: 10,
+                width: '100%', padding: '12px', marginTop: 12,
                 background: 'transparent', border: 'none',
-                fontFamily: PRET, fontSize: 14, fontWeight: 500, color: T.textMid,
+                fontFamily: PRET, fontSize: 13, fontWeight: 500, color: T.textMid,
                 cursor: 'pointer',
               }}
             >
-              Cancel
+              ← Back to Arena
             </button>
           </div>
         )}

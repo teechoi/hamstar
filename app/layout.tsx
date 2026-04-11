@@ -42,6 +42,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={kanit.variable}>
       <head>
         <style>{`*, *:hover, *:active, *:focus { cursor: url('/images/sunflower-seed-cursor.png') 8 12, auto !important; }`}</style>
+        {/* Preload cursor image so it's available before first mouse move */}
+        <link rel="preload" href="/images/sunflower-seed-cursor.png" as="image" />
         <link rel="preconnect" href="https://cdn.jsdelivr.net" crossOrigin="anonymous" />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@latest/dist/web/static/pretendard.css" />
         <meta name="theme-color" content="#FFE790" />

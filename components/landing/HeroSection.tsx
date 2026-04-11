@@ -1,5 +1,5 @@
 'use client'
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { SITE } from '@/config/site'
 import { useIsMobile } from '@/components/ui/index'
 import { T } from '@/lib/theme'
@@ -25,6 +25,15 @@ export function HeroSection({
   const [muted, setMuted] = useState(true)
   const videoRef = useRef<HTMLVideoElement>(null)
   const isMobile = useIsMobile()
+
+  // React's `muted` JSX prop doesn't reliably set the DOM attribute in all browsers.
+  // Explicitly set muted + call play() after mount to guarantee autoplay on Safari/Firefox.
+  useEffect(() => {
+    const v = videoRef.current
+    if (!v) return
+    v.muted = true
+    v.play().catch(() => { /* autoplay blocked — user will see static frame */ })
+  }, [])
 
   function toggleSound() {
     if (!videoRef.current) return

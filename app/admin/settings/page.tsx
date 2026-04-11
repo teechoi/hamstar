@@ -9,6 +9,7 @@ interface Settings {
   twitterUrl: string; tiktokUrl: string; instagramUrl: string; youtubeUrl: string
   sponsorEmail: string; siteName: string; tagline: string; ogImageUrl: string
   buttonLabels: Record<string, string>
+  hamstarMint: string; hamstarPoolAddress: string
 }
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
@@ -46,6 +47,8 @@ const DEFAULT: Settings = {
   twitterUrl: '', tiktokUrl: '', instagramUrl: '', youtubeUrl: '',
   sponsorEmail: '', siteName: 'Hamstar', tagline: '', ogImageUrl: '',
   buttonLabels: {},
+  hamstarMint: 'HAMSTARxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+  hamstarPoolAddress: 'POOLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
 }
 
 export default function SettingsPage() {
@@ -60,19 +63,21 @@ export default function SettingsPage() {
       .then(r => r.json())
       .then(d => {
         setForm({
-          raceNumber:   d.raceNumber   ?? 1,
-          isLive:       d.isLive       ?? false,
-          streamUrl:    d.streamUrl    ?? '',
-          replayUrl:    d.replayUrl    ?? '',
-          twitterUrl:   d.twitterUrl   ?? '',
-          tiktokUrl:    d.tiktokUrl    ?? '',
-          instagramUrl: d.instagramUrl ?? '',
-          youtubeUrl:   d.youtubeUrl   ?? '',
-          sponsorEmail: d.sponsorEmail ?? '',
-          siteName:     d.siteName     ?? 'Hamstar',
-          tagline:      d.tagline      ?? '',
-          ogImageUrl:   d.ogImageUrl   ?? '',
-          buttonLabels: typeof d.buttonLabels === 'object' ? d.buttonLabels : {},
+          raceNumber:         d.raceNumber         ?? 1,
+          isLive:             d.isLive             ?? false,
+          streamUrl:          d.streamUrl          ?? '',
+          replayUrl:          d.replayUrl          ?? '',
+          twitterUrl:         d.twitterUrl         ?? '',
+          tiktokUrl:          d.tiktokUrl          ?? '',
+          instagramUrl:       d.instagramUrl       ?? '',
+          youtubeUrl:         d.youtubeUrl         ?? '',
+          sponsorEmail:       d.sponsorEmail       ?? '',
+          siteName:           d.siteName           ?? 'Hamstar',
+          tagline:            d.tagline            ?? '',
+          ogImageUrl:         d.ogImageUrl         ?? '',
+          buttonLabels:       typeof d.buttonLabels === 'object' ? d.buttonLabels : {},
+          hamstarMint:        d.hamstarMint        ?? 'HAMSTARxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+          hamstarPoolAddress: d.hamstarPoolAddress ?? 'POOLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
         })
         setLoading(false)
       })
@@ -183,13 +188,16 @@ export default function SettingsPage() {
         ))}
       </Section>
 
-      <SolanaSection />
+      <TokenSection
+        form={form}
+        set={set}
+      />
     </div>
   )
 }
 
-function SolanaSection() {
-  const PROGRAM_ID   = process.env.NEXT_PUBLIC_PROGRAM_ID ?? '7VumdroGjCGoY8skLuATZY6U7uMJeiE6fRaewdXLSVwQ'
+function TokenSection({ form, set }: { form: Settings; set: (k: keyof Settings) => (v: string) => void }) {
+  const PROGRAM_ID = '7VumdroGjCGoY8skLuATZY6U7uMJeiE6fRaewdXLSVwQ'
   const [copied, setCopied] = useState<string | null>(null)
 
   const copy = (val: string, key: string) => {
@@ -198,67 +206,140 @@ function SolanaSection() {
     setTimeout(() => setCopied(null), 1500)
   }
 
-  function ReadonlyField({ label, value, hint }: { label: string; value: string; hint?: string }) {
-    return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-        <label style={{ fontSize: 12, fontWeight: 700, color: '#555555', textTransform: 'uppercase', letterSpacing: 0.6 }}>{label}</label>
-        {hint && <p style={{ fontSize: 12, color: '#9A9A9A' }}>{hint}</p>}
-        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-          <span style={{ flex: 1, padding: '10px 14px', borderRadius: 10, border: '1.5px solid #E0E0E0', fontSize: 13, color: '#0D0D14', background: '#F8F9FA', fontFamily: 'monospace', wordBreak: 'break-all' }}>
-            {value || '—'}
-          </span>
-          {value && (
-            <button onClick={() => copy(value, label)} style={{
-              padding: '8px 14px', borderRadius: 8, border: '1.5px solid #E0E0E0',
-              background: copied === label ? 'rgba(0,197,102,0.10)' : '#fff',
-              cursor: 'pointer', fontSize: 12, fontWeight: 700,
-              color: copied === label ? '#00C566' : '#9A9A9A', flexShrink: 0,
-            }}>
-              {copied === label ? 'Copied!' : 'Copy'}
-            </button>
-          )}
-        </div>
-      </div>
-    )
-  }
+  const mintLaunched = form.hamstarMint && !form.hamstarMint.includes('xxx')
+  const poolReady    = form.hamstarPoolAddress && !form.hamstarPoolAddress.includes('xxx')
+  const tokenLive    = mintLaunched && poolReady
 
   return (
-    <div style={{ background: '#ffffff', borderRadius: 16, border: '1.5px solid #F0F0F0', marginBottom: 24, overflow: 'hidden' }}>
-      <div style={{ padding: '18px 24px', borderBottom: '1px solid #F0F0F0', background: '#F8F9FA', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <h2 style={{ fontFamily: "var(--font-kanit), sans-serif", fontSize: 15, fontWeight: 700, color: '#0D0D14' }}>Solana & Program Config</h2>
-        <span style={{ fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: 99, background: 'rgba(115,93,255,0.08)', color: '#735DFF' }}>READ-ONLY</span>
+    <div id="token" style={{ background: A.card, borderRadius: 16, border: `1.5px solid ${A.border}`, marginBottom: 24, overflow: 'hidden' }}>
+      <div style={{ padding: '18px 24px', borderBottom: `1px solid ${A.border}`, background: A.pageBg, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <h2 style={{ fontFamily: KANIT, fontSize: 15, fontWeight: 700, color: A.text }}>$HAMSTAR Token Config</h2>
+        <span style={{
+          fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: 99,
+          background: tokenLive ? A.greenSoft : A.yellowSoft,
+          color: tokenLive ? A.green : '#7a6a00',
+        }}>
+          {tokenLive ? '● LIVE' : '○ PRE-LAUNCH'}
+        </span>
       </div>
-      <div style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 18 }}>
-        <p style={{ fontSize: 13, color: '#9A9A9A', marginBottom: 4 }}>
-          These values are set via environment variables at deploy time. To change them, update your env vars and redeploy.
-        </p>
-        <ReadonlyField
-          label="Program ID"
-          value={PROGRAM_ID}
-          hint="The deployed Anchor program address on Solana"
-        />
-        <ReadonlyField
-          label="HAMSTAR Token Mint"
-          value={process.env.NEXT_PUBLIC_HAMSTAR_MINT ?? ''}
-          hint="SPL token mint address for HAMSTAR (set NEXT_PUBLIC_HAMSTAR_MINT)"
-        />
-        <ReadonlyField
-          label="Treasury Wallet"
-          value={process.env.NEXT_PUBLIC_TREASURY_WALLET ?? ''}
-          hint="Platform treasury wallet (set NEXT_PUBLIC_TREASURY_WALLET)"
-        />
-        <ReadonlyField
-          label="RPC Endpoint"
-          value={process.env.NEXT_PUBLIC_SOLANA_RPC_URL ?? 'Using Helius (server-side only)'}
-          hint="Solana RPC URL used for on-chain reads"
-        />
-        <div style={{ padding: '14px 16px', borderRadius: 10, background: 'rgba(255,231,144,0.20)', border: '1px solid rgba(255,231,144,0.6)' }}>
-          <p style={{ fontSize: 12, fontWeight: 700, color: '#8a6a00', marginBottom: 4 }}>Upset Reserve PDA</p>
-          <p style={{ fontSize: 12, color: '#8a6a00' }}>
-            Derived from seeds: <code style={{ background: 'rgba(0,0,0,0.06)', padding: '1px 6px', borderRadius: 4 }}>[&quot;upset_reserve&quot;]</code> + Program ID.
-            View live balance in the <a href="/admin/wallet" style={{ color: '#735DFF', fontWeight: 700, textDecoration: 'none' }}>Wallet page</a>.
-          </p>
+      <div style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 20 }}>
+
+        {/* Status summary */}
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+          {[
+            { label: 'Mint set',       ok: mintLaunched },
+            { label: 'Pool set',       ok: poolReady    },
+            { label: 'On-chain cheers', ok: tokenLive   },
+          ].map(({ label, ok }) => (
+            <span key={label} style={{
+              fontSize: 12, fontWeight: 600, padding: '4px 12px', borderRadius: 99,
+              background: ok ? A.greenSoft : A.redSoft,
+              color: ok ? A.green : A.red,
+            }}>
+              {ok ? '✓' : '✗'} {label}
+            </span>
+          ))}
         </div>
+
+        {/* Token Mint */}
+        <Field
+          label="HAMSTAR Token Mint"
+          hint="SPL token mint address. Replace the placeholder with the real mint address once deployed."
+        >
+          <div style={{ display: 'flex', gap: 8 }}>
+            <input
+              value={form.hamstarMint}
+              onChange={e => set('hamstarMint')(e.target.value)}
+              placeholder="Base58 mint address…"
+              style={{
+                flex: 1, padding: '10px 14px', borderRadius: 10,
+                border: `1.5px solid ${mintLaunched ? 'rgba(0,197,102,0.4)' : A.borderMid}`,
+                fontSize: 13, color: A.text, background: '#fff', outline: 'none',
+                fontFamily: 'monospace',
+              }}
+            />
+            {form.hamstarMint && (
+              <button onClick={() => copy(form.hamstarMint, 'mint')} style={{
+                padding: '8px 14px', borderRadius: 10, border: `1.5px solid ${A.borderMid}`,
+                background: copied === 'mint' ? A.greenSoft : '#fff', cursor: 'pointer',
+                fontSize: 12, fontWeight: 700, color: copied === 'mint' ? A.green : A.textMuted, flexShrink: 0,
+              }}>
+                {copied === 'mint' ? 'Copied!' : 'Copy'}
+              </button>
+            )}
+          </div>
+        </Field>
+
+        {/* Pool Address */}
+        <Field
+          label="Race Pool Address"
+          hint="The wallet or PDA that receives cheered HAMSTAR and distributes payouts to winners. Its HAMSTAR ATA must be pre-created before cheering opens."
+        >
+          <div style={{ display: 'flex', gap: 8 }}>
+            <input
+              value={form.hamstarPoolAddress}
+              onChange={e => set('hamstarPoolAddress')(e.target.value)}
+              placeholder="Base58 pool address…"
+              style={{
+                flex: 1, padding: '10px 14px', borderRadius: 10,
+                border: `1.5px solid ${poolReady ? 'rgba(0,197,102,0.4)' : A.borderMid}`,
+                fontSize: 13, color: A.text, background: '#fff', outline: 'none',
+                fontFamily: 'monospace',
+              }}
+            />
+            {form.hamstarPoolAddress && (
+              <button onClick={() => copy(form.hamstarPoolAddress, 'pool')} style={{
+                padding: '8px 14px', borderRadius: 10, border: `1.5px solid ${A.borderMid}`,
+                background: copied === 'pool' ? A.greenSoft : '#fff', cursor: 'pointer',
+                fontSize: 12, fontWeight: 700, color: copied === 'pool' ? A.green : A.textMuted, flexShrink: 0,
+              }}>
+                {copied === 'pool' ? 'Copied!' : 'Copy'}
+              </button>
+            )}
+          </div>
+        </Field>
+
+        {/* Launch checklist */}
+        {!tokenLive && (
+          <div style={{ padding: '14px 16px', borderRadius: 10, background: A.yellowSoft, border: '1px solid rgba(255,200,0,0.3)' }}>
+            <p style={{ fontSize: 12, fontWeight: 700, color: '#7a6a00', marginBottom: 8 }}>Launch checklist</p>
+            <ol style={{ paddingLeft: 18, margin: 0, display: 'flex', flexDirection: 'column', gap: 4 }}>
+              {[
+                'Deploy the $HAMSTAR SPL token and paste the mint address above',
+                'Create a pool wallet or PDA and paste its address above',
+                'Pre-create the pool\'s HAMSTAR ATA (one-time on-chain tx)',
+                'Click "Save All" — on-chain cheers activate automatically',
+                'Update HAMSTAR_MINT in lib/hamstar-token.ts to match (for SwapWidget)',
+              ].map((step, i) => (
+                <li key={i} style={{ fontSize: 12, color: '#7a6a00' }}>{step}</li>
+              ))}
+            </ol>
+          </div>
+        )}
+
+        {/* Read-only: Program ID + RPC */}
+        <div style={{ borderTop: `1px solid ${A.border}`, paddingTop: 18, display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <p style={{ fontSize: 11, fontWeight: 700, color: A.textMuted, textTransform: 'uppercase', letterSpacing: 0.6 }}>
+            Read-only (env vars)
+          </p>
+          {[
+            { label: 'Program ID', value: PROGRAM_ID },
+            { label: 'RPC Endpoint', value: process.env.NEXT_PUBLIC_SOLANA_RPC_URL ?? '(server-side Helius)' },
+          ].map(({ label, value }) => (
+            <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ fontSize: 11, fontWeight: 700, color: A.textMuted, minWidth: 100, textTransform: 'uppercase', letterSpacing: 0.5 }}>{label}</span>
+              <span style={{ fontSize: 12, fontFamily: 'monospace', color: A.text, flex: 1, wordBreak: 'break-all' }}>{value}</span>
+              <button onClick={() => copy(value, label)} style={{
+                padding: '4px 10px', borderRadius: 6, border: `1px solid ${A.borderMid}`,
+                background: copied === label ? A.greenSoft : '#fff', cursor: 'pointer',
+                fontSize: 10, fontWeight: 700, color: copied === label ? A.green : A.textMuted, flexShrink: 0,
+              }}>
+                {copied === label ? '✓' : 'Copy'}
+              </button>
+            </div>
+          ))}
+        </div>
+
       </div>
     </div>
   )

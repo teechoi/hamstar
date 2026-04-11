@@ -5,7 +5,7 @@ import { prisma } from '@/lib/prisma'
 
 export async function POST(req: NextRequest) {
   try {
-    const { walletAddress, petId, raceId, raceNumber } = await req.json()
+    const { walletAddress, petId, raceId, raceNumber, amountHamstar, txSignature } = await req.json()
 
     if (!walletAddress || !petId || (!raceId && raceNumber == null)) {
       return NextResponse.json({ error: 'walletAddress, petId, and raceId or raceNumber required' }, { status: 400 })
@@ -29,8 +29,18 @@ export async function POST(req: NextRequest) {
     // Upsert cheer — one per user per race
     const cheer = await prisma.cheer.upsert({
       where:  { walletAddress_raceId: { walletAddress, raceId: resolvedRaceId } },
-      create: { walletAddress, raceId: resolvedRaceId, petId },
-      update: { petId }, // allow switching before race starts
+      create: {
+        walletAddress,
+        raceId: resolvedRaceId,
+        petId,
+        amountHamstar: amountHamstar ?? null,
+        txSignature:   txSignature   ?? null,
+      },
+      update: {
+        petId,
+        amountHamstar: amountHamstar ?? undefined,
+        txSignature:   txSignature   ?? undefined,
+      },
     })
 
     return NextResponse.json({ cheer })

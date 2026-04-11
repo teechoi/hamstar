@@ -53,6 +53,7 @@ function useCountdown(targetMs: number) {
 export function ArenaClient({ race, lastResult }: ArenaClientProps) {
   const [modal, setModal]                 = useState<Modal>(null)
   const [cheeringFor, setCheeringFor]     = useState<string | null>(null)
+  const [cheeringAmount, setCheeringAmount] = useState<number>(0)
   const [cheerModal, setCheerModal]       = useState<{ petId: string; multiplier: number } | null>(null)
   const [petForms, setPetForms]           = useState<Record<string, PetForm | null>>({})
   const [userStreak, setUserStreak]       = useState(0)
@@ -158,8 +159,9 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
     setCheerModal({ petId, multiplier })
   }
 
-  const handleCheerConfirm = (petId: string, _amountHamstar: number) => {
+  const handleCheerConfirm = (petId: string, amountHamstar: number, txSignature?: string) => {
     setCheeringFor(petId)
+    setCheeringAmount(amountHamstar)
     if (walletAddress) {
       const pet = PETS.find(p => p.id === petId)
       if (pet) {
@@ -175,11 +177,10 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
         fetch('/api/user/cheer', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ walletAddress, petId, raceNumber: race.raceNumber }),
+          body: JSON.stringify({ walletAddress, petId, raceNumber: race.raceNumber, amountHamstar, txSignature }),
         }).catch(() => { /* non-critical */ })
       }
     }
-    // TODO: wire _amountHamstar into HAMSTAR token transfer when on-chain cheering is ready
   }
 
   // Update cheer result when race finishes
@@ -385,6 +386,7 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
           {authed && cheeringFor && (isPre || isLive) && (
             <CheeringCard
               petId={cheeringFor}
+              amount={cheeringAmount}
               supportPct={getSupport(cheeringFor).pct}
               isMobile={!!isMobile}
             />
@@ -465,7 +467,7 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
           multiplier={cheerModal.multiplier}
           streakCount={userStreak}
           onClose={() => setCheerModal(null)}
-          onConfirm={(petId, amount) => { handleCheerConfirm(petId, amount) }}
+          onConfirm={(petId, amount, txSig) => { handleCheerConfirm(petId, amount, txSig) }}
         />
       )}
       {modal === 'howitworks' && (
@@ -571,12 +573,13 @@ function CheerFeed({ isMobile }: { isMobile: boolean }) {
   )
 }
 
-function CheeringCard({ petId, supportPct, isMobile }: { petId: string; supportPct: number; isMobile: boolean }) {
+function CheeringCard({ petId, amount, supportPct, isMobile }: { petId: string; amount: number; supportPct: number; isMobile: boolean }) {
   const pet = PETS.find(p => p.id === petId)
   if (!pet) return null
+  const amountDisplay = amount >= 1000 ? `${(amount / 1000).toFixed(1)}k` : String(Math.round(amount))
   const rows = [
     { label: 'You\'re cheering for', value: pet.name },
-    { label: 'Your Support',         value: '0.5 SOL' },
+    { label: 'Your Support',         value: amount > 0 ? `${amountDisplay} $HAMSTAR` : '—' },
     { label: 'Share of Pool',        value: `${supportPct}%` },
   ]
   return (
@@ -698,7 +701,7 @@ function ResultSection({
       {/* Your Result */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: cheeringFor ? 14 : 0 }}>
         {row('Your Result', cheeringFor ? (userWon ? 'Won' : 'Lost') : '—')}
-        {row('Your Reward', cheeringFor ? (userWon ? '+0.5 SOL' : '—') : '—')}
+        {row('Your Reward', cheeringFor ? (userWon ? 'Payout pending' : '—') : '—')}
       </div>
 
       {/* Win message */}

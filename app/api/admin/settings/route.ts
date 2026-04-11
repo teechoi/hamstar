@@ -34,6 +34,7 @@ export async function PATCH(req: Request) {
       'arenaTitle','arenaSubtitle','arenaStreamNote',
       'footerTagline','footerBrandDesc','footerTaglineRight','footerLinks',
       'loginTitle','loginSubtitle','termsButtonText','howitWorksSteps',
+      'hamstarMint','hamstarPoolAddress',
     ]
     const data: Record<string, unknown> = {}
     for (const k of allowed) if (k in body) data[k] = body[k]

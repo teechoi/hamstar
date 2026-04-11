@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { PublicKey } from '@solana/web3.js'
 import { useWallet, useConnection } from '@solana/wallet-adapter-react'
 import { T } from '@/lib/theme'
-import { HAMSTAR_MINT, HAMSTAR_SYMBOL, HAMSTAR_DECIMALS } from '@/lib/hamstar-token'
+import { HAMSTAR_MINT, HAMSTAR_SYMBOL, HAMSTAR_DECIMALS, buildCheerTransaction } from '@/lib/hamstar-token'
 import { SwapWidget } from '@/components/landing/SwapWidget'
 
 const KANIT  = "var(--font-kanit), sans-serif"
@@ -19,18 +19,20 @@ interface CheerModalProps {
   multiplier:   number
   streakCount?: number
   onClose:      () => void
-  onConfirm:    (petId: string, amountHamstar: number) => void
+  onConfirm:    (petId: string, amountHamstar: number, txSignature?: string) => void
 }
 
 export function CheerModal({ petId, petName, multiplier, streakCount = 0, onClose, onConfirm }: CheerModalProps) {
-  const { publicKey, connected } = useWallet()
-  const { connection }           = useConnection()
+  const { publicKey, connected, sendTransaction } = useWallet()
+  const { connection }                            = useConnection()
 
   const [amount, setAmount]               = useState('500')
   const [step, setStep]                   = useState<'input' | 'confirmed'>('input')
   const [hovConfirm, setHovConfirm]       = useState(false)
   const [hamstarBalance, setHamstarBalance] = useState<number | null>(null)
   const [fetchingBalance, setFetchingBalance] = useState(false)
+  const [submitting, setSubmitting]         = useState(false)
+  const [txError, setTxError]               = useState<string | null>(null)
 
   const amountNum   = parseFloat(amount) || 0
   const streakBonus = streakCount >= 3 ? 0.4 : streakCount === 2 ? 0.2 : 0
@@ -62,9 +64,32 @@ export function CheerModal({ petId, petName, multiplier, streakCount = 0, onClos
 
   useEffect(() => { refreshBalance() }, [refreshBalance])
 
-  const handleConfirm = () => {
-    onConfirm(petId, amountNum)
-    setStep('confirmed')
+  const handleConfirm = async () => {
+    if (!publicKey) return
+    setSubmitting(true)
+    setTxError(null)
+    try {
+      let txSig: string | undefined
+      const built = await buildCheerTransaction(publicKey, amountNum, connection)
+      if (built) {
+        // Token is live — send the real on-chain transfer
+        txSig = await sendTransaction(built.tx, connection)
+        await connection.confirmTransaction(
+          { signature: txSig, blockhash: built.blockhash, lastValidBlockHeight: built.lastValidBlockHeight },
+          'confirmed',
+        )
+        // Refresh balance after confirmed transfer
+        await refreshBalance()
+      }
+      onConfirm(petId, amountNum, txSig)
+      setStep('confirmed')
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Transaction failed'
+      // Surface wallet rejection without the full error stack
+      setTxError(msg.includes('rejected') || msg.includes('cancelled') ? 'Transaction cancelled.' : msg)
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   // ── Determine view ─────────────────────────────────────────────────────────
@@ -324,23 +349,33 @@ export function CheerModal({ petId, petName, multiplier, streakCount = 0, onClos
             {/* Confirm */}
             <button
               onClick={handleConfirm}
-              disabled={!canSubmit}
+              disabled={!canSubmit || submitting}
               onMouseEnter={() => setHovConfirm(true)}
               onMouseLeave={() => setHovConfirm(false)}
               style={{
                 width: '100%', padding: '15px 20px',
-                background: canSubmit ? (hovConfirm ? T.limeDark : T.yellow) : T.bg,
+                background: canSubmit && !submitting ? (hovConfirm ? T.limeDark : T.yellow) : T.bg,
                 border: 'none', borderRadius: 48.5,
                 fontFamily: KANIT, fontSize: 15, fontWeight: 800, letterSpacing: '-0.01em',
-                color: canSubmit ? T.text : T.textMid,
-                cursor: canSubmit ? 'pointer' : 'default',
-                transition: 'all 0.15s', marginBottom: 10,
-                boxShadow: canSubmit ? (hovConfirm ? T.shadowBtnYellow : '0 4px 18px rgba(255,215,0,0.28)') : 'none',
-                opacity: canSubmit ? 1 : 0.45,
+                color: canSubmit && !submitting ? T.text : T.textMid,
+                cursor: canSubmit && !submitting ? 'pointer' : 'default',
+                transition: 'all 0.15s', marginBottom: txError ? 8 : 10,
+                boxShadow: canSubmit && !submitting ? (hovConfirm ? T.shadowBtnYellow : '0 4px 18px rgba(255,215,0,0.28)') : 'none',
+                opacity: canSubmit && !submitting ? 1 : 0.45,
               }}
             >
-              {!connected ? 'Connect wallet to cheer' : `Cheer ${parseInt(payout).toLocaleString()} ${SYMBOL} on ${petName}`}
+              {submitting
+                ? 'Confirming on-chain…'
+                : !connected
+                  ? 'Connect wallet to cheer'
+                  : `Cheer ${parseInt(payout).toLocaleString()} ${SYMBOL} on ${petName}`}
             </button>
+
+            {txError && (
+              <p style={{ fontFamily: PRET, fontWeight: 500, fontSize: 12, color: T.coral, textAlign: 'center', margin: '0 0 8px' }}>
+                {txError}
+              </p>
+            )}
 
             <button
               onClick={onClose}

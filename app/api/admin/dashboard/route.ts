@@ -5,38 +5,50 @@ export const dynamic = 'force-dynamic'
 
 export async function GET() {
   try {
-    const [settings, totalDonations, finishedRaces, recentDonations, currentRace] = await Promise.all([
+    const [settings, cheerStats, finishedRaces, recentCheers, currentRace] = await Promise.all([
       prisma.siteSettings.findFirst({ where: { id: 'singleton' } }),
-      prisma.donation.aggregate({ _sum: { amountSol: true }, _count: true }),
+      prisma.cheer.aggregate({ _sum: { amountHamstar: true }, _count: true }),
       prisma.race.count({ where: { status: 'FINISHED' } }),
-      prisma.donation.findMany({
-        take: 10, orderBy: { confirmedAt: 'desc' },
-        include: { pet: { select: { name: true } } },
+      prisma.cheer.findMany({
+        take: 10,
+        orderBy: { createdAt: 'desc' },
+        include: { pet: { select: { name: true, emoji: true } } },
       }),
       prisma.race.findFirst({ where: { status: { not: 'FINISHED' } }, orderBy: { number: 'desc' } }),
     ])
 
-    const currentSol = currentRace
-      ? await prisma.donation.aggregate({
+    const currentRaceStats = currentRace
+      ? await prisma.cheer.aggregate({
           where: { raceId: currentRace.id },
-          _sum: { amountSol: true },
+          _sum:  { amountHamstar: true },
+          _count: true,
         })
       : null
 
+    const hamstarMint        = settings?.hamstarMint        ?? 'HAMSTARxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+    const hamstarPoolAddress = settings?.hamstarPoolAddress ?? 'POOLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+    const tokenLaunched      = !hamstarMint.includes('xxx') && !hamstarPoolAddress.includes('xxx')
+
     return NextResponse.json({
-      raceNumber: settings?.raceNumber ?? 1,
-      isLive: settings?.isLive ?? false,
-      currentRaceSol: Number(currentSol?._sum?.amountSol ?? 0),
-      allTimeSol: Number(totalDonations._sum.amountSol ?? 0),
-      totalDonations: totalDonations._count,
+      raceNumber:          settings?.raceNumber ?? 1,
+      isLive:              settings?.isLive     ?? false,
+      tokenLaunched,
+      hamstarMint,
+      hamstarPoolAddress,
+      currentRaceHamstar:  Number(currentRaceStats?._sum?.amountHamstar ?? 0),
+      currentRaceCheers:   currentRaceStats?._count ?? 0,
+      allTimeHamstar:      Number(cheerStats._sum.amountHamstar ?? 0),
+      totalCheers:         cheerStats._count,
       finishedRaces,
-      recentDonations: recentDonations.map(d => ({
-        id: d.id,
-        petName: d.pet.name,
-        amountSol: Number(d.amountSol),
-        type: d.type,
-        walletAddress: d.walletAddress,
-        confirmedAt: d.confirmedAt,
+      recentCheers: recentCheers.map(c => ({
+        id:           c.id,
+        petName:      c.pet.name,
+        petEmoji:     c.pet.emoji ?? '',
+        amountHamstar: c.amountHamstar !== null ? Number(c.amountHamstar) : null,
+        txSignature:  c.txSignature,
+        walletAddress: c.walletAddress,
+        won:          c.won,
+        createdAt:    c.createdAt,
       })),
     })
   } catch (e) {

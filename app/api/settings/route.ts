@@ -47,7 +47,14 @@ export async function GET() {
           howitWorksSteps: [],
         }
 
-    return NextResponse.json(data, {
+    // Augment with token config (use DB values, fall back to env/defaults)
+    const augmented = {
+      ...data,
+      hamstarMint:        (data as Record<string, unknown>).hamstarMint        ?? 'HAMSTARxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+      hamstarPoolAddress: (data as Record<string, unknown>).hamstarPoolAddress ?? 'POOLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+    }
+
+    return NextResponse.json(augmented, {
       headers: { 'Cache-Control': 'public, s-maxage=30, stale-while-revalidate=60' },
     })
   } catch {

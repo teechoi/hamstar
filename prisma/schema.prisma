@@ -225,6 +225,8 @@ model Cheer {
   raceId        String
   petId         String
   won           Boolean?           // null until race finishes
+  amountHamstar Float?             // HAMSTAR cheered (null for legacy / pre-launch entries)
+  txSignature   String?            // on-chain transfer signature (null before token launch)
   createdAt     DateTime @default(now())
 
   user User @relation(fields: [walletAddress], references: [walletAddress])
@@ -286,6 +288,10 @@ model SiteSettings {
   loginSubtitle   String @default("A live-streamed blockchain-based entertainment experience")
   termsButtonText String @default("I Understand & Enter Arena")
   howitWorksSteps Json   @default("[]")
+
+  // ── Token config (updated via admin settings, no redeploy needed) ────────
+  hamstarMint        String @default("HAMSTARxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+  hamstarPoolAddress String @default("POOLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
 
   updatedAt    DateTime @updatedAt
 

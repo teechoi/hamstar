@@ -17,6 +17,10 @@ interface WalletData {
   programId: string
   rpcUrl: string
   currentRace: { id: string; number: number } | null
+  tokenLaunched:      boolean
+  hamstarMint:        string
+  hamstarPoolAddress: string
+  poolHamstarBalance: number | null
 }
 
 function CopyBtn({ text }: { text: string }) {
@@ -139,6 +143,38 @@ export default function WalletPage() {
             <p style={{ fontSize: 11, fontWeight: 700, color: A.textMuted, textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 8 }}>Total SOL (all wallets)</p>
             <p style={{ fontFamily: KANIT, fontSize: 30, fontWeight: 700, color: A.text }}>◎ {totalSol.toFixed(4)}</p>
           </div>
+
+          {/* HAMSTAR pool balance */}
+          <div style={{
+            background: data.tokenLaunched ? A.card : A.pageBg,
+            borderRadius: 16, padding: '22px 24px',
+            border: `1.5px solid ${data.tokenLaunched ? A.border : A.borderMid}`,
+          }}>
+            <p style={{ fontSize: 11, fontWeight: 700, color: A.textMuted, textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 8 }}>
+              $HAMSTAR Pool Balance
+            </p>
+            {data.tokenLaunched ? (
+              <p style={{ fontFamily: KANIT, fontSize: 30, fontWeight: 700, color: A.purple }}>
+                {data.poolHamstarBalance !== null
+                  ? data.poolHamstarBalance >= 1_000_000
+                    ? `${(data.poolHamstarBalance / 1_000_000).toFixed(2)}M`
+                    : data.poolHamstarBalance >= 1_000
+                      ? `${(data.poolHamstarBalance / 1_000).toFixed(1)}k`
+                      : data.poolHamstarBalance.toFixed(0)
+                  : '—'}
+              </p>
+            ) : (
+              <p style={{ fontFamily: KANIT, fontSize: 16, fontWeight: 600, color: A.textMuted }}>
+                Token not launched
+              </p>
+            )}
+            {data.tokenLaunched && data.hamstarPoolAddress && (
+              <p style={{ fontSize: 11, color: A.textMuted, marginTop: 6, fontFamily: 'monospace' }}>
+                {data.hamstarPoolAddress.slice(0, 10)}…{data.hamstarPoolAddress.slice(-6)}
+              </p>
+            )}
+          </div>
+
           <div style={{ background: A.card, borderRadius: 16, padding: '22px 24px', border: `1.5px solid ${A.border}` }}>
             <p style={{ fontSize: 11, fontWeight: 700, color: A.textMuted, textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 8 }}>Tracked Wallets</p>
             <p style={{ fontFamily: KANIT, fontSize: 30, fontWeight: 700, color: A.text }}>{data.wallets.length}</p>
@@ -200,18 +236,31 @@ export default function WalletPage() {
           )}
         </div>
 
-        {/* Program Info */}
+        {/* Program & Token Info */}
         <div style={{ background: A.card, borderRadius: 16, border: `1.5px solid ${A.border}`, overflow: 'hidden' }}>
-          <div style={{ padding: '16px 24px', borderBottom: `1px solid ${A.border}`, background: A.pageBg }}>
-            <h2 style={{ fontFamily: KANIT, fontSize: 15, fontWeight: 700, color: A.text }}>Program Info</h2>
+          <div style={{ padding: '16px 24px', borderBottom: `1px solid ${A.border}`, background: A.pageBg, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <h2 style={{ fontFamily: KANIT, fontSize: 15, fontWeight: 700, color: A.text }}>Program & Token Info</h2>
+            <a href="/admin/settings#token" style={{ fontSize: 12, fontWeight: 700, color: A.purple, textDecoration: 'none' }}>Edit config →</a>
           </div>
           <div style={{ padding: '0 24px' }}>
-            <InfoRow label="Program ID" value={data.programId} mono />
-            <InfoRow label="RPC Endpoint" value={data.rpcUrl} mono />
+            <InfoRow label="Program ID"   value={data.programId}   mono />
+            <InfoRow label="RPC Endpoint" value={data.rpcUrl}      mono />
+            <InfoRow
+              label="HAMSTAR Mint"
+              value={data.hamstarMint.includes('xxx') ? '(not set — update in Settings)' : data.hamstarMint}
+              mono
+            />
+            <InfoRow
+              label="Pool Address"
+              value={data.hamstarPoolAddress.includes('xxx') ? '(not set — update in Settings)' : data.hamstarPoolAddress}
+              mono
+            />
             <div style={{ padding: '12px 0' }}>
               <p style={{ fontSize: 12, color: A.textMuted }}>
-                PDA seeds: upset_reserve uses <code style={{ background: A.pageBg, padding: '1px 6px', borderRadius: 4 }}>["upset_reserve"]</code>.
-                Race escrow uses <code style={{ background: A.pageBg, padding: '1px 6px', borderRadius: 4 }}>["race_escrow", race_id]</code>.
+                PDA seeds: upset_reserve uses{' '}
+                <code style={{ background: A.pageBg, padding: '1px 6px', borderRadius: 4 }}>["upset_reserve"]</code>.
+                Streak uses{' '}
+                <code style={{ background: A.pageBg, padding: '1px 6px', borderRadius: 4 }}>["streak", user_pubkey]</code>.
               </p>
             </div>
           </div>

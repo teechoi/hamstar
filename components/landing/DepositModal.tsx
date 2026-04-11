@@ -88,7 +88,7 @@ export function DepositModal({ address = '', onClose, onConnectWallet }: Deposit
             <h2 style={{ fontFamily: KANIT, fontSize: 22, fontWeight: 800, color: T.text, margin: '0 0 4px', letterSpacing: '-0.025em' }}>
               Deposit Funds
             </h2>
-            <p style={{ fontFamily: PRET, fontSize: 13, color: 'rgba(0,0,0,0.5)', margin: 0 }}>
+            <p style={{ fontFamily: PRET, fontWeight: 500, fontSize: 13, color: 'rgba(0,0,0,0.5)', margin: 0 }}>
               {hasAddress
                 ? 'Scan the QR code or copy your wallet address.'
                 : 'Connect a wallet to get your deposit address.'}
@@ -197,8 +197,8 @@ function ConnectedDeposit({ address, copied, onCopy }: { address: string; copied
         margin: '12px 0 8px',
       }}>
         <span style={{ fontSize: 14, flexShrink: 0 }}>◎</span>
-        <p style={{ fontFamily: PRET, fontSize: 12, color: T.sub2, margin: 0, lineHeight: 1.5 }}>
-          Send only <strong>SOL</strong> to this address on Solana mainnet. Other tokens may be lost.
+        <p style={{ fontFamily: PRET, fontWeight: 500, fontSize: 12, color: T.sub2, margin: 0, lineHeight: 1.5 }}>
+          Send only <strong style={{ fontWeight: 700 }}>SOL</strong> to this address on Solana mainnet. Other tokens may be lost.
         </p>
       </div>
     </div>
@@ -219,7 +219,7 @@ function NoWalletDeposit({ onConnect }: { onConnect: () => void }) {
       }}>
         <img src="/images/hamster-flash-flex.png" alt="" style={{ width: '60%', height: '60%', objectFit: 'contain' }} />
       </div>
-      <p style={{ fontFamily: PRET, fontSize: 14, color: T.textMid, marginBottom: 24, lineHeight: 1.6 }}>
+      <p style={{ fontFamily: PRET, fontWeight: 500, fontSize: 14, color: T.textMid, marginBottom: 24, lineHeight: 1.6 }}>
         Connect your Solana wallet to get<br />your personal deposit address.
       </p>
       <ConnectBtn onClick={onConnect} />
@@ -256,7 +256,7 @@ function GetHamstarTab() {
           <p style={{ fontFamily: KANIT, fontSize: 9, fontWeight: 700, color: '#c0c0c0', textTransform: 'uppercase', letterSpacing: 1, margin: '0 0 3px' }}>
             Contract
           </p>
-          <p style={{ fontFamily: MONO, fontSize: 10, color: HAMSTAR_MINT.includes('xxx') ? T.textMid : T.text, margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+          <p style={{ fontFamily: HAMSTAR_MINT.includes('xxx') ? PRET : MONO, fontWeight: HAMSTAR_MINT.includes('xxx') ? 500 : 400, fontSize: 11, color: HAMSTAR_MINT.includes('xxx') ? T.textMid : T.text, margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
             {HAMSTAR_MINT.includes('xxx') ? 'Launching soon' : HAMSTAR_MINT}
           </p>
         </div>

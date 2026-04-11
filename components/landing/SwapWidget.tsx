@@ -103,7 +103,6 @@ export function SwapWidget() {
   const [showSlip, setShowSlip]   = useState(false)
   const [error, setError]         = useState('')
   const [txSig, setTxSig]         = useState('')
-  const [flipping, setFlipping]   = useState(false)
 
   const abortRef = useRef<AbortController | null>(null)
   const inToken  = TOKENS[inKey]
@@ -125,8 +124,6 @@ export function SwapWidget() {
   const reset = () => { setInputAmt(''); setQuote(null); setError(''); setTxSig('') }
 
   const handleReverse = () => {
-    setFlipping(true)
-    setTimeout(() => setFlipping(false), 350)
     setInKey(outKey)
     setOutKey(inKey)
     reset()
@@ -255,16 +252,14 @@ export function SwapWidget() {
           <button
             onClick={handleReverse}
             style={{
-              width: 36, height: 36, borderRadius: 11,
+              width: 34, height: 34, borderRadius: 10,
               background: T.purple,
               border: '3px solid #fff',
               cursor: 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              boxShadow: '0 2px 12px rgba(115,93,255,0.4)',
-              transform: flipping ? 'rotate(180deg)' : 'rotate(0deg)',
-              transition: 'transform 0.3s ease',
               margin: '0 10px', flexShrink: 0,
-            } as React.CSSProperties}
+              transition: 'opacity 0.15s',
+            }}
           >
             <ReverseIcon />
           </button>
@@ -292,7 +287,7 @@ export function SwapWidget() {
 
         {/* ── Rate + slippage ── */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '2px 2px' }}>
-          <span style={{ fontFamily: PRET, fontSize: 11, color: T.textMid }}>
+          <span style={{ fontFamily: PRET, fontWeight: 500, fontSize: 11, color: T.textMid }}>
             {rateStr ?? <span style={{ visibility: 'hidden' }}>–</span>}
           </span>
           <button
@@ -303,7 +298,7 @@ export function SwapWidget() {
               border: `1.5px solid ${showSlip ? 'rgba(255,200,0,0.35)' : 'transparent'}`,
               borderRadius: 20, padding: '3px 9px 3px 7px',
               cursor: 'pointer', transition: 'all 0.15s',
-              fontFamily: PRET, fontSize: 11, color: showSlip ? T.sub2 : T.textMid,
+              fontFamily: PRET, fontWeight: 500, fontSize: 11, color: showSlip ? T.sub2 : T.textMid,
             }}
           >
             <GearIcon /> {slippage}% slippage
@@ -335,7 +330,7 @@ export function SwapWidget() {
         {/* Price impact */}
         {priceImpact > 1 && (
           <div style={{ background: T.coralSoft, border: '1px solid rgba(255,59,92,0.2)', borderRadius: 12, padding: '9px 14px' }}>
-            <p style={{ fontFamily: PRET, fontSize: 12, color: T.coral, margin: 0 }}>
+            <p style={{ fontFamily: PRET, fontWeight: 500, fontSize: 12, color: T.coral, margin: 0 }}>
               High price impact: {priceImpact.toFixed(2)}%
             </p>
           </div>
@@ -344,7 +339,7 @@ export function SwapWidget() {
         {/* Error */}
         {error && (
           <div style={{ background: T.coralSoft, border: '1px solid rgba(255,59,92,0.2)', borderRadius: 12, padding: '9px 14px' }}>
-            <p style={{ fontFamily: PRET, fontSize: 12, color: T.coral, margin: 0 }}>{error}</p>
+            <p style={{ fontFamily: PRET, fontWeight: 500, fontSize: 12, color: T.coral, margin: 0 }}>{error}</p>
           </div>
         )}
 
@@ -355,7 +350,7 @@ export function SwapWidget() {
             borderRadius: 12, padding: '10px 16px',
             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           }}>
-            <span style={{ fontFamily: PRET, fontSize: 12, color: '#15803D' }}>Swap confirmed</span>
+            <span style={{ fontFamily: PRET, fontWeight: 500, fontSize: 12, color: '#15803D' }}>Swap confirmed</span>
             <a
               href={`https://explorer.solana.com/tx/${txSig}`}
               target="_blank" rel="noopener noreferrer"
@@ -377,7 +372,7 @@ export function SwapWidget() {
 
         {/* Attribution */}
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 5, paddingBottom: 2 }}>
-          <span style={{ fontFamily: PRET, fontSize: 10, color: '#c8c8c8' }}>Powered by</span>
+          <span style={{ fontFamily: PRET, fontWeight: 500, fontSize: 10, color: '#c8c8c8' }}>Powered by</span>
           <a href="https://jup.ag" target="_blank" rel="noopener noreferrer"
             style={{ fontFamily: KANIT, fontSize: 10, fontWeight: 800, color: T.purple, textDecoration: 'none', letterSpacing: '-0.01em' }}>
             Jupiter
@@ -436,13 +431,13 @@ function TokenRow({
               background: 'transparent', border: 'none', outline: 'none',
               fontFamily: KANIT, fontSize: 28, fontWeight: 700,
               color: value ? T.text : '#ddd',
-              padding: 0, minWidth: 0, letterSpacing: '-0.02em',
+              padding: 0, minWidth: 0, letterSpacing: '-0.025em',
             }}
           />
         ) : (
           <div style={{ flex: 1, textAlign: 'right' }}>
             {placeholderText ? (
-              <span style={{ fontFamily: PRET, fontSize: 12, color: T.textMid }}>{placeholderText}</span>
+              <span style={{ fontFamily: PRET, fontWeight: 500, fontSize: 12, color: T.textMid }}>{placeholderText}</span>
             ) : value === '…' ? (
               <span style={{ fontFamily: KANIT, fontSize: 26, fontWeight: 700, color: '#d0d0d0', letterSpacing: '-0.02em' }}>…</span>
             ) : value ? (
@@ -520,7 +515,7 @@ function TokenSelector({ tokenKey, otherKey, onSelect }: {
                       {t.symbol}
                       {t.placeholder && <span style={{ fontFamily: PRET, fontSize: 10, color: T.textMid, marginLeft: 5 }}>soon</span>}
                     </p>
-                    <p style={{ fontFamily: PRET, fontSize: 10, color: T.textMid, margin: 0 }}>{t.name}</p>
+                    <p style={{ fontFamily: PRET, fontWeight: 500, fontSize: 10, color: T.textMid, margin: 0 }}>{t.name}</p>
                   </div>
                   {isSelected && <CheckIcon />}
                   {isOther && !isSelected && (

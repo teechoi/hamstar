@@ -3,9 +3,8 @@ import { useState } from 'react'
 import { QRCodeSVG } from 'qrcode.react'
 import { useIsMobile } from '@/components/ui/index'
 import { T } from '@/lib/theme'
-import { HAMSTAR_SYMBOL, HAMSTAR_MINT } from '@/lib/hamstar-token'
+import { HAMSTAR_SYMBOL, HAMSTAR_MINT, HAMSTAR_JUPITER_URL } from '@/lib/hamstar-token'
 import { LegalModal, LEGAL_LINKS, type LegalModalType } from './LegalModal'
-import { JupiterSwapModal } from './JupiterSwapModal'
 
 const KANIT = "var(--font-kanit), sans-serif"
 const PRET  = 'Pretendard, sans-serif'
@@ -232,7 +231,6 @@ function NoWalletDeposit({ onConnect }: { onConnect: () => void }) {
 function GetHamstarTab() {
   const [copiedMint, setCopiedMint] = useState(false)
   const [hovSwap, setHovSwap]       = useState(false)
-  const [showSwap, setShowSwap]     = useState(false)
 
   const copyMint = async () => {
     try {
@@ -304,9 +302,11 @@ function GetHamstarTab() {
         )}
       </div>
 
-      {/* Jupiter swap CTA */}
-      <button
-        onClick={() => setShowSwap(true)}
+      {/* Jupiter swap CTA — opens Jupiter directly in a new tab */}
+      <a
+        href={HAMSTAR_JUPITER_URL}
+        target="_blank"
+        rel="noopener noreferrer"
         onMouseEnter={() => setHovSwap(true)}
         onMouseLeave={() => setHovSwap(false)}
         style={{
@@ -315,15 +315,13 @@ function GetHamstarTab() {
           background: hovSwap ? T.limeDark : T.yellow,
           border: 'none', borderRadius: 48.5,
           fontFamily: KANIT, fontSize: 14, fontWeight: 700, color: T.text,
-          cursor: 'pointer', transition: 'all 0.15s',
+          textDecoration: 'none', transition: 'all 0.15s',
           boxShadow: hovSwap ? T.shadowBtnYellow : '0 4px 14px rgba(255,215,0,0.3)',
           marginBottom: 10,
         }}
       >
-        🪐 Swap {HAMSTAR_SYMBOL} on Jupiter
-      </button>
-
-      {showSwap && <JupiterSwapModal onClose={() => setShowSwap(false)} />}
+        🪐 Swap on Jupiter ↗
+      </a>
     </div>
   )
 }

@@ -149,7 +149,7 @@ export function LoginModal({ onClose, loginTitle, loginSubtitle }: LoginModalPro
     <div
       style={{
         position: 'fixed', inset: 0, zIndex: 10000,
-        background: 'rgba(0,0,0,0.7)',
+        background: 'rgba(0,0,0,0.6)',
         backdropFilter: 'blur(6px)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         padding: 16,
@@ -166,9 +166,11 @@ export function LoginModal({ onClose, loginTitle, loginSubtitle }: LoginModalPro
           maxHeight: isMobile ? '96vh' : '92vh',
           overflowY: 'auto',
           position: 'relative',
-          boxShadow: '0 40px 100px rgba(0,0,0,0.4)',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.1), 0 40px 80px rgba(77,67,83,0.18)',
         }}
       >
+        {/* Close button */}
+        <CloseBtn onClick={onClose} />
         {/* ── Header ── */}
         <div style={{ padding: isMobile ? '24px 20px 16px' : '36px 32px 24px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: isMobile ? 14 : 20 }}>
@@ -263,19 +265,31 @@ export function LoginModal({ onClose, loginTitle, loginSubtitle }: LoginModalPro
 
           {/* Fallback curated list when no wallets detected and none getable */}
           {detected.length === 0 && getable.length === 0 && <GetStartedList />}
-
-          {/* Footer links */}
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '4px 0', marginTop: 8 }}>
-            {['Terms of Use', 'Privacy Policy'].map((link, i, arr) => (
-              <span key={link} style={{ display: 'flex', alignItems: 'center' }}>
-                <a href="#" style={{ fontSize: 13, color: '#8A8A8A', fontFamily: KANIT, textDecoration: 'none' }}>{link}</a>
-                {i < arr.length - 1 && <span style={{ margin: '0 10px', color: '#D5D5D5', fontSize: 13 }}>·</span>}
-              </span>
-            ))}
-          </div>
         </div>
       </div>
     </div>
+  )
+}
+
+// ─── Close button ─────────────────────────────────────────────────────────────
+
+function CloseBtn({ onClick }: { onClick: () => void }) {
+  const [hov, setHov] = useState(false)
+  return (
+    <button
+      onClick={onClick}
+      onMouseEnter={() => setHov(true)}
+      onMouseLeave={() => setHov(false)}
+      style={{
+        position: 'absolute', top: 12, right: 12, zIndex: 10,
+        background: hov ? 'rgba(0,0,0,0.08)' : 'rgba(0,0,0,0.04)',
+        border: 'none', borderRadius: 8,
+        width: 30, height: 30,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        color: T.textMid, fontSize: 18, lineHeight: 1, cursor: 'pointer',
+        transition: 'background 0.15s',
+      }}
+    >×</button>
   )
 }
 

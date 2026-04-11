@@ -71,7 +71,7 @@ export function AccountModal({
     <div
       style={{
         position: 'fixed', inset: 0, zIndex: 10000,
-        background: 'rgba(0,0,0,0.55)',
+        background: 'rgba(0,0,0,0.6)',
         backdropFilter: 'blur(6px)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         padding: 16,
@@ -86,7 +86,7 @@ export function AccountModal({
           width: '100%', maxWidth: 440,
           maxHeight: '96vh', overflowY: 'auto',
           position: 'relative',
-          boxShadow: '0 32px 80px rgba(0,0,0,0.18)',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.1), 0 40px 80px rgba(77,67,83,0.18)',
         }}
       >
         {hasWallet
@@ -101,8 +101,9 @@ export function AccountModal({
               onCopy={copyAddress}
               onDeposit={onDeposit}
               onDisconnect={() => { onDisconnect(); onClose() }}
+              onClose={onClose}
             />
-          : <NoWalletView onConnect={() => { onConnectWallet?.(); onClose() }} />
+          : <NoWalletView onConnect={() => { onConnectWallet?.(); onClose() }} onClose={onClose} />
         }
       </div>
     </div>
@@ -113,7 +114,7 @@ export function AccountModal({
 
 function ConnectedView({
   walletAddress, short, solBalance, hamstarBalance, loadingBal, copied, history,
-  onCopy, onDeposit, onDisconnect,
+  onCopy, onDeposit, onDisconnect, onClose,
 }: {
   walletAddress: string
   short: string
@@ -125,6 +126,7 @@ function ConnectedView({
   onCopy: () => void
   onDeposit: () => void
   onDisconnect: () => void
+  onClose: () => void
 }) {
   const isMobile = useIsMobile()
   const tier  = getFanTier(hamstarBalance)
@@ -140,6 +142,7 @@ function ConnectedView({
         padding: isMobile ? '16px 20px 0' : '22px 28px 0',
         position: 'relative', overflow: 'hidden',
       }}>
+        <CloseBtnYellow onClick={onClose} />
         <img
           src="/images/cheese-hideout.png" alt=""
           style={{
@@ -310,7 +313,7 @@ function ConnectedView({
 
 // ─── No wallet view ───────────────────────────────────────────────────────────
 
-function NoWalletView({ onConnect }: { onConnect: () => void }) {
+function NoWalletView({ onConnect, onClose }: { onConnect: () => void; onClose: () => void }) {
   return (
     <>
       <div style={{
@@ -318,6 +321,7 @@ function NoWalletView({ onConnect }: { onConnect: () => void }) {
         padding: '40px 28px 36px', textAlign: 'center',
         position: 'relative', overflow: 'hidden',
       }}>
+        <CloseBtnYellow onClick={onClose} />
         <img
           src="/images/cheese-hideout.png" alt=""
           style={{
@@ -396,6 +400,28 @@ function ResultBadge({ won }: { won: boolean | null }) {
   )
   return (
     <span style={{ fontFamily: KANIT, fontSize: 10, fontWeight: 700, color: '#9A3412', background: 'rgba(239,68,68,0.1)', padding: '4px 10px', borderRadius: 48.5 }}>Lost</span>
+  )
+}
+
+// ─── Close button ─────────────────────────────────────────────────────────────
+
+function CloseBtnYellow({ onClick }: { onClick: () => void }) {
+  const [hov, setHov] = useState(false)
+  return (
+    <button
+      onClick={onClick}
+      onMouseEnter={() => setHov(true)}
+      onMouseLeave={() => setHov(false)}
+      style={{
+        position: 'absolute', top: 12, right: 12, zIndex: 10,
+        background: hov ? 'rgba(0,0,0,0.14)' : 'rgba(0,0,0,0.08)',
+        border: 'none', borderRadius: 8,
+        width: 30, height: 30,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        color: T.sub2, fontSize: 18, lineHeight: 1, cursor: 'pointer',
+        transition: 'background 0.15s',
+      }}
+    >×</button>
   )
 }
 

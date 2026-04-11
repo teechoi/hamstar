@@ -2,7 +2,6 @@
 import { useState } from 'react'
 import { QRCodeSVG } from 'qrcode.react'
 import { useIsMobile } from '@/components/ui/index'
-// useFundWallet from @privy-io/react-auth/solana requires @solana/kit peer deps not yet installed
 import { T } from '@/lib/theme'
 import { HAMSTAR_SYMBOL, HAMSTAR_MINT } from '@/lib/hamstar-token'
 import { LegalModal, LEGAL_LINKS, type LegalModalType } from './LegalModal'
@@ -20,8 +19,8 @@ interface DepositModalProps {
 
 export function DepositModal({ address = '', onClose, onConnectWallet }: DepositModalProps) {
   const isMobile = useIsMobile()
-  const [copied, setCopied]       = useState(false)
-  const [tab, setTab]             = useState<'sol' | 'hamstar'>('sol')
+  const [copied, setCopied]         = useState(false)
+  const [tab, setTab]               = useState<'sol' | 'hamstar'>('sol')
   const [legalModal, setLegalModal] = useState<LegalModalType | null>(null)
   const hasAddress = address.length > 0
 
@@ -38,7 +37,7 @@ export function DepositModal({ address = '', onClose, onConnectWallet }: Deposit
     <div
       style={{
         position: 'fixed', inset: 0, zIndex: 10000,
-        background: 'rgba(0,0,0,0.55)',
+        background: 'rgba(0,0,0,0.6)',
         backdropFilter: 'blur(6px)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         padding: 16,
@@ -51,7 +50,7 @@ export function DepositModal({ address = '', onClose, onConnectWallet }: Deposit
           background: '#fff', borderRadius: 28,
           width: '100%', maxWidth: 440,
           position: 'relative',
-          boxShadow: '0 32px 80px rgba(0,0,0,0.18)',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.1), 0 40px 80px rgba(77,67,83,0.18)',
           overflow: 'hidden',
         }}
       >
@@ -73,6 +72,9 @@ export function DepositModal({ address = '', onClose, onConnectWallet }: Deposit
             }}
           />
 
+          {/* Close button */}
+          <CloseBtn onClick={onClose} onYellow />
+
           <div style={{ position: 'relative', zIndex: 1 }}>
             <div style={{
               display: 'inline-flex', alignItems: 'center', gap: 5,
@@ -83,7 +85,7 @@ export function DepositModal({ address = '', onClose, onConnectWallet }: Deposit
                 ◎ SOLANA MAINNET
               </span>
             </div>
-            <h2 style={{ fontFamily: KANIT, fontSize: 22, fontWeight: 800, color: T.text, margin: '0 0 4px' }}>
+            <h2 style={{ fontFamily: KANIT, fontSize: 22, fontWeight: 800, color: T.text, margin: '0 0 4px', letterSpacing: '-0.025em' }}>
               Deposit Funds
             </h2>
             <p style={{ fontFamily: PRET, fontSize: 13, color: 'rgba(0,0,0,0.5)', margin: 0 }}>
@@ -94,14 +96,14 @@ export function DepositModal({ address = '', onClose, onConnectWallet }: Deposit
           </div>
         </div>
 
-        {/* ── Tabs (white, outside yellow header) ── */}
+        {/* ── Tabs ── */}
         {hasAddress && (
           <div style={{
-            display: 'flex', gap: 0,
+            display: 'flex',
             borderBottom: `1px solid ${T.border}`,
             background: '#fff',
           }}>
-            {([['sol', '◎ Deposit SOL'], ['hamstar', `Get ${HAMSTAR_SYMBOL}`]] as const).map(([id, label]) => (
+            {([['sol', '◎ Deposit SOL'], ['hamstar', `🪐 Get ${HAMSTAR_SYMBOL}`]] as const).map(([id, label]) => (
               <button
                 key={id}
                 onClick={() => setTab(id)}
@@ -119,8 +121,8 @@ export function DepositModal({ address = '', onClose, onConnectWallet }: Deposit
           </div>
         )}
 
-        {/* ── Body — fixed height so tabs don't shift modal size ── */}
-        <div style={{ minHeight: isMobile ? 'auto' : 560 }}>
+        {/* ── Body ── */}
+        <div>
           {!hasAddress
             ? <NoWalletDeposit onConnect={onConnectWallet ?? onClose} />
             : tab === 'sol'
@@ -129,15 +131,15 @@ export function DepositModal({ address = '', onClose, onConnectWallet }: Deposit
           }
         </div>
 
-        {/* Footer */}
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap', gap: '4px 0', padding: '0 28px 24px' }}>
+        {/* ── Footer — legal links ── */}
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap', gap: '4px 0', padding: '0 28px 20px' }}>
           {LEGAL_LINKS.filter(l => l.type !== 'welfare').map(({ type, label }, i, arr) => (
             <span key={type} style={{ display: 'flex', alignItems: 'center' }}>
               <button
                 onClick={() => setLegalModal(type)}
-                style={{ fontFamily: PRET, fontWeight: 500, fontSize: 13, color: '#8A8A8A', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+                style={{ fontFamily: PRET, fontWeight: 500, fontSize: 12, color: '#B0B0B0', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
               >{label}</button>
-              {i < arr.length - 1 && <span style={{ margin: '0 10px', color: '#D5D5D5', fontSize: 13 }}>·</span>}
+              {i < arr.length - 1 && <span style={{ margin: '0 10px', color: '#E0E0E0', fontSize: 12 }}>·</span>}
             </span>
           ))}
         </div>
@@ -147,19 +149,13 @@ export function DepositModal({ address = '', onClose, onConnectWallet }: Deposit
   )
 }
 
-// ─── Connected: QR + address ──────────────────────────────────────────────────
-
-function openCoinbaseOnramp(address: string) {
-  const dest = encodeURIComponent(JSON.stringify([{ address, assets: ['SOL', 'USDC'], network: 'solana' }]))
-  window.open(`https://pay.coinbase.com/buy/select-asset?appId=hamstarhub&destinationWallets=${dest}`, '_blank', 'noopener,noreferrer')
-}
+// ─── SOL deposit tab ──────────────────────────────────────────────────────────
 
 function ConnectedDeposit({ address, copied, onCopy }: { address: string; copied: boolean; onCopy: () => void }) {
   const isMobile = useIsMobile()
-  const [hovCard, setHovCard] = useState(false)
 
   return (
-    <div style={{ padding: isMobile ? '16px 20px 12px' : '24px 28px 16px' }}>
+    <div style={{ padding: isMobile ? '16px 20px 4px' : '24px 28px 8px' }}>
       {/* QR card */}
       <div style={{
         background: T.bg,
@@ -167,7 +163,7 @@ function ConnectedDeposit({ address, copied, onCopy }: { address: string; copied
         borderRadius: 20,
         padding: isMobile ? '14px' : '20px',
         display: 'flex', flexDirection: 'column', alignItems: 'center',
-        marginBottom: 16,
+        marginBottom: 14,
         gap: isMobile ? 12 : 16,
       }}>
         {/* QR with yellow frame */}
@@ -192,60 +188,37 @@ function ConnectedDeposit({ address, copied, onCopy }: { address: string; copied
       {/* Copy button */}
       <CopyBtn copied={copied} onClick={onCopy} />
 
-      {/* Divider */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, margin: '12px 0' }}>
-        <div style={{ flex: 1, height: 1, background: T.border }} />
-        <span style={{ fontFamily: KANIT, fontSize: 11, color: '#ccc' }}>or</span>
-        <div style={{ flex: 1, height: 1, background: T.border }} />
-      </div>
-
-      {/* Buy with card */}
-      <button
-        onClick={() => openCoinbaseOnramp(address)}
-        onMouseEnter={() => setHovCard(true)}
-        onMouseLeave={() => setHovCard(false)}
-        style={{
-          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-          width: '100%', padding: '14px 20px',
-          background: hovCard ? '#111' : T.text,
-          border: 'none', borderRadius: 48.5,
-          fontFamily: KANIT, fontSize: 14, fontWeight: 700, color: T.yellow,
-          cursor: 'pointer', transition: 'background 0.15s',
-          marginBottom: 12,
-        }}
-      >
-        💳 Buy with Card / USDC
-      </button>
-
-      {/* Warning */}
+      {/* SOL-only notice */}
       <div style={{
         display: 'flex', alignItems: 'flex-start', gap: 8,
-        background: 'rgba(255,231,144,0.15)',
+        background: T.yellowSoft,
         border: `1px solid rgba(255,200,0,0.2)`,
         borderRadius: 12, padding: '10px 14px',
-        marginTop: 12,
+        margin: '12px 0 8px',
       }}>
-        <span style={{ fontSize: 14, flexShrink: 0 }}>⚠️</span>
+        <span style={{ fontSize: 14, flexShrink: 0 }}>◎</span>
         <p style={{ fontFamily: PRET, fontSize: 12, color: T.sub2, margin: 0, lineHeight: 1.5 }}>
-          Send only <strong>SOL tokens</strong> to this address on Solana mainnet. Other tokens may be lost.
+          Send only <strong>SOL</strong> to this address on Solana mainnet. Other tokens may be lost.
         </p>
       </div>
     </div>
   )
 }
 
-// ─── No wallet connected ───────────────────────────────────────────────────────
+// ─── No wallet connected ──────────────────────────────────────────────────────
 
 function NoWalletDeposit({ onConnect }: { onConnect: () => void }) {
   return (
-    <div style={{ padding: '28px 28px 16px', textAlign: 'center' }}>
+    <div style={{ padding: '32px 28px 16px', textAlign: 'center' }}>
       <div style={{
-        width: 80, height: 80, borderRadius: '50%',
+        width: 76, height: 76, borderRadius: '50%',
         background: 'linear-gradient(135deg, #735DFF 0%, #AB9FF2 100%)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontSize: 36, margin: '0 auto 16px',
+        margin: '0 auto 16px',
         boxShadow: '0 6px 20px rgba(115,93,255,0.3)',
-      }}><img src="/images/hamster-flash-flex.png" alt="" style={{ width: '60%', height: '60%', objectFit: 'contain' }} /></div>
+      }}>
+        <img src="/images/hamster-flash-flex.png" alt="" style={{ width: '60%', height: '60%', objectFit: 'contain' }} />
+      </div>
       <p style={{ fontFamily: PRET, fontSize: 14, color: T.textMid, marginBottom: 24, lineHeight: 1.6 }}>
         Connect your Solana wallet to get<br />your personal deposit address.
       </p>
@@ -273,7 +246,7 @@ function GetHamstarTab() {
     <div style={{ padding: '20px 20px 8px' }}>
       {/* Token hero card */}
       <div style={{
-        background: 'rgba(255,231,144,0.2)',
+        background: T.yellowSoft,
         border: '1.5px solid rgba(255,200,0,0.3)',
         borderRadius: 18, padding: '16px 18px',
         marginBottom: 14,
@@ -284,17 +257,18 @@ function GetHamstarTab() {
           background: T.yellow,
           border: '1.5px solid rgba(255,200,0,0.4)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: 22,
-        }}><img src="/images/hamster-flash-flex.png" alt="" style={{ width: '80%', height: '80%', objectFit: 'contain' }} /></div>
+        }}>
+          <img src="/images/hamster-flash-flex.png" alt="" style={{ width: '80%', height: '80%', objectFit: 'contain' }} />
+        </div>
         <div>
           <p style={{ fontFamily: KANIT, fontSize: 11, color: T.textMid, margin: '0 0 2px', letterSpacing: 0.5 }}>
             HAMSTAR TOKEN
           </p>
-          <p style={{ fontFamily: KANIT, fontSize: 20, fontWeight: 800, color: T.text, margin: '0 0 4px' }}>
+          <p style={{ fontFamily: KANIT, fontSize: 20, fontWeight: 800, color: T.text, margin: '0 0 4px', letterSpacing: '-0.02em' }}>
             {HAMSTAR_SYMBOL}
           </p>
           <p style={{ fontFamily: PRET, fontSize: 12, color: T.textMid, margin: 0, lineHeight: 1.4 }}>
-            Hold {HAMSTAR_SYMBOL} to unlock fan tiers and future rewards.
+            Hold {HAMSTAR_SYMBOL} to unlock fan tiers and rewards.
           </p>
         </div>
       </div>
@@ -306,7 +280,7 @@ function GetHamstarTab() {
       }}>
         <div style={{ padding: '10px 14px', borderBottom: `1px solid ${T.border}` }}>
           <p style={{ fontFamily: KANIT, fontSize: 10, fontWeight: 700, color: '#bbb', textTransform: 'uppercase', letterSpacing: 1, margin: '0 0 4px' }}>
-            Token Contract Address
+            Token Contract
           </p>
           <p style={{ fontFamily: MONO, fontSize: 11, color: T.text, margin: 0, wordBreak: 'break-all', lineHeight: 1.5 }}>
             {HAMSTAR_MINT.includes('xxx') ? 'Coming soon — token launching shortly' : HAMSTAR_MINT}
@@ -318,7 +292,7 @@ function GetHamstarTab() {
             style={{
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
               width: '100%', padding: '10px',
-              background: copiedMint ? 'rgba(34,197,94,0.08)' : '#fff',
+              background: copiedMint ? 'rgba(34,197,94,0.06)' : '#fff',
               border: 'none', cursor: 'pointer',
               fontFamily: KANIT, fontSize: 12, fontWeight: 700,
               color: copiedMint ? '#15803D' : T.textMid,
@@ -330,7 +304,7 @@ function GetHamstarTab() {
         )}
       </div>
 
-      {/* Jupiter Swap CTA — opens embedded Terminal widget */}
+      {/* Jupiter swap CTA */}
       <button
         onClick={() => setShowSwap(true)}
         onMouseEnter={() => setHovSwap(true)}
@@ -341,8 +315,8 @@ function GetHamstarTab() {
           background: hovSwap ? T.limeDark : T.yellow,
           border: 'none', borderRadius: 48.5,
           fontFamily: KANIT, fontSize: 14, fontWeight: 700, color: T.text,
-          cursor: 'pointer', transition: 'background 0.15s',
-          boxShadow: hovSwap ? '0 6px 20px rgba(255,215,0,0.45)' : '0 4px 14px rgba(255,215,0,0.3)',
+          cursor: 'pointer', transition: 'all 0.15s',
+          boxShadow: hovSwap ? T.shadowBtnYellow : '0 4px 14px rgba(255,215,0,0.3)',
           marginBottom: 10,
         }}
       >
@@ -354,7 +328,7 @@ function GetHamstarTab() {
   )
 }
 
-// ─── Buttons ──────────────────────────────────────────────────────────────────
+// ─── Shared buttons ───────────────────────────────────────────────────────────
 
 function CopyBtn({ copied, onClick }: { copied: boolean; onClick: () => void }) {
   const [hov, setHov] = useState(false)
@@ -366,13 +340,13 @@ function CopyBtn({ copied, onClick }: { copied: boolean; onClick: () => void }) 
       style={{
         display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
         width: '100%', padding: '14px 20px',
-        background: copied ? 'rgba(34,197,94,0.1)' : hov ? T.limeDark : T.yellow,
-        border: copied ? '1.5px solid rgba(34,197,94,0.3)' : 'none',
+        background: copied ? 'rgba(34,197,94,0.08)' : hov ? T.limeDark : T.yellow,
+        border: copied ? '1.5px solid rgba(34,197,94,0.25)' : 'none',
         borderRadius: 48.5,
         fontFamily: KANIT, fontSize: 14, fontWeight: 700,
         color: copied ? '#15803D' : T.text,
         cursor: 'pointer', transition: 'all 0.2s',
-        boxShadow: copied ? 'none' : hov ? '0 6px 20px rgba(255,215,0,0.4)' : '0 3px 12px rgba(255,215,0,0.25)',
+        boxShadow: copied ? 'none' : hov ? T.shadowBtnYellow : '0 3px 12px rgba(255,215,0,0.25)',
       }}
     >
       {copied ? <CheckIcon /> : <CopyIcon />}
@@ -398,6 +372,29 @@ function ConnectBtn({ onClick }: { onClick: () => void }) {
     >
       Connect Wallet
     </button>
+  )
+}
+
+function CloseBtn({ onClick, onYellow }: { onClick: () => void; onYellow?: boolean }) {
+  const [hov, setHov] = useState(false)
+  return (
+    <button
+      onClick={onClick}
+      onMouseEnter={() => setHov(true)}
+      onMouseLeave={() => setHov(false)}
+      style={{
+        position: 'absolute', top: 12, right: 12, zIndex: 2,
+        background: onYellow
+          ? hov ? 'rgba(0,0,0,0.14)' : 'rgba(0,0,0,0.08)'
+          : hov ? 'rgba(0,0,0,0.08)' : 'rgba(0,0,0,0.04)',
+        border: 'none', borderRadius: 8,
+        width: 30, height: 30,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        color: onYellow ? T.sub2 : T.textMid,
+        fontSize: 18, lineHeight: 1, cursor: 'pointer',
+        transition: 'background 0.15s',
+      }}
+    >×</button>
   )
 }
 

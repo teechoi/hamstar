@@ -103,7 +103,7 @@ export function DepositModal({ address = '', onClose, onConnectWallet }: Deposit
             borderBottom: `1px solid ${T.border}`,
             background: '#fff',
           }}>
-            {([['sol', '◎ Deposit SOL'], ['hamstar', `🪐 Get ${HAMSTAR_SYMBOL}`]] as const).map(([id, label]) => (
+            {([['sol', '◎ Deposit SOL'], ['hamstar', `Get ${HAMSTAR_SYMBOL}`]] as const).map(([id, label]) => (
               <button
                 key={id}
                 onClick={() => setTab(id)}

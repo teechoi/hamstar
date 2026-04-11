@@ -7,9 +7,27 @@ import { HAMSTAR_MINT, HAMSTAR_SYMBOL, HAMSTAR_DECIMALS } from '@/lib/hamstar-to
 
 const KANIT = "var(--font-kanit), sans-serif"
 const PRET  = 'Pretendard, sans-serif'
-const SOL_MINT = 'So11111111111111111111111111111111111111112'
 
-// Jupiter quote response (relevant fields only)
+// ─── Token config ─────────────────────────────────────────────────────────────
+
+const INPUT_TOKENS = {
+  SOL: {
+    mint:     'So11111111111111111111111111111111111111112',
+    symbol:   'SOL',
+    name:     'Solana',
+    decimals: 9,
+    logoUrl:  'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png',
+  },
+  USDC: {
+    mint:     'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+    symbol:   'USDC',
+    name:     'USD Coin',
+    decimals: 6,
+    logoUrl:  'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v/logo.png',
+  },
+} as const
+type InputTokenKey = keyof typeof INPUT_TOKENS
+
 interface QuoteResponse {
   inAmount: string
   outAmount: string
@@ -21,10 +39,13 @@ interface QuoteResponse {
 const SLIPPAGE_OPTS = [0.3, 0.5, 1] as const
 type Slippage = typeof SLIPPAGE_OPTS[number]
 
+// ─── Main widget ──────────────────────────────────────────────────────────────
+
 export function SwapWidget() {
   const { publicKey, sendTransaction, connected } = useWallet()
   const { connection } = useConnection()
 
+  const [inputToken, setInputToken] = useState<InputTokenKey>('SOL')
   const [inputAmt, setInputAmt]     = useState('')
   const [quote, setQuote]           = useState<QuoteResponse | null>(null)
   const [fetching, setFetching]     = useState(false)
@@ -34,8 +55,18 @@ export function SwapWidget() {
   const [error, setError]           = useState('')
   const [txSig, setTxSig]           = useState('')
 
-  const abortRef = useRef<AbortController | null>(null)
+  const abortRef   = useRef<AbortController | null>(null)
   const isPlaceholder = HAMSTAR_MINT.includes('xxx')
+  const token = INPUT_TOKENS[inputToken]
+
+  // Reset amount when switching input token
+  const handleTokenChange = (key: InputTokenKey) => {
+    setInputToken(key)
+    setInputAmt('')
+    setQuote(null)
+    setError('')
+    setTxSig('')
+  }
 
   // Debounced quote fetch
   useEffect(() => {
@@ -52,12 +83,12 @@ export function SwapWidget() {
       setFetching(true)
 
       try {
+        const rawAmount = Math.floor(parsed * Math.pow(10, token.decimals)).toString()
         const params = new URLSearchParams({
-          inputMint: SOL_MINT,
-          outputMint: HAMSTAR_MINT,
-          amount: Math.floor(parsed * 1e9).toString(),
-          slippageBps: Math.round(slippage * 100).toString(),
-          onlyDirectRoutes: 'false',
+          inputMint:    token.mint,
+          outputMint:   HAMSTAR_MINT,
+          amount:       rawAmount,
+          slippageBps:  Math.round(slippage * 100).toString(),
         })
         const res = await fetch(`https://quote-api.jup.ag/v6/quote?${params}`, {
           signal: abortRef.current.signal,
@@ -74,11 +105,8 @@ export function SwapWidget() {
       }
     }, 400)
 
-    return () => {
-      clearTimeout(timer)
-      abortRef.current?.abort()
-    }
-  }, [inputAmt, slippage, isPlaceholder])
+    return () => { clearTimeout(timer); abortRef.current?.abort() }
+  }, [inputAmt, inputToken, slippage, isPlaceholder]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSwap = async () => {
     if (!quote || !publicKey) return
@@ -98,7 +126,7 @@ export function SwapWidget() {
           prioritizationFeeLamports: 'auto',
         }),
       })
-      if (!res.ok) throw new Error('Failed to build swap transaction')
+      if (!res.ok) throw new Error('build_failed')
       const { swapTransaction } = await res.json()
 
       const tx = VersionedTransaction.deserialize(
@@ -109,12 +137,12 @@ export function SwapWidget() {
       setInputAmt('')
       setQuote(null)
     } catch (e: any) {
-      const msg = e?.message ?? ''
-      if (msg.includes('rejected') || msg.includes('cancelled') || msg.includes('denied')) {
-        setError('Transaction cancelled.')
-      } else {
-        setError('Swap failed — please try again.')
-      }
+      const msg = (e?.message ?? '').toLowerCase()
+      setError(
+        msg.includes('reject') || msg.includes('cancel') || msg.includes('denied')
+          ? 'Transaction cancelled.'
+          : 'Swap failed — please try again.'
+      )
     } finally {
       setSwapping(false)
     }
@@ -126,16 +154,15 @@ export function SwapWidget() {
     : ''
 
   const rate = quote && parseFloat(inputAmt) > 0
-    ? Math.round(parseInt(quote.outAmount) / Math.pow(10, HAMSTAR_DECIMALS) / parseFloat(inputAmt))
-        .toLocaleString()
+    ? Math.round(
+        parseInt(quote.outAmount) / Math.pow(10, HAMSTAR_DECIMALS) / parseFloat(inputAmt)
+      ).toLocaleString()
     : null
 
   const priceImpact = quote ? parseFloat(quote.priceImpactPct) : 0
-  const highImpact = priceImpact > 1
 
   return (
     <div>
-      {/* Hide number input spinners globally for this widget */}
       <style>{`
         .swap-input::-webkit-outer-spin-button,
         .swap-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
@@ -144,50 +171,88 @@ export function SwapWidget() {
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
 
-        {/* ── SOL input ── */}
-        <TokenRow
-          label="You pay"
-          logo={<SolLogo />}
-          symbol="SOL"
-          editable
-          value={inputAmt}
-          onChange={setInputAmt}
-          placeholder="0.00"
-        />
+        {/* ── Input row ── */}
+        <div style={{
+          background: T.bg,
+          border: `1.5px solid ${T.border}`,
+          borderRadius: 16, padding: '11px 14px',
+        }}>
+          <p style={labelStyle}>You pay</p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <TokenSelector
+              selected={inputToken}
+              onSelect={handleTokenChange}
+            />
+            <input
+              className="swap-input"
+              type="number"
+              min="0"
+              step="any"
+              value={inputAmt}
+              onChange={e => setInputAmt(e.target.value)}
+              placeholder="0.00"
+              style={{
+                flex: 1, textAlign: 'right',
+                background: 'transparent', border: 'none', outline: 'none',
+                fontFamily: KANIT, fontSize: 22, fontWeight: 700,
+                color: inputAmt ? T.text : '#d0d0d0',
+                padding: 0, minWidth: 0,
+              }}
+            />
+          </div>
+        </div>
 
-        {/* ── Arrow ── */}
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '-3px 0' }}>
+        {/* ── Swap direction arrow ── */}
+        <div style={{ display: 'flex', justifyContent: 'center', margin: '-3px 0' }}>
           <div style={{
             width: 30, height: 30, borderRadius: 9,
             background: T.purple,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            color: '#fff', fontSize: 13,
-            boxShadow: '0 2px 8px rgba(115,93,255,0.35)',
-          }}>↓</div>
+            boxShadow: '0 2px 8px rgba(115,93,255,0.3)',
+          }}>
+            <ArrowDownIcon />
+          </div>
         </div>
 
-        {/* ── HAMSTAR output ── */}
-        <TokenRow
-          label="You receive"
-          logo={<HamstarLogo />}
-          symbol={HAMSTAR_SYMBOL.replace('$', '')}
-          value={
-            isPlaceholder ? '' :
-            fetching      ? '…' :
-            outFormatted  ? outFormatted : ''
-          }
-          placeholder={isPlaceholder ? 'Token launching soon' : '0'}
-          placeholderMuted={isPlaceholder}
-          highlight={!!outFormatted && !isPlaceholder}
-        />
+        {/* ── Output row ── */}
+        <div style={{
+          background: T.bg,
+          border: `1.5px solid ${outFormatted && !isPlaceholder ? 'rgba(255,200,0,0.4)' : T.border}`,
+          borderRadius: 16, padding: '11px 14px',
+          transition: 'border-color 0.2s',
+        }}>
+          <p style={labelStyle}>You receive</p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            {/* HAMSTAR token badge (fixed) */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+              <HamstarLogo />
+              <span style={{ fontFamily: KANIT, fontSize: 15, fontWeight: 700, color: T.text }}>
+                {HAMSTAR_SYMBOL.replace('$', '')}
+              </span>
+            </div>
+            {/* Amount */}
+            <div style={{ flex: 1, textAlign: 'right' }}>
+              {isPlaceholder ? (
+                <span style={{ fontFamily: PRET, fontSize: 12, color: T.textMid }}>
+                  Launching soon
+                </span>
+              ) : fetching ? (
+                <span style={{ fontFamily: KANIT, fontSize: 20, fontWeight: 700, color: '#d0d0d0' }}>…</span>
+              ) : outFormatted ? (
+                <span style={{ fontFamily: KANIT, fontSize: 22, fontWeight: 700, color: T.text }}>
+                  {outFormatted}
+                </span>
+              ) : (
+                <span style={{ fontFamily: KANIT, fontSize: 22, fontWeight: 700, color: '#d0d0d0' }}>0</span>
+              )}
+            </div>
+          </div>
+        </div>
 
         {/* ── Rate + slippage ── */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '2px 4px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1px 4px' }}>
           <span style={{ fontFamily: PRET, fontSize: 11, color: T.textMid }}>
-            {rate
-              ? <span>1 SOL ≈ <strong style={{ color: T.text }}>{rate}</strong> {HAMSTAR_SYMBOL}</span>
-              : <span style={{ opacity: 0 }}>–</span>
-            }
+            {rate ? <>1 {token.symbol} ≈ <strong style={{ color: T.text }}>{rate}</strong> {HAMSTAR_SYMBOL}</> : null}
           </span>
           <button
             onClick={() => setShowSlip(s => !s)}
@@ -222,8 +287,8 @@ export function SwapWidget() {
           </div>
         )}
 
-        {/* Price impact warning */}
-        {highImpact && (
+        {/* Price impact */}
+        {priceImpact > 1 && (
           <div style={{ background: T.coralSoft, border: '1px solid rgba(255,59,92,0.2)', borderRadius: 10, padding: '7px 12px' }}>
             <p style={{ fontFamily: PRET, fontSize: 12, color: T.coral, margin: 0 }}>
               High price impact: {priceImpact.toFixed(2)}%
@@ -245,7 +310,7 @@ export function SwapWidget() {
             borderRadius: 10, padding: '8px 14px',
             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           }}>
-            <span style={{ fontFamily: PRET, fontSize: 12, color: '#15803D' }}>Swap confirmed!</span>
+            <span style={{ fontFamily: PRET, fontSize: 12, color: '#15803D' }}>Swap confirmed</span>
             <a
               href={`https://explorer.solana.com/tx/${txSig}`}
               target="_blank" rel="noopener noreferrer"
@@ -254,7 +319,7 @@ export function SwapWidget() {
           </div>
         )}
 
-        {/* ── Swap button ── */}
+        {/* ── Action button ── */}
         <SwapBtn
           isPlaceholder={isPlaceholder}
           connected={connected}
@@ -263,12 +328,12 @@ export function SwapWidget() {
           onSwap={handleSwap}
         />
 
-        {/* Jupiter attribution */}
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 4, paddingTop: 2 }}>
+        {/* Attribution */}
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 4 }}>
           <span style={{ fontFamily: PRET, fontSize: 10, color: '#ccc' }}>Powered by</span>
           <a
             href="https://jup.ag" target="_blank" rel="noopener noreferrer"
-            style={{ fontFamily: KANIT, fontSize: 10, fontWeight: 700, color: '#bbb', textDecoration: 'none', letterSpacing: 0.3 }}
+            style={{ fontFamily: KANIT, fontSize: 10, fontWeight: 700, color: '#bbb', textDecoration: 'none' }}
           >Jupiter</a>
         </div>
 
@@ -277,71 +342,87 @@ export function SwapWidget() {
   )
 }
 
-// ─── Token row ────────────────────────────────────────────────────────────────
+// ─── Token selector ────────────────────────────────────────────────────────────
 
-function TokenRow({
-  label, logo, symbol, editable, value, onChange, placeholder, placeholderMuted, highlight,
-}: {
-  label: string
-  logo: React.ReactNode
-  symbol: string
-  editable?: boolean
-  value: string
-  onChange?: (v: string) => void
-  placeholder?: string
-  placeholderMuted?: boolean
-  highlight?: boolean
+function TokenSelector({ selected, onSelect }: {
+  selected: InputTokenKey
+  onSelect: (k: InputTokenKey) => void
 }) {
-  return (
-    <div style={{
-      background: T.bg,
-      border: `1.5px solid ${highlight ? 'rgba(255,200,0,0.35)' : T.border}`,
-      borderRadius: 16,
-      padding: '11px 14px',
-      transition: 'border-color 0.15s',
-    }}>
-      <p style={{ fontFamily: KANIT, fontSize: 9, fontWeight: 700, color: '#c0c0c0', textTransform: 'uppercase', letterSpacing: 1, margin: '0 0 7px' }}>
-        {label}
-      </p>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-        {/* Token badge */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 7, flexShrink: 0 }}>
-          {logo}
-          <span style={{ fontFamily: KANIT, fontSize: 15, fontWeight: 700, color: T.text }}>{symbol}</span>
-        </div>
+  const [open, setOpen] = useState(false)
+  const token = INPUT_TOKENS[selected]
 
-        {/* Amount */}
-        {editable ? (
-          <input
-            className="swap-input"
-            type="number"
-            min="0"
-            step="any"
-            value={value}
-            onChange={e => onChange?.(e.target.value)}
-            placeholder={placeholder ?? '0.00'}
-            style={{
-              flex: 1, textAlign: 'right',
-              background: 'transparent', border: 'none', outline: 'none',
-              fontFamily: KANIT, fontSize: 22, fontWeight: 700,
-              color: value ? T.text : '#d0d0d0',
-              padding: 0, minWidth: 0,
-            }}
+  return (
+    <div style={{ position: 'relative', flexShrink: 0 }}>
+      {/* Trigger pill */}
+      <button
+        onClick={() => setOpen(o => !o)}
+        style={{
+          display: 'flex', alignItems: 'center', gap: 7,
+          background: '#fff',
+          border: `1.5px solid ${open ? T.borderDark : T.border}`,
+          borderRadius: 48.5, padding: '5px 10px 5px 5px',
+          cursor: 'pointer', transition: 'border-color 0.15s',
+        }}
+      >
+        <TokenLogo symbol={token.symbol} logoUrl={token.logoUrl} size={22} />
+        <span style={{ fontFamily: KANIT, fontSize: 14, fontWeight: 700, color: T.text }}>
+          {token.symbol}
+        </span>
+        <ChevronIcon open={open} />
+      </button>
+
+      {/* Dropdown */}
+      {open && (
+        <>
+          {/* Click-away backdrop */}
+          <div
+            style={{ position: 'fixed', inset: 0, zIndex: 50 }}
+            onClick={() => setOpen(false)}
           />
-        ) : (
-          <div style={{ flex: 1, textAlign: 'right' }}>
-            {value ? (
-              <span style={{ fontFamily: KANIT, fontSize: 22, fontWeight: 700, color: highlight ? T.text : T.text }}>
-                {value}
-              </span>
-            ) : (
-              <span style={{ fontFamily: KANIT, fontSize: placeholderMuted ? 12 : 22, fontWeight: placeholderMuted ? 500 : 700, color: '#c0c0c0' }}>
-                {placeholder ?? '0'}
-              </span>
-            )}
+          <div style={{
+            position: 'absolute', top: 'calc(100% + 6px)', left: 0, zIndex: 51,
+            background: '#fff',
+            border: `1.5px solid ${T.border}`,
+            borderRadius: 14,
+            boxShadow: T.shadowCard,
+            overflow: 'hidden', minWidth: 140,
+          }}>
+            {(Object.keys(INPUT_TOKENS) as InputTokenKey[]).map(key => {
+              const t = INPUT_TOKENS[key]
+              const isSelected = selected === key
+              return (
+                <button
+                  key={key}
+                  onClick={() => { onSelect(key); setOpen(false) }}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 9,
+                    width: '100%', padding: '10px 14px',
+                    background: isSelected ? T.yellowSoft : 'transparent',
+                    border: 'none', cursor: 'pointer',
+                    transition: 'background 0.12s',
+                    textAlign: 'left',
+                  }}
+                >
+                  <TokenLogo symbol={t.symbol} logoUrl={t.logoUrl} size={24} />
+                  <div>
+                    <p style={{ fontFamily: KANIT, fontSize: 13, fontWeight: 700, color: T.text, margin: 0 }}>
+                      {t.symbol}
+                    </p>
+                    <p style={{ fontFamily: PRET, fontSize: 10, color: T.textMid, margin: 0 }}>
+                      {t.name}
+                    </p>
+                  </div>
+                  {isSelected && (
+                    <div style={{ marginLeft: 'auto' }}>
+                      <CheckIcon />
+                    </div>
+                  )}
+                </button>
+              )
+            })}
           </div>
-        )}
-      </div>
+        </>
+      )}
     </div>
   )
 }
@@ -356,7 +437,6 @@ function SwapBtn({ isPlaceholder, connected, canSwap, loading, onSwap }: {
   onSwap: () => void
 }) {
   const [hov, setHov] = useState(false)
-  const KANIT = "var(--font-kanit), sans-serif"
 
   if (isPlaceholder) return (
     <div style={{
@@ -365,7 +445,8 @@ function SwapBtn({ isPlaceholder, connected, canSwap, loading, onSwap }: {
       background: T.yellowSoft, border: `1.5px solid rgba(255,200,0,0.35)`,
       fontFamily: KANIT, fontSize: 13, fontWeight: 700, color: T.sub2,
     }}>
-      🐹 Token launching soon
+      <img src="/images/hamster-flash-flex.png" alt="" style={{ width: 16, height: 16, objectFit: 'contain' }} />
+      Token launching soon
     </div>
   )
 
@@ -397,27 +478,65 @@ function SwapBtn({ isPlaceholder, connected, canSwap, loading, onSwap }: {
         cursor: disabled ? 'default' : 'pointer',
         transition: 'all 0.15s',
         boxShadow: disabled ? 'none' : hov ? T.shadowBtnYellow : '0 4px 14px rgba(255,215,0,0.3)',
-        opacity: disabled && !loading ? 0.55 : 1,
+        opacity: disabled && !loading ? 0.5 : 1,
       }}
     >
-      {loading ? <Spinner /> : '🪐'}
+      {loading ? <Spinner /> : <SwapIcon />}
       {loading ? 'Swapping…' : 'Swap'}
     </button>
   )
 }
 
-// ─── Logos ────────────────────────────────────────────────────────────────────
+// ─── Token logo with CDN + fallback ──────────────────────────────────────────
 
-function SolLogo() {
+function TokenLogo({ symbol, logoUrl, size = 28 }: { symbol: string; logoUrl: string; size?: number }) {
+  const [failed, setFailed] = useState(false)
+
+  if (!failed) {
+    return (
+      <img
+        src={logoUrl}
+        alt={symbol}
+        width={size} height={size}
+        style={{ borderRadius: '50%', flexShrink: 0, display: 'block' }}
+        onError={() => setFailed(true)}
+      />
+    )
+  }
+
+  // Fallback SVGs if CDN fails
+  if (symbol === 'SOL') return <SolFallback size={size} />
+  return <UsdcFallback size={size} />
+}
+
+function SolFallback({ size = 28 }: { size?: number }) {
   return (
-    <div style={{
-      width: 28, height: 28, borderRadius: '50%',
-      background: 'linear-gradient(135deg, #9945FF 0%, #14F195 100%)',
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-      color: '#fff', fontSize: 12, fontWeight: 800,
-      fontFamily: "var(--font-kanit), sans-serif",
-      flexShrink: 0,
-    }}>◎</div>
+    <svg width={size} height={size} viewBox="0 0 32 32" fill="none" style={{ flexShrink: 0 }}>
+      <defs>
+        <linearGradient id="sol-fb" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#9945FF"/>
+          <stop offset="100%" stopColor="#14F195"/>
+        </linearGradient>
+      </defs>
+      <circle cx="16" cy="16" r="16" fill="url(#sol-fb)"/>
+      <g fill="white" fillOpacity="0.95">
+        <polygon points="8,9.5 22.5,9.5 24,7.5 9.5,7.5"/>
+        <polygon points="8,17 22.5,17 24,15 9.5,15"/>
+        <polygon points="9.5,24.5 24,24.5 22.5,22.5 8,22.5"/>
+      </g>
+    </svg>
+  )
+}
+
+function UsdcFallback({ size = 28 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 32 32" fill="none" style={{ flexShrink: 0 }}>
+      <circle cx="16" cy="16" r="16" fill="#2775CA"/>
+      <circle cx="16" cy="16" r="9" fill="none" stroke="white" strokeWidth="2.5"/>
+      <line x1="16" y1="9" x2="16" y2="23" stroke="white" strokeWidth="2.5"/>
+      <line x1="11.5" y1="13" x2="20.5" y2="13" stroke="white" strokeWidth="2.5"/>
+      <line x1="11.5" y1="19" x2="20.5" y2="19" stroke="white" strokeWidth="2.5"/>
+    </svg>
   )
 }
 
@@ -435,6 +554,53 @@ function HamstarLogo() {
 }
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
+
+const labelStyle: React.CSSProperties = {
+  fontFamily: KANIT,
+  fontSize: 9, fontWeight: 700,
+  color: '#c0c0c0', textTransform: 'uppercase', letterSpacing: 1,
+  margin: '0 0 7px',
+}
+
+function ArrowDownIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="12" y1="5" x2="12" y2="19"/>
+      <polyline points="19 12 12 19 5 12"/>
+    </svg>
+  )
+}
+
+function SwapIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="17 1 21 5 17 9"/>
+      <path d="M3 11V9a4 4 0 0 1 4-4h14"/>
+      <polyline points="7 23 3 19 7 15"/>
+      <path d="M21 13v2a4 4 0 0 1-4 4H3"/>
+    </svg>
+  )
+}
+
+function ChevronIcon({ open }: { open: boolean }) {
+  return (
+    <svg
+      width="10" height="10" viewBox="0 0 24 24" fill="none"
+      stroke={T.textMid} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+      style={{ transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s', flexShrink: 0 }}
+    >
+      <polyline points="6 9 12 15 18 9"/>
+    </svg>
+  )
+}
+
+function CheckIcon() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={T.purple} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="20 6 9 17 4 12"/>
+    </svg>
+  )
+}
 
 function GearIcon() {
   return (

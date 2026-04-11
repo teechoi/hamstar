@@ -3,8 +3,9 @@ import { useState } from 'react'
 import { QRCodeSVG } from 'qrcode.react'
 import { useIsMobile } from '@/components/ui/index'
 import { T } from '@/lib/theme'
-import { HAMSTAR_SYMBOL, HAMSTAR_MINT, HAMSTAR_JUPITER_URL } from '@/lib/hamstar-token'
+import { HAMSTAR_SYMBOL, HAMSTAR_MINT } from '@/lib/hamstar-token'
 import { LegalModal, LEGAL_LINKS, type LegalModalType } from './LegalModal'
+import { SwapWidget } from './SwapWidget'
 
 const KANIT = "var(--font-kanit), sans-serif"
 const PRET  = 'Pretendard, sans-serif'
@@ -230,7 +231,6 @@ function NoWalletDeposit({ onConnect }: { onConnect: () => void }) {
 
 function GetHamstarTab() {
   const [copiedMint, setCopiedMint] = useState(false)
-  const [hovSwap, setHovSwap]       = useState(false)
 
   const copyMint = async () => {
     try {
@@ -241,87 +241,42 @@ function GetHamstarTab() {
   }
 
   return (
-    <div style={{ padding: '20px 20px 8px' }}>
-      {/* Token hero card */}
-      <div style={{
-        background: T.yellowSoft,
-        border: '1.5px solid rgba(255,200,0,0.3)',
-        borderRadius: 18, padding: '16px 18px',
-        marginBottom: 14,
-        display: 'flex', alignItems: 'center', gap: 14,
-      }}>
-        <div style={{
-          width: 46, height: 46, borderRadius: 13, flexShrink: 0,
-          background: T.yellow,
-          border: '1.5px solid rgba(255,200,0,0.4)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-        }}>
-          <img src="/images/hamster-flash-flex.png" alt="" style={{ width: '80%', height: '80%', objectFit: 'contain' }} />
-        </div>
-        <div>
-          <p style={{ fontFamily: KANIT, fontSize: 11, color: T.textMid, margin: '0 0 2px', letterSpacing: 0.5 }}>
-            HAMSTAR TOKEN
-          </p>
-          <p style={{ fontFamily: KANIT, fontSize: 20, fontWeight: 800, color: T.text, margin: '0 0 4px', letterSpacing: '-0.02em' }}>
-            {HAMSTAR_SYMBOL}
-          </p>
-          <p style={{ fontFamily: PRET, fontSize: 12, color: T.textMid, margin: 0, lineHeight: 1.4 }}>
-            Hold {HAMSTAR_SYMBOL} to unlock fan tiers and rewards.
-          </p>
-        </div>
-      </div>
+    <div style={{ padding: '16px 20px 8px' }}>
+      {/* Swap widget */}
+      <SwapWidget />
 
-      {/* Token mint address */}
+      {/* Contract address — below widget, compact */}
       <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        marginTop: 14, padding: '10px 14px',
         background: T.bg, border: `1px solid ${T.border}`,
-        borderRadius: 14, overflow: 'hidden', marginBottom: 14,
+        borderRadius: 12,
       }}>
-        <div style={{ padding: '10px 14px', borderBottom: `1px solid ${T.border}` }}>
-          <p style={{ fontFamily: KANIT, fontSize: 10, fontWeight: 700, color: '#bbb', textTransform: 'uppercase', letterSpacing: 1, margin: '0 0 4px' }}>
-            Token Contract
+        <div style={{ minWidth: 0, flex: 1, marginRight: 10 }}>
+          <p style={{ fontFamily: KANIT, fontSize: 9, fontWeight: 700, color: '#c0c0c0', textTransform: 'uppercase', letterSpacing: 1, margin: '0 0 3px' }}>
+            Contract
           </p>
-          <p style={{ fontFamily: MONO, fontSize: 11, color: T.text, margin: 0, wordBreak: 'break-all', lineHeight: 1.5 }}>
-            {HAMSTAR_MINT.includes('xxx') ? 'Coming soon — token launching shortly' : HAMSTAR_MINT}
+          <p style={{ fontFamily: MONO, fontSize: 10, color: HAMSTAR_MINT.includes('xxx') ? T.textMid : T.text, margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            {HAMSTAR_MINT.includes('xxx') ? 'Launching soon' : HAMSTAR_MINT}
           </p>
         </div>
         {!HAMSTAR_MINT.includes('xxx') && (
           <button
             onClick={copyMint}
             style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-              width: '100%', padding: '10px',
-              background: copiedMint ? 'rgba(34,197,94,0.06)' : '#fff',
-              border: 'none', cursor: 'pointer',
-              fontFamily: KANIT, fontSize: 12, fontWeight: 700,
+              flexShrink: 0,
+              background: copiedMint ? 'rgba(34,197,94,0.08)' : '#fff',
+              border: `1.5px solid ${copiedMint ? 'rgba(34,197,94,0.25)' : T.border}`,
+              borderRadius: 8, padding: '5px 10px',
+              fontFamily: KANIT, fontSize: 11, fontWeight: 700,
               color: copiedMint ? '#15803D' : T.textMid,
-              transition: 'all 0.15s',
+              cursor: 'pointer', transition: 'all 0.15s',
             }}
           >
-            {copiedMint ? '✓ Copied!' : 'Copy contract address'}
+            {copiedMint ? '✓ Copied' : 'Copy'}
           </button>
         )}
       </div>
-
-      {/* Jupiter swap CTA — opens Jupiter directly in a new tab */}
-      <a
-        href={HAMSTAR_JUPITER_URL}
-        target="_blank"
-        rel="noopener noreferrer"
-        onMouseEnter={() => setHovSwap(true)}
-        onMouseLeave={() => setHovSwap(false)}
-        style={{
-          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-          width: '100%', padding: '14px 20px',
-          background: hovSwap ? T.limeDark : T.yellow,
-          border: 'none', borderRadius: 48.5,
-          fontFamily: KANIT, fontSize: 14, fontWeight: 700, color: T.text,
-          textDecoration: 'none', transition: 'all 0.15s',
-          boxShadow: hovSwap ? T.shadowBtnYellow : '0 4px 14px rgba(255,215,0,0.3)',
-          marginBottom: 10,
-        }}
-      >
-        🪐 Swap on Jupiter ↗
-      </a>
     </div>
   )
 }

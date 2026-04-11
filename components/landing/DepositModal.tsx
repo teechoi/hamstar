@@ -1,9 +1,8 @@
 'use client'
 import { useState } from 'react'
-import { QRCodeSVG } from 'qrcode.react'
 import { useIsMobile } from '@/components/ui/index'
 import { T } from '@/lib/theme'
-import { HAMSTAR_SYMBOL, HAMSTAR_MINT } from '@/lib/hamstar-token'
+import { HAMSTAR_MINT } from '@/lib/hamstar-token'
 import { LegalModal, LEGAL_LINKS, type LegalModalType } from './LegalModal'
 import { SwapWidget } from './SwapWidget'
 
@@ -12,24 +11,21 @@ const PRET  = 'Pretendard, sans-serif'
 const MONO  = 'monospace'
 
 interface DepositModalProps {
-  address?: string
+  address?: string          // kept for callers — no longer used
   onClose: () => void
-  onConnectWallet?: () => void
+  onConnectWallet?: () => void  // kept for callers — no longer used
 }
 
-export function DepositModal({ address = '', onClose, onConnectWallet }: DepositModalProps) {
+export function DepositModal({ onClose }: DepositModalProps) {
   const isMobile = useIsMobile()
-  const [copied, setCopied]         = useState(false)
-  const [tab, setTab]               = useState<'sol' | 'hamstar'>('sol')
   const [legalModal, setLegalModal] = useState<LegalModalType | null>(null)
-  const hasAddress = address.length > 0
+  const [copiedMint, setCopiedMint] = useState(false)
 
-  const copyAddress = async () => {
-    if (!address) return
+  const copyMint = async () => {
     try {
-      await navigator.clipboard.writeText(address)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2500)
+      await navigator.clipboard.writeText(HAMSTAR_MINT)
+      setCopiedMint(true)
+      setTimeout(() => setCopiedMint(false), 2000)
     } catch { /* silent */ }
   }
 
@@ -61,7 +57,6 @@ export function DepositModal({ address = '', onClose, onConnectWallet }: Deposit
           padding: isMobile ? '16px 16px 14px' : '22px 22px 20px',
           position: 'relative', overflow: 'hidden',
         }}>
-          {/* Cheese decoration */}
           <img
             src="/images/cheese-hideout.png" alt=""
             style={{
@@ -72,8 +67,7 @@ export function DepositModal({ address = '', onClose, onConnectWallet }: Deposit
             }}
           />
 
-          {/* Close button */}
-          <CloseBtn onClick={onClose} onYellow />
+          <CloseBtn onClick={onClose} />
 
           <div style={{ position: 'relative', zIndex: 1 }}>
             <div style={{
@@ -86,49 +80,50 @@ export function DepositModal({ address = '', onClose, onConnectWallet }: Deposit
               </span>
             </div>
             <h2 style={{ fontFamily: KANIT, fontSize: 22, fontWeight: 800, color: T.text, margin: '0 0 4px', letterSpacing: '-0.025em' }}>
-              Deposit Funds
+              Get $HAMSTAR
             </h2>
             <p style={{ fontFamily: PRET, fontWeight: 500, fontSize: 13, color: 'rgba(0,0,0,0.5)', margin: 0 }}>
-              {hasAddress
-                ? 'Scan the QR code or copy your wallet address.'
-                : 'Connect a wallet to get your deposit address.'}
+              Swap SOL or USDC for HAMSTAR to start cheering.
             </p>
           </div>
         </div>
 
-        {/* ── Tabs ── */}
-        {hasAddress && (
+        {/* ── Swap widget ── */}
+        <div style={{ padding: isMobile ? '16px 20px 8px' : '20px 28px 12px' }}>
+          <SwapWidget />
+
+          {/* Contract address */}
           <div style={{
-            display: 'flex',
-            borderBottom: `1px solid ${T.border}`,
-            background: '#fff',
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            marginTop: 16, padding: '11px 16px',
+            background: T.bg, border: `1.5px solid ${T.border}`,
+            borderRadius: 14,
           }}>
-            {([['sol', '◎ Deposit SOL'], ['hamstar', `Get ${HAMSTAR_SYMBOL}`]] as const).map(([id, label]) => (
+            <div style={{ minWidth: 0, flex: 1, marginRight: 10 }}>
+              <p style={{ fontFamily: KANIT, fontSize: 9, fontWeight: 700, color: '#c8c8c8', textTransform: 'uppercase', letterSpacing: 1.2, margin: '0 0 3px' }}>
+                Contract
+              </p>
+              <p style={{ fontFamily: HAMSTAR_MINT.includes('xxx') ? PRET : MONO, fontWeight: HAMSTAR_MINT.includes('xxx') ? 500 : 400, fontSize: 11, color: HAMSTAR_MINT.includes('xxx') ? T.textMid : T.text, margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                {HAMSTAR_MINT.includes('xxx') ? 'Launching soon' : HAMSTAR_MINT}
+              </p>
+            </div>
+            {!HAMSTAR_MINT.includes('xxx') && (
               <button
-                key={id}
-                onClick={() => setTab(id)}
+                onClick={copyMint}
                 style={{
-                  flex: 1, padding: '13px 12px',
-                  background: 'transparent',
-                  border: 'none',
-                  borderBottom: tab === id ? `2.5px solid ${T.text}` : '2.5px solid transparent',
-                  fontFamily: KANIT, fontSize: 13, fontWeight: 700,
-                  color: tab === id ? T.text : T.textMid,
+                  flexShrink: 0,
+                  background: copiedMint ? 'rgba(34,197,94,0.08)' : '#fff',
+                  border: `1.5px solid ${copiedMint ? 'rgba(34,197,94,0.25)' : T.border}`,
+                  borderRadius: 8, padding: '5px 10px',
+                  fontFamily: KANIT, fontSize: 11, fontWeight: 700,
+                  color: copiedMint ? '#15803D' : T.textMid,
                   cursor: 'pointer', transition: 'all 0.15s',
                 }}
-              >{label}</button>
-            ))}
+              >
+                {copiedMint ? '✓ Copied' : 'Copy'}
+              </button>
+            )}
           </div>
-        )}
-
-        {/* ── Body ── */}
-        <div>
-          {!hasAddress
-            ? <NoWalletDeposit onConnect={onConnectWallet ?? onClose} />
-            : tab === 'sol'
-              ? <ConnectedDeposit address={address} copied={copied} onCopy={copyAddress} />
-              : <GetHamstarTab />
-          }
         </div>
 
         {/* ── Footer — legal links ── */}
@@ -144,192 +139,15 @@ export function DepositModal({ address = '', onClose, onConnectWallet }: Deposit
           ))}
         </div>
       </div>
+
       {legalModal && <LegalModal type={legalModal} onClose={() => setLegalModal(null)} />}
     </div>
   )
 }
 
-// ─── SOL deposit tab ──────────────────────────────────────────────────────────
+// ─── Close button ─────────────────────────────────────────────────────────────
 
-function ConnectedDeposit({ address, copied, onCopy }: { address: string; copied: boolean; onCopy: () => void }) {
-  const isMobile = useIsMobile()
-
-  return (
-    <div style={{ padding: isMobile ? '16px 20px 4px' : '24px 28px 8px' }}>
-      {/* QR card */}
-      <div style={{
-        background: T.bg,
-        border: `1.5px solid ${T.border}`,
-        borderRadius: 20,
-        padding: isMobile ? '16px' : '24px',
-        display: 'flex', flexDirection: 'column', alignItems: 'center',
-        marginBottom: 16,
-        gap: isMobile ? 14 : 18,
-        boxShadow: T.shadowCard,
-      }}>
-        {/* QR with yellow frame */}
-        <div style={{
-          padding: isMobile ? 8 : 12, borderRadius: 12,
-          background: '#fff',
-          boxShadow: `0 0 0 4px ${T.yellow}`,
-        }}>
-          <QRCodeSVG value={address} size={isMobile ? 120 : 148} />
-        </div>
-
-        <div style={{ textAlign: 'center', width: '100%' }}>
-          <p style={{ fontFamily: KANIT, fontSize: 9, fontWeight: 700, color: '#c8c8c8', textTransform: 'uppercase', letterSpacing: 1.2, margin: '0 0 8px' }}>
-            Your Deposit Address
-          </p>
-          <p style={{ fontFamily: MONO, fontSize: isMobile ? 10 : 11, color: T.text, margin: 0, wordBreak: 'break-all', lineHeight: 1.7 }}>
-            {address}
-          </p>
-        </div>
-      </div>
-
-      {/* Copy button */}
-      <CopyBtn copied={copied} onClick={onCopy} />
-
-      {/* SOL-only notice */}
-      <div style={{
-        display: 'flex', alignItems: 'flex-start', gap: 10,
-        background: T.yellowSoft,
-        border: `1.5px solid rgba(255,200,0,0.25)`,
-        borderRadius: 14, padding: '12px 16px',
-        margin: '14px 0 8px',
-      }}>
-        <span style={{ fontFamily: KANIT, fontSize: 13, fontWeight: 700, color: T.sub2, flexShrink: 0, lineHeight: 1.6 }}>◎</span>
-        <p style={{ fontFamily: PRET, fontWeight: 500, fontSize: 12, color: T.sub2, margin: 0, lineHeight: 1.6 }}>
-          Send only <strong style={{ fontWeight: 700 }}>SOL</strong> to this address on Solana mainnet. Other tokens may be lost.
-        </p>
-      </div>
-    </div>
-  )
-}
-
-// ─── No wallet connected ──────────────────────────────────────────────────────
-
-function NoWalletDeposit({ onConnect }: { onConnect: () => void }) {
-  return (
-    <div style={{ padding: '32px 28px 16px', textAlign: 'center' }}>
-      <div style={{
-        width: 76, height: 76, borderRadius: '50%',
-        background: 'linear-gradient(135deg, #735DFF 0%, #AB9FF2 100%)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        margin: '0 auto 16px',
-        boxShadow: '0 6px 20px rgba(115,93,255,0.3)',
-      }}>
-        <img src="/images/hamster-flash-flex.png" alt="" style={{ width: '60%', height: '60%', objectFit: 'contain' }} />
-      </div>
-      <p style={{ fontFamily: PRET, fontWeight: 500, fontSize: 14, color: T.textMid, marginBottom: 24, lineHeight: 1.6 }}>
-        Connect your Solana wallet to get<br />your personal deposit address.
-      </p>
-      <ConnectBtn onClick={onConnect} />
-    </div>
-  )
-}
-
-// ─── Get $HAMSTAR tab ─────────────────────────────────────────────────────────
-
-function GetHamstarTab() {
-  const [copiedMint, setCopiedMint] = useState(false)
-
-  const copyMint = async () => {
-    try {
-      await navigator.clipboard.writeText(HAMSTAR_MINT)
-      setCopiedMint(true)
-      setTimeout(() => setCopiedMint(false), 2000)
-    } catch { /* silent */ }
-  }
-
-  return (
-    <div style={{ padding: '20px 24px 12px' }}>
-      {/* Swap widget */}
-      <SwapWidget />
-
-      {/* Contract address — below widget */}
-      <div style={{
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        marginTop: 16, padding: '11px 16px',
-        background: T.bg, border: `1.5px solid ${T.border}`,
-        borderRadius: 14,
-      }}>
-        <div style={{ minWidth: 0, flex: 1, marginRight: 10 }}>
-          <p style={{ fontFamily: KANIT, fontSize: 9, fontWeight: 700, color: '#c0c0c0', textTransform: 'uppercase', letterSpacing: 1, margin: '0 0 3px' }}>
-            Contract
-          </p>
-          <p style={{ fontFamily: HAMSTAR_MINT.includes('xxx') ? PRET : MONO, fontWeight: HAMSTAR_MINT.includes('xxx') ? 500 : 400, fontSize: 11, color: HAMSTAR_MINT.includes('xxx') ? T.textMid : T.text, margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-            {HAMSTAR_MINT.includes('xxx') ? 'Launching soon' : HAMSTAR_MINT}
-          </p>
-        </div>
-        {!HAMSTAR_MINT.includes('xxx') && (
-          <button
-            onClick={copyMint}
-            style={{
-              flexShrink: 0,
-              background: copiedMint ? 'rgba(34,197,94,0.08)' : '#fff',
-              border: `1.5px solid ${copiedMint ? 'rgba(34,197,94,0.25)' : T.border}`,
-              borderRadius: 8, padding: '5px 10px',
-              fontFamily: KANIT, fontSize: 11, fontWeight: 700,
-              color: copiedMint ? '#15803D' : T.textMid,
-              cursor: 'pointer', transition: 'all 0.15s',
-            }}
-          >
-            {copiedMint ? '✓ Copied' : 'Copy'}
-          </button>
-        )}
-      </div>
-    </div>
-  )
-}
-
-// ─── Shared buttons ───────────────────────────────────────────────────────────
-
-function CopyBtn({ copied, onClick }: { copied: boolean; onClick: () => void }) {
-  const [hov, setHov] = useState(false)
-  return (
-    <button
-      onClick={onClick}
-      onMouseEnter={() => setHov(true)}
-      onMouseLeave={() => setHov(false)}
-      style={{
-        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-        width: '100%', padding: '15px 20px',
-        background: copied ? 'rgba(34,197,94,0.08)' : hov ? T.limeDark : T.yellow,
-        border: copied ? '1.5px solid rgba(34,197,94,0.25)' : 'none',
-        borderRadius: 48.5,
-        fontFamily: KANIT, fontSize: 15, fontWeight: 800, letterSpacing: '-0.01em',
-        color: copied ? '#15803D' : T.text,
-        cursor: 'pointer', transition: 'all 0.15s',
-        boxShadow: copied ? 'none' : hov ? T.shadowBtnYellow : '0 4px 18px rgba(255,215,0,0.28)',
-      }}
-    >
-      {copied ? <CheckIcon /> : <CopyIcon />}
-      {copied ? 'Address Copied!' : 'Copy Address'}
-    </button>
-  )
-}
-
-function ConnectBtn({ onClick }: { onClick: () => void }) {
-  const [hov, setHov] = useState(false)
-  return (
-    <button
-      onClick={onClick}
-      onMouseEnter={() => setHov(true)}
-      onMouseLeave={() => setHov(false)}
-      style={{
-        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-        width: '100%', padding: '15px 20px',
-        background: T.text, border: 'none', borderRadius: 48.5,
-        fontFamily: KANIT, fontSize: 15, fontWeight: 800, letterSpacing: '-0.01em', color: T.yellow,
-        cursor: 'pointer', opacity: hov ? 0.84 : 1, transition: 'opacity 0.15s',
-      }}
-    >
-      Connect Wallet
-    </button>
-  )
-}
-
-function CloseBtn({ onClick, onYellow }: { onClick: () => void; onYellow?: boolean }) {
+function CloseBtn({ onClick }: { onClick: () => void }) {
   const [hov, setHov] = useState(false)
   return (
     <button
@@ -338,35 +156,13 @@ function CloseBtn({ onClick, onYellow }: { onClick: () => void; onYellow?: boole
       onMouseLeave={() => setHov(false)}
       style={{
         position: 'absolute', top: 12, right: 12, zIndex: 2,
-        background: onYellow
-          ? hov ? 'rgba(0,0,0,0.14)' : 'rgba(0,0,0,0.08)'
-          : hov ? 'rgba(0,0,0,0.08)' : 'rgba(0,0,0,0.04)',
+        background: hov ? 'rgba(0,0,0,0.14)' : 'rgba(0,0,0,0.08)',
         border: 'none', borderRadius: 8,
         width: 30, height: 30,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        color: onYellow ? T.sub2 : T.textMid,
-        fontSize: 18, lineHeight: 1, cursor: 'pointer',
+        color: T.sub2, fontSize: 18, lineHeight: 1, cursor: 'pointer',
         transition: 'background 0.15s',
       }}
     >×</button>
-  )
-}
-
-// ─── Icons ────────────────────────────────────────────────────────────────────
-
-function CopyIcon() {
-  return (
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="9" y="9" width="13" height="13" rx="2" />
-      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-    </svg>
-  )
-}
-
-function CheckIcon() {
-  return (
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#15803D" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-      <polyline points="20 6 9 17 4 12" />
-    </svg>
   )
 }

@@ -158,7 +158,7 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
     setCheerModal({ petId, multiplier })
   }
 
-  const handleCheerConfirm = (petId: string, _amountSol: number) => {
+  const handleCheerConfirm = (petId: string, _amountHamstar: number) => {
     setCheeringFor(petId)
     if (walletAddress) {
       const pet = PETS.find(p => p.id === petId)
@@ -179,7 +179,7 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
         }).catch(() => { /* non-critical */ })
       }
     }
-    // TODO: wire _amountSol into SystemProgram.transfer when on-chain cheering is ready
+    // TODO: wire _amountHamstar into HAMSTAR token transfer when on-chain cheering is ready
   }
 
   // Update cheer result when race finishes
@@ -485,14 +485,14 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
 interface CheerEntry {
   id: string
   wallet: string
-  amountSol: number
+  amountHamstar: number
   petName: string
 }
 
-const BIG_CHEER_SOL = 1.0
+const BIG_CHEER_HAMSTAR = 1000
 
 const MOCK_WALLETS = ['7xK3...f3mP', '2mPa...K7r2', '9rLb...N5t4', '4qZn...a8Bx', 'Ew3k...p9Qm', 'Rj7c...c2Lm', 'Xb9m...t6Wr']
-const MOCK_AMOUNTS = [0.05, 0.08, 0.1, 0.15, 0.25, 0.5, 1.0, 2.0, 0.3]
+const MOCK_AMOUNTS = [50, 100, 150, 200, 500, 1000, 2000, 5000, 300]
 
 function CheerFeed({ isMobile }: { isMobile: boolean }) {
   const [entries, setEntries] = useState<CheerEntry[]>([])
@@ -505,7 +505,7 @@ function CheerFeed({ isMobile }: { isMobile: boolean }) {
       const amount = MOCK_AMOUNTS[Math.floor(Math.random() * MOCK_AMOUNTS.length)]
       const petName = petNames[Math.floor(Math.random() * petNames.length)]
       setEntries(prev => [
-        { id: `${Date.now()}-${Math.random()}`, wallet, amountSol: amount, petName },
+        { id: `${Date.now()}-${Math.random()}`, wallet, amountHamstar: amount, petName },
         ...prev,
       ].slice(0, 20))
     }
@@ -541,7 +541,7 @@ function CheerFeed({ isMobile }: { isMobile: boolean }) {
           </p>
         )}
         {entries.map((e, i) => {
-          const isBig = e.amountSol >= BIG_CHEER_SOL
+          const isBig = e.amountHamstar >= BIG_CHEER_HAMSTAR
           return (
             <div key={e.id} style={{
               display: 'flex',
@@ -556,7 +556,7 @@ function CheerFeed({ isMobile }: { isMobile: boolean }) {
                 {e.wallet}
               </span>
               <span style={{ fontFamily: KANIT, fontWeight: 500, fontSize: 13, color: DARK, display: 'flex', alignItems: 'center', gap: 6 }}>
-                {e.amountSol} SOL → {e.petName}
+                {e.amountHamstar >= 1000 ? `${e.amountHamstar / 1000}k` : e.amountHamstar} $HAMSTAR → {e.petName}
                 {isBig && (
                   <span style={{ fontFamily: 'Pretendard, sans-serif', fontWeight: 500, fontSize: 11, color: PURPLE }}>
                     ← BIG

@@ -89,7 +89,7 @@ function fmtRate(quote: QuoteResponse, inToken: TokenConfig, outToken: TokenConf
 
 // ─── Main widget ──────────────────────────────────────────────────────────────
 
-export function SwapWidget() {
+export function SwapWidget({ onSwapComplete }: { onSwapComplete?: () => void } = {}) {
   const { publicKey, sendTransaction, connected } = useWallet()
   const { connection } = useConnection()
 
@@ -210,6 +210,7 @@ export function SwapWidget() {
       )
       const sig = await sendTransaction(tx, connection)
       setTxSig(sig); setInputAmt(''); setQuote(null)
+      onSwapComplete?.()
     } catch (e: any) {
       const msg = (e?.message ?? '').toLowerCase()
       setError(

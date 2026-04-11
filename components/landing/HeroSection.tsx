@@ -26,13 +26,16 @@ export function HeroSection({
   const videoRef = useRef<HTMLVideoElement>(null)
   const isMobile = useIsMobile()
 
-  // React's `muted` JSX prop doesn't reliably set the DOM attribute in all browsers.
-  // Explicitly set muted + call play() after mount to guarantee autoplay on Safari/Firefox.
+  // `autoPlay` removed from JSX — browsers evaluate autoplay policy at parse time and
+  // can block it before React's `muted` prop even takes effect (known React bug).
+  // Instead: set both the muted DOM property AND setAttribute before calling play(),
+  // so the browser sees a definitively muted video and never blocks it.
   useEffect(() => {
     const v = videoRef.current
     if (!v) return
     v.muted = true
-    v.play().catch(() => { /* autoplay blocked — user will see static frame */ })
+    v.setAttribute('muted', '')
+    v.play().catch(() => { /* blocked even when muted — user will see first frame */ })
   }, [])
 
   function toggleSound() {
@@ -60,10 +63,10 @@ export function HeroSection({
         <video
           ref={videoRef}
           src="/videos/hero.mp4"
-          autoPlay
           loop
           muted
           playsInline
+          preload="auto"
           style={{
             width: '100%',
             height: '100%',

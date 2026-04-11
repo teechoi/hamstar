@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react'
 import { useConnection } from '@solana/wallet-adapter-react'
 import { useIsMobile } from '@/components/ui/index'
-import { PublicKey } from '@solana/web3.js'
 import { T } from '@/lib/theme'
 import { getCheerHistory, type CheerEntry } from '@/lib/cheer-history'
 import {
@@ -13,6 +12,12 @@ import {
 const KANIT = "var(--font-kanit), sans-serif"
 const PRET  = 'Pretendard, sans-serif'
 const MONO  = 'monospace'
+
+const PET_IMAGES: Record<string, string> = {
+  dash:  '/images/dash.png',
+  flash: '/images/flash-crop.jpeg',
+  turbo: '/images/turbo-crop.png',
+}
 
 interface AccountModalProps {
   walletAddress?: string
@@ -27,7 +32,6 @@ export function AccountModal({
   walletAddress, onClose, onDeposit, onDisconnect, onConnectWallet,
 }: AccountModalProps) {
   const { connection } = useConnection()
-  const [solBalance, setSolBalance]         = useState<number | null>(null)
   const [hamstarBalance, setHamstarBalance] = useState<number>(0)
   const [loadingBal, setLoadingBal]         = useState(false)
   const [copied, setCopied]                 = useState(false)
@@ -41,15 +45,9 @@ export function AccountModal({
   useEffect(() => {
     if (!walletAddress) return
     setLoadingBal(true)
-    Promise.all([
-      connection.getBalance(new PublicKey(walletAddress)),
-      getHamstarBalance(connection, walletAddress),
-    ])
-      .then(([lamports, hamstar]) => {
-        setSolBalance(lamports / 1e9)
-        setHamstarBalance(hamstar)
-      })
-      .catch(() => setSolBalance(null))
+    getHamstarBalance(connection, walletAddress)
+      .then(bal => setHamstarBalance(bal))
+      .catch(() => {})
       .finally(() => setLoadingBal(false))
   }, [walletAddress, connection])
 
@@ -93,7 +91,6 @@ export function AccountModal({
           ? <ConnectedView
               walletAddress={walletAddress!}
               short={short!}
-              solBalance={solBalance}
               hamstarBalance={hamstarBalance}
               loadingBal={loadingBal}
               copied={copied}
@@ -113,12 +110,11 @@ export function AccountModal({
 // ─── Connected view ───────────────────────────────────────────────────────────
 
 function ConnectedView({
-  walletAddress, short, solBalance, hamstarBalance, loadingBal, copied, history,
+  walletAddress, short, hamstarBalance, loadingBal, copied, history,
   onCopy, onDeposit, onDisconnect, onClose,
 }: {
   walletAddress: string
   short: string
-  solBalance: number | null
   hamstarBalance: number
   loadingBal: boolean
   copied: boolean
@@ -131,7 +127,7 @@ function ConnectedView({
   const isMobile = useIsMobile()
   const tier  = getFanTier(hamstarBalance)
   const wins  = history.filter(e => e.won === true).length
-  const total = history.filter(e => e.won !== null).length
+  const total = history.length
 
   return (
     <>
@@ -142,7 +138,7 @@ function ConnectedView({
         padding: isMobile ? '16px 20px 0' : '22px 28px 0',
         position: 'relative', overflow: 'hidden',
       }}>
-        <CloseBtnYellow onClick={onClose} />
+        <CloseBtn onClick={onClose} />
         <img
           src="/images/cheese-hideout.png" alt=""
           style={{
@@ -156,7 +152,7 @@ function ConnectedView({
         <div style={{ position: 'relative', zIndex: 1 }}>
           <div style={{ display: 'flex', alignItems: 'flex-end', gap: 16, marginBottom: 14 }}>
 
-            {/* Avatar — ring color driven by tier */}
+            {/* Avatar — ring color from tier, yellow inner */}
             <div style={{ position: 'relative', flexShrink: 0 }}>
               <div style={{
                 width: 62, height: 62, borderRadius: '50%',
@@ -165,11 +161,14 @@ function ConnectedView({
               }}>
                 <div style={{
                   width: '100%', height: '100%', borderRadius: '50%',
-                  background: 'linear-gradient(135deg, #735DFF 0%, #AB9FF2 100%)',
+                  background: T.yellow,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 30,
-                }}><img src="/images/hamster-flash-flex.png" alt="" style={{ width: '75%', height: '75%', objectFit: 'contain' }} /></div>
+                  overflow: 'hidden',
+                }}>
+                  <img src="/images/hamster-flash-flex.png" alt="" style={{ width: '80%', height: '80%', objectFit: 'contain' }} />
+                </div>
               </div>
+              {/* Online indicator */}
               <div style={{
                 position: 'absolute', bottom: 2, right: 2,
                 width: 14, height: 14, borderRadius: '50%',
@@ -178,17 +177,18 @@ function ConnectedView({
             </div>
 
             <div style={{ paddingBottom: 2 }}>
-              {/* Fan tier badge — dynamic */}
+              {/* Fan tier badge — hamstar logo, no emoji */}
               <div style={{
-                display: 'inline-flex', alignItems: 'center', gap: 4,
+                display: 'inline-flex', alignItems: 'center', gap: 5,
                 background: tier.badgeBg, borderRadius: 6,
-                padding: '2px 8px', marginBottom: 5,
+                padding: '3px 9px', marginBottom: 5,
               }}>
+                <HamstarLogo size={12} />
                 <span style={{ fontFamily: KANIT, fontSize: 10, fontWeight: 700, color: tier.badgeColor, letterSpacing: 0.5 }}>
-                  {tier.emoji} {tier.label.toUpperCase()}
+                  {tier.label.toUpperCase()}
                 </span>
               </div>
-              <p style={{ fontFamily: KANIT, fontSize: 22, fontWeight: 800, color: T.text, margin: 0, lineHeight: 1.1 }}>
+              <p style={{ fontFamily: KANIT, fontSize: 22, fontWeight: 800, color: T.text, margin: 0, lineHeight: 1.1, letterSpacing: '-0.025em' }}>
                 Hamstar Fan
               </p>
               <p style={{ fontFamily: MONO, fontSize: 11, color: 'rgba(0,0,0,0.4)', margin: '4px 0 0' }}>
@@ -197,22 +197,22 @@ function ConnectedView({
             </div>
           </div>
 
-          {/* Stats strip: SOL · $HAMSTAR · Wins */}
+          {/* Stats strip: $HAMSTAR · Races · Wins */}
           <div style={{
             display: 'grid', gridTemplateColumns: '1fr 1fr 1fr',
             borderTop: '1px solid rgba(0,0,0,0.08)',
           }}>
             {[
-              { label: 'SOL',          value: loadingBal ? '…' : solBalance !== null ? `◎ ${solBalance.toFixed(3)}` : '—' },
               { label: HAMSTAR_SYMBOL, value: loadingBal ? '…' : formatHamstar(hamstarBalance) },
-              { label: 'Wins',         value: total > 0 ? `${wins}/${total}` : '—' },
+              { label: 'Races',        value: String(total) },
+              { label: 'Wins',         value: total > 0 ? String(wins) : '—' },
             ].map((s, i) => (
               <div key={s.label} style={{
-                padding: '9px 0', textAlign: 'center',
+                padding: '10px 0', textAlign: 'center',
                 borderRight: i < 2 ? '1px solid rgba(0,0,0,0.08)' : 'none',
               }}>
                 <p style={{ fontFamily: KANIT, fontSize: 15, fontWeight: 800, color: T.text, margin: 0 }}>{s.value}</p>
-                <p style={{ fontFamily: PRET, fontSize: 10, color: 'rgba(0,0,0,0.4)', margin: '2px 0 0' }}>{s.label}</p>
+                <p style={{ fontFamily: PRET, fontSize: 10, fontWeight: 500, color: 'rgba(0,0,0,0.4)', margin: '2px 0 0' }}>{s.label}</p>
               </div>
             ))}
           </div>
@@ -225,13 +225,13 @@ function ConnectedView({
         {/* Wallet address card */}
         <div style={{
           background: T.bg, borderRadius: 16,
-          border: `1px solid ${T.border}`,
-          marginBottom: 10, overflow: 'hidden',
+          border: `1.5px solid ${T.border}`,
+          marginBottom: 10,
           padding: '12px 16px',
           display: 'flex', alignItems: 'center', gap: 12,
         }}>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <p style={{ fontFamily: KANIT, fontSize: 10, fontWeight: 700, color: '#bbb', textTransform: 'uppercase', letterSpacing: 1, margin: '0 0 3px' }}>
+            <p style={{ fontFamily: KANIT, fontSize: 9, fontWeight: 700, color: '#c8c8c8', textTransform: 'uppercase', letterSpacing: 1.2, margin: '0 0 4px' }}>
               Wallet Address
             </p>
             <p style={{ fontFamily: MONO, fontSize: 11, color: T.text, margin: 0, wordBreak: 'break-all', lineHeight: 1.5 }}>
@@ -268,16 +268,16 @@ function ConnectedView({
           </div>
         </div>
 
-        {/* Deposit SOL */}
-        <DepositBtn onClick={onDeposit} />
+        {/* Get $HAMSTAR */}
+        <GetHamstarBtn onClick={onDeposit} />
 
         {/* Cheering history */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', margin: '12px 0 8px' }}>
-          <p style={{ fontFamily: KANIT, fontSize: 10, fontWeight: 700, color: '#bbb', textTransform: 'uppercase', letterSpacing: 1, margin: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', margin: '14px 0 8px' }}>
+          <p style={{ fontFamily: KANIT, fontSize: 9, fontWeight: 700, color: '#c8c8c8', textTransform: 'uppercase', letterSpacing: 1.2, margin: 0 }}>
             Cheering History
           </p>
           {history.length > 0 && (
-            <span style={{ fontFamily: KANIT, fontSize: 10, color: '#ccc' }}>
+            <span style={{ fontFamily: KANIT, fontSize: 11, fontWeight: 500, color: '#ccc' }}>
               {history.length} race{history.length !== 1 ? 's' : ''}
             </span>
           )}
@@ -285,16 +285,16 @@ function ConnectedView({
 
         {history.length === 0 ? (
           <div style={{
-            background: 'rgba(255,231,144,0.1)',
+            background: T.yellowSoft,
             border: `1.5px dashed rgba(255,200,0,0.3)`,
-            borderRadius: 16, padding: '16px 20px',
+            borderRadius: 16, padding: '20px 20px',
             textAlign: 'center', marginBottom: 12,
           }}>
-            <img src="/images/hamster-flash-flex.png" alt="" style={{ width: 48, height: 48, objectFit: 'contain', marginBottom: 8 }} />
-            <p style={{ fontFamily: KANIT, fontSize: 14, fontWeight: 700, color: T.text, margin: '0 0 3px' }}>
+            <img src="/images/hamster-flash-flex.png" alt="" style={{ width: 48, height: 48, objectFit: 'contain', marginBottom: 10 }} />
+            <p style={{ fontFamily: KANIT, fontSize: 14, fontWeight: 700, color: T.text, margin: '0 0 4px', letterSpacing: '-0.01em' }}>
               No races cheered yet
             </p>
-            <p style={{ fontFamily: PRET, fontSize: 12, color: T.textMid, margin: 0, lineHeight: 1.6 }}>
+            <p style={{ fontFamily: PRET, fontSize: 12, fontWeight: 500, color: T.textMid, margin: 0, lineHeight: 1.6 }}>
               Head to the Arena and cheer for your favourite hamster.
             </p>
           </div>
@@ -321,7 +321,7 @@ function NoWalletView({ onConnect, onClose }: { onConnect: () => void; onClose: 
         padding: '40px 28px 36px', textAlign: 'center',
         position: 'relative', overflow: 'hidden',
       }}>
-        <CloseBtnYellow onClick={onClose} />
+        <CloseBtn onClick={onClose} />
         <img
           src="/images/cheese-hideout.png" alt=""
           style={{
@@ -334,15 +334,19 @@ function NoWalletView({ onConnect, onClose }: { onConnect: () => void; onClose: 
         <div style={{ position: 'relative', zIndex: 1 }}>
           <div style={{
             width: 70, height: 70, borderRadius: '50%',
-            background: 'linear-gradient(135deg, #735DFF 0%, #AB9FF2 100%)',
+            background: T.yellow,
+            border: '3px solid rgba(0,0,0,0.1)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 30, margin: '0 auto 16px',
-            boxShadow: '0 6px 20px rgba(115,93,255,0.3)',
-          }}><img src="/images/hamster-flash-flex.png" alt="" style={{ width: '75%', height: '75%', objectFit: 'contain' }} /></div>
-          <h2 style={{ fontFamily: KANIT, fontSize: 22, fontWeight: 800, color: T.text, margin: '0 0 8px' }}>
+            margin: '0 auto 16px',
+            boxShadow: '0 6px 20px rgba(0,0,0,0.1)',
+            overflow: 'hidden',
+          }}>
+            <img src="/images/hamster-flash-flex.png" alt="" style={{ width: '80%', height: '80%', objectFit: 'contain' }} />
+          </div>
+          <h2 style={{ fontFamily: KANIT, fontSize: 22, fontWeight: 800, color: T.text, margin: '0 0 8px', letterSpacing: '-0.025em' }}>
             No Wallet Connected
           </h2>
-          <p style={{ fontFamily: PRET, fontSize: 13, color: 'rgba(0,0,0,0.5)', margin: 0, lineHeight: 1.6 }}>
+          <p style={{ fontFamily: PRET, fontSize: 13, fontWeight: 500, color: 'rgba(0,0,0,0.5)', margin: 0, lineHeight: 1.6 }}>
             Connect a Solana wallet to cheer<br />for your favourite hamster.
           </p>
         </div>
@@ -359,6 +363,7 @@ function NoWalletView({ onConnect, onClose }: { onConnect: () => void; onClose: 
 function CheerRow({ entry }: { entry: CheerEntry }) {
   const [hov, setHov] = useState(false)
   const dateStr = new Date(entry.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+  const petImg = PET_IMAGES[entry.petId]
   return (
     <div
       onMouseEnter={() => setHov(true)}
@@ -366,23 +371,32 @@ function CheerRow({ entry }: { entry: CheerEntry }) {
       style={{
         display: 'flex', alignItems: 'center', gap: 14,
         padding: '11px 14px',
-        background: hov ? 'rgba(255,231,144,0.1)' : T.bg,
+        background: hov ? T.yellowSoft : T.bg,
         borderRadius: 14,
-        border: `1px solid ${hov ? 'rgba(255,200,0,0.25)' : T.border}`,
+        border: `1.5px solid ${hov ? 'rgba(255,200,0,0.25)' : T.border}`,
         transition: 'all 0.15s',
       }}
     >
+      {/* Pet photo — real image, falls back to hamster icon */}
       <div style={{
-        width: 38, height: 38, borderRadius: 11, flexShrink: 0,
+        width: 40, height: 40, borderRadius: 12, flexShrink: 0,
         background: entry.petColor,
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontSize: 19, boxShadow: `0 3px 10px ${entry.petColor}55`,
+        overflow: 'hidden',
+        boxShadow: `0 2px 8px ${entry.petColor}55`,
       }}>
-        {entry.petEmoji}
+        <img
+          src={petImg ?? '/images/hamster-flash-flex.png'}
+          alt={entry.petName}
+          style={{
+            width: '100%', height: '100%',
+            objectFit: 'cover', objectPosition: 'top center',
+            display: 'block',
+          }}
+        />
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
         <p style={{ fontFamily: KANIT, fontSize: 13, fontWeight: 700, color: T.text, margin: 0 }}>{entry.petName}</p>
-        <p style={{ fontFamily: PRET, fontSize: 11, color: T.textMid, margin: '2px 0 0' }}>Round {entry.round} · {dateStr}</p>
+        <p style={{ fontFamily: PRET, fontSize: 11, fontWeight: 500, color: T.textMid, margin: '2px 0 0' }}>Round {entry.round} · {dateStr}</p>
       </div>
       <ResultBadge won={entry.won} />
     </div>
@@ -394,18 +408,32 @@ function ResultBadge({ won }: { won: boolean | null }) {
     <span style={{ fontFamily: KANIT, fontSize: 10, fontWeight: 700, color: T.textMid, background: '#EFEFEF', padding: '4px 10px', borderRadius: 48.5 }}>Pending</span>
   )
   if (won) return (
-    <span style={{ fontFamily: KANIT, fontSize: 10, fontWeight: 700, color: T.sub2, background: T.yellow, padding: '4px 10px', borderRadius: 48.5, display: 'flex', alignItems: 'center', gap: 4 }}>
-      Won
-    </span>
+    <span style={{ fontFamily: KANIT, fontSize: 10, fontWeight: 700, color: T.sub2, background: T.yellow, padding: '4px 10px', borderRadius: 48.5 }}>Won</span>
   )
   return (
     <span style={{ fontFamily: KANIT, fontSize: 10, fontWeight: 700, color: '#9A3412', background: 'rgba(239,68,68,0.1)', padding: '4px 10px', borderRadius: 48.5 }}>Lost</span>
   )
 }
 
+// ─── Hamstar logo ─────────────────────────────────────────────────────────────
+
+function HamstarLogo({ size = 20 }: { size?: number }) {
+  const r = Math.round(size * 0.32)
+  return (
+    <div style={{
+      width: size, height: size, borderRadius: r,
+      background: T.yellow,
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      overflow: 'hidden', flexShrink: 0,
+    }}>
+      <img src="/images/hamster-flash-flex.png" alt="" style={{ width: '85%', height: '85%', objectFit: 'contain' }} />
+    </div>
+  )
+}
+
 // ─── Close button ─────────────────────────────────────────────────────────────
 
-function CloseBtnYellow({ onClick }: { onClick: () => void }) {
+function CloseBtn({ onClick }: { onClick: () => void }) {
   const [hov, setHov] = useState(false)
   return (
     <button
@@ -427,7 +455,7 @@ function CloseBtnYellow({ onClick }: { onClick: () => void }) {
 
 // ─── Buttons ──────────────────────────────────────────────────────────────────
 
-function DepositBtn({ onClick }: { onClick: () => void }) {
+function GetHamstarBtn({ onClick }: { onClick: () => void }) {
   const [hov, setHov] = useState(false)
   return (
     <button
@@ -439,12 +467,12 @@ function DepositBtn({ onClick }: { onClick: () => void }) {
         width: '100%', padding: '14px 20px', marginBottom: 10,
         background: hov ? T.limeDark : T.yellow,
         border: 'none', borderRadius: 48.5,
-        fontFamily: KANIT, fontSize: 14, fontWeight: 700, color: T.text,
+        fontFamily: KANIT, fontSize: 15, fontWeight: 800, letterSpacing: '-0.01em', color: T.text,
         cursor: 'pointer', transition: 'all 0.15s',
-        boxShadow: hov ? '0 6px 20px rgba(255,215,0,0.4)' : '0 3px 12px rgba(255,215,0,0.2)',
+        boxShadow: hov ? T.shadowBtnYellow : '0 3px 12px rgba(255,215,0,0.2)',
       }}
     >
-      <span style={{ fontSize: 15 }}>◎</span> Deposit SOL
+      <HamstarLogo size={20} /> Get $HAMSTAR
     </button>
   )
 }
@@ -459,13 +487,13 @@ function DisconnectBtn({ onClick }: { onClick: () => void }) {
       style={{
         display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
         width: '100%', padding: '12px 20px',
-        background: hov ? 'rgba(255,59,92,0.05)' : '#fff',
-        border: '1.5px solid rgba(255,59,92,0.2)', borderRadius: 48.5,
-        fontFamily: KANIT, fontSize: 13, fontWeight: 600, color: T.coral,
+        background: hov ? 'rgba(255,59,92,0.05)' : 'transparent',
+        border: 'none', borderRadius: 48.5,
+        fontFamily: KANIT, fontSize: 13, fontWeight: 700, letterSpacing: '-0.01em', color: T.coral,
         cursor: 'pointer', transition: 'all 0.15s',
       }}
     >
-      <span style={{ fontSize: 14 }}>↩</span> Disconnect
+      ↩ Disconnect
     </button>
   )
 }
@@ -481,7 +509,7 @@ function ConnectWalletBtn({ onClick }: { onClick: () => void }) {
         width: '100%', padding: '15px 20px',
         background: hov ? '#222' : T.text,
         border: 'none', borderRadius: 48.5,
-        fontFamily: KANIT, fontSize: 15, fontWeight: 700, color: T.yellow,
+        fontFamily: KANIT, fontSize: 15, fontWeight: 800, letterSpacing: '-0.01em', color: T.yellow,
         cursor: 'pointer', transition: 'background 0.15s',
       }}
     >Connect Wallet</button>

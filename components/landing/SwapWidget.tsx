@@ -8,36 +8,84 @@ import { HAMSTAR_MINT, HAMSTAR_SYMBOL, HAMSTAR_DECIMALS } from '@/lib/hamstar-to
 const KANIT = "var(--font-kanit), sans-serif"
 const PRET  = 'Pretendard, sans-serif'
 
-// ─── Token config ─────────────────────────────────────────────────────────────
+// ─── Token registry ───────────────────────────────────────────────────────────
 
-const INPUT_TOKENS = {
+type TokenKey = 'SOL' | 'USDC' | 'HAMSTAR'
+
+interface TokenConfig {
+  mint:        string
+  symbol:      string
+  name:        string
+  decimals:    number
+  logoUrl:     string | null   // null = use HamstarLogo component
+  placeholder: boolean         // true = not yet deployed
+}
+
+const TOKENS: Record<TokenKey, TokenConfig> = {
   SOL: {
-    mint:     'So11111111111111111111111111111111111111112',
-    symbol:   'SOL',
-    name:     'Solana',
-    decimals: 9,
-    logoUrl:  'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png',
+    mint:        'So11111111111111111111111111111111111111112',
+    symbol:      'SOL',
+    name:        'Solana',
+    decimals:    9,
+    logoUrl:     'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png',
+    placeholder: false,
   },
   USDC: {
-    mint:     'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-    symbol:   'USDC',
-    name:     'USD Coin',
-    decimals: 6,
-    logoUrl:  'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v/logo.png',
+    mint:        'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+    symbol:      'USDC',
+    name:        'USD Coin',
+    decimals:    6,
+    logoUrl:     'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v/logo.png',
+    placeholder: false,
   },
-} as const
-type InputTokenKey = keyof typeof INPUT_TOKENS
+  HAMSTAR: {
+    mint:        HAMSTAR_MINT,
+    symbol:      HAMSTAR_SYMBOL.replace('$', ''),
+    name:        'Hamstar',
+    decimals:    HAMSTAR_DECIMALS,
+    logoUrl:     null,
+    placeholder: HAMSTAR_MINT.includes('xxx'),
+  },
+}
+
+const ALL_KEYS: TokenKey[] = ['SOL', 'USDC', 'HAMSTAR']
+
+// ─── Jupiter types ────────────────────────────────────────────────────────────
 
 interface QuoteResponse {
-  inAmount: string
-  outAmount: string
+  inAmount:       string
+  outAmount:      string
   priceImpactPct: string
-  slippageBps: number
-  routePlan: unknown[]
+  slippageBps:    number
+  routePlan:      unknown[]
 }
 
 const SLIPPAGE_OPTS = [0.3, 0.5, 1] as const
 type Slippage = typeof SLIPPAGE_OPTS[number]
+
+// ─── Formatting helpers ───────────────────────────────────────────────────────
+
+function fmtOut(rawAmount: string, token: TokenConfig): string {
+  const n = parseInt(rawAmount) / Math.pow(10, token.decimals)
+  if (token.decimals === 6) {
+    // USDC-style: always 2dp
+    return n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  }
+  if (n >= 10_000) return Math.round(n).toLocaleString()
+  if (n >= 1)      return n.toLocaleString(undefined, { maximumFractionDigits: 4 })
+  return n.toLocaleString(undefined, { maximumFractionDigits: 6 })
+}
+
+function fmtRate(quote: QuoteResponse, inToken: TokenConfig, outToken: TokenConfig, inputAmt: string): string | null {
+  const parsed = parseFloat(inputAmt)
+  if (!parsed || parsed <= 0) return null
+  const inRaw  = parsed * Math.pow(10, inToken.decimals)
+  const outAmt = parseInt(quote.outAmount) / Math.pow(10, outToken.decimals)
+  const rate   = outAmt / (inRaw / Math.pow(10, inToken.decimals))
+  if (rate >= 1000) return `1 ${inToken.symbol} ≈ ${Math.round(rate).toLocaleString()} ${outToken.symbol}`
+  if (rate >= 1)    return `1 ${inToken.symbol} ≈ ${rate.toLocaleString(undefined, { maximumFractionDigits: 4 })} ${outToken.symbol}`
+  return `1 ${inToken.symbol} ≈ ${rate.toLocaleString(undefined, { maximumFractionDigits: 6 })} ${outToken.symbol}`
+}
 
 // ─── Main widget ──────────────────────────────────────────────────────────────
 
@@ -45,37 +93,52 @@ export function SwapWidget() {
   const { publicKey, sendTransaction, connected } = useWallet()
   const { connection } = useConnection()
 
-  const [inputToken, setInputToken] = useState<InputTokenKey>('SOL')
-  const [inputAmt, setInputAmt]     = useState('')
-  const [quote, setQuote]           = useState<QuoteResponse | null>(null)
-  const [fetching, setFetching]     = useState(false)
-  const [swapping, setSwapping]     = useState(false)
-  const [slippage, setSlippage]     = useState<Slippage>(0.5)
-  const [showSlip, setShowSlip]     = useState(false)
-  const [error, setError]           = useState('')
-  const [txSig, setTxSig]           = useState('')
+  const [inKey,  setInKey]  = useState<TokenKey>('SOL')
+  const [outKey, setOutKey] = useState<TokenKey>('HAMSTAR')
+  const [inputAmt, setInputAmt]   = useState('')
+  const [quote, setQuote]         = useState<QuoteResponse | null>(null)
+  const [fetching, setFetching]   = useState(false)
+  const [swapping, setSwapping]   = useState(false)
+  const [slippage, setSlippage]   = useState<Slippage>(0.5)
+  const [showSlip, setShowSlip]   = useState(false)
+  const [error, setError]         = useState('')
+  const [txSig, setTxSig]         = useState('')
+  const [flipping, setFlipping]   = useState(false)
 
-  const abortRef   = useRef<AbortController | null>(null)
-  const isPlaceholder = HAMSTAR_MINT.includes('xxx')
-  const token = INPUT_TOKENS[inputToken]
+  const abortRef = useRef<AbortController | null>(null)
+  const inToken  = TOKENS[inKey]
+  const outToken = TOKENS[outKey]
+  const pairDisabled = inToken.placeholder || outToken.placeholder
 
-  // Reset amount when switching input token
-  const handleTokenChange = (key: InputTokenKey) => {
-    setInputToken(key)
-    setInputAmt('')
-    setQuote(null)
-    setError('')
-    setTxSig('')
+  // ── Token selection with auto-reverse on conflict ──────────────────────────
+  const selectIn = (k: TokenKey) => {
+    if (k === outKey) { handleReverse(); return }
+    setInKey(k)
+    reset()
+  }
+  const selectOut = (k: TokenKey) => {
+    if (k === inKey) { handleReverse(); return }
+    setOutKey(k)
+    reset()
   }
 
-  // Debounced quote fetch
+  const reset = () => { setInputAmt(''); setQuote(null); setError(''); setTxSig('') }
+
+  const handleReverse = () => {
+    setFlipping(true)
+    setTimeout(() => setFlipping(false), 350)
+    setInKey(outKey)
+    setOutKey(inKey)
+    reset()
+  }
+
+  // ── Quote fetch ────────────────────────────────────────────────────────────
   useEffect(() => {
     setQuote(null)
     setError('')
-    setTxSig('')
 
     const parsed = parseFloat(inputAmt)
-    if (isPlaceholder || !inputAmt || isNaN(parsed) || parsed <= 0) return
+    if (pairDisabled || !inputAmt || isNaN(parsed) || parsed <= 0) return
 
     const timer = setTimeout(async () => {
       abortRef.current?.abort()
@@ -83,12 +146,12 @@ export function SwapWidget() {
       setFetching(true)
 
       try {
-        const rawAmount = Math.floor(parsed * Math.pow(10, token.decimals)).toString()
+        const rawAmount = Math.floor(parsed * Math.pow(10, inToken.decimals)).toString()
         const params = new URLSearchParams({
-          inputMint:    token.mint,
-          outputMint:   HAMSTAR_MINT,
-          amount:       rawAmount,
-          slippageBps:  Math.round(slippage * 100).toString(),
+          inputMint:   inToken.mint,
+          outputMint:  outToken.mint,
+          amount:      rawAmount,
+          slippageBps: Math.round(slippage * 100).toString(),
         })
         const res = await fetch(`https://quote-api.jup.ag/v6/quote?${params}`, {
           signal: abortRef.current.signal,
@@ -98,7 +161,7 @@ export function SwapWidget() {
         setQuote(data)
       } catch (e: any) {
         if (e.name === 'AbortError') return
-        setError('No routes found for this pair yet.')
+        setError('No route found for this pair.')
         setQuote(null)
       } finally {
         setFetching(false)
@@ -106,13 +169,12 @@ export function SwapWidget() {
     }, 400)
 
     return () => { clearTimeout(timer); abortRef.current?.abort() }
-  }, [inputAmt, inputToken, slippage, isPlaceholder]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [inputAmt, inKey, outKey, slippage, pairDisabled]) // eslint-disable-line react-hooks/exhaustive-deps
 
+  // ── Swap ───────────────────────────────────────────────────────────────────
   const handleSwap = async () => {
     if (!quote || !publicKey) return
-    setSwapping(true)
-    setError('')
-    setTxSig('')
+    setSwapping(true); setError(''); setTxSig('')
 
     try {
       const res = await fetch('https://quote-api.jup.ag/v6/swap', {
@@ -128,14 +190,11 @@ export function SwapWidget() {
       })
       if (!res.ok) throw new Error('build_failed')
       const { swapTransaction } = await res.json()
-
       const tx = VersionedTransaction.deserialize(
         Uint8Array.from(atob(swapTransaction), c => c.charCodeAt(0))
       )
       const sig = await sendTransaction(tx, connection)
-      setTxSig(sig)
-      setInputAmt('')
-      setQuote(null)
+      setTxSig(sig); setInputAmt(''); setQuote(null)
     } catch (e: any) {
       const msg = (e?.message ?? '').toLowerCase()
       setError(
@@ -148,18 +207,9 @@ export function SwapWidget() {
     }
   }
 
-  const outFormatted = quote
-    ? (parseInt(quote.outAmount) / Math.pow(10, HAMSTAR_DECIMALS))
-        .toLocaleString(undefined, { maximumFractionDigits: 0 })
-    : ''
-
-  const rate = quote && parseFloat(inputAmt) > 0
-    ? Math.round(
-        parseInt(quote.outAmount) / Math.pow(10, HAMSTAR_DECIMALS) / parseFloat(inputAmt)
-      ).toLocaleString()
-    : null
-
-  const priceImpact = quote ? parseFloat(quote.priceImpactPct) : 0
+  const outFormatted = quote ? fmtOut(quote.outAmount, outToken) : ''
+  const rateStr      = quote ? fmtRate(quote, inToken, outToken, inputAmt) : null
+  const priceImpact  = quote ? parseFloat(quote.priceImpactPct) : 0
 
   return (
     <div>
@@ -172,95 +222,61 @@ export function SwapWidget() {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
 
         {/* ── Input row ── */}
-        <div style={{
-          background: T.bg,
-          border: `1.5px solid ${T.border}`,
-          borderRadius: 16, padding: '11px 14px',
-        }}>
-          <p style={labelStyle}>You pay</p>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <TokenSelector
-              selected={inputToken}
-              onSelect={handleTokenChange}
-            />
-            <input
-              className="swap-input"
-              type="number"
-              min="0"
-              step="any"
-              value={inputAmt}
-              onChange={e => setInputAmt(e.target.value)}
-              placeholder="0.00"
-              style={{
-                flex: 1, textAlign: 'right',
-                background: 'transparent', border: 'none', outline: 'none',
-                fontFamily: KANIT, fontSize: 22, fontWeight: 700,
-                color: inputAmt ? T.text : '#d0d0d0',
-                padding: 0, minWidth: 0,
-              }}
-            />
-          </div>
-        </div>
+        <TokenRow
+          label="You pay"
+          tokenKey={inKey}
+          otherKey={outKey}
+          onSelect={selectIn}
+          editable
+          value={inputAmt}
+          onChange={setInputAmt}
+        />
 
-        {/* ── Swap direction arrow ── */}
+        {/* ── Reverse button ── */}
         <div style={{ display: 'flex', justifyContent: 'center', margin: '-3px 0' }}>
-          <div style={{
-            width: 30, height: 30, borderRadius: 9,
-            background: T.purple,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            boxShadow: '0 2px 8px rgba(115,93,255,0.3)',
-          }}>
-            <ArrowDownIcon />
-          </div>
+          <button
+            onClick={handleReverse}
+            style={{
+              width: 32, height: 32, borderRadius: 9,
+              background: T.purple,
+              border: 'none', cursor: 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              boxShadow: '0 2px 8px rgba(115,93,255,0.35)',
+              transform: flipping ? 'rotate(180deg)' : 'rotate(0deg)',
+              transition: 'transform 0.3s ease, background 0.15s',
+            } as React.CSSProperties}
+          >
+            <ReverseIcon />
+          </button>
         </div>
 
         {/* ── Output row ── */}
-        <div style={{
-          background: T.bg,
-          border: `1.5px solid ${outFormatted && !isPlaceholder ? 'rgba(255,200,0,0.4)' : T.border}`,
-          borderRadius: 16, padding: '11px 14px',
-          transition: 'border-color 0.2s',
-        }}>
-          <p style={labelStyle}>You receive</p>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            {/* HAMSTAR token badge (fixed) */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
-              <HamstarLogo />
-              <span style={{ fontFamily: KANIT, fontSize: 15, fontWeight: 700, color: T.text }}>
-                {HAMSTAR_SYMBOL.replace('$', '')}
-              </span>
-            </div>
-            {/* Amount */}
-            <div style={{ flex: 1, textAlign: 'right' }}>
-              {isPlaceholder ? (
-                <span style={{ fontFamily: PRET, fontSize: 12, color: T.textMid }}>
-                  Launching soon
-                </span>
-              ) : fetching ? (
-                <span style={{ fontFamily: KANIT, fontSize: 20, fontWeight: 700, color: '#d0d0d0' }}>…</span>
-              ) : outFormatted ? (
-                <span style={{ fontFamily: KANIT, fontSize: 22, fontWeight: 700, color: T.text }}>
-                  {outFormatted}
-                </span>
-              ) : (
-                <span style={{ fontFamily: KANIT, fontSize: 22, fontWeight: 700, color: '#d0d0d0' }}>0</span>
-              )}
-            </div>
-          </div>
-        </div>
+        <TokenRow
+          label="You receive"
+          tokenKey={outKey}
+          otherKey={inKey}
+          onSelect={selectOut}
+          value={
+            pairDisabled ? '' :
+            fetching     ? '…' :
+            outFormatted
+          }
+          outputHighlight={!!outFormatted && !pairDisabled}
+          placeholderText={
+            pairDisabled
+              ? (inToken.placeholder ? `${inToken.symbol} launching soon` : `${outToken.symbol} launching soon`)
+              : undefined
+          }
+        />
 
         {/* ── Rate + slippage ── */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1px 4px' }}>
           <span style={{ fontFamily: PRET, fontSize: 11, color: T.textMid }}>
-            {rate ? <>1 {token.symbol} ≈ <strong style={{ color: T.text }}>{rate}</strong> {HAMSTAR_SYMBOL}</> : null}
+            {rateStr ?? <span style={{ visibility: 'hidden' }}>–</span>}
           </span>
           <button
             onClick={() => setShowSlip(s => !s)}
-            style={{
-              display: 'flex', alignItems: 'center', gap: 4,
-              background: 'none', border: 'none', cursor: 'pointer',
-              fontFamily: PRET, fontSize: 11, color: T.textMid,
-            }}
+            style={{ display: 'flex', alignItems: 'center', gap: 4, background: 'none', border: 'none', cursor: 'pointer', fontFamily: PRET, fontSize: 11, color: T.textMid }}
           >
             <GearIcon /> {slippage}% slippage
           </button>
@@ -319,22 +335,24 @@ export function SwapWidget() {
           </div>
         )}
 
-        {/* ── Action button ── */}
+        {/* ── Swap button ── */}
         <SwapBtn
-          isPlaceholder={isPlaceholder}
+          pairDisabled={pairDisabled}
           connected={connected}
           canSwap={!!quote && !swapping}
           loading={swapping || (fetching && !!inputAmt)}
+          inToken={inToken}
+          outToken={outToken}
           onSwap={handleSwap}
         />
 
         {/* Attribution */}
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 4 }}>
           <span style={{ fontFamily: PRET, fontSize: 10, color: '#ccc' }}>Powered by</span>
-          <a
-            href="https://jup.ag" target="_blank" rel="noopener noreferrer"
-            style={{ fontFamily: KANIT, fontSize: 10, fontWeight: 700, color: '#bbb', textDecoration: 'none' }}
-          >Jupiter</a>
+          <a href="https://jup.ag" target="_blank" rel="noopener noreferrer"
+            style={{ fontFamily: KANIT, fontSize: 10, fontWeight: 700, color: '#bbb', textDecoration: 'none' }}>
+            Jupiter
+          </a>
         </div>
 
       </div>
@@ -342,18 +360,82 @@ export function SwapWidget() {
   )
 }
 
-// ─── Token selector ────────────────────────────────────────────────────────────
+// ─── Token row (shared for input + output) ────────────────────────────────────
 
-function TokenSelector({ selected, onSelect }: {
-  selected: InputTokenKey
-  onSelect: (k: InputTokenKey) => void
+function TokenRow({
+  label, tokenKey, otherKey, onSelect,
+  editable, value, onChange,
+  outputHighlight, placeholderText,
+}: {
+  label:           string
+  tokenKey:        TokenKey
+  otherKey:        TokenKey
+  onSelect:        (k: TokenKey) => void
+  editable?:       boolean
+  value:           string
+  onChange?:       (v: string) => void
+  outputHighlight?: boolean
+  placeholderText?: string
+}) {
+  const token = TOKENS[tokenKey]
+
+  return (
+    <div style={{
+      background: T.bg,
+      border: `1.5px solid ${outputHighlight ? 'rgba(255,200,0,0.4)' : T.border}`,
+      borderRadius: 16, padding: '11px 14px',
+      transition: 'border-color 0.2s',
+    }}>
+      <p style={labelStyle}>{label}</p>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <TokenSelector tokenKey={tokenKey} otherKey={otherKey} onSelect={onSelect} />
+
+        {/* Amount */}
+        {editable ? (
+          <input
+            className="swap-input"
+            type="number" min="0" step="any"
+            value={value}
+            onChange={e => onChange?.(e.target.value)}
+            placeholder="0.00"
+            style={{
+              flex: 1, textAlign: 'right',
+              background: 'transparent', border: 'none', outline: 'none',
+              fontFamily: KANIT, fontSize: 22, fontWeight: 700,
+              color: value ? T.text : '#d0d0d0',
+              padding: 0, minWidth: 0,
+            }}
+          />
+        ) : (
+          <div style={{ flex: 1, textAlign: 'right' }}>
+            {placeholderText ? (
+              <span style={{ fontFamily: PRET, fontSize: 12, color: T.textMid }}>{placeholderText}</span>
+            ) : value === '…' ? (
+              <span style={{ fontFamily: KANIT, fontSize: 20, fontWeight: 700, color: '#d0d0d0' }}>…</span>
+            ) : value ? (
+              <span style={{ fontFamily: KANIT, fontSize: 22, fontWeight: 700, color: T.text }}>{value}</span>
+            ) : (
+              <span style={{ fontFamily: KANIT, fontSize: 22, fontWeight: 700, color: '#d0d0d0' }}>0</span>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+// ─── Token selector dropdown ──────────────────────────────────────────────────
+
+function TokenSelector({ tokenKey, otherKey, onSelect }: {
+  tokenKey: TokenKey
+  otherKey: TokenKey
+  onSelect: (k: TokenKey) => void
 }) {
   const [open, setOpen] = useState(false)
-  const token = INPUT_TOKENS[selected]
+  const token = TOKENS[tokenKey]
 
   return (
     <div style={{ position: 'relative', flexShrink: 0 }}>
-      {/* Trigger pill */}
       <button
         onClick={() => setOpen(o => !o)}
         style={{
@@ -364,58 +446,51 @@ function TokenSelector({ selected, onSelect }: {
           cursor: 'pointer', transition: 'border-color 0.15s',
         }}
       >
-        <TokenLogo symbol={token.symbol} logoUrl={token.logoUrl} size={22} />
+        <TokenLogo token={token} size={22} />
         <span style={{ fontFamily: KANIT, fontSize: 14, fontWeight: 700, color: T.text }}>
           {token.symbol}
         </span>
         <ChevronIcon open={open} />
       </button>
 
-      {/* Dropdown */}
       {open && (
         <>
-          {/* Click-away backdrop */}
-          <div
-            style={{ position: 'fixed', inset: 0, zIndex: 50 }}
-            onClick={() => setOpen(false)}
-          />
+          <div style={{ position: 'fixed', inset: 0, zIndex: 50 }} onClick={() => setOpen(false)} />
           <div style={{
             position: 'absolute', top: 'calc(100% + 6px)', left: 0, zIndex: 51,
             background: '#fff',
             border: `1.5px solid ${T.border}`,
-            borderRadius: 14,
-            boxShadow: T.shadowCard,
-            overflow: 'hidden', minWidth: 140,
+            borderRadius: 14, boxShadow: T.shadowCard,
+            overflow: 'hidden', minWidth: 150,
           }}>
-            {(Object.keys(INPUT_TOKENS) as InputTokenKey[]).map(key => {
-              const t = INPUT_TOKENS[key]
-              const isSelected = selected === key
+            {ALL_KEYS.map(k => {
+              const t = TOKENS[k]
+              const isSelected = k === tokenKey
+              const isOther    = k === otherKey
               return (
                 <button
-                  key={key}
-                  onClick={() => { onSelect(key); setOpen(false) }}
+                  key={k}
+                  onClick={() => { onSelect(k); setOpen(false) }}
                   style={{
-                    display: 'flex', alignItems: 'center', gap: 9,
+                    display: 'flex', alignItems: 'center', gap: 10,
                     width: '100%', padding: '10px 14px',
                     background: isSelected ? T.yellowSoft : 'transparent',
-                    border: 'none', cursor: 'pointer',
-                    transition: 'background 0.12s',
-                    textAlign: 'left',
+                    border: 'none', textAlign: 'left',
+                    cursor: 'pointer', transition: 'background 0.12s',
+                    opacity: t.placeholder ? 0.5 : 1,
                   }}
                 >
-                  <TokenLogo symbol={t.symbol} logoUrl={t.logoUrl} size={24} />
-                  <div>
+                  <TokenLogo token={t} size={24} />
+                  <div style={{ flex: 1 }}>
                     <p style={{ fontFamily: KANIT, fontSize: 13, fontWeight: 700, color: T.text, margin: 0 }}>
                       {t.symbol}
+                      {t.placeholder && <span style={{ fontFamily: PRET, fontSize: 10, color: T.textMid, marginLeft: 5 }}>soon</span>}
                     </p>
-                    <p style={{ fontFamily: PRET, fontSize: 10, color: T.textMid, margin: 0 }}>
-                      {t.name}
-                    </p>
+                    <p style={{ fontFamily: PRET, fontSize: 10, color: T.textMid, margin: 0 }}>{t.name}</p>
                   </div>
-                  {isSelected && (
-                    <div style={{ marginLeft: 'auto' }}>
-                      <CheckIcon />
-                    </div>
+                  {isSelected && <CheckIcon />}
+                  {isOther && !isSelected && (
+                    <span style={{ fontFamily: PRET, fontSize: 9, color: T.textMid }}>↕ swap</span>
                   )}
                 </button>
               )
@@ -429,26 +504,31 @@ function TokenSelector({ selected, onSelect }: {
 
 // ─── Swap button ──────────────────────────────────────────────────────────────
 
-function SwapBtn({ isPlaceholder, connected, canSwap, loading, onSwap }: {
-  isPlaceholder: boolean
-  connected: boolean
-  canSwap: boolean
-  loading: boolean
-  onSwap: () => void
+function SwapBtn({ pairDisabled, connected, canSwap, loading, inToken, outToken, onSwap }: {
+  pairDisabled: boolean
+  connected:    boolean
+  canSwap:      boolean
+  loading:      boolean
+  inToken:      TokenConfig
+  outToken:     TokenConfig
+  onSwap:       () => void
 }) {
   const [hov, setHov] = useState(false)
 
-  if (isPlaceholder) return (
-    <div style={{
-      display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-      padding: '13px 20px', borderRadius: 48.5,
-      background: T.yellowSoft, border: `1.5px solid rgba(255,200,0,0.35)`,
-      fontFamily: KANIT, fontSize: 13, fontWeight: 700, color: T.sub2,
-    }}>
-      <img src="/images/hamster-flash-flex.png" alt="" style={{ width: 16, height: 16, objectFit: 'contain' }} />
-      Token launching soon
-    </div>
-  )
+  if (pairDisabled) {
+    const which = inToken.placeholder ? inToken.symbol : outToken.symbol
+    return (
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+        padding: '13px 20px', borderRadius: 48.5,
+        background: T.yellowSoft, border: `1.5px solid rgba(255,200,0,0.35)`,
+        fontFamily: KANIT, fontSize: 13, fontWeight: 700, color: T.sub2,
+      }}>
+        <img src="/images/hamster-flash-flex.png" alt="" style={{ width: 16, height: 16, objectFit: 'contain' }} />
+        {which} launching soon
+      </div>
+    )
+  }
 
   if (!connected) return (
     <div style={{
@@ -464,8 +544,7 @@ function SwapBtn({ isPlaceholder, connected, canSwap, loading, onSwap }: {
   const disabled = !canSwap || loading
   return (
     <button
-      onClick={onSwap}
-      disabled={disabled}
+      onClick={onSwap} disabled={disabled}
       onMouseEnter={() => { if (!disabled) setHov(true) }}
       onMouseLeave={() => setHov(false)}
       style={{
@@ -482,21 +561,25 @@ function SwapBtn({ isPlaceholder, connected, canSwap, loading, onSwap }: {
       }}
     >
       {loading ? <Spinner /> : <SwapIcon />}
-      {loading ? 'Swapping…' : 'Swap'}
+      {loading ? 'Swapping…' : `Swap ${inToken.symbol} → ${outToken.symbol}`}
     </button>
   )
 }
 
-// ─── Token logo with CDN + fallback ──────────────────────────────────────────
+// ─── Token logo ───────────────────────────────────────────────────────────────
 
-function TokenLogo({ symbol, logoUrl, size = 28 }: { symbol: string; logoUrl: string; size?: number }) {
+function TokenLogo({ token, size = 28 }: { token: TokenConfig; size?: number }) {
   const [failed, setFailed] = useState(false)
+
+  if (token.logoUrl === null || (failed && token.logoUrl === null)) {
+    return <HamstarLogo size={size} />
+  }
 
   if (!failed) {
     return (
       <img
-        src={logoUrl}
-        alt={symbol}
+        src={token.logoUrl}
+        alt={token.symbol}
         width={size} height={size}
         style={{ borderRadius: '50%', flexShrink: 0, display: 'block' }}
         onError={() => setFailed(true)}
@@ -504,9 +587,23 @@ function TokenLogo({ symbol, logoUrl, size = 28 }: { symbol: string; logoUrl: st
     )
   }
 
-  // Fallback SVGs if CDN fails
-  if (symbol === 'SOL') return <SolFallback size={size} />
-  return <UsdcFallback size={size} />
+  if (token.symbol === 'SOL')  return <SolFallback  size={size} />
+  if (token.symbol === 'USDC') return <UsdcFallback size={size} />
+  return <HamstarLogo size={size} />
+}
+
+function HamstarLogo({ size = 28 }: { size?: number }) {
+  const r = Math.round(size * 0.32)
+  return (
+    <div style={{
+      width: size, height: size, borderRadius: r,
+      background: T.yellow,
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      overflow: 'hidden', flexShrink: 0,
+    }}>
+      <img src="/images/hamster-flash-flex.png" alt="" style={{ width: '85%', height: '85%', objectFit: 'contain' }} />
+    </div>
+  )
 }
 
 function SolFallback({ size = 28 }: { size?: number }) {
@@ -519,10 +616,10 @@ function SolFallback({ size = 28 }: { size?: number }) {
         </linearGradient>
       </defs>
       <circle cx="16" cy="16" r="16" fill="url(#sol-fb)"/>
-      <g fill="white" fillOpacity="0.95">
-        <polygon points="8,9.5 22.5,9.5 24,7.5 9.5,7.5"/>
-        <polygon points="8,17 22.5,17 24,15 9.5,15"/>
-        <polygon points="9.5,24.5 24,24.5 22.5,22.5 8,22.5"/>
+      <g fill="white" fillOpacity="0.92">
+        <polygon points="8,10 22,10 24,8 10,8"/>
+        <polygon points="8,17 22,17 24,15 10,15"/>
+        <polygon points="10,24 24,24 22,22 8,22"/>
       </g>
     </svg>
   )
@@ -532,41 +629,30 @@ function UsdcFallback({ size = 28 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 32 32" fill="none" style={{ flexShrink: 0 }}>
       <circle cx="16" cy="16" r="16" fill="#2775CA"/>
-      <circle cx="16" cy="16" r="9" fill="none" stroke="white" strokeWidth="2.5"/>
-      <line x1="16" y1="9" x2="16" y2="23" stroke="white" strokeWidth="2.5"/>
-      <line x1="11.5" y1="13" x2="20.5" y2="13" stroke="white" strokeWidth="2.5"/>
-      <line x1="11.5" y1="19" x2="20.5" y2="19" stroke="white" strokeWidth="2.5"/>
+      <circle cx="16" cy="16" r="9" fill="none" stroke="white" strokeWidth="2.2"/>
+      <line x1="16" y1="9" x2="16" y2="11.5" stroke="white" strokeWidth="2.2" strokeLinecap="round"/>
+      <line x1="16" y1="20.5" x2="16" y2="23" stroke="white" strokeWidth="2.2" strokeLinecap="round"/>
+      <path d="M19.5 13.5 C19.5 11.8 18 10.5 16 10.5 C14 10.5 12.5 11.8 12.5 13.5 C12.5 15.2 14 15.8 16 16.2 C18 16.6 19.5 17.2 19.5 19 C19.5 20.8 18 21.5 16 21.5 C14 21.5 12.5 20.2 12.5 18.5"
+        stroke="white" strokeWidth="2.2" strokeLinecap="round" fill="none"/>
     </svg>
   )
 }
 
-function HamstarLogo() {
-  return (
-    <div style={{
-      width: 28, height: 28, borderRadius: 9,
-      background: T.yellow,
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-      overflow: 'hidden', flexShrink: 0,
-    }}>
-      <img src="/images/hamster-flash-flex.png" alt="" style={{ width: '85%', height: '85%', objectFit: 'contain' }} />
-    </div>
-  )
-}
-
-// ─── Icons ────────────────────────────────────────────────────────────────────
+// ─── Shared icons ─────────────────────────────────────────────────────────────
 
 const labelStyle: React.CSSProperties = {
-  fontFamily: KANIT,
-  fontSize: 9, fontWeight: 700,
+  fontFamily: KANIT, fontSize: 9, fontWeight: 700,
   color: '#c0c0c0', textTransform: 'uppercase', letterSpacing: 1,
   margin: '0 0 7px',
 }
 
-function ArrowDownIcon() {
+function ReverseIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-      <line x1="12" y1="5" x2="12" y2="19"/>
-      <polyline points="19 12 12 19 5 12"/>
+      <polyline points="17 1 21 5 17 9"/>
+      <path d="M3 11V9a4 4 0 0 1 4-4h14"/>
+      <polyline points="7 23 3 19 7 15"/>
+      <path d="M21 13v2a4 4 0 0 1-4 4H3"/>
     </svg>
   )
 }
@@ -584,11 +670,9 @@ function SwapIcon() {
 
 function ChevronIcon({ open }: { open: boolean }) {
   return (
-    <svg
-      width="10" height="10" viewBox="0 0 24 24" fill="none"
+    <svg width="10" height="10" viewBox="0 0 24 24" fill="none"
       stroke={T.textMid} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
-      style={{ transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s', flexShrink: 0 }}
-    >
+      style={{ transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s', flexShrink: 0 }}>
       <polyline points="6 9 12 15 18 9"/>
     </svg>
   )

@@ -153,7 +153,7 @@ export function ArenaSection({
       }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 8 }}>
           <img src="/images/sunflower-seed.png" alt="" style={{ width: 22, height: 33, objectFit: 'contain' }} />
-          <h2 style={{ fontFamily: KANIT, fontWeight: 700, fontSize: 32, color: '#000000', lineHeight: '40px', margin: 0 }}>
+          <h2 style={{ fontFamily: KANIT, fontWeight: 700, fontSize: 32, color: '#000000', lineHeight: '40px', letterSpacing: '-0.025em', margin: 0 }}>
             {arenaTitle}
           </h2>
           <img src="/images/sunflower-seed.png" alt="" style={{ width: 22, height: 33, objectFit: 'contain' }} />
@@ -211,6 +211,7 @@ export function ArenaSection({
               fontWeight: 700, fontSize: 40,
               color: '#000000',
               lineHeight: '48px',
+              letterSpacing: '-0.03em',
               margin: 0,
               whiteSpace: 'nowrap',
             }}>

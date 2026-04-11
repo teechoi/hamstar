@@ -209,7 +209,7 @@ export function HighlightPageClient() {
 
           {/* Header */}
           <div style={{ textAlign: 'center', padding: isMobile ? '40px 0 32px' : '60px 0 40px' }}>
-            <h1 style={{ fontFamily: KANIT, fontSize: 'clamp(32px, 5vw, 60px)', fontWeight: 700, color: '#000', marginBottom: 12 }}>
+            <h1 style={{ fontFamily: KANIT, fontSize: 'clamp(32px, 5vw, 60px)', fontWeight: 700, color: '#000', letterSpacing: '-0.03em', marginBottom: 12 }}>
               🎥 Highlights
             </h1>
             <p style={{ fontFamily: 'Pretendard, sans-serif', fontSize: 'clamp(14px, 1.6vw, 20px)', color: '#503F00', maxWidth: 560, margin: '0 auto' }}>
@@ -222,19 +222,19 @@ export function HighlightPageClient() {
             <div style={{
               background: '#fff', borderRadius: 24,
               padding: isMobile ? '20px 20px' : '28px 40px',
-              boxShadow: '0 8px 32px rgba(0,0,0,0.06)',
+              boxShadow: '0 1px 2px rgba(115,93,255,0.04), 0 6px 16px rgba(115,93,255,0.06), 0 20px 40px rgba(77,67,83,0.07)',
               display: 'flex', justifyContent: 'space-between', alignItems: 'center',
               flexWrap: 'wrap', gap: 12, marginBottom: 40,
             }}>
               <div>
                 <p style={{ fontFamily: 'Pretendard, sans-serif', fontSize: 13, color: '#8A8A8A', marginBottom: 4 }}>Most Recent Champion</p>
-                <p style={{ fontFamily: KANIT, fontSize: 'clamp(20px, 2.5vw, 32px)', fontWeight: 700, color: '#000' }}>
+                <p style={{ fontFamily: KANIT, fontSize: 'clamp(20px, 2.5vw, 32px)', fontWeight: 700, color: '#000', letterSpacing: '-0.02em' }}>
                   {champion ? champion.name : '—'}
                 </p>
               </div>
               <div style={{ textAlign: isMobile ? 'left' : 'right' }}>
                 <p style={{ fontFamily: 'Pretendard, sans-serif', fontSize: 13, color: '#8A8A8A', marginBottom: 4 }}>Latest Race</p>
-                <p style={{ fontFamily: KANIT, fontSize: 'clamp(20px, 2.5vw, 32px)', fontWeight: 700, color: '#000' }}>
+                <p style={{ fontFamily: KANIT, fontSize: 'clamp(20px, 2.5vw, 32px)', fontWeight: 700, color: '#000', letterSpacing: '-0.02em' }}>
                   {latestRace ? `Race #${latestRace.number}` : '—'}
                 </p>
               </div>
@@ -244,7 +244,7 @@ export function HighlightPageClient() {
           {/* Media section — only shown if media exists in DB */}
           {!loading && allMedia.length > 0 && (
             <>
-              <h2 style={{ fontFamily: KANIT, fontSize: 'clamp(20px, 2.4vw, 30px)', fontWeight: 700, color: '#000', marginBottom: 20 }}>
+              <h2 style={{ fontFamily: KANIT, fontSize: 'clamp(20px, 2.4vw, 30px)', fontWeight: 700, color: '#000', letterSpacing: '-0.02em', marginBottom: 20 }}>
                 {featuredMedia.length > 0 ? 'Featured Clips' : 'Media'}
               </h2>
               <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap', marginBottom: 56 }}>
@@ -264,7 +264,7 @@ export function HighlightPageClient() {
             </div>
           ) : races.length > 0 ? (
             <>
-              <h2 style={{ fontFamily: KANIT, fontSize: 'clamp(20px, 2.4vw, 30px)', fontWeight: 700, color: '#000', marginBottom: 20 }}>
+              <h2 style={{ fontFamily: KANIT, fontSize: 'clamp(20px, 2.4vw, 30px)', fontWeight: 700, color: '#000', letterSpacing: '-0.02em', marginBottom: 20 }}>
                 Race History
               </h2>
               {races.map(race => (

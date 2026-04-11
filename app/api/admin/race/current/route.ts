@@ -5,11 +5,20 @@ export const dynamic = 'force-dynamic'
 
 export async function GET() {
   try {
+    // Return any race that is either active OR finished but not yet settled on-chain
     const race = await prisma.race.findFirst({
-      where: { status: { not: 'FINISHED' } },
+      where: {
+        OR: [
+          { status: { not: 'FINISHED' } },
+          { status: 'FINISHED', onChainSettled: false },
+        ],
+      },
       orderBy: { number: 'desc' },
       include: {
-        entries: { include: { pet: { select: { id: true, name: true, slug: true } } } },
+        entries: {
+          include: { pet: { select: { id: true, name: true, slug: true, emoji: true } } },
+          orderBy: { pet: { number: 'asc' } },
+        },
       },
     })
     return NextResponse.json(race)

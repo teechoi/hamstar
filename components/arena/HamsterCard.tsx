@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { T } from '@/lib/theme'
+import { useIsMobile } from '@/components/ui/index'
 
 const KANIT = "var(--font-kanit), sans-serif"
 const PURPLE = T.purple
@@ -45,6 +46,7 @@ export function HamsterCard({
   onCheer,
 }: HamsterCardProps) {
   const [hov, setHov] = useState(false)
+  const isMobile = useIsMobile()
   const img = PET_IMAGES[id] ?? PET_IMAGES['dash']
 
   const isOpen     = arenaState === 'OPEN'
@@ -69,9 +71,9 @@ export function HamsterCard({
       transition: 'opacity 0.3s, box-shadow 0.3s',
     }}>
 
-      {/* Image area */}
+      {/* Image area — taller on mobile for stronger visual impact */}
       <div style={{
-        width: '100%', height: 175,
+        width: '100%', height: isMobile ? 220 : 175,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         paddingBottom: 0,
         background: 'linear-gradient(180deg, #f5f5f5 0%, #efefef 100%)',
@@ -152,23 +154,25 @@ export function HamsterCard({
             onMouseEnter={() => setHov(true)}
             onMouseLeave={() => setHov(false)}
             style={{
-              width: '100%', padding: '14px',
+              width: '100%',
+              padding: isMobile ? '16px' : '14px',
               background: PURPLE,
               border: 'none', borderRadius: 48.5,
-              fontSize: 14, fontWeight: 500,
+              fontSize: isMobile ? 16 : 14, fontWeight: 700,
               color: '#fff', cursor: 'pointer',
               fontFamily: KANIT,
               transform: hov ? 'scale(1.02)' : 'scale(1)',
               boxShadow: hov ? '0 4px 20px rgba(115,93,255,0.45), 0 2px 8px rgba(115,93,255,0.25)' : '0 2px 8px rgba(115,93,255,0.15)',
               transition: 'all 0.15s ease-out',
               marginBottom: 16,
+              minHeight: 52,
             }}
           >
             Cheer {name}
           </button>
         ) : (isLive || isFinished) ? (
           <div style={{
-            width: '100%', padding: '14px',
+            width: '100%', padding: isMobile ? '16px' : '14px',
             background: '#e3e3e3', borderRadius: 48.5,
             fontSize: 14, fontWeight: 500,
             color: '#aaa', fontFamily: KANIT, textAlign: 'center',
@@ -178,7 +182,7 @@ export function HamsterCard({
           </div>
         ) : (
           <div style={{
-            width: '100%', padding: '14px',
+            width: '100%', padding: isMobile ? '16px' : '14px',
             background: '#d5d5d5', borderRadius: 48.5,
             fontSize: 14, fontWeight: 500,
             color: '#fff', fontFamily: KANIT, textAlign: 'center',

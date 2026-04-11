@@ -67,8 +67,6 @@ export function DepositModal({ onClose }: DepositModalProps) {
             }}
           />
 
-          <CloseBtn onClick={onClose} />
-
           <div style={{ position: 'relative', zIndex: 1 }}>
             <div style={{
               display: 'inline-flex', alignItems: 'center', gap: 5,
@@ -145,24 +143,3 @@ export function DepositModal({ onClose }: DepositModalProps) {
   )
 }
 
-// ─── Close button ─────────────────────────────────────────────────────────────
-
-function CloseBtn({ onClick }: { onClick: () => void }) {
-  const [hov, setHov] = useState(false)
-  return (
-    <button
-      onClick={onClick}
-      onMouseEnter={() => setHov(true)}
-      onMouseLeave={() => setHov(false)}
-      style={{
-        position: 'absolute', top: 12, right: 12, zIndex: 2,
-        background: hov ? 'rgba(0,0,0,0.14)' : 'rgba(0,0,0,0.08)',
-        border: 'none', borderRadius: 8,
-        width: 30, height: 30,
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        color: T.sub2, fontSize: 18, lineHeight: 1, cursor: 'pointer',
-        transition: 'background 0.15s',
-      }}
-    >×</button>
-  )
-}

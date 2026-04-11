@@ -11,9 +11,9 @@ const ASSOC_TOKEN_PROG   = new PublicKey('ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsL
 function getRpcUrl(): string {
   if (process.env.SOLANA_RPC_URL) return process.env.SOLANA_RPC_URL
   if (process.env.HELIUS_API_KEY) {
-    return `https://devnet.helius-rpc.com/?api-key=${process.env.HELIUS_API_KEY}`
+    return `https://mainnet.helius-rpc.com/?api-key=${process.env.HELIUS_API_KEY}`
   }
-  return 'https://api.devnet.solana.com'
+  return 'https://api.mainnet-beta.solana.com'
 }
 
 async function safeGetBalance(connection: Connection, address: string): Promise<number | null> {

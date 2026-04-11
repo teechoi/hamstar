@@ -2,6 +2,7 @@
 import type { Metadata } from 'next'
 import { kanit } from '@/lib/fonts'
 import { AppProviders } from '@/components/wallet/Providers'
+import { ServiceWorkerRegistration } from '@/components/ServiceWorkerRegistration'
 
 export const viewport = {
   width: 'device-width',
@@ -14,8 +15,11 @@ export const metadata: Metadata = {
   description: 'Three hamsters. One champion. The wheel decides.',
   manifest: '/manifest.json',
   icons: {
-    icon: '/images/hamster-flash-flex.png',
-    apple: '/images/hamster-flash-flex.png',
+    icon: [
+      { url: '/images/app-icon-192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/images/app-icon-512.png', sizes: '512x512', type: 'image/png' },
+    ],
+    apple: '/images/app-icon-192.png',
   },
   appleWebApp: {
     capable: true,
@@ -51,6 +55,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body style={{ margin: 0, padding: 0, fontFamily: "'Pretendard', sans-serif", cursor: "url('/images/sunflower-seed-cursor.png') 8 12, auto" }}>
         <AppProviders>
+          <ServiceWorkerRegistration />
           {children}
         </AppProviders>
       </body>

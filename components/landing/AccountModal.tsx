@@ -138,7 +138,6 @@ function ConnectedView({
         padding: isMobile ? '16px 20px 0' : '22px 28px 0',
         position: 'relative', overflow: 'hidden',
       }}>
-        <CloseBtn onClick={onClose} />
         <img
           src="/images/cheese-hideout.png" alt=""
           style={{
@@ -321,7 +320,6 @@ function NoWalletView({ onConnect, onClose }: { onConnect: () => void; onClose: 
         padding: '40px 28px 36px', textAlign: 'center',
         position: 'relative', overflow: 'hidden',
       }}>
-        <CloseBtn onClick={onClose} />
         <img
           src="/images/cheese-hideout.png" alt=""
           style={{
@@ -428,28 +426,6 @@ function HamstarLogo({ size = 20 }: { size?: number }) {
     }}>
       <img src="/images/hamster-flash-flex.png" alt="" style={{ width: '85%', height: '85%', objectFit: 'contain' }} />
     </div>
-  )
-}
-
-// ─── Close button ─────────────────────────────────────────────────────────────
-
-function CloseBtn({ onClick }: { onClick: () => void }) {
-  const [hov, setHov] = useState(false)
-  return (
-    <button
-      onClick={onClick}
-      onMouseEnter={() => setHov(true)}
-      onMouseLeave={() => setHov(false)}
-      style={{
-        position: 'absolute', top: 12, right: 12, zIndex: 10,
-        background: hov ? 'rgba(0,0,0,0.14)' : 'rgba(0,0,0,0.08)',
-        border: 'none', borderRadius: 8,
-        width: 30, height: 30,
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        color: T.sub2, fontSize: 18, lineHeight: 1, cursor: 'pointer',
-        transition: 'background 0.15s',
-      }}
-    >×</button>
   )
 }
 

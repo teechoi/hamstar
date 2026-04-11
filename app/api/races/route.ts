@@ -17,11 +17,16 @@ function formatRace(race: any, cheerCounts: Record<string, number>) {
     supporters: cheerCounts[e.petId] ?? 0,
   }))
   return {
-    id:       race.id,
-    number:   race.number,
-    status:   race.status,
-    startsAt: race.startsAt.toISOString(),
-    endsAt:   race.endsAt.toISOString(),
+    id:             race.id,
+    number:         race.number,
+    status:         race.status,
+    startsAt:       race.startsAt.toISOString(),
+    endsAt:         race.endsAt.toISOString(),
+    onChainRaceId:  race.onChainRaceId !== null && race.onChainRaceId !== undefined
+                      ? String(race.onChainRaceId)   // BigInt → string for JSON
+                      : null,
+    onChainCreated: race.onChainCreated ?? false,
+    escrowAddress:  race.escrowAddress ?? null,
     entries,
   }
 }

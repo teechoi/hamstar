@@ -138,7 +138,7 @@ export default function DashboardPage() {
       )}
 
       {/* Quick links */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 12, marginBottom: 28 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: 12, marginBottom: 28 }}>
         {QUICK_LINKS.map(({ href, label, icon, desc }) => (
           <a key={href} href={href} style={{
             display: 'block', padding: '16px 18px', background: A.card,

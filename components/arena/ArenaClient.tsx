@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useWallet, useConnection } from '@solana/wallet-adapter-react'
 import { PublicKey } from '@solana/web3.js'
 import { LandingNav } from '@/components/landing/LandingNav'
@@ -54,9 +54,11 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
   const [modal, setModal]                 = useState<Modal>(null)
   const [cheeringFor, setCheeringFor]     = useState<string | null>(null)
   const [cheeringAmount, setCheeringAmount] = useState<number>(0)
-  const [cheerModal, setCheerModal]       = useState<{ petId: string; multiplier: number } | null>(null)
+  const [cheerModal, setCheerModal]       = useState<{ petId: string; multiplier: number; hamsterIndex: number } | null>(null)
   const [petForms, setPetForms]           = useState<Record<string, PetForm | null>>({})
   const [userStreak, setUserStreak]       = useState(0)
+  const [showWinCelebration, setShowWinCelebration] = useState(false)
+  const winCelebrationRaceRef             = useRef<number | null>(null)
   const isMobile = useIsMobile()
   const { connected, connecting, publicKey, disconnect } = useWallet()
   const { connection } = useConnection()
@@ -156,7 +158,15 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
     if (!authed) { setModal('login'); return }
     const support = getSupport(petId)
     const multiplier = support.sol > 0 ? totalPool / support.sol : 1
-    setCheerModal({ petId, multiplier })
+    // Determine hamster index from sorted entries order (consistent with on-chain creation)
+    const entries = raceData?.entries ?? []
+    const sortedEntries = [...entries].sort((a, b) => {
+      const na = parseInt(a.pet?.number ?? '99')
+      const nb = parseInt(b.pet?.number ?? '99')
+      return na - nb
+    })
+    const hamsterIndex = sortedEntries.findIndex(e => e.petId === petId || e.pet?.id === petId)
+    setCheerModal({ petId, multiplier, hamsterIndex: hamsterIndex >= 0 ? hamsterIndex : 0 })
   }
 
   const handleCheerConfirm = (petId: string, amountHamstar: number, txSignature?: string) => {
@@ -197,6 +207,20 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
     }
   }, [isFinishedState, lastResult, walletAddress])
 
+  // Show win celebration once per race when user's pick wins
+  useEffect(() => {
+    if (
+      isFinishedState &&
+      effectiveResult &&
+      cheeringFor &&
+      effectiveResult.positions[0] === cheeringFor &&
+      winCelebrationRaceRef.current !== effectiveResult.number
+    ) {
+      winCelebrationRaceRef.current = effectiveResult.number
+      setShowWinCelebration(true)
+    }
+  }, [isFinishedState, effectiveResult?.number, cheeringFor]) // eslint-disable-line react-hooks/exhaustive-deps
+
   const statusLabel = isFinishedState ? 'Race Finished' : isLive ? 'Race In Progress' : 'Arena Open'
   const winnerPet   = isFinishedState && effectiveResult ? PETS.find(p => p.id === effectiveResult.positions[0]) : null
 
@@ -219,6 +243,9 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
         @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.8)} }
         @keyframes slideDown { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
         @keyframes frenzyGlow { 0%,100%{border-color:#FF3B5C} 50%{border-color:rgba(255,59,92,0.3)} }
+        @keyframes confettiFall { 0%{opacity:1;transform:translateY(-80px) rotate(0deg)} 100%{opacity:0;transform:translateY(110vh) rotate(600deg)} }
+        @keyframes celebrationPop { 0%{opacity:0;transform:scale(0.7)} 60%{transform:scale(1.05)} 100%{opacity:1;transform:scale(1)} }
+        @keyframes winSlideUp { from{opacity:0;transform:translateY(40px)} to{opacity:1;transform:translateY(0)} }
       `}</style>
 
       <LandingNav
@@ -232,7 +259,11 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
         onHowItWorksClick={() => setModal('howitworks')}
       />
 
-      <main style={{ background: '#F8F9FA', minHeight: '100vh', paddingTop: 87, position: 'relative' }}>
+      <main style={{
+        background: '#F8F9FA', minHeight: '100vh', paddingTop: 87, position: 'relative',
+        // Extra bottom padding on mobile so sticky cheer bar doesn't cover cards
+        paddingBottom: isMobile && isPre && !cheeringFor ? 80 : 0,
+      }}>
 
         {/* Glow blobs — positioned at corners with no negative offsets so they never clip */}
         <div style={{ position: 'absolute', top: '55vh', left: 0, width: 700, height: 700, borderRadius: '50%', background: 'rgba(252,212,0,0.22)', filter: 'blur(100px)', pointerEvents: 'none', zIndex: 0 }} />
@@ -466,6 +497,8 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
           petName={PETS.find(p => p.id === cheerModal.petId)?.name ?? cheerModal.petId}
           multiplier={cheerModal.multiplier}
           streakCount={userStreak}
+          hamsterIndex={cheerModal.hamsterIndex}
+          onChainRaceId={raceData?.onChainRaceId ? BigInt(raceData.onChainRaceId) : null}
           onClose={() => setCheerModal(null)}
           onConfirm={(petId, amount, txSig) => { handleCheerConfirm(petId, amount, txSig) }}
         />
@@ -474,6 +507,31 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
         <HowItWorksModal
           onClose={() => setModal(null)}
           onEnterArena={() => setModal(authed ? null : 'login')}
+        />
+      )}
+
+      {/* ── Win Celebration Overlay ── */}
+      {showWinCelebration && effectiveResult && cheeringFor && (
+        <WinCelebrationOverlay
+          petName={PETS.find(p => p.id === cheeringFor)?.name ?? 'your pick'}
+          amount={cheeringAmount}
+          onClose={() => setShowWinCelebration(false)}
+        />
+      )}
+
+      {/* ── Mobile sticky "Cheer Now" CTA — shows during open window ── */}
+      {isMobile && isPre && !cheeringFor && !cheerModal && (
+        <MobileStickyCheerBar
+          frenzy={isFrenzy}
+          countdown={countdown.display}
+          onTap={() => {
+            if (!authed) { setModal('login'); return }
+            // Default to first pet if none selected
+            const first = PETS[0]
+            const support = getSupport(first.id)
+            const multiplier = support.sol > 0 ? totalPool / support.sol : 1
+            setCheerModal({ petId: first.id, multiplier, hamsterIndex: 0 })
+          }}
         />
       )}
     </>
@@ -645,6 +703,180 @@ function WatchLiveBtn({ active, href }: { active: boolean; href: string }) {
     >
       {active ? 'Watch Live Race' : 'View Stream'}
     </a>
+  )
+}
+
+// ─── Win Celebration Overlay ─────────────────────────────────────────────────
+
+// Pre-defined confetti piece positions to avoid Math.random() in render
+const CONFETTI_PIECES = [
+  { left: '4%',  delay: 0,    dur: 2.6, color: '#FFE790', round: true  },
+  { left: '10%', delay: 0.4,  dur: 3.0, color: '#735DFF', round: false },
+  { left: '18%', delay: 0.15, dur: 2.3, color: '#FF3B5C', round: true  },
+  { left: '27%', delay: 0.7,  dur: 2.8, color: '#ffffff', round: false },
+  { left: '35%', delay: 0.25, dur: 3.2, color: '#FFE790', round: true  },
+  { left: '44%', delay: 0.55, dur: 2.5, color: '#735DFF', round: true  },
+  { left: '53%', delay: 0.1,  dur: 3.1, color: '#FF3B5C', round: false },
+  { left: '62%', delay: 0.8,  dur: 2.7, color: '#FFE790', round: true  },
+  { left: '70%', delay: 0.35, dur: 2.4, color: '#ffffff', round: false },
+  { left: '79%', delay: 0.6,  dur: 3.0, color: '#735DFF', round: true  },
+  { left: '87%', delay: 0.2,  dur: 2.9, color: '#FF3B5C', round: true  },
+  { left: '94%', delay: 0.45, dur: 2.6, color: '#FFE790', round: false },
+]
+
+function WinCelebrationOverlay({ petName, amount, onClose }: { petName: string; amount: number; onClose: () => void }) {
+  const amtDisplay = amount >= 1000 ? `${(amount / 1000).toFixed(1)}k` : String(Math.round(amount))
+
+  const shareText = `Just backed ${petName} at Hamstar Arena and WON! 🐹⚡ ${amtDisplay} $HAMSTAR payout incoming. @hamstarkun`
+  const shareUrl  = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`
+
+  return (
+    <div style={{
+      position: 'fixed', inset: 0, zIndex: 99999,
+      background: 'rgba(0,0,0,0.9)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      padding: 20,
+    }}>
+      {/* Confetti */}
+      {CONFETTI_PIECES.map((p, i) => (
+        <div key={i} style={{
+          position: 'absolute', top: 0, left: p.left,
+          width: 9, height: 9,
+          borderRadius: p.round ? '50%' : '2px',
+          background: p.color,
+          animation: `confettiFall ${p.dur}s linear ${p.delay}s infinite`,
+          pointerEvents: 'none',
+        }} />
+      ))}
+
+      {/* Card */}
+      <div style={{
+        background: '#fff', borderRadius: 28,
+        padding: '36px 28px 32px',
+        maxWidth: 360, width: '100%',
+        textAlign: 'center',
+        boxShadow: '0 24px 80px rgba(115,93,255,0.35)',
+        position: 'relative',
+        animation: 'celebrationPop 0.45s cubic-bezier(0.34,1.56,0.64,1)',
+      }}>
+        {/* Trophy */}
+        <div style={{
+          width: 88, height: 88, borderRadius: '50%',
+          background: YELLOW,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          margin: '0 auto 20px',
+          boxShadow: '0 0 0 12px rgba(255,231,144,0.25), 0 8px 32px rgba(255,214,67,0.5)',
+        }}>
+          <img src="/images/hamster-champion.png" alt="Champion" style={{ width: '72%', height: '72%', objectFit: 'contain' }} />
+        </div>
+
+        <h2 style={{
+          fontFamily: KANIT, fontSize: 32, fontWeight: 900, color: DARK,
+          letterSpacing: '-0.03em', margin: '0 0 8px',
+          animation: 'winSlideUp 0.4s ease-out 0.2s both',
+        }}>
+          You Won!
+        </h2>
+        <p style={{
+          fontFamily: 'Pretendard, sans-serif', fontWeight: 500, fontSize: 15,
+          color: '#8A8A8A', margin: '0 0 24px', lineHeight: 1.5,
+          animation: 'winSlideUp 0.4s ease-out 0.3s both',
+        }}>
+          Your pick <strong style={{ color: DARK }}>{petName}</strong> took the win.
+          <br />{amtDisplay} $HAMSTAR payout on its way.
+        </p>
+
+        {/* Share to X */}
+        <a
+          href={shareUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+            width: '100%', padding: '16px 20px',
+            background: '#000', borderRadius: 48.5,
+            fontFamily: KANIT, fontSize: 15, fontWeight: 800, letterSpacing: '-0.01em',
+            color: '#fff', textDecoration: 'none',
+            marginBottom: 12,
+            boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
+            animation: 'winSlideUp 0.4s ease-out 0.4s both',
+          }}
+        >
+          <span style={{ fontSize: 18, lineHeight: 1 }}>𝕏</span>
+          Share Your Win
+        </a>
+
+        <button
+          onClick={onClose}
+          style={{
+            width: '100%', padding: '14px',
+            background: 'transparent', border: 'none',
+            fontFamily: 'Pretendard, sans-serif', fontSize: 14, fontWeight: 500, color: '#8A8A8A',
+            cursor: 'pointer', minHeight: 44,
+          }}
+        >
+          Back to Arena
+        </button>
+      </div>
+    </div>
+  )
+}
+
+// ─── Mobile Sticky Cheer CTA ─────────────────────────────────────────────────
+
+function MobileStickyCheerBar({
+  frenzy, countdown, onTap,
+}: { frenzy: boolean; countdown: string; onTap: () => void }) {
+  const [hov, setHov] = useState(false)
+  return (
+    <div style={{
+      position: 'fixed', bottom: 0, left: 0, right: 0,
+      zIndex: 9000,
+      background: frenzy
+        ? 'linear-gradient(135deg, #FF3B5C 0%, #FF6B7A 100%)'
+        : 'linear-gradient(135deg, #735DFF 0%, #9B87FF 100%)',
+      padding: '12px 16px calc(12px + env(safe-area-inset-bottom, 0px))',
+      boxShadow: '0 -8px 32px rgba(0,0,0,0.18)',
+      display: 'flex', alignItems: 'center', gap: 12,
+      transition: 'background 0.3s',
+    }}>
+      {/* Countdown pill */}
+      <div style={{
+        background: 'rgba(255,255,255,0.15)',
+        borderRadius: 48, padding: '6px 14px',
+        flexShrink: 0,
+      }}>
+        <span style={{
+          fontFamily: KANIT, fontWeight: 700, fontSize: 14,
+          color: '#fff', fontVariantNumeric: 'tabular-nums',
+          animation: frenzy ? 'pulse 0.8s ease-in-out infinite' : 'none',
+          letterSpacing: '0.02em',
+        }}>
+          {countdown}
+        </span>
+      </div>
+
+      {/* CTA Button */}
+      <button
+        onTouchStart={() => setHov(true)}
+        onTouchEnd={() => setHov(false)}
+        onMouseEnter={() => setHov(true)}
+        onMouseLeave={() => setHov(false)}
+        onClick={onTap}
+        style={{
+          flex: 1, padding: '13px',
+          background: YELLOW, border: 'none', borderRadius: 48.5,
+          fontFamily: KANIT, fontSize: 15, fontWeight: 800,
+          color: DARK, cursor: 'pointer',
+          transform: hov ? 'scale(0.97)' : 'scale(1)',
+          transition: 'transform 0.1s',
+          boxShadow: '0 4px 16px rgba(255,231,144,0.4)',
+          minHeight: 48,
+        }}
+      >
+        {frenzy ? 'Last Chance — Cheer Now' : 'Cheer a Hamster'}
+      </button>
+    </div>
   )
 }
 

@@ -68,7 +68,8 @@ export default function UsersPage() {
           placeholder="Search by wallet address…"
           value={search}
           onChange={e => handleSearch(e.target.value)}
-          style={{ padding: '10px 16px', borderRadius: 10, border: `1.5px solid ${A.borderMid}`, fontSize: 14, color: A.text, width: 280, outline: 'none' }}
+          className="admin-search"
+          style={{ padding: '10px 16px', borderRadius: 10, border: `1.5px solid ${A.borderMid}`, fontSize: 14, color: A.text, outline: 'none' }}
         />
       </div>
 

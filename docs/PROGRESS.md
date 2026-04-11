@@ -1,6 +1,6 @@
 # HamstarHub — Build Progress
 
-*Last updated: April 2026*
+*Last updated: April 11, 2026*
 
 ---
 
@@ -80,8 +80,10 @@ Full Anchor program — PDA-based escrow, dark horse bonus, hot streak multiplie
 
 ### Admin Panel
 - [x] Login — password-protected (bcrypt), JWT session cookie, proper form (no infinite redirect loop)
-- [x] Dashboard — stat cards, quick-action links, recent donations table
+- [x] Dashboard — stat cards, quick-action links, recent donations table, $HAMSTAR token launch status banner
 - [x] Race Control — full lifecycle: create race (datetime pickers), UPCOMING→LIVE→FINISHED, recap editor, isLive auto-sync
+- [x] On-chain settlement pipeline — lock_race → propose_settlement → confirm_settlement UI in Race Control
+- [x] Push rewards — batch push_reward to all winning wallets from Race Control
 - [x] Race History — all finished races, podium, pool SOL, supporter count, inline recap editor
 - [x] Wallet & Treasury — SOL balances for all wallets (treasury, hamster wallets, upset reserve PDA), Solscan links
 - [x] Users — paginated table, cheer stats, win rate, fav hamster, wallet search
@@ -89,8 +91,11 @@ Full Anchor program — PDA-based escrow, dark horse bonus, hot streak multiplie
 - [x] Sponsors — CRUD sponsor entries with tiers
 - [x] Media — upload/manage videos and photos (used by highlights page)
 - [x] Content — all page copy editable (hero, about, arena, footer, modals, carousel steps)
-- [x] Settings — race config, social links, site identity, Solana config display, button labels
-- [x] Admin auth disabled for current build (re-enable in `middleware.ts` when ready)
+- [x] Settings — race config, social links, site identity, $HAMSTAR token config (mint + pool address), button labels
+- [x] Program Config — on-chain fee/bonus params editor (fee_bps, burn_bps, streak bonuses, dark horse system)
+- [x] Admin nav — all pages with emoji icons
+- [x] Admin mobile optimization — responsive grids, safe-area padding, correct icon display on bottom nav
+- [x] Admin auth re-enabled — JWT session in `middleware.ts`
 
 ### API Routes
 - [x] `GET /api/races` — current race + past 5, real supporter counts, total SOL
@@ -105,8 +110,24 @@ Full Anchor program — PDA-based escrow, dark horse bonus, hot streak multiplie
 - [x] `GET /api/admin/users` — paginated user list with cheer stats
 - [x] `GET/PATCH /api/admin/history` — race history + recap editing
 
+### Security
+- [x] On-chain TX verification — `POST /api/user/claim-reward` verifies signature on Solana before marking rewardPushed
+- [x] Admin route defense-in-depth — all admin race routes read JWT cookie directly (not just middleware)
+- [x] SameSite=Strict cookies — prevents CSRF via cross-site navigation
+- [x] Pet ID validation on cheer endpoint — rejects invalid petId before DB upsert
+- [x] `SECURITY.md` — documents all patches and deployment hardening checklist
+
+### Mobile UX
+- [x] CheerModal — bottom sheet on mobile (slide-up, pull handle, safe-area padding)
+- [x] Win celebration overlay — full-screen confetti + Share to X button
+- [x] MobileStickyCheerBar — fixed bottom CTA with countdown pill + frenzy mode
+- [x] HamsterCard — larger image (220px mobile), 52px min-height cheer button
+- [x] Touch targets — all interactive elements ≥44px (WCAG AAA)
+- [x] Font labels — all labels ≥11px
+
 ### Infrastructure
 - [x] Prisma schema — all models (Pet, Race, RaceEntry, Donation, Sponsor, Media, User, Cheer, SiteSettings)
+- [x] SiteSettings.hamstarMint + hamstarPoolAddress — DB columns added and synced (prisma db push)
 - [x] Supabase realtime + 30s polling fallback for live pool updates
 - [x] Helius webhook receiver (`/api/webhook`) — SOL donation tracking
 - [x] Deterministic 48h race schedule (`race-scheduler.ts`)
@@ -128,23 +149,40 @@ Full Anchor program — PDA-based escrow, dark horse bonus, hot streak multiplie
 
 ### 🔴 Launch Blockers
 
-- [ ] **Deploy Anchor program to devnet** — run `anchor deploy` with updated `InitializeParams` (streak + dark horse fields), call `create_upset_reserve` once
+- [ ] **Deploy Anchor program to mainnet-beta** — `anchor deploy --provider.cluster mainnet-beta`; update `PROGRAM_ID` in `lib/hamstar-program.ts`; call `create_upset_reserve` once
+- [ ] **Launch $HAMSTAR token** — deploy SPL token; update `hamstarMint` in admin Settings and `HAMSTAR_MINT` in `lib/hamstar-token.ts`
+- [ ] **Real stream URL** — set stream URL in admin Settings → Race → Stream URL
+- [ ] **Production env vars** — ADMIN_KEYPAIR, TREASURY_WALLET, SETTLER_2_KEYPAIR on host
 - [x] **Real pet wallet addresses** — Dash/Flash/Turbo wallet addresses set in DB and `.env.local`
 - [x] **Helius webhook** — API key + secret configured in Vercel env; wallets registered manually in Helius dashboard
-- [ ] **Real stream URL** — set stream URL in admin Settings → Race → Stream URL
 - [x] **Admin auth** — JWT session auth re-enabled in `middleware.ts`; login page working at `/admin/login`
 
 ### 🟡 On-Chain Integration
 
 - [ ] **Wire Cheer button → `place_cheer` instruction** — currently records locally + DB only; needs `@coral-xyz/anchor` client + deployed IDL
-- [ ] **Real HAMSTAR mint address** — replace placeholder in `lib/hamstar-token.ts` with actual SPL mint
+- [ ] **Real HAMSTAR mint address** — replace placeholder in `lib/hamstar-token.ts` with actual SPL mint once launched
 - [ ] **Real Jupiter pool URL** — update once liquidity is seeded
 - [ ] **On-chain streak fetch** — `ArenaClient` has the fetch logic wired; works once program is deployed
+
+### 🟠 Seeker / Mobile Store
+
+- [ ] **Create proper app icons** — 192×192 and 512×512 PNG (Hamstar logo, not sunflower cursor); update `manifest.json`
+- [ ] **Add PWA service worker** — `npm install next-pwa`, wrap `next.config.js`
+- [ ] **Capture store screenshots** — 3× portrait 1080×1920 (arena, cheer, win); add to `manifest.json`
+- [ ] **Change start_url** — `manifest.json` from `"/"` to `"/arena"`
+- [ ] **Generate signing keystore** — `keytool -genkey`, save `.jks` securely
+- [ ] **Create `assetlinks.json`** — `public/.well-known/assetlinks.json` with keystore SHA-256
+- [ ] **Bubblewrap init** — `bubblewrap init --manifest https://hamstarhub.xyz/manifest.json`
+- [ ] **Build and sign APK** — `bubblewrap build`
+- [ ] **Submit to dApp Store** — fork `solana-mobile/dapp-publishing`, create listing YAML, submit
+
+See `docs/SEEKER.md` for full instructions on each step.
 
 ### 🟢 Nice to Have
 
 - [ ] **Watch Live Race button** — set real stream URL in admin so the button links somewhere
 - [ ] **Race replay URL** — admin Settings → Replay URL for post-race "Watch Replay" CTA
+- [ ] **Rate limiting on /api/user/cheer** — add in middleware or route handler
 - [ ] **Sponsor page** — removed; if sponsors come in, can re-add as a simple page
 - [ ] **`effectiveResult` cleanup** — dead ternary in ArenaClient.tsx line 87 (same value both branches)
 

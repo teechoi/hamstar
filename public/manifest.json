@@ -2,27 +2,49 @@
   "name": "Hamstar",
   "short_name": "Hamstar",
   "description": "Three hamsters. One champion. The wheel decides.",
-  "start_url": "/",
+  "start_url": "/arena",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#000000",
+  "background_color": "#080614",
   "theme_color": "#FFE790",
   "icons": [
     {
-      "src": "/images/sunflower-seed.png",
+      "src": "/images/app-icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
-      "src": "/images/sunflower-seed.png",
+      "src": "/images/app-icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
     }
   ],
   "categories": ["games", "entertainment", "finance"],
-  "screenshots": [],
+  "screenshots": [
+    {
+      "src": "/screenshots/arena.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Hamstar Arena — pick your racer and place your cheer"
+    },
+    {
+      "src": "/screenshots/cheer.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Place your cheer before the race locks"
+    },
+    {
+      "src": "/screenshots/winner.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Champion crowned — share your win"
+    }
+  ],
   "related_applications": [],
   "prefer_related_applications": false
 }

@@ -10,6 +10,10 @@ const SLUGS = ['dash', 'flash', 'turbo']
 interface Race {
   id: string; number: number; status: string
   startsAt: string; endsAt: string; recap: string | null
+  onChainRaceId: string | null
+  onChainCreated: boolean
+  onChainSettled: boolean
+  escrowAddress: string | null
   entries: { id: string; pet: { id: string; name: string; slug: string; emoji: string }; totalSol: string }[]
 }
 
@@ -74,6 +78,12 @@ export default function RacePage() {
   // Recap editor
   const [recap,     setRecap]     = useState('')
   const [savingRecap, setSavingRecap] = useState(false)
+
+  // Settlement / on-chain pipeline
+  const [settleLog,  setSettleLog]  = useState<string[]>([])
+  const [pushResult, setPushResult] = useState<{ pushed: number; failed: number } | null>(null)
+  const [settling,   setSettling]   = useState(false)
+  const [pushing,    setPushing]    = useState(false)
 
   const flash = (text: string, ok = true) => {
     setMsg({ text, ok })
@@ -163,6 +173,75 @@ export default function RacePage() {
     }
   }
 
+  const settleRace = async (winnerHamsterIndex: number) => {
+    if (!race) return
+    setSettling(true)
+    setSettleLog([])
+    try {
+      const res  = await fetch('/api/admin/race/settle', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ raceId: race.id, winnerHamsterIndex }),
+      })
+      const data = await res.json()
+      if (res.ok) {
+        setSettleLog(data.steps ?? [])
+        flash('Race settled on-chain')
+        load()
+      } else {
+        flash(data.error ?? 'Settlement failed', false)
+        setSettleLog([data.error ?? 'Error'])
+      }
+    } catch (e) {
+      flash(String(e), false)
+    } finally {
+      setSettling(false)
+    }
+  }
+
+  const pushRewards = async () => {
+    if (!race) return
+    setPushing(true)
+    setPushResult(null)
+    try {
+      const res  = await fetch('/api/admin/race/push-rewards', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ raceId: race.id }),
+      })
+      const data = await res.json()
+      if (res.ok) {
+        setPushResult({ pushed: data.pushed, failed: data.failed })
+        flash(`Rewards pushed: ${data.pushed} sent, ${data.failed} failed`)
+      } else {
+        flash(data.error ?? 'Push rewards failed', false)
+      }
+    } catch (e) {
+      flash(String(e), false)
+    } finally {
+      setPushing(false)
+    }
+  }
+
+  const cancelRace = async () => {
+    if (!race) return
+    if (!confirm('Cancel this race? All cheers will be eligible for on-chain refund.')) return
+    setBusy(true)
+    const res  = await fetch('/api/admin/race/cancel', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ raceId: race.id }),
+    })
+    const data = await res.json()
+    setBusy(false)
+    if (res.ok) {
+      flash(data.onChainError ? `Cancelled (off-chain only: ${data.onChainError})` : 'Race cancelled on-chain')
+      load()
+    } else {
+      flash(data.error ?? 'Cancel failed', false)
+    }
+  }
+
   const saveRecap = async () => {
     if (!race) return
     setSavingRecap(true)
@@ -219,7 +298,7 @@ export default function RacePage() {
         {/* ── Create Race Form ─────────────────────────────────────────── */}
         {showCreate && (
           <Section title="Create New Race">
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>
+            <div className="admin-2col" style={{ marginBottom: 20 }}>
               <div>
                 <label style={{ fontSize: 12, fontWeight: 700, color: A.textMid, textTransform: 'uppercase', letterSpacing: 0.6, display: 'block', marginBottom: 6 }}>
                   Start Date & Time
@@ -318,9 +397,95 @@ export default function RacePage() {
                   </div>
                 ))}
               </div>
-              <Btn onClick={finishRace} disabled={busy} color={A.purple}>
-                {busy ? 'Saving…' : 'Finish Race'}
-              </Btn>
+              <div style={{ display: 'flex', gap: 10 }}>
+                <Btn onClick={finishRace} disabled={busy} color={A.purple}>
+                  {busy ? 'Saving…' : 'Finish Race'}
+                </Btn>
+                <Btn onClick={cancelRace} disabled={busy} color={A.red} small>
+                  Cancel Race
+                </Btn>
+              </div>
+            </Section>
+          )}
+
+          {/* ── On-chain settlement & rewards ─────────────────────────────── */}
+          {race.status === 'FINISHED' && (
+            <Section title="On-Chain Settlement & Rewards">
+              {/* Status row */}
+              <div style={{ display: 'flex', gap: 12, marginBottom: 20, flexWrap: 'wrap' }}>
+                <div style={{
+                  display: 'flex', alignItems: 'center', gap: 6,
+                  padding: '6px 14px', borderRadius: 99,
+                  background: race.onChainCreated ? A.greenSoft : A.yellowSoft,
+                  fontSize: 12, fontWeight: 700,
+                  color: race.onChainCreated ? A.green : '#8a6a00',
+                }}>
+                  {race.onChainCreated ? '✓ Created on-chain' : '⏳ Not created on-chain'}
+                </div>
+                <div style={{
+                  display: 'flex', alignItems: 'center', gap: 6,
+                  padding: '6px 14px', borderRadius: 99,
+                  background: race.onChainSettled ? A.greenSoft : A.yellowSoft,
+                  fontSize: 12, fontWeight: 700,
+                  color: race.onChainSettled ? A.green : '#8a6a00',
+                }}>
+                  {race.onChainSettled ? '✓ Settled on-chain' : '⏳ Awaiting settlement'}
+                </div>
+              </div>
+
+              {!race.onChainSettled && race.onChainCreated && (
+                <>
+                  <p style={{ fontSize: 13, color: A.textMuted, marginBottom: 16, lineHeight: 1.6 }}>
+                    Select the winning hamster (0-indexed, matching on-chain hamster slots) then settle.
+                    This calls <code style={{ background: A.pageBg, padding: '1px 6px', borderRadius: 4, fontSize: 12 }}>lock_race → propose_settlement → confirm_settlement</code>.
+                  </p>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginBottom: 16 }}>
+                    {race.entries.map((e, idx) => (
+                      <button
+                        key={e.pet.slug}
+                        disabled={settling}
+                        onClick={() => settleRace(idx)}
+                        style={{
+                          padding: '10px 20px', borderRadius: 48.5, border: `1.5px solid ${A.purple}`,
+                          background: '#fff', cursor: settling ? 'not-allowed' : 'pointer',
+                          fontFamily: KANIT, fontSize: 13, fontWeight: 700, color: A.purple,
+                        }}
+                      >
+                        {settling ? 'Settling…' : `${e.pet.emoji} ${e.pet.name} wins (slot ${idx})`}
+                      </button>
+                    ))}
+                  </div>
+                  {settleLog.length > 0 && (
+                    <div style={{ background: A.pageBg, borderRadius: 10, padding: '12px 16px', fontSize: 12, fontFamily: 'monospace', color: A.textMid }}>
+                      {settleLog.map((l, i) => <div key={i}>{l}</div>)}
+                    </div>
+                  )}
+                </>
+              )}
+
+              {race.onChainSettled && (
+                <>
+                  <p style={{ fontSize: 13, color: A.textMuted, marginBottom: 16, lineHeight: 1.6 }}>
+                    Race is settled. Click below to push HAMSTAR rewards to all winning wallets.
+                  </p>
+                  <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+                    <Btn onClick={pushRewards} disabled={pushing} color={A.green}>
+                      {pushing ? 'Pushing rewards…' : '💸 Push All Rewards'}
+                    </Btn>
+                    {pushResult && (
+                      <span style={{ fontSize: 13, color: A.textMid, fontWeight: 600 }}>
+                        {pushResult.pushed} pushed, {pushResult.failed} failed
+                      </span>
+                    )}
+                  </div>
+                </>
+              )}
+
+              {!race.onChainCreated && (
+                <p style={{ fontSize: 12, color: A.textMuted, marginTop: 12 }}>
+                  This race was created before on-chain integration was live. Settlement must be done manually off-chain.
+                </p>
+              )}
             </Section>
           )}
 
@@ -354,7 +519,7 @@ export default function RacePage() {
 
           {race.status === 'FINISHED' && showCreate && (
             <Section title="Create Next Race">
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>
+              <div className="admin-2col" style={{ marginBottom: 20 }}>
                 <div>
                   <label style={{ fontSize: 12, fontWeight: 700, color: A.textMid, textTransform: 'uppercase', letterSpacing: 0.6, display: 'block', marginBottom: 6 }}>
                     Start Date & Time

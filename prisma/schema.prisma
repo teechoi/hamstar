@@ -57,6 +57,16 @@ model Race {
   title    String?
   recap    String?
 
+  // ── On-chain state ─────────────────────────────────────────────────────
+  /// u64 race_id used for on-chain PDA seeds (= race.number by convention)
+  onChainRaceId   BigInt?
+  /// Escrow token account address (PDA["race_escrow", race_id_le])
+  escrowAddress   String?
+  /// True once create_race instruction was successfully sent
+  onChainCreated  Boolean @default(false)
+  /// True once the race is Settled on-chain (2-of-3 settler consensus reached)
+  onChainSettled  Boolean @default(false)
+
   entries   RaceEntry[]
   donations Donation[]
   cheers    Cheer[]
@@ -226,7 +236,16 @@ model Cheer {
   petId         String
   won           Boolean?           // null until race finishes
   amountHamstar Float?             // HAMSTAR cheered (null for legacy / pre-launch entries)
-  txSignature   String?            // on-chain transfer signature (null before token launch)
+  txSignature   String?            // place_cheer tx signature (null before token launch)
+
+  // ── On-chain payout state ───────────────────────────────────────────────
+  /// Time-weighted stake (from place_cheer instruction: amount × weight_bps / 1000)
+  onChainWeight Float?
+  /// True once push_reward or claim_reward was confirmed for this cheer
+  rewardPushed  Boolean  @default(false)
+  /// Amount of HAMSTAR tokens received as reward (null until pushed)
+  rewardAmount  Float?
+
   createdAt     DateTime @default(now())
 
   user User @relation(fields: [walletAddress], references: [walletAddress])

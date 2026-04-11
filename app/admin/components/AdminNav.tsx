@@ -5,16 +5,17 @@ import { useIsMobile } from '@/components/ui'
 import { A } from '../theme'
 
 const NAV = [
-  { href: '/admin/dashboard', label: 'Dashboard',    icon: '—' },
-  { href: '/admin/race',      label: 'Race Control', icon: '—' },
-  { href: '/admin/history',   label: 'History',      icon: '—' },
-  { href: '/admin/wallet',    label: 'Wallet',       icon: '—' },
-  { href: '/admin/users',     label: 'Users',        icon: '—' },
-  { href: '/admin/pets',      label: 'Hamsters',     icon: '—' },
-  { href: '/admin/sponsors',  label: 'Sponsors',     icon: '—' },
-  { href: '/admin/media',     label: 'Media',        icon: '—' },
-  { href: '/admin/content',   label: 'Content',      icon: '—' },
-  { href: '/admin/settings',  label: 'Settings',     icon: '—' },
+  { href: '/admin/dashboard', label: 'Dashboard',    icon: '📊' },
+  { href: '/admin/race',      label: 'Race Control', icon: '🏁' },
+  { href: '/admin/history',   label: 'History',      icon: '📜' },
+  { href: '/admin/program',   label: 'Program',      icon: '⛓️' },
+  { href: '/admin/wallet',    label: 'Wallet',       icon: '💰' },
+  { href: '/admin/users',     label: 'Users',        icon: '👥' },
+  { href: '/admin/pets',      label: 'Hamsters',     icon: '🐹' },
+  { href: '/admin/sponsors',  label: 'Sponsors',     icon: '🏆' },
+  { href: '/admin/media',     label: 'Media',        icon: '🎬' },
+  { href: '/admin/content',   label: 'Content',      icon: '✏️' },
+  { href: '/admin/settings',  label: 'Settings',     icon: '⚙️' },
 ]
 
 export function AdminNav() {

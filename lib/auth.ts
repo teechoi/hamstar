@@ -35,11 +35,11 @@ export function makeSessionCookie(token: string): string {
     `Max-Age=${SESSION_DURATION_SECONDS}`,
     'Path=/',
     'HttpOnly',
-    'SameSite=Lax',
+    'SameSite=Strict',
     isProduction ? 'Secure' : '',
   ].filter(Boolean).join('; ')
 }
 
 export function clearSessionCookie(): string {
-  return `${COOKIE_NAME}=; Max-Age=0; Path=/; HttpOnly; SameSite=Lax`
+  return `${COOKIE_NAME}=; Max-Age=0; Path=/; HttpOnly; SameSite=Strict`
 }

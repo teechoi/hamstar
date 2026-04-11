@@ -75,10 +75,10 @@ function TypeBadge({ type }: { type: string }) {
 
 function InfoRow({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, padding: '10px 0', borderBottom: `1px solid ${A.border}` }}>
-      <span style={{ fontSize: 12, fontWeight: 700, color: A.textMuted, textTransform: 'uppercase', letterSpacing: 0.6, flexShrink: 0 }}>{label}</span>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-        <span style={{ fontSize: 13, color: A.text, fontFamily: mono ? 'monospace' : undefined, wordBreak: 'break-all', textAlign: 'right' }}>{value}</span>
+    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px 12px', padding: '10px 0', borderBottom: `1px solid ${A.border}` }}>
+      <span style={{ fontSize: 12, fontWeight: 700, color: A.textMuted, textTransform: 'uppercase', letterSpacing: 0.6, flexShrink: 0, paddingTop: 2 }}>{label}</span>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1, minWidth: 0, justifyContent: 'flex-end' }}>
+        <span style={{ fontSize: 13, color: A.text, fontFamily: mono ? 'monospace' : undefined, wordBreak: 'break-all', textAlign: 'right', minWidth: 0 }}>{value}</span>
         <CopyBtn text={value} />
       </div>
     </div>

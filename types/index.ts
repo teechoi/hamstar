@@ -55,6 +55,10 @@ export interface Race {
   startsAt: string
   endsAt:   string
   entries:  RaceEntry[]
+  // On-chain state (null until race is created on-chain)
+  onChainRaceId:  string | null   // BigInt serialised as string; parse with BigInt()
+  onChainCreated: boolean
+  escrowAddress:  string | null
   // Computed fields returned by /api/races
   msUntilEnd?:   number
   msUntilStart?: number

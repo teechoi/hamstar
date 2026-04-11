@@ -236,7 +236,7 @@ export function SwapWidget() {
         .swap-input[type=number] { -moz-appearance: textfield; }
       `}</style>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
 
         {/* ── Input row ── */}
         <TokenRow
@@ -249,22 +249,26 @@ export function SwapWidget() {
           onChange={setInputAmt}
         />
 
-        {/* ── Reverse button ── */}
-        <div style={{ display: 'flex', justifyContent: 'center', margin: '-3px 0' }}>
+        {/* ── Reverse button — floats between cards ── */}
+        <div style={{ display: 'flex', alignItems: 'center', margin: '-6px 0', zIndex: 1, position: 'relative' }}>
+          <div style={{ flex: 1, height: 1, background: T.border }} />
           <button
             onClick={handleReverse}
             style={{
-              width: 32, height: 32, borderRadius: 9,
+              width: 36, height: 36, borderRadius: 11,
               background: T.purple,
-              border: 'none', cursor: 'pointer',
+              border: '3px solid #fff',
+              cursor: 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              boxShadow: '0 2px 8px rgba(115,93,255,0.35)',
+              boxShadow: '0 2px 12px rgba(115,93,255,0.4)',
               transform: flipping ? 'rotate(180deg)' : 'rotate(0deg)',
-              transition: 'transform 0.3s ease, background 0.15s',
+              transition: 'transform 0.3s ease',
+              margin: '0 10px', flexShrink: 0,
             } as React.CSSProperties}
           >
             <ReverseIcon />
           </button>
+          <div style={{ flex: 1, height: 1, background: T.border }} />
         </div>
 
         {/* ── Output row ── */}
@@ -287,13 +291,20 @@ export function SwapWidget() {
         />
 
         {/* ── Rate + slippage ── */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1px 4px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '2px 2px' }}>
           <span style={{ fontFamily: PRET, fontSize: 11, color: T.textMid }}>
             {rateStr ?? <span style={{ visibility: 'hidden' }}>–</span>}
           </span>
           <button
             onClick={() => setShowSlip(s => !s)}
-            style={{ display: 'flex', alignItems: 'center', gap: 4, background: 'none', border: 'none', cursor: 'pointer', fontFamily: PRET, fontSize: 11, color: T.textMid }}
+            style={{
+              display: 'flex', alignItems: 'center', gap: 5,
+              background: showSlip ? T.yellowSoft : 'transparent',
+              border: `1.5px solid ${showSlip ? 'rgba(255,200,0,0.35)' : 'transparent'}`,
+              borderRadius: 20, padding: '3px 9px 3px 7px',
+              cursor: 'pointer', transition: 'all 0.15s',
+              fontFamily: PRET, fontSize: 11, color: showSlip ? T.sub2 : T.textMid,
+            }}
           >
             <GearIcon /> {slippage}% slippage
           </button>
@@ -307,13 +318,14 @@ export function SwapWidget() {
                 key={s}
                 onClick={() => { setSlippage(s); setShowSlip(false) }}
                 style={{
-                  flex: 1, padding: '7px 0',
-                  background: slippage === s ? T.purple : T.bg,
+                  flex: 1, padding: '8px 0',
+                  background: slippage === s ? T.purple : '#fff',
                   border: `1.5px solid ${slippage === s ? T.purple : T.border}`,
-                  borderRadius: 10,
+                  borderRadius: 48.5,
                   fontFamily: KANIT, fontSize: 12, fontWeight: 700,
                   color: slippage === s ? '#fff' : T.textMid,
-                  cursor: 'pointer', transition: 'all 0.12s',
+                  cursor: 'pointer', transition: 'all 0.15s',
+                  boxShadow: slippage === s ? T.shadowBtnPurple : 'none',
                 }}
               >{s}%</button>
             ))}
@@ -322,7 +334,7 @@ export function SwapWidget() {
 
         {/* Price impact */}
         {priceImpact > 1 && (
-          <div style={{ background: T.coralSoft, border: '1px solid rgba(255,59,92,0.2)', borderRadius: 10, padding: '7px 12px' }}>
+          <div style={{ background: T.coralSoft, border: '1px solid rgba(255,59,92,0.2)', borderRadius: 12, padding: '9px 14px' }}>
             <p style={{ fontFamily: PRET, fontSize: 12, color: T.coral, margin: 0 }}>
               High price impact: {priceImpact.toFixed(2)}%
             </p>
@@ -331,7 +343,7 @@ export function SwapWidget() {
 
         {/* Error */}
         {error && (
-          <div style={{ background: T.coralSoft, border: '1px solid rgba(255,59,92,0.2)', borderRadius: 10, padding: '7px 12px' }}>
+          <div style={{ background: T.coralSoft, border: '1px solid rgba(255,59,92,0.2)', borderRadius: 12, padding: '9px 14px' }}>
             <p style={{ fontFamily: PRET, fontSize: 12, color: T.coral, margin: 0 }}>{error}</p>
           </div>
         )}
@@ -340,7 +352,7 @@ export function SwapWidget() {
         {txSig && (
           <div style={{
             background: 'rgba(0,197,102,0.08)', border: '1px solid rgba(0,197,102,0.25)',
-            borderRadius: 10, padding: '8px 14px',
+            borderRadius: 12, padding: '10px 16px',
             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           }}>
             <span style={{ fontFamily: PRET, fontSize: 12, color: '#15803D' }}>Swap confirmed</span>
@@ -364,10 +376,10 @@ export function SwapWidget() {
         />
 
         {/* Attribution */}
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 4 }}>
-          <span style={{ fontFamily: PRET, fontSize: 10, color: '#ccc' }}>Powered by</span>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 5, paddingBottom: 2 }}>
+          <span style={{ fontFamily: PRET, fontSize: 10, color: '#c8c8c8' }}>Powered by</span>
           <a href="https://jup.ag" target="_blank" rel="noopener noreferrer"
-            style={{ fontFamily: KANIT, fontSize: 10, fontWeight: 700, color: '#bbb', textDecoration: 'none' }}>
+            style={{ fontFamily: KANIT, fontSize: 10, fontWeight: 800, color: T.purple, textDecoration: 'none', letterSpacing: '-0.01em' }}>
             Jupiter
           </a>
         </div>
@@ -398,13 +410,17 @@ function TokenRow({
 
   return (
     <div style={{
-      background: T.bg,
-      border: `1.5px solid ${outputHighlight ? 'rgba(255,200,0,0.4)' : T.border}`,
-      borderRadius: 16, padding: '11px 14px',
-      transition: 'border-color 0.2s',
+      background: '#fff',
+      border: `1.5px solid ${outputHighlight ? 'rgba(255,185,0,0.55)' : T.border}`,
+      borderRadius: 18,
+      padding: '14px 18px',
+      boxShadow: outputHighlight
+        ? '0 0 0 4px rgba(255,200,0,0.07), 0 1px 4px rgba(0,0,0,0.04)'
+        : '0 1px 4px rgba(0,0,0,0.03)',
+      transition: 'border-color 0.2s, box-shadow 0.2s',
     }}>
       <p style={labelStyle}>{label}</p>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 6 }}>
         <TokenSelector tokenKey={tokenKey} otherKey={otherKey} onSelect={onSelect} />
 
         {/* Amount */}
@@ -414,13 +430,13 @@ function TokenRow({
             type="number" min="0" step="any"
             value={value}
             onChange={e => onChange?.(e.target.value)}
-            placeholder="0.00"
+            placeholder="0"
             style={{
               flex: 1, textAlign: 'right',
               background: 'transparent', border: 'none', outline: 'none',
-              fontFamily: KANIT, fontSize: 22, fontWeight: 700,
-              color: value ? T.text : '#d0d0d0',
-              padding: 0, minWidth: 0,
+              fontFamily: KANIT, fontSize: 28, fontWeight: 700,
+              color: value ? T.text : '#ddd',
+              padding: 0, minWidth: 0, letterSpacing: '-0.02em',
             }}
           />
         ) : (
@@ -428,11 +444,11 @@ function TokenRow({
             {placeholderText ? (
               <span style={{ fontFamily: PRET, fontSize: 12, color: T.textMid }}>{placeholderText}</span>
             ) : value === '…' ? (
-              <span style={{ fontFamily: KANIT, fontSize: 20, fontWeight: 700, color: '#d0d0d0' }}>…</span>
+              <span style={{ fontFamily: KANIT, fontSize: 26, fontWeight: 700, color: '#d0d0d0', letterSpacing: '-0.02em' }}>…</span>
             ) : value ? (
-              <span style={{ fontFamily: KANIT, fontSize: 22, fontWeight: 700, color: T.text }}>{value}</span>
+              <span style={{ fontFamily: KANIT, fontSize: 26, fontWeight: 700, color: T.text, letterSpacing: '-0.02em' }}>{value}</span>
             ) : (
-              <span style={{ fontFamily: KANIT, fontSize: 22, fontWeight: 700, color: '#d0d0d0' }}>0</span>
+              <span style={{ fontFamily: KANIT, fontSize: 26, fontWeight: 700, color: '#ddd', letterSpacing: '-0.02em' }}>0</span>
             )}
           </div>
         )}
@@ -456,15 +472,16 @@ function TokenSelector({ tokenKey, otherKey, onSelect }: {
       <button
         onClick={() => setOpen(o => !o)}
         style={{
-          display: 'flex', alignItems: 'center', gap: 7,
-          background: '#fff',
+          display: 'flex', alignItems: 'center', gap: 8,
+          background: T.bg,
           border: `1.5px solid ${open ? T.borderDark : T.border}`,
-          borderRadius: 48.5, padding: '5px 10px 5px 5px',
-          cursor: 'pointer', transition: 'border-color 0.15s',
+          borderRadius: 48.5, padding: '6px 12px 6px 6px',
+          cursor: 'pointer', transition: 'border-color 0.15s, background 0.15s',
+          boxShadow: open ? '0 1px 6px rgba(0,0,0,0.07)' : 'none',
         }}
       >
-        <TokenLogo token={token} size={22} />
-        <span style={{ fontFamily: KANIT, fontSize: 14, fontWeight: 700, color: T.text }}>
+        <TokenLogo token={token} size={26} />
+        <span style={{ fontFamily: KANIT, fontSize: 15, fontWeight: 700, color: T.text, letterSpacing: '-0.01em' }}>
           {token.symbol}
         </span>
         <ChevronIcon open={open} />
@@ -566,15 +583,16 @@ function SwapBtn({ pairDisabled, connected, canSwap, loading, inToken, outToken,
       onMouseLeave={() => setHov(false)}
       style={{
         display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-        width: '100%', padding: '14px 20px', borderRadius: 48.5,
+        width: '100%', padding: '15px 20px', borderRadius: 48.5,
         background: disabled ? T.bg : hov ? T.limeDark : T.yellow,
         border: disabled ? `1.5px solid ${T.border}` : 'none',
-        fontFamily: KANIT, fontSize: 14, fontWeight: 700,
+        fontFamily: KANIT, fontSize: 15, fontWeight: 800,
+        letterSpacing: '-0.01em',
         color: disabled ? T.textMid : T.text,
         cursor: disabled ? 'default' : 'pointer',
         transition: 'all 0.15s',
-        boxShadow: disabled ? 'none' : hov ? T.shadowBtnYellow : '0 4px 14px rgba(255,215,0,0.3)',
-        opacity: disabled && !loading ? 0.5 : 1,
+        boxShadow: disabled ? 'none' : hov ? T.shadowBtnYellow : '0 4px 18px rgba(255,215,0,0.35)',
+        opacity: disabled && !loading ? 0.45 : 1,
       }}
     >
       {loading ? <Spinner /> : <SwapIcon />}
@@ -659,8 +677,8 @@ function UsdcFallback({ size = 28 }: { size?: number }) {
 
 const labelStyle: React.CSSProperties = {
   fontFamily: KANIT, fontSize: 9, fontWeight: 700,
-  color: '#c0c0c0', textTransform: 'uppercase', letterSpacing: 1,
-  margin: '0 0 7px',
+  color: '#c8c8c8', textTransform: 'uppercase', letterSpacing: 1.2,
+  margin: 0,
 }
 
 function ReverseIcon() {

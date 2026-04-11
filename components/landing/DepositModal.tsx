@@ -241,16 +241,16 @@ function GetHamstarTab() {
   }
 
   return (
-    <div style={{ padding: '16px 20px 8px' }}>
+    <div style={{ padding: '20px 24px 12px' }}>
       {/* Swap widget */}
       <SwapWidget />
 
-      {/* Contract address — below widget, compact */}
+      {/* Contract address — below widget */}
       <div style={{
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        marginTop: 14, padding: '10px 14px',
-        background: T.bg, border: `1px solid ${T.border}`,
-        borderRadius: 12,
+        marginTop: 16, padding: '11px 16px',
+        background: T.bg, border: `1.5px solid ${T.border}`,
+        borderRadius: 14,
       }}>
         <div style={{ minWidth: 0, flex: 1, marginRight: 10 }}>
           <p style={{ fontFamily: KANIT, fontSize: 9, fontWeight: 700, color: '#c0c0c0', textTransform: 'uppercase', letterSpacing: 1, margin: '0 0 3px' }}>

@@ -4,8 +4,9 @@ import { QRCodeSVG } from 'qrcode.react'
 import { useIsMobile } from '@/components/ui/index'
 // useFundWallet from @privy-io/react-auth/solana requires @solana/kit peer deps not yet installed
 import { T } from '@/lib/theme'
-import { HAMSTAR_SYMBOL, HAMSTAR_JUPITER_URL, HAMSTAR_MINT } from '@/lib/hamstar-token'
+import { HAMSTAR_SYMBOL, HAMSTAR_MINT } from '@/lib/hamstar-token'
 import { LegalModal, LEGAL_LINKS, type LegalModalType } from './LegalModal'
+import { JupiterSwapModal } from './JupiterSwapModal'
 
 const KANIT = "var(--font-kanit), sans-serif"
 const PRET  = 'Pretendard, sans-serif'
@@ -257,7 +258,8 @@ function NoWalletDeposit({ onConnect }: { onConnect: () => void }) {
 
 function GetHamstarTab() {
   const [copiedMint, setCopiedMint] = useState(false)
-  const [hovJup, setHovJup]         = useState(false)
+  const [hovSwap, setHovSwap]       = useState(false)
+  const [showSwap, setShowSwap]     = useState(false)
 
   const copyMint = async () => {
     try {
@@ -300,7 +302,7 @@ function GetHamstarTab() {
       {/* Token mint address */}
       <div style={{
         background: T.bg, border: `1px solid ${T.border}`,
-        borderRadius: 14, overflow: 'hidden', marginBottom: 10,
+        borderRadius: 14, overflow: 'hidden', marginBottom: 14,
       }}>
         <div style={{ padding: '10px 14px', borderBottom: `1px solid ${T.border}` }}>
           <p style={{ fontFamily: KANIT, fontSize: 10, fontWeight: 700, color: '#bbb', textTransform: 'uppercase', letterSpacing: 1, margin: '0 0 4px' }}>
@@ -328,27 +330,26 @@ function GetHamstarTab() {
         )}
       </div>
 
-      {/* Jupiter CTA */}
-      <a
-        href={HAMSTAR_JUPITER_URL}
-        target="_blank"
-        rel="noopener noreferrer"
-        onMouseEnter={() => setHovJup(true)}
-        onMouseLeave={() => setHovJup(false)}
+      {/* Jupiter Swap CTA — opens embedded Terminal widget */}
+      <button
+        onClick={() => setShowSwap(true)}
+        onMouseEnter={() => setHovSwap(true)}
+        onMouseLeave={() => setHovSwap(false)}
         style={{
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
           width: '100%', padding: '14px 20px',
-          background: hovJup ? T.limeDark : T.yellow,
-          borderRadius: 48.5,
+          background: hovSwap ? T.limeDark : T.yellow,
+          border: 'none', borderRadius: 48.5,
           fontFamily: KANIT, fontSize: 14, fontWeight: 700, color: T.text,
-          textDecoration: 'none', transition: 'background 0.15s',
-          boxShadow: '0 4px 14px rgba(255,215,0,0.3)',
+          cursor: 'pointer', transition: 'background 0.15s',
+          boxShadow: hovSwap ? '0 6px 20px rgba(255,215,0,0.45)' : '0 4px 14px rgba(255,215,0,0.3)',
           marginBottom: 10,
         }}
       >
-        🪐 Buy {HAMSTAR_SYMBOL} on Jupiter ↗
-      </a>
+        🪐 Swap {HAMSTAR_SYMBOL} on Jupiter
+      </button>
 
+      {showSwap && <JupiterSwapModal onClose={() => setShowSwap(false)} />}
     </div>
   )
 }

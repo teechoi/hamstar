@@ -1,5 +1,6 @@
 // app/layout.tsx
 import type { Metadata } from 'next'
+import Script from 'next/script'
 import { kanit } from '@/lib/fonts'
 import { AppProviders } from '@/components/wallet/Providers'
 
@@ -53,6 +54,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <AppProviders>
           {children}
         </AppProviders>
+        {/* Jupiter Terminal — loaded lazily so it never blocks initial page render */}
+        <Script src="https://terminal.jup.ag/main-v3.js" strategy="lazyOnload" />
       </body>
     </html>
   )

@@ -9,7 +9,7 @@ interface CheerModalProps {
   petId: string
   petName: string
   multiplier: number
-  streakCount?: number  // user's current consecutive win streak (0 = none)
+  streakCount?: number
   onClose: () => void
   onConfirm: (petId: string, amountSol: number) => void
 }
@@ -34,7 +34,7 @@ export function CheerModal({ petId, petName, multiplier, streakCount = 0, onClos
     <div
       style={{
         position: 'fixed', inset: 0, zIndex: 10000,
-        background: 'rgba(0,0,0,0.55)',
+        background: 'rgba(0,0,0,0.6)',
         backdropFilter: 'blur(6px)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         padding: 16,
@@ -47,7 +47,7 @@ export function CheerModal({ petId, petName, multiplier, streakCount = 0, onClos
           background: '#fff', borderRadius: 28,
           width: '100%', maxWidth: 400,
           position: 'relative',
-          boxShadow: '0 32px 80px rgba(0,0,0,0.18)',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.1), 0 40px 80px rgba(77,67,83,0.18)',
           overflow: 'hidden',
         }}
       >
@@ -67,6 +67,10 @@ export function CheerModal({ petId, petName, multiplier, streakCount = 0, onClos
               pointerEvents: 'none', userSelect: 'none',
             }}
           />
+
+          {/* Close button */}
+          <CloseBtn onClick={onClose} />
+
           <div style={{ position: 'relative', zIndex: 1 }}>
             <div style={{
               display: 'inline-flex', alignItems: 'center', gap: 5,
@@ -77,10 +81,10 @@ export function CheerModal({ petId, petName, multiplier, streakCount = 0, onClos
                 HAMSTAR ARENA
               </span>
             </div>
-            <h2 style={{ fontFamily: KANIT, fontSize: 22, fontWeight: 800, color: T.text, margin: '0 0 4px' }}>
+            <h2 style={{ fontFamily: KANIT, fontSize: 22, fontWeight: 800, color: T.text, margin: '0 0 4px', letterSpacing: '-0.025em' }}>
               Cheer for {petName}
             </h2>
-            <p style={{ fontFamily: PRET, fontSize: 13, color: 'rgba(0,0,0,0.5)', margin: 0 }}>
+            <p style={{ fontFamily: PRET, fontWeight: 500, fontSize: 13, color: 'rgba(0,0,0,0.5)', margin: 0 }}>
               {step === 'input'
                 ? 'Pick your amount and lock in your support.'
                 : 'Your cheer has been recorded!'}
@@ -97,10 +101,10 @@ export function CheerModal({ petId, petName, multiplier, streakCount = 0, onClos
               <div style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                 background: 'rgba(115,93,255,0.08)', border: '1.5px solid rgba(115,93,255,0.2)',
-                borderRadius: 14, padding: '10px 18px', marginBottom: 12,
+                borderRadius: 14, padding: '10px 18px', marginBottom: 14,
               }}>
-                <span style={{ fontFamily: PRET, fontWeight: 600, fontSize: 13, color: T.purple }}>
-                  {streakCount >= 3 ? '🔥' : '🔥'} {streakCount}-race win streak
+                <span style={{ fontFamily: PRET, fontWeight: 500, fontSize: 13, color: T.purple }}>
+                  {streakCount}-race win streak
                 </span>
                 <span style={{ fontFamily: KANIT, fontWeight: 700, fontSize: 14, color: T.purple }}>
                   +{streakBonus}x weight bonus
@@ -111,13 +115,15 @@ export function CheerModal({ petId, petName, multiplier, streakCount = 0, onClos
             {/* Odds */}
             <div style={{
               display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-              background: T.bg, borderRadius: 14, padding: '12px 18px',
+              background: T.bg, border: `1.5px solid ${T.border}`,
+              borderRadius: 14, padding: '13px 18px',
               marginBottom: 20,
+              boxShadow: '0 1px 4px rgba(0,0,0,0.03)',
             }}>
               <span style={{ fontFamily: PRET, fontWeight: 500, fontSize: 14, color: T.textMid }}>
                 Current odds
               </span>
-              <span style={{ fontFamily: KANIT, fontWeight: 700, fontSize: 18, color: T.purple }}>
+              <span style={{ fontFamily: KANIT, fontWeight: 800, fontSize: 18, color: T.purple, letterSpacing: '-0.01em' }}>
                 {multiplier.toFixed(1)}x payout
               </span>
             </div>
@@ -125,15 +131,16 @@ export function CheerModal({ petId, petName, multiplier, streakCount = 0, onClos
             {/* Amount input */}
             <div style={{ marginBottom: 20 }}>
               <label style={{
-                fontFamily: PRET, fontWeight: 500, fontSize: 13,
-                color: T.textMid, display: 'block', marginBottom: 8,
+                fontFamily: KANIT, fontWeight: 700, fontSize: 9,
+                color: '#c8c8c8', textTransform: 'uppercase', letterSpacing: 1.2,
+                display: 'block', marginBottom: 10,
               }}>
                 Amount (SOL)
               </label>
               <div style={{ position: 'relative' }}>
                 <span style={{
                   position: 'absolute', left: 20, top: '50%', transform: 'translateY(-50%)',
-                  fontFamily: KANIT, fontSize: 16, fontWeight: 600, color: T.textMid,
+                  fontFamily: KANIT, fontSize: 18, fontWeight: 700, color: T.textMid,
                   pointerEvents: 'none',
                 }}>
                   ◎
@@ -145,10 +152,12 @@ export function CheerModal({ petId, petName, multiplier, streakCount = 0, onClos
                   value={amount}
                   onChange={e => setAmount(e.target.value)}
                   style={{
-                    width: '100%', padding: '14px 20px 14px 44px',
-                    border: `1.5px solid ${T.border}`, borderRadius: 48.5,
-                    fontFamily: KANIT, fontSize: 16, fontWeight: 600, color: T.text,
+                    width: '100%', padding: '15px 20px 15px 46px',
+                    border: `1.5px solid ${T.border}`, borderRadius: 18,
+                    fontFamily: KANIT, fontSize: 22, fontWeight: 700,
+                    letterSpacing: '-0.025em', color: T.text,
                     background: '#fff', outline: 'none', boxSizing: 'border-box',
+                    boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
                   }}
                 />
               </div>
@@ -160,12 +169,13 @@ export function CheerModal({ petId, petName, multiplier, streakCount = 0, onClos
                     key={v}
                     onClick={() => setAmount(String(v))}
                     style={{
-                      flex: 1, padding: '8px 4px',
-                      background: amountNum === v ? T.yellow : T.bg,
-                      border: `1.5px solid ${amountNum === v ? '#000' : T.border}`,
+                      flex: 1, padding: '9px 4px',
+                      background: amountNum === v ? T.yellow : '#fff',
+                      border: `1.5px solid ${amountNum === v ? 'rgba(0,0,0,0.25)' : T.border}`,
                       borderRadius: 48.5,
-                      fontFamily: KANIT, fontSize: 12, fontWeight: 600, color: T.text,
-                      cursor: 'pointer', transition: 'background 0.12s, border-color 0.12s',
+                      fontFamily: KANIT, fontSize: 13, fontWeight: 700, color: T.text,
+                      cursor: 'pointer', transition: 'all 0.12s',
+                      boxShadow: amountNum === v ? '0 2px 8px rgba(255,215,0,0.3)' : 'none',
                     }}
                   >
                     {v}
@@ -179,14 +189,14 @@ export function CheerModal({ petId, petName, multiplier, streakCount = 0, onClos
               <div style={{
                 background: 'rgba(115,93,255,0.06)',
                 border: '1.5px solid rgba(115,93,255,0.15)',
-                borderRadius: 14, padding: '14px 18px',
+                borderRadius: 16, padding: '14px 18px',
                 marginBottom: 24,
               }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 4 }}>
                   <span style={{ fontFamily: PRET, fontWeight: 500, fontSize: 13, color: T.textMid }}>
                     If {petName} wins, you get
                   </span>
-                  <span style={{ fontFamily: KANIT, fontWeight: 700, fontSize: 20, color: T.purple }}>
+                  <span style={{ fontFamily: KANIT, fontWeight: 800, fontSize: 22, color: T.purple, letterSpacing: '-0.025em' }}>
                     ◎ {payout}
                   </span>
                 </div>
@@ -203,16 +213,17 @@ export function CheerModal({ petId, petName, multiplier, streakCount = 0, onClos
               onMouseEnter={() => setHovConfirm(true)}
               onMouseLeave={() => setHovConfirm(false)}
               style={{
-                width: '100%', padding: '16px',
-                background: canSubmit ? (hovConfirm ? T.limeDark : T.yellow) : '#e8e8e8',
-                border: canSubmit ? '2px solid #000' : 'none',
+                width: '100%', padding: '15px 20px',
+                background: canSubmit ? (hovConfirm ? T.limeDark : T.yellow) : T.bg,
+                border: canSubmit ? 'none' : `1.5px solid ${T.border}`,
                 borderRadius: 48.5,
-                fontFamily: KANIT, fontSize: 16, fontWeight: 700,
-                color: canSubmit ? T.text : '#aaa',
+                fontFamily: KANIT, fontSize: 15, fontWeight: 800, letterSpacing: '-0.01em',
+                color: canSubmit ? T.text : T.textMid,
                 cursor: canSubmit ? 'pointer' : 'default',
-                transition: 'background 0.15s',
-                marginBottom: 12,
-                boxShadow: canSubmit ? '0 4px 16px rgba(255,231,144,0.5)' : 'none',
+                transition: 'all 0.15s',
+                marginBottom: 10,
+                boxShadow: canSubmit ? (hovConfirm ? T.shadowBtnYellow : '0 4px 18px rgba(255,215,0,0.28)') : 'none',
+                opacity: canSubmit ? 1 : 0.5,
               }}
             >
               Confirm Cheer
@@ -221,7 +232,7 @@ export function CheerModal({ petId, petName, multiplier, streakCount = 0, onClos
             <button
               onClick={onClose}
               style={{
-                width: '100%', padding: '12px',
+                width: '100%', padding: '11px',
                 background: 'transparent', border: 'none',
                 fontFamily: PRET, fontSize: 14, fontWeight: 500, color: T.textMid,
                 cursor: 'pointer',
@@ -239,33 +250,35 @@ export function CheerModal({ petId, petName, multiplier, streakCount = 0, onClos
               width: 72, height: 72, borderRadius: '50%',
               background: T.yellow,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: 36, margin: '0 auto 16px',
-              boxShadow: '0 6px 20px rgba(255,231,144,0.6)',
+              margin: '0 auto 16px',
+              boxShadow: T.shadowBtnYellow,
             }}>
               <img src="/images/hamster-champion.png" alt="" style={{ width: '70%', height: '70%', objectFit: 'contain' }} />
             </div>
-            <h3 style={{ fontFamily: KANIT, fontSize: 22, fontWeight: 700, color: T.text, margin: '0 0 8px' }}>
+            <h3 style={{ fontFamily: KANIT, fontSize: 22, fontWeight: 800, color: T.text, margin: '0 0 8px', letterSpacing: '-0.025em' }}>
               Cheer locked in!
             </h3>
-            <p style={{ fontFamily: PRET, fontSize: 14, color: T.textMid, marginBottom: 24, lineHeight: 1.6 }}>
-              You&apos;re cheering <strong>◎ {amountNum} SOL</strong> on {petName}.<br />
+            <p style={{ fontFamily: PRET, fontWeight: 500, fontSize: 14, color: T.textMid, marginBottom: 24, lineHeight: 1.6 }}>
+              You&apos;re cheering <strong style={{ fontWeight: 700 }}>◎ {amountNum} SOL</strong> on {petName}.<br />
               Good luck!
             </p>
 
             {/* Summary */}
             <div style={{
-              background: T.bg, borderRadius: 14, padding: '16px 18px',
+              background: T.bg, border: `1.5px solid ${T.border}`,
+              borderRadius: 16, padding: '16px 20px',
               display: 'flex', justifyContent: 'space-between',
               marginBottom: 24,
+              boxShadow: '0 1px 4px rgba(0,0,0,0.03)',
             }}>
               {[
-                { label: 'Your pick',  value: petName,     color: T.text   },
-                { label: 'Amount',     value: `◎ ${amountNum}`, color: T.text },
-                { label: 'If win',     value: `◎ ${payout}`, color: T.purple },
+                { label: 'Your pick', value: petName,          color: T.text   },
+                { label: 'Amount',    value: `◎ ${amountNum}`, color: T.text   },
+                { label: 'If win',    value: `◎ ${payout}`,    color: T.purple },
               ].map(({ label, value, color }) => (
                 <div key={label} style={{ textAlign: 'left' }}>
-                  <p style={{ fontFamily: PRET, fontSize: 11, color: T.textMid, margin: '0 0 4px' }}>{label}</p>
-                  <p style={{ fontFamily: KANIT, fontSize: 15, fontWeight: 600, color, margin: 0 }}>{value}</p>
+                  <p style={{ fontFamily: KANIT, fontSize: 9, fontWeight: 700, color: '#c8c8c8', textTransform: 'uppercase', letterSpacing: 1.2, margin: '0 0 5px' }}>{label}</p>
+                  <p style={{ fontFamily: KANIT, fontSize: 15, fontWeight: 700, letterSpacing: '-0.01em', color, margin: 0 }}>{value}</p>
                 </div>
               ))}
             </div>
@@ -278,6 +291,26 @@ export function CheerModal({ petId, petName, multiplier, streakCount = 0, onClos
   )
 }
 
+function CloseBtn({ onClick }: { onClick: () => void }) {
+  const [hov, setHov] = useState(false)
+  return (
+    <button
+      onClick={onClick}
+      onMouseEnter={() => setHov(true)}
+      onMouseLeave={() => setHov(false)}
+      style={{
+        position: 'absolute', top: 12, right: 12, zIndex: 2,
+        background: hov ? 'rgba(0,0,0,0.14)' : 'rgba(0,0,0,0.08)',
+        border: 'none', borderRadius: 8,
+        width: 30, height: 30,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        color: T.sub2, fontSize: 18, lineHeight: 1, cursor: 'pointer',
+        transition: 'background 0.15s',
+      }}
+    >×</button>
+  )
+}
+
 function BackBtn({ onClick }: { onClick: () => void }) {
   const [hov, setHov] = useState(false)
   return (
@@ -286,11 +319,12 @@ function BackBtn({ onClick }: { onClick: () => void }) {
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
       style={{
-        width: '100%', padding: '16px',
+        width: '100%', padding: '15px 20px',
         background: hov ? T.limeDark : T.yellow,
-        border: '2px solid #000', borderRadius: 48.5,
-        fontFamily: "var(--font-kanit), sans-serif", fontSize: 15, fontWeight: 700, color: T.text,
-        cursor: 'pointer', transition: 'background 0.15s',
+        border: 'none', borderRadius: 48.5,
+        fontFamily: KANIT, fontSize: 15, fontWeight: 800, letterSpacing: '-0.01em', color: T.text,
+        cursor: 'pointer', transition: 'all 0.15s',
+        boxShadow: hov ? T.shadowBtnYellow : '0 4px 18px rgba(255,215,0,0.28)',
       }}
     >
       Back to Arena

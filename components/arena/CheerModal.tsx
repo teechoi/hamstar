@@ -139,11 +139,10 @@ export function CheerModal({ petId, petName, multiplier, streakCount = 0, onClos
               </label>
               <div style={{ position: 'relative' }}>
                 <span style={{
-                  position: 'absolute', left: 20, top: '50%', transform: 'translateY(-50%)',
-                  fontFamily: KANIT, fontSize: 18, fontWeight: 700, color: T.textMid,
-                  pointerEvents: 'none',
+                  position: 'absolute', left: 15, top: '50%', transform: 'translateY(-50%)',
+                  pointerEvents: 'none', display: 'flex', alignItems: 'center',
                 }}>
-                  ◎
+                  <SolLogo size={22} />
                 </span>
                 <input
                   type="number"
@@ -170,12 +169,12 @@ export function CheerModal({ petId, petName, multiplier, streakCount = 0, onClos
                     onClick={() => setAmount(String(v))}
                     style={{
                       flex: 1, padding: '9px 4px',
-                      background: amountNum === v ? T.yellow : '#fff',
-                      border: `1.5px solid ${amountNum === v ? 'rgba(0,0,0,0.25)' : T.border}`,
+                      background: amountNum === v ? T.yellow : T.bg,
+                      border: 'none',
                       borderRadius: 48.5,
                       fontFamily: KANIT, fontSize: 13, fontWeight: 700, color: T.text,
                       cursor: 'pointer', transition: 'all 0.12s',
-                      boxShadow: amountNum === v ? '0 2px 8px rgba(255,215,0,0.3)' : 'none',
+                      boxShadow: amountNum === v ? '0 2px 10px rgba(255,215,0,0.35)' : 'none',
                     }}
                   >
                     {v}
@@ -196,8 +195,8 @@ export function CheerModal({ petId, petName, multiplier, streakCount = 0, onClos
                   <span style={{ fontFamily: PRET, fontWeight: 500, fontSize: 13, color: T.textMid }}>
                     If {petName} wins, you get
                   </span>
-                  <span style={{ fontFamily: KANIT, fontWeight: 800, fontSize: 22, color: T.purple, letterSpacing: '-0.025em' }}>
-                    ◎ {payout}
+                  <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontFamily: KANIT, fontWeight: 800, fontSize: 22, color: T.purple, letterSpacing: '-0.025em' }}>
+                    <SolLogo size={20} />{payout}
                   </span>
                 </div>
                 <span style={{ fontFamily: PRET, fontWeight: 500, fontSize: 12, color: T.textMid }}>
@@ -215,7 +214,7 @@ export function CheerModal({ petId, petName, multiplier, streakCount = 0, onClos
               style={{
                 width: '100%', padding: '15px 20px',
                 background: canSubmit ? (hovConfirm ? T.limeDark : T.yellow) : T.bg,
-                border: canSubmit ? 'none' : `1.5px solid ${T.border}`,
+                border: 'none',
                 borderRadius: 48.5,
                 fontFamily: KANIT, fontSize: 15, fontWeight: 800, letterSpacing: '-0.01em',
                 color: canSubmit ? T.text : T.textMid,
@@ -259,7 +258,10 @@ export function CheerModal({ petId, petName, multiplier, streakCount = 0, onClos
               Cheer locked in!
             </h3>
             <p style={{ fontFamily: PRET, fontWeight: 500, fontSize: 14, color: T.textMid, marginBottom: 24, lineHeight: 1.6 }}>
-              You&apos;re cheering <strong style={{ fontWeight: 700 }}>◎ {amountNum} SOL</strong> on {petName}.<br />
+              You&apos;re cheering{' '}
+              <strong style={{ fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 4, verticalAlign: 'middle' }}>
+                <SolLogo size={14} />{amountNum} SOL
+              </strong>{' '}on {petName}.<br />
               Good luck!
             </p>
 
@@ -271,14 +273,17 @@ export function CheerModal({ petId, petName, multiplier, streakCount = 0, onClos
               marginBottom: 24,
               boxShadow: '0 1px 4px rgba(0,0,0,0.03)',
             }}>
-              {[
-                { label: 'Your pick', value: petName,          color: T.text   },
-                { label: 'Amount',    value: `◎ ${amountNum}`, color: T.text   },
-                { label: 'If win',    value: `◎ ${payout}`,    color: T.purple },
-              ].map(({ label, value, color }) => (
+              {([
+                { label: 'Your pick', value: petName,       color: T.text,   sol: false },
+                { label: 'Amount',    value: `${amountNum}`, color: T.text,   sol: true  },
+                { label: 'If win',    value: payout,         color: T.purple, sol: true  },
+              ] as const).map(({ label, value, color, sol }) => (
                 <div key={label} style={{ textAlign: 'left' }}>
                   <p style={{ fontFamily: KANIT, fontSize: 9, fontWeight: 700, color: '#c8c8c8', textTransform: 'uppercase', letterSpacing: 1.2, margin: '0 0 5px' }}>{label}</p>
-                  <p style={{ fontFamily: KANIT, fontSize: 15, fontWeight: 700, letterSpacing: '-0.01em', color, margin: 0 }}>{value}</p>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                    {sol && <SolLogo size={13} />}
+                    <p style={{ fontFamily: KANIT, fontSize: 15, fontWeight: 700, letterSpacing: '-0.01em', color, margin: 0 }}>{value}</p>
+                  </div>
                 </div>
               ))}
             </div>
@@ -288,6 +293,16 @@ export function CheerModal({ petId, petName, multiplier, streakCount = 0, onClos
         )}
       </div>
     </div>
+  )
+}
+
+function SolLogo({ size = 16 }: { size?: number }) {
+  return (
+    <img
+      src="https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png"
+      width={size} height={size} alt="SOL"
+      style={{ borderRadius: '50%', flexShrink: 0, display: 'block' }}
+    />
   )
 }
 

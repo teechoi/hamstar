@@ -152,16 +152,33 @@ export function SwapWidget() {
           outputMint:  outToken.mint,
           amount:      rawAmount,
           slippageBps: Math.round(slippage * 100).toString(),
+          swapMode:    'ExactIn',
         })
-        const res = await fetch(`https://quote-api.jup.ag/v6/quote?${params}`, {
-          signal: abortRef.current.signal,
+
+        const res = await fetch(`https://lite-api.jup.ag/swap/v1/quote?${params}`, {
+          signal: abortRef.current!.signal,
         })
-        if (!res.ok) throw new Error('no_route')
-        const data: QuoteResponse = await res.json()
-        setQuote(data)
+
+        const json = await res.json()
+
+        if (!res.ok || json.error) {
+          const apiMsg: string = json.error ?? json.message ?? ''
+          if (res.status === 429) throw new Error('rate_limit')
+          if (apiMsg.toLowerCase().includes('route') || apiMsg.toLowerCase().includes('no route')) throw new Error('no_route')
+          throw new Error(apiMsg || 'api_error')
+        }
+
+        if (!json.outAmount) throw new Error('no_route')
+        setQuote(json as QuoteResponse)
       } catch (e: any) {
         if (e.name === 'AbortError') return
-        setError('No route found for this pair.')
+        const code = e.message ?? ''
+        setError(
+          code === 'rate_limit' ? 'Too many requests — wait a moment and try again.' :
+          code === 'network'    ? 'Cannot reach Jupiter. Check your connection.' :
+          code === 'no_route'   ? 'No route found for this pair.' :
+          `Quote failed — ${code || 'please try again.'}`
+        )
         setQuote(null)
       } finally {
         setFetching(false)
@@ -177,7 +194,7 @@ export function SwapWidget() {
     setSwapping(true); setError(''); setTxSig('')
 
     try {
-      const res = await fetch('https://quote-api.jup.ag/v6/swap', {
+      const res = await fetch('https://lite-api.jup.ag/swap/v1/swap', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

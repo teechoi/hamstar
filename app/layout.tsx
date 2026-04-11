@@ -15,11 +15,8 @@ export const metadata: Metadata = {
   description: 'Three hamsters. One champion. The wheel decides.',
   manifest: '/manifest.json',
   icons: {
-    icon: [
-      { url: '/images/app-icon-192.png', sizes: '192x192', type: 'image/png' },
-      { url: '/images/app-icon-512.png', sizes: '512x512', type: 'image/png' },
-    ],
-    apple: '/images/app-icon-192.png',
+    icon: '/images/hamster-champion.png',
+    apple: '/images/hamster-champion.png',
   },
   appleWebApp: {
     capable: true,

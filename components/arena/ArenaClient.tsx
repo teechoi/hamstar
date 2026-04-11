@@ -274,7 +274,7 @@ export function ArenaClient({ race, lastResult }: ArenaClientProps) {
               left: isMobile ? -30 : 'calc(50% - 760px)',
               top: isMobile ? undefined : 290,
               bottom: isMobile ? 80 : undefined,
-              width: isMobile ? 'clamp(100px, 22vw, 140px)' : 'clamp(220px, 22vw, 320px)',
+              width: isMobile ? 'clamp(80px, 17vw, 115px)' : 'clamp(175px, 17vw, 260px)',
               height: 'auto',
               pointerEvents: 'none',
               zIndex: 0,

@@ -92,7 +92,7 @@ export function PetPageClient() {
 
         {/* Right decorative hamster — desktop: tracks content center; mobile: peeks from right */}
         {isMobile ? (
-          <div style={{ position: 'absolute', top: 360, right: 0, width: 'clamp(90px, 24vw, 130px)', overflow: 'hidden', pointerEvents: 'none', zIndex: 0 }}>
+          <div style={{ position: 'absolute', top: 360, right: 0, width: 'clamp(72px, 19vw, 105px)', overflow: 'hidden', pointerEvents: 'none', zIndex: 0 }}>
             <img src="/images/hamster-pet-right.png" alt="" aria-hidden style={{ width: '100%', height: 'auto', display: 'block' }} />
           </div>
         ) : (
@@ -104,7 +104,7 @@ export function PetPageClient() {
               position: 'absolute',
               top: 220,
               left: 'calc(50% + 420px)',
-              width: 'clamp(300px, 28vw, 440px)',
+              width: 'clamp(240px, 22vw, 355px)',
               height: 'auto',
               pointerEvents: 'none',
               zIndex: 0,

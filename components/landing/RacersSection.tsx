@@ -41,7 +41,9 @@ function RacerCard({ name, tagline, image, featured, imgPosition = 'center cente
         position: 'relative',
         transform: hov ? 'translateY(-6px)' : 'translateY(0)',
         outline: active ? '3px solid #735DFF' : '1.5px solid #D5D5D5',
-        boxShadow: active ? '0 8px 24px rgba(115,93,255,0.45)' : '0 2px 8px rgba(0,0,0,0.06)',
+        boxShadow: active
+          ? '0 4px 8px rgba(115,93,255,0.08), 0 12px 24px rgba(115,93,255,0.20), 0 24px 48px rgba(115,93,255,0.15)'
+          : '0 1px 3px rgba(115,93,255,0.03), 0 4px 12px rgba(115,93,255,0.06)',
         transition: 'transform 0.2s ease-out, box-shadow 0.2s ease-out, outline 0.2s ease-out',
         cursor: 'default',
       }}
@@ -101,6 +103,7 @@ function RacerCard({ name, tagline, image, featured, imgPosition = 'center cente
           fontWeight: 500, fontSize: 24,
           color: '#000000',
           lineHeight: '29px',
+          letterSpacing: '-0.01em',
           margin: 0,
         }}>
           {name}
@@ -132,7 +135,7 @@ export function RacersSection({ racersTitle = 'Meet the Racers' }: { racersTitle
         {/* Title */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 32, padding: '0 24px' }}>
           <img src="/images/sunflower-seed.png" alt="" style={{ width: 22, height: 33, objectFit: 'contain' }} />
-          <h2 style={{ fontFamily: KANIT, fontWeight: 700, fontSize: 32, color: '#000000', lineHeight: '40px', margin: 0 }}>
+          <h2 style={{ fontFamily: KANIT, fontWeight: 700, fontSize: 32, color: '#000000', lineHeight: '40px', letterSpacing: '-0.025em', margin: 0 }}>
             {racersTitle}
           </h2>
           <img src="/images/sunflower-seed.png" alt="" style={{ width: 22, height: 33, objectFit: 'contain' }} />
@@ -197,6 +200,7 @@ export function RacersSection({ racersTitle = 'Meet the Racers' }: { racersTitle
             fontWeight: 700, fontSize: 40,
             color: '#000000',
             lineHeight: '48px',
+            letterSpacing: '-0.03em',
             margin: 0,
             whiteSpace: 'nowrap',
           }}>

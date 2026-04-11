@@ -59,8 +59,8 @@ export function HamsterCard({
       background: '#fff',
       borderRadius: 24,
       boxShadow: goldGlow
-        ? '0 0 0 3px #FFD643, 0 0 30px rgba(255,214,67,1), 0 20px 40px rgba(77,67,83,0.08)'
-        : '0 20px 40px rgba(77,67,83,0.06)',
+        ? '0 0 0 3px #FFD643, 0 0 30px rgba(255,214,67,0.9), 0 6px 16px rgba(255,214,67,0.15), 0 20px 40px rgba(77,67,83,0.10)'
+        : '0 1px 2px rgba(115,93,255,0.04), 0 6px 16px rgba(115,93,255,0.06), 0 20px 40px rgba(77,67,83,0.07)',
       backdropFilter: dimmed ? 'blur(20px)' : 'none',
       overflow: 'hidden',
       display: 'flex', flexDirection: 'column', alignItems: 'center',
@@ -138,7 +138,7 @@ export function HamsterCard({
       <div style={{ padding: '14px 20px 20px', width: '100%' }}>
 
         {/* Name + Tagline */}
-        <h3 style={{ fontFamily: KANIT, fontSize: 'clamp(16px, 1.8vw, 20px)', fontWeight: 500, color: '#000000', marginBottom: 4, textAlign: 'center' }}>
+        <h3 style={{ fontFamily: KANIT, fontSize: 'clamp(16px, 1.8vw, 20px)', fontWeight: 500, color: '#000000', letterSpacing: '-0.01em', marginBottom: 4, textAlign: 'center' }}>
           I&apos;m {name}
         </h3>
         <p style={{ fontFamily: 'Pretendard, sans-serif', fontSize: 13, fontWeight: 400, color: '#8A8A8A', marginBottom: 10, textAlign: 'center' }}>
@@ -159,6 +159,7 @@ export function HamsterCard({
               color: '#fff', cursor: 'pointer',
               fontFamily: KANIT,
               transform: hov ? 'scale(1.02)' : 'scale(1)',
+              boxShadow: hov ? '0 4px 20px rgba(115,93,255,0.45), 0 2px 8px rgba(115,93,255,0.25)' : '0 2px 8px rgba(115,93,255,0.15)',
               transition: 'all 0.15s ease-out',
               marginBottom: 16,
             }}

@@ -37,7 +37,7 @@ export function HeroSection({
       position: 'relative',
       height: '100vh',
       minHeight: 580,
-      background: '#000000',
+      background: '#080614',
       overflow: 'hidden',
     }}>
       {/* Hero image — Figma: x:107, y:41, 1064×577 in 1280×662 frame */}
@@ -98,10 +98,10 @@ export function HeroSection({
         </button>
         {/* Gradient fades — Figma: left 14.7%, right 11.7%, top 21.7%, bottom 26.3% of image */}
         <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
-          <div style={{ position: 'absolute', top: 0, left: 0,    width: '14.7%', height: '100%', background: 'linear-gradient(to right, #000, transparent)' }} />
-          <div style={{ position: 'absolute', top: 0, right: 0,   width: '11.7%', height: '100%', background: 'linear-gradient(to left,  #000, transparent)' }} />
-          <div style={{ position: 'absolute', top: 0, left: 0,    width: '100%',  height: '21.7%', background: 'linear-gradient(to bottom, #000, transparent)' }} />
-          <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%',  height: '26.3%', background: 'linear-gradient(to top,    #000, transparent)' }} />
+          <div style={{ position: 'absolute', top: 0, left: 0,    width: '14.7%', height: '100%', background: 'linear-gradient(to right, #080614, transparent)' }} />
+          <div style={{ position: 'absolute', top: 0, right: 0,   width: '11.7%', height: '100%', background: 'linear-gradient(to left,  #080614, transparent)' }} />
+          <div style={{ position: 'absolute', top: 0, left: 0,    width: '100%',  height: '21.7%', background: 'linear-gradient(to bottom, #080614, transparent)' }} />
+          <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%',  height: '26.3%', background: 'linear-gradient(to top,    #080614, transparent)' }} />
         </div>
       </div>
 
@@ -125,8 +125,8 @@ export function HeroSection({
             fontSize: isMobile ? 'clamp(28px, 7vw, 52px)' : 'clamp(44px, 4.2vw, 64px)',
             fontWeight: 700,
             color: '#ffffff',
-            letterSpacing: 0,
-            lineHeight: isMobile ? 1.15 : 1.2,
+            letterSpacing: isMobile ? '-0.025em' : '-0.035em',
+            lineHeight: isMobile ? 1.1 : 1.1,
             margin: 0,
             whiteSpace: isMobile ? 'normal' : 'nowrap',
           }}>

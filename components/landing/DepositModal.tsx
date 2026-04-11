@@ -161,10 +161,11 @@ function ConnectedDeposit({ address, copied, onCopy }: { address: string; copied
         background: T.bg,
         border: `1.5px solid ${T.border}`,
         borderRadius: 20,
-        padding: isMobile ? '14px' : '20px',
+        padding: isMobile ? '16px' : '24px',
         display: 'flex', flexDirection: 'column', alignItems: 'center',
-        marginBottom: 14,
-        gap: isMobile ? 12 : 16,
+        marginBottom: 16,
+        gap: isMobile ? 14 : 18,
+        boxShadow: T.shadowCard,
       }}>
         {/* QR with yellow frame */}
         <div style={{
@@ -175,11 +176,11 @@ function ConnectedDeposit({ address, copied, onCopy }: { address: string; copied
           <QRCodeSVG value={address} size={isMobile ? 120 : 148} />
         </div>
 
-        <div style={{ textAlign: 'center' }}>
-          <p style={{ fontFamily: KANIT, fontSize: 10, fontWeight: 700, color: '#bbb', textTransform: 'uppercase', letterSpacing: 1, margin: '0 0 6px' }}>
+        <div style={{ textAlign: 'center', width: '100%' }}>
+          <p style={{ fontFamily: KANIT, fontSize: 9, fontWeight: 700, color: '#c8c8c8', textTransform: 'uppercase', letterSpacing: 1.2, margin: '0 0 8px' }}>
             Your Deposit Address
           </p>
-          <p style={{ fontFamily: MONO, fontSize: 11, color: T.text, margin: 0, wordBreak: 'break-all', lineHeight: 1.6 }}>
+          <p style={{ fontFamily: MONO, fontSize: isMobile ? 10 : 11, color: T.text, margin: 0, wordBreak: 'break-all', lineHeight: 1.7 }}>
             {address}
           </p>
         </div>
@@ -190,14 +191,14 @@ function ConnectedDeposit({ address, copied, onCopy }: { address: string; copied
 
       {/* SOL-only notice */}
       <div style={{
-        display: 'flex', alignItems: 'flex-start', gap: 8,
+        display: 'flex', alignItems: 'flex-start', gap: 10,
         background: T.yellowSoft,
-        border: `1px solid rgba(255,200,0,0.2)`,
-        borderRadius: 12, padding: '10px 14px',
-        margin: '12px 0 8px',
+        border: `1.5px solid rgba(255,200,0,0.25)`,
+        borderRadius: 14, padding: '12px 16px',
+        margin: '14px 0 8px',
       }}>
-        <span style={{ fontSize: 14, flexShrink: 0 }}>◎</span>
-        <p style={{ fontFamily: PRET, fontWeight: 500, fontSize: 12, color: T.sub2, margin: 0, lineHeight: 1.5 }}>
+        <span style={{ fontFamily: KANIT, fontSize: 13, fontWeight: 700, color: T.sub2, flexShrink: 0, lineHeight: 1.6 }}>◎</span>
+        <p style={{ fontFamily: PRET, fontWeight: 500, fontSize: 12, color: T.sub2, margin: 0, lineHeight: 1.6 }}>
           Send only <strong style={{ fontWeight: 700 }}>SOL</strong> to this address on Solana mainnet. Other tokens may be lost.
         </p>
       </div>
@@ -292,14 +293,14 @@ function CopyBtn({ copied, onClick }: { copied: boolean; onClick: () => void }) 
       onMouseLeave={() => setHov(false)}
       style={{
         display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-        width: '100%', padding: '14px 20px',
+        width: '100%', padding: '15px 20px',
         background: copied ? 'rgba(34,197,94,0.08)' : hov ? T.limeDark : T.yellow,
         border: copied ? '1.5px solid rgba(34,197,94,0.25)' : 'none',
         borderRadius: 48.5,
-        fontFamily: KANIT, fontSize: 14, fontWeight: 700,
+        fontFamily: KANIT, fontSize: 15, fontWeight: 800, letterSpacing: '-0.01em',
         color: copied ? '#15803D' : T.text,
-        cursor: 'pointer', transition: 'all 0.2s',
-        boxShadow: copied ? 'none' : hov ? T.shadowBtnYellow : '0 3px 12px rgba(255,215,0,0.25)',
+        cursor: 'pointer', transition: 'all 0.15s',
+        boxShadow: copied ? 'none' : hov ? T.shadowBtnYellow : '0 4px 18px rgba(255,215,0,0.28)',
       }}
     >
       {copied ? <CheckIcon /> : <CopyIcon />}
@@ -317,10 +318,10 @@ function ConnectBtn({ onClick }: { onClick: () => void }) {
       onMouseLeave={() => setHov(false)}
       style={{
         display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-        width: '100%', padding: '14px 20px',
+        width: '100%', padding: '15px 20px',
         background: T.text, border: 'none', borderRadius: 48.5,
-        fontFamily: KANIT, fontSize: 14, fontWeight: 700, color: T.yellow,
-        cursor: 'pointer', opacity: hov ? 0.85 : 1, transition: 'opacity 0.15s',
+        fontFamily: KANIT, fontSize: 15, fontWeight: 800, letterSpacing: '-0.01em', color: T.yellow,
+        cursor: 'pointer', opacity: hov ? 0.84 : 1, transition: 'opacity 0.15s',
       }}
     >
       Connect Wallet

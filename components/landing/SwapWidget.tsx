@@ -103,6 +103,7 @@ export function SwapWidget() {
   const [showSlip, setShowSlip]   = useState(false)
   const [error, setError]         = useState('')
   const [txSig, setTxSig]         = useState('')
+  const [pressing, setPressing]   = useState(false)
 
   const abortRef = useRef<AbortController | null>(null)
   const inToken  = TOKENS[inKey]
@@ -251,6 +252,9 @@ export function SwapWidget() {
           <div style={{ flex: 1, height: 1, background: T.border }} />
           <button
             onClick={handleReverse}
+            onMouseDown={() => setPressing(true)}
+            onMouseUp={() => setPressing(false)}
+            onMouseLeave={() => setPressing(false)}
             style={{
               width: 34, height: 34, borderRadius: 10,
               background: T.purple,
@@ -258,8 +262,9 @@ export function SwapWidget() {
               cursor: 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               margin: '0 10px', flexShrink: 0,
-              transition: 'opacity 0.15s',
-            }}
+              transform: pressing ? 'scale(0.82)' : 'scale(1)',
+              transition: pressing ? 'transform 0.06s ease' : 'transform 0.18s ease',
+            } as React.CSSProperties}
           >
             <ReverseIcon />
           </button>

@@ -1,6 +1,6 @@
 # HamstarHub — Build Progress
 
-*Last updated: April 11, 2026*
+*Last updated: April 12, 2026*
 
 ---
 
@@ -112,10 +112,32 @@ Full Anchor program — PDA-based escrow, dark horse bonus, hot streak multiplie
 
 ### Security
 - [x] On-chain TX verification — `POST /api/user/claim-reward` verifies signature on Solana before marking rewardPushed
-- [x] Admin route defense-in-depth — all admin race routes read JWT cookie directly (not just middleware)
+- [x] Deep place_cheer TX verification — parse instruction bytes, verify discriminator + raceId + hamsterIndex + amount
+- [x] Transaction replay protection — `Cheer.txSignature @unique`, 409 pre-check before upsert
+- [x] Cheer race condition fix — user upsert + cheer upsert wrapped in `$transaction`
+- [x] Admin route defense-in-depth — all admin race routes + settings PATCH read JWT cookie directly
 - [x] SameSite=Strict cookies — prevents CSRF via cross-site navigation
+- [x] JWT audience claim — `hamstarhub-admin` audience on sign + verify
+- [x] Security headers — X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy, HSTS
+- [x] `/api/webhook` route — Helius webhook handler with strict auth verification
+- [x] Helius webhook bypass fix — always rejects when `HELIUS_WEBHOOK_SECRET` is unset
+- [x] Admin login rate limiting — 5 attempts per IP per 15 minutes, returns 429
 - [x] Pet ID validation on cheer endpoint — rejects invalid petId before DB upsert
+- [x] Credential cleanup — DB password stripped from `.claude/settings.local.json`; `.claude/` added to `.gitignore`
 - [x] `SECURITY.md` — documents all patches and deployment hardening checklist
+
+### UI Polish
+- [x] CheerModal — removed X close button, back-to-arena button, cancel button
+- [x] CheerModal — removed redundant "This runs on Solana" banner from get-token view
+- [x] DepositModal — removed X close button (backdrop click still closes)
+- [x] AccountModal — removed X close buttons from both ConnectedView and NoWalletView
+- [x] Favicon — changed to `hamster-flash-flex.png` (transparent PNG, no yellow square)
+- [x] Flash profile image — updated site-wide to new image (`flash.jpeg` + `flash-crop.jpeg`)
+
+### Anchor Smart Contract (security patches)
+- [x] `update_settlers` instruction — admin can rotate settler keys without redeployment
+- [x] `upset_reserve` guard in `push_reward` — rejects with clear error if `create_upset_reserve` hasn't been called
+- [x] `Unauthorized` + `UpsetReserveNotInitialized` errors added to `HamstarError` enum
 
 ### Mobile UX
 - [x] CheerModal — bottom sheet on mobile (slide-up, pull handle, safe-area padding)
@@ -149,27 +171,29 @@ Full Anchor program — PDA-based escrow, dark horse bonus, hot streak multiplie
 
 ### 🔴 Launch Blockers
 
-- [ ] **Deploy Anchor program to mainnet-beta** — `anchor deploy --provider.cluster mainnet-beta`; update `PROGRAM_ID` in `lib/hamstar-program.ts`; call `create_upset_reserve` once
-- [ ] **Launch $HAMSTAR token** — deploy SPL token; update `hamstarMint` in admin Settings and `HAMSTAR_MINT` in `lib/hamstar-token.ts`
-- [ ] **Real stream URL** — set stream URL in admin Settings → Race → Stream URL
-- [ ] **Production env vars** — ADMIN_KEYPAIR, TREASURY_WALLET, SETTLER_2_KEYPAIR on host
+- [ ] **Rotate credentials** — Supabase password, service role key, Helius API key (were in `.claude/settings.local.json`). See `docs/NEXT_STEPS.md` step 1.
+- [ ] **Run DB migration** — `cd hamstarhub && npx prisma migrate dev --name add_cheer_txsig_unique`. See `docs/NEXT_STEPS.md` step 2.
+- [ ] **Deploy Anchor program upgrade** — new `update_settlers` + `upset_reserve` guard committed but not yet built/deployed. See `docs/NEXT_STEPS.md` step 3.
+- [ ] **Set production keypair env vars** — `ADMIN_KEYPAIR`, `TREASURY_WALLET`, `SETTLER_2_KEYPAIR`, `NEXT_PUBLIC_PROGRAM_ID` on Vercel. See `docs/NEXT_STEPS.md` step 4.
+- [ ] **Launch $HAMSTAR token** — deploy SPL token; update `hamstarMint` in admin Settings and `HAMSTAR_MINT` in `lib/hamstar-token.ts`. This exits pre-launch mode instantly.
+- [ ] **Wire `place_cheer` on-chain** — CheerModal already calls `buildCheerTransaction()` but needs `sendTransaction()` + signature POST. Pre-launch mode auto-disables once mint is live. See `docs/NEXT_STEPS.md` step 6.
+- [ ] **Call `create_upset_reserve`** — admin panel → Program, after Anchor upgrade is deployed
+- [ ] **Real stream URL** — admin Settings → Stream URL
 - [x] **Real pet wallet addresses** — Dash/Flash/Turbo wallet addresses set in DB and `.env.local`
-- [x] **Helius webhook** — API key + secret configured in Vercel env; wallets registered manually in Helius dashboard
-- [x] **Admin auth** — JWT session auth re-enabled in `middleware.ts`; login page working at `/admin/login`
+- [x] **Helius webhook route** — `/api/webhook` created and protected; register endpoint in Helius dashboard. See `docs/NEXT_STEPS.md` step 7.
+- [x] **Admin auth** — JWT session auth enabled in `middleware.ts`; login page working at `/admin/login`
 
 ### 🟡 On-Chain Integration
 
-- [ ] **Wire Cheer button → `place_cheer` instruction** — currently records locally + DB only; needs `@coral-xyz/anchor` client + deployed IDL
+- [ ] **Wire Cheer button → `place_cheer` instruction** — pre-launch mode active until mint is live; see step 6 in `docs/NEXT_STEPS.md`
 - [ ] **Real HAMSTAR mint address** — replace placeholder in `lib/hamstar-token.ts` with actual SPL mint once launched
 - [ ] **Real Jupiter pool URL** — update once liquidity is seeded
+- [ ] **ATA pre-creation for reward recipients** — `push_reward` fails if winner has no HAMSTAR ATA. Add check/creation to admin push-rewards UI.
 - [ ] **On-chain streak fetch** — `ArenaClient` has the fetch logic wired; works once program is deployed
 
 ### 🟠 Seeker / Mobile Store
 
-- [ ] **Create proper app icons** — 192×192 and 512×512 PNG (Hamstar logo, not sunflower cursor); update `manifest.json`
-- [ ] **Add PWA service worker** — `npm install next-pwa`, wrap `next.config.js`
-- [ ] **Capture store screenshots** — 3× portrait 1080×1920 (arena, cheer, win); add to `manifest.json`
-- [ ] **Change start_url** — `manifest.json` from `"/"` to `"/arena"`
+- [ ] **Capture store screenshots** — 3× portrait 1080×1920 (arena, cheer, win); replace `public/screenshots/`; update `manifest.json`
 - [ ] **Generate signing keystore** — `keytool -genkey`, save `.jks` securely
 - [ ] **Create `assetlinks.json`** — `public/.well-known/assetlinks.json` with keystore SHA-256
 - [ ] **Bubblewrap init** — `bubblewrap init --manifest https://hamstarhub.xyz/manifest.json`
@@ -182,9 +206,9 @@ See `docs/SEEKER.md` for full instructions on each step.
 
 - [ ] **Watch Live Race button** — set real stream URL in admin so the button links somewhere
 - [ ] **Race replay URL** — admin Settings → Replay URL for post-race "Watch Replay" CTA
-- [ ] **Rate limiting on /api/user/cheer** — add in middleware or route handler
-- [ ] **Sponsor page** — removed; if sponsors come in, can re-add as a simple page
-- [ ] **`effectiveResult` cleanup** — dead ternary in ArenaClient.tsx line 87 (same value both branches)
+- [ ] **Rate limiting on `/api/user/cheer`** — add Upstash/Redis rate limiting per wallet
+- [ ] **`effectiveResult` cleanup** — dead ternary in ArenaClient.tsx ~line 87 (same value both branches)
+- [ ] **Zod input validation** — add max string lengths to cheer endpoint before PublicKey check
 
 ---
 

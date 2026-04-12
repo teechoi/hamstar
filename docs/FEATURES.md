@@ -1,159 +1,131 @@
-# HamstarHub — Feature Roadmap
+# HamstarHub — Feature Status
 
-*Priority order based on effort-to-impact ratio. Frontend-only features ship first.*
-
----
-
-## 1. Live Implied Odds Display ← build first
-
-**What:** As cheers come in, show each hamster's live expected payout multiplier and pool share. Updates every few seconds.
-
-**Complexity:** Frontend only. No contract changes. Data already exists (pool totals per hamster in Supabase).
-
-**UI — in `ArenaClient` / `HamsterCard`:**
-- Below each hamster's support bar, add an odds row:
-  ```
-  DASH    2.3x  ████████████░░░  54% of pool
-  FLASH   4.8x  ██████░░░░░░░░░  26% of pool
-  TURBO   6.1x  ████░░░░░░░░░░░  20% of pool
-  ```
-- Multiplier = total pool ÷ hamster's pool share. Animate on change (number ticks up/down).
-- Use existing `RaceBar` component from `/components/ui/index.tsx` for the fill bar, add a multiplier label alongside it.
-
-**Data:** Derive from existing `support` values already fetched in `useRace`. No new API needed.
-
-**Files to touch:**
-- `components/arena/HamsterCard.tsx` — add odds row below support bar
-- `lib/hooks/useRace.ts` — expose per-hamster pool share percentage
+*Last updated: April 12, 2026*
 
 ---
 
-## 2. Live Cheer Feed ← build alongside #1, same PR
+## Implemented (shipped)
 
-**What:** Real-time ticker showing cheers as they happen during the pick window.
+### Live Implied Odds Display ✅
+Each `HamsterCard` shows a live payout multiplier (`totalPool / hamster pool`), pool share %, and a fill bar. Updates in real time via Supabase realtime + 30s polling fallback. Dark horse qualifier (`< 20%` of pool) shows a DARK HORSE badge.
 
+**Files:** `components/arena/HamsterCard.tsx`, `components/arena/ArenaClient.tsx`, `lib/hooks/useRace.ts`
+
+---
+
+### Frenzy Mode ✅
+Final 60 seconds before pick lock: `isFrenzy` state derived from countdown. Red border pulse animation (`frenzyGlow`), MobileStickyCheerBar copy flips to "Last Chance — Cheer Now", countdown digits turn red.
+
+**Files:** `components/arena/ArenaClient.tsx`
+
+---
+
+### Live Cheer Feed ✅ (UI built — **mock data, needs real subscription**)
+Scrolling ticker showing wallet → amount → hamster during the pick window. Large entries (above `BIG_CHEER_HAMSTAR` threshold) highlighted in purple with a "← BIG" label. Slide-in animation on new entries.
+
+**Current state:** Runs on random fake data with a TODO comment at line 577 of `ArenaClient.tsx`:
 ```
-wallet 7xK...f3 → 50,000 🐹 on TURBO
-wallet 2mP...a1 → 12,000 🐹 on DASH
-wallet 9rL...b8 → 200,000 🐹 on FLASH  ← big move
+// TODO: replace with supabase.subscribeToDonations(raceId, ...) when real raceId is available
 ```
 
-Large cheers (above a threshold, e.g. 100K $HAMSTAR) get a "big move" badge.
+**To wire up:** Subscribe to `cheers` table inserts filtered by `raceId` via Supabase realtime. One hook change, ~1 hour of work. Only becomes meaningful once real cheers are flowing (post-launch).
 
-**Complexity:** Frontend + Supabase realtime. No contract changes.
-
-**UI — new component `CheerFeed.tsx` in `components/arena/`:**
-- Fixed-height scrolling list, newest at top, max ~8 visible rows
-- Entries fade in with a slide-down animation (CSS keyframe)
-- Big move threshold shows a highlighted row (purple background, `T.purple`)
-- Use `SolAddress` component for wallet display
-
-**Data:** Subscribe to Supabase `cheers` table inserts on the current race. Wire into `useRace` hook or a dedicated `useCheerFeed` hook.
-
-**Files to touch:**
-- `components/arena/CheerFeed.tsx` — new file
-- `components/arena/ArenaClient.tsx` — render CheerFeed below the pool bar during pick window
-- `lib/hooks/useRace.ts` — add cheer feed subscription
+**Files:** `components/arena/ArenaClient.tsx` (inline `CheerFeed` component, line 557)
 
 ---
 
-## 3. Last-Minute Frenzy Mode ← pure UI, zero backend
+### Dark Horse Bonus ✅
+Fully implemented on-chain and in UI.
 
-**What:** Final 60 seconds before pick lock triggers a visible mode shift — countdown goes red and pulses, multiplier bar drains visually, copy changes to "FINAL SECONDS — LOCK IN YOUR PICK".
+- **On-chain:** `dark_horse_threshold_bps` (default 2000 = 20%), `upset_reserve` PDA funded by `upset_reserve_bps` (1%) of pool, `dark_horse_bonus_bps` (default 5000 = +50% → 1.5x total reward)
+- **UI:** DARK HORSE badge during pick window on any hamster below threshold. UPSET BONUS 1.5x badge on the winning card in the result view.
 
-**Complexity:** Frontend only. Uses existing countdown timer.
-
-**UI changes to `ArenaClient`:**
-- When `timeToLock < 60s`: apply "frenzy" state via `useState(isFrenzy)`
-- Countdown timer: color shifts from default → `T.coral` (#FF3B5C), scale pulses (existing `pulse` keyframe)
-- Race status card background: subtle red tint overlay
-- CTA button: text changes, border animates
-
-**Files to touch:**
-- `components/arena/ArenaClient.tsx` — frenzy state derived from countdown
-- `lib/hooks/useCountdown.ts` — expose `secondsRemaining` (may already exist)
+**Files:** `hamstar-program/…/push_reward.rs`, `components/arena/ArenaClient.tsx`, `components/arena/HamsterCard.tsx`
 
 ---
 
-## 4. Hamstar Form Cards ← frontend, needs real DB data
+### Hot Streak Multiplier ✅
+Fully implemented on-chain and in UI.
 
-**What:** Each hamster's last 5 race results, win rate, and current streak displayed on the pick UI.
+- **On-chain:** `StreakAccount` PDA per wallet (`["streak", wallet_pubkey]`). 2-win streak → `streak_two_bonus_bps` (+0.2x weight), 3+ wins → `streak_three_bonus_bps` (+0.4x weight). Streak resets on loss.
+- **UI:** `ArenaClient` fetches on-chain streak for connected wallet. CheerModal shows 🔥 N-race streak and "+0.2x / +0.4x weight bonus" label when applicable.
 
+**Files:** `hamstar-program/…/place_cheer.rs`, `hamstar-program/…/push_reward.rs`, `components/arena/ArenaClient.tsx`, `components/arena/CheerModal.tsx`
+
+---
+
+### Hamster Form Cards ✅
+Each `HamsterCard` displays last 5 race W/L pills, win rate %, and current streak from live DB data.
+
+**Data source:** `/api/pets/[id]/form` — queries `races` table for last 5 finished races, returns W/L per hamster.
+
+**Files:** `components/arena/HamsterCard.tsx`, `app/api/pets/[id]/form/route.ts`
+
+---
+
+## Not Yet Built
+
+### Multi-Race Parlay (Accumulator) ❌
+
+**What it is:** User commits tokens to a streak of consecutive race picks. If all picks are correct, payout multiplies: 2-race parlay → 3×, 3-race parlay → 8×. Managed via a separate on-chain `ParlayAccount` PDA. Single race picks use the existing base reward path — nothing changes for casual users.
+
+**Why it matters:** The only feature in this list that doesn't exist yet. Also the highest-retention mechanism — it converts one-time participants into repeat users ("I'm on a parlay, I have to come back"). Creates natural season-like structure around individual races.
+
+**How it differs from the Hot Streak Multiplier:**
+
+| | Hot Streak Multiplier | Parlay |
+|---|---|---|
+| What you do | Cheer normally — bonus applies if you've won recently | Commit tokens to a multi-race sequence upfront |
+| Reward | Slightly better weight on your cheer | Multiplied total reward on the whole sequence |
+| Risk | None — you just get a smaller bonus if streak breaks | Forfeited parlay stake if you miss any race |
+| On-chain state | `StreakAccount` (already exists) | New `ParlayAccount` PDA (not yet built) |
+
+---
+
+**On-chain spec:**
+
+New PDA: `["parlay", wallet_pubkey, parlay_id]`
+
+```rust
+pub struct ParlayAccount {
+    pub user: Pubkey,
+    pub parlay_id: u64,        // monotonic per wallet
+    pub races: [u64; 3],       // race IDs committed to (0 = not yet set)
+    pub picks: [u8; 3],        // hamster index per race
+    pub amount: u64,           // total HAMSTAR staked into parlay
+    pub races_won: u8,         // incremented as each race settles
+    pub races_total: u8,       // 2 or 3
+    pub claimed: bool,
+    pub bump: u8,
+}
 ```
-DASH    W W L W W    60% win rate    2-race streak
-```
 
-**Complexity:** Frontend + DB query. Needs `RACE_HISTORY` or a real `races` table query.
+New instructions:
+- `open_parlay` — user commits amount + picks for 2–3 consecutive races; tokens escrowed
+- `settle_parlay_race` — called by admin after each race settles; increments `races_won` or marks as bust
+- `claim_parlay` — user claims multiplied reward if all picks correct; refund if busted
 
-**UI — in `HamsterCard` or a collapsible panel below it:**
-- 5 result pills: green `W` / red `L` circles
-- Win rate % and current streak text below
-- Expandable on mobile (tap to reveal)
+Multipliers: 2-race → 3×, 3-race → 8×. Funded by a dedicated parlay pool (e.g., 1% of fee_bps redirected from treasury). Parlay pool needs a reserve similar to `upset_reserve`.
 
-**Data:** Query `races` table for last 5 completed races, filter by hamster. Add `/api/pets/[id]/form` route or extend `/api/settings` response.
+**Frontend spec:**
 
-**Files to touch:**
-- `components/arena/HamsterCard.tsx` — add form row
-- `app/api/pets/[id]/form/route.ts` — new API route
-- `config/site.ts` — `RACE_HISTORY` already exists, can bootstrap from here
+- New UI mode in `CheerModal` or a separate `ParlayModal`: toggle between "single cheer" and "start parlay"
+- During parlay pick: user selects hamster for race N, then prompted to pick race N+1 (or commit as 2-race)
+- Arena: "You have an active parlay" status card showing progress (1/2 or 2/3 correct)
+- Result view: "Parlay still alive!" or "Parlay busted" state depending on result
 
----
-
-## 5. Dark Horse Bonus ← small contract addition
-
-**What:** If a hamster with < 20% of the pool wins, all its backers get a 1.5x upset bonus on top of normal payout. Funded by a slice of the platform fee reserve.
-
-**Complexity:** On-chain. Requires contract change + payout calculation logic.
-
-**Contract:**
-- Track per-race pool share % at lock time
-- On result settlement: if `winner_pool_share < 20%`, apply 1.5x to all winner payouts
-- Reserve funded by directing 1% of the 3% platform fee to an `upset_reserve` account
-
-**UI:**
-- Pre-race: show "DARK HORSE" badge on any hamster below 20% pool share
-- Post-race: winning dark horse displays "UPSET BONUS 1.5x" in the result card
-
-**Files to touch:**
-- Solana program (contract) — payout logic
-- `components/arena/ArenaClient.tsx` — dark horse badge + upset result display
-- `components/arena/HamsterCard.tsx` — dark horse indicator during pick window
+**Effort estimate:** High. Requires new Anchor instructions, a new modal/flow, and admin tooling to call `settle_parlay_race` after each settlement. Can be shipped after mainnet launch as a v2 feature.
 
 ---
 
-## 6. Hot Streak Multiplier ← on-chain, depth feature
+## Build Priority
 
-**What:** Correct picks in consecutive races add a bonus to the time multiplier. 2-in-a-row → +0.2x, 3-in-a-row → +0.4x. Streak resets on a miss. Stored on-chain per wallet.
-
-**Complexity:** On-chain. Requires a `streak_account` PDA per wallet.
-
-**Contract:**
-- PDA: `[wallet_pubkey, "streak"]` → stores `{ current_streak: u8, last_race_id: u64 }`
-- On cheer settlement: if wallet picked winner, increment streak; else reset to 0
-- Bonus multiplier applied at payout time
-
-**UI:**
-- AccountModal / HamsterCard: show current streak badge (`🔥 3-race streak`)
-- Pick confirmation: show "Your streak bonus: +0.4x" if applicable
-
-**Files to touch:**
-- Solana program (contract) — streak PDA logic
-- `components/arena/ArenaClient.tsx` — streak display during pick
-- `components/wallet/AccountModal.tsx` — streak badge in user profile
-
----
-
-## Build Order Summary
-
-| # | Feature | Effort | Requires Contract? |
-|---|---------|--------|--------------------|
-| 1 | Live implied odds display | Low | No |
-| 2 | Live cheer feed | Low | No |
-| 3 | Last-minute frenzy mode | Low | No |
-| 4 | Hamstar form cards | Medium | No (DB only) |
-| 5 | Dark horse bonus | High | Yes |
-| 6 | Hot streak multiplier | High | Yes |
-
-**Phase 1 (ship together):** Features 1 + 2 + 3 — all frontend, immediate arena energy lift  
-**Phase 2:** Feature 4 — needs real race history data in DB  
-**Phase 3:** Features 5 + 6 — contract additions, can be batched  
+| Feature | Status | Next action |
+|---|---|---|
+| Live implied odds | ✅ Done | — |
+| Frenzy mode | ✅ Done | — |
+| Dark horse bonus | ✅ Done | — |
+| Hot streak multiplier | ✅ Done | — |
+| Hamstar form cards | ✅ Done | — |
+| Live cheer feed | ⚠️ Mock data | Wire Supabase realtime subscription post-launch |
+| Multi-race parlay | ❌ Not built | Design ParlayAccount PDA + modal UX, ship as v2 |

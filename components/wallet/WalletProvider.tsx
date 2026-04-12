@@ -25,7 +25,7 @@ export function SolanaWalletProvider({ children }: { children: React.ReactNode }
       appIdentity: {
         name: 'Hamstar',
         uri: typeof window !== 'undefined' ? window.location.origin : 'https://hamstarhub.xyz',
-        icon: '/images/hamster-champion.png',
+        icon: '/images/hamster-flash-flex.png',
       },
       authorizationResultCache: createDefaultAuthorizationResultCache(),
       addressSelector: createDefaultAddressSelector(),

@@ -767,7 +767,7 @@ function WinCelebrationOverlay({ petName, amount, onClose }: { petName: string; 
           margin: '0 auto 20px',
           boxShadow: '0 0 0 12px rgba(255,231,144,0.25), 0 8px 32px rgba(255,214,67,0.5)',
         }}>
-          <img src="/images/hamster-champion.png" alt="Champion" style={{ width: '72%', height: '72%', objectFit: 'contain' }} />
+          <img src="/images/hamster-flash-flex.png" alt="Champion" style={{ width: '72%', height: '72%', objectFit: 'contain' }} />
         </div>
 
         <h2 style={{

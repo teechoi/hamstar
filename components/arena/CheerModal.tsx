@@ -421,7 +421,7 @@ export function CheerModal({ petId, petName, multiplier, streakCount = 0, hamste
                 margin: '0 auto 16px',
                 boxShadow: T.shadowBtnYellow,
               }}>
-                <img src="/images/hamster-champion.png" alt="" style={{ width: '70%', height: '70%', objectFit: 'contain' }} />
+                <img src="/images/hamster-flash-flex.png" alt="" style={{ width: '70%', height: '70%', objectFit: 'contain' }} />
               </div>
               <p style={{ fontFamily: PRET, fontWeight: 500, fontSize: 14, color: T.textMid, marginBottom: 24, lineHeight: 1.6 }}>
                 You&apos;re cheering{' '}

@@ -236,7 +236,7 @@ model Cheer {
   petId         String
   won           Boolean?           // null until race finishes
   amountHamstar Float?             // HAMSTAR cheered (null for legacy / pre-launch entries)
-  txSignature   String?            // place_cheer tx signature (null before token launch)
+  txSignature   String?  @unique    // place_cheer tx signature (null before token launch; unique prevents replay)
 
   // ── On-chain payout state ───────────────────────────────────────────────
   /// Time-weighted stake (from place_cheer instruction: amount × weight_bps / 1000)

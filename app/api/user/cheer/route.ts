@@ -199,30 +199,41 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // Ensure user row exists first
-    await prisma.user.upsert({
-      where:  { walletAddress },
-      create: { walletAddress },
-      update: {},
-    })
+    // Replay-attack guard: reject any non-null txSignature already in the DB
+    if (txSignature) {
+      const existing = await prisma.cheer.findUnique({ where: { txSignature } })
+      if (existing) {
+        return NextResponse.json(
+          { error: 'Transaction already recorded.' },
+          { status: 409 },
+        )
+      }
+    }
 
-    // Upsert cheer — one per user per race
-    // Amount is only stored when we have a verified on-chain tx
-    const cheer = await prisma.cheer.upsert({
-      where:  { walletAddress_raceId: { walletAddress, raceId: resolvedRaceId } },
-      create: {
-        walletAddress,
-        raceId: resolvedRaceId,
-        petId,
-        amountHamstar: verifyResult === 'verified' ? (amountHamstar ?? null) : null,
-        txSignature:   txSignature ?? null,
-      },
-      update: {
-        petId,
-        // Only update amount and signature from a verified tx
-        ...(verifyResult === 'verified' && amountHamstar != null ? { amountHamstar } : {}),
-        ...(verifyResult === 'verified' && txSignature    ? { txSignature }    : {}),
-      },
+    // Ensure user row exists and upsert cheer atomically — one per user per race
+    const cheer = await prisma.$transaction(async (tx) => {
+      await tx.user.upsert({
+        where:  { walletAddress },
+        create: { walletAddress },
+        update: {},
+      })
+
+      return tx.cheer.upsert({
+        where:  { walletAddress_raceId: { walletAddress, raceId: resolvedRaceId } },
+        create: {
+          walletAddress,
+          raceId: resolvedRaceId,
+          petId,
+          amountHamstar: verifyResult === 'verified' ? (amountHamstar ?? null) : null,
+          txSignature:   txSignature ?? null,
+        },
+        update: {
+          petId,
+          // Only update amount and signature from a verified tx
+          ...(verifyResult === 'verified' && amountHamstar != null ? { amountHamstar } : {}),
+          ...(verifyResult === 'verified' && txSignature    ? { txSignature }    : {}),
+        },
+      })
     })
 
     return NextResponse.json({ cheer })

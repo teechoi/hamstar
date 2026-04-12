@@ -22,8 +22,9 @@ export interface HeliusWebhookPayload {
 export function verifyHeliusWebhook(authHeader: string | null): boolean {
   const expected = process.env.HELIUS_WEBHOOK_SECRET
   if (!expected) {
-    console.warn('[helius] HELIUS_WEBHOOK_SECRET not set — skipping verification in dev')
-    return process.env.NODE_ENV === 'development'
+    // Always reject if no secret is configured — never silently bypass in any env
+    console.error('[helius] HELIUS_WEBHOOK_SECRET is not set — all webhook requests will be rejected')
+    return false
   }
   return authHeader === expected
 }

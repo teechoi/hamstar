@@ -11,17 +11,20 @@ function getSecret() {
   return new TextEncoder().encode(secret)
 }
 
+const AUDIENCE = 'hamstarhub-admin'
+
 export async function signToken(payload: Record<string, unknown>): Promise<string> {
   return new SignJWT(payload)
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
+    .setAudience(AUDIENCE)
     .setExpirationTime(`${SESSION_DURATION_SECONDS}s`)
     .sign(getSecret())
 }
 
 export async function verifyToken(token: string): Promise<JWTPayload | null> {
   try {
-    const { payload } = await jwtVerify(token, getSecret())
+    const { payload } = await jwtVerify(token, getSecret(), { audience: AUDIENCE })
     return payload
   } catch {
     return null
